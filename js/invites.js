@@ -1,7 +1,7 @@
 // 邀约系统（docs/邀约系统.md）：答应了的邀约真的写进日程，占掉那个时间，到时候去了／取消／爽约
 // 三种来源最后都变成一张邀约卡：玩家在手机里约人、NPC 每周一主动约、剧情固定邀约（脚本 { invite: {...} }）
 // 状态：S.appointments = [{ who, week, day, place, source, status, festival }]
-//   week：absWeek()；day："MON".."FRI" 或 "WEEKEND"；status：accepted / done / cancelled / noshow / declined
+//   week：absWeek()；day："MON".."FRI" 或 "WEEKEND"；slot：周末的哪个时段（"sat_eve" 这种，见 DATA.weekendSlots）；status：accepted / done / cancelled / noshow / declined
 // 台词：data/invites.js 的 DATA.inviteLines（策划写）
 const DAY_KEYS = ["MON", "TUE", "WED", "THU", "FRI"];
 const DAY_CN = { MON: "周一", TUE: "周二", WED: "周三", THU: "周四", FRI: "周五", WEEKEND: "周末", SAT: "周末", SUN: "周末" };
@@ -23,7 +23,17 @@ const Invites = {
   normDay(d) { return !d || d === "SAT" || d === "SUN" || d === "WEEKEND" ? "WEEKEND" : d; },
   list() { S.appointments = S.appointments || []; return S.appointments; },
   thisWeek() { return Invites.list().filter((a) => a.week === absWeek() && a.status === "accepted"); },
-  on(day) { day = Invites.normDay(day); return Invites.thisWeek().find((a) => a.day === day); },
+  on(day, slot) { day = Invites.normDay(day); return Invites.thisWeek().find((a) => a.day === day && (day !== "WEEKEND" || !slot || !a.slot || a.slot === slot)); },
+  // 周末约在哪个时段：地点开门的时段里挑一个还空着的（剧本写了周六／周日的按它来）
+  pickSlot(place, rawDay) {
+    const loc = DATA.mapCity.find((l) => l.id === place);
+    let c = DATA.weekendSlots.map((x, i) => i).filter((i) => place === "travel" ? i === 0 : !loc || slotOpen(loc, i));
+    if (rawDay === "SAT" || rawDay === "SUN") { const f = c.filter((i) => DATA.weekendSlots[i].day === rawDay); if (f.length) c = f; }
+    const free = c.filter((i) => !Invites.on("WEEKEND", DATA.weekendSlots[i].id));
+    const pool = free.length ? free : c;
+    return pool.length ? DATA.weekendSlots[pool[Math.floor(Math.random() * pool.length)]].id : null;
+  },
+  slotName(a) { const sl = a && a.slot && DATA.weekendSlots.find((x) => x.id === a.slot); return sl ? sl.name : "周末"; },
 
   // 固定的忙（data/characters.js 每个人的 busy；这里是规则判断）
   busy(c, day, place) {
@@ -45,23 +55,26 @@ const Invites = {
   // ===== 邀约卡：车票样式。返回 "accept" / "decline" / "reschedule:<DAY>" =====
   card(inv) {
     return new Promise((resolve) => {
-      const c = inv.who, day = Invites.normDay(inv.day), taken = Invites.on(day);
+      const c = inv.who, day = Invites.normDay(inv.day);
+      if (day === "WEEKEND" && !inv.slot) inv.slot = Invites.pickSlot(inv.place, inv.day);
+      const taken = Invites.on(day, inv.slot);
       const loc = DATA.mapCity.find((l) => l.id === inv.place);
-      const cost = inv.place === "travel" ? "整个周末" : day === "WEEKEND" ? `${loc ? loc.cost : 1} 行动点` : "占这一天的日程";
+      const cost = inv.place === "travel" ? "一整天" : day === "WEEKEND" ? "占一个时段" : "占这一天的日程";
       const money = loc && loc.fx && loc.fx.money ? `约 £${Math.abs(loc.fx.money)}` : "";
       const otherLove = Invites.isLove(c) && day === "WEEKEND" && Invites.thisWeek().find((a) => a.day === "WEEKEND" && Invites.isLove(a.who) && a.who !== c);
       const esc = Gloss.escape;
       const el = document.createElement("div");
       el.id = "invite";
       el.innerHTML = `<div class="iv-card"><div class="iv-head"><b>${esc(DATA.characters[c] ? DATA.characters[c].name : c)}</b><span>INVITATION</span></div>
-        <div class="iv-when">${DAY_CN[day]} ${day === "WEEKEND" ? "SAT/SUN" : day}　──　${day === "WEEKEND" ? "周末行动" : "工作日"}</div>
+        <div class="iv-when">${day === "WEEKEND" ? Invites.slotName(inv) : DAY_CN[day]} ${day === "WEEKEND" ? (inv.slot || "").toUpperCase().replace("_", " ") : day}　──　${day === "WEEKEND" ? "周末" : "工作日"}</div>
         <div class="iv-where">${esc(Invites.placeName(inv.place))}　·　${cost}${money ? "　·　" + money : ""}</div>
         ${inv.text ? `<div class="iv-line">“${Gloss.mark(fillText(inv.text))}”${inv.tr && Settings.v.showTr ? `<small>「${Gloss.mark(fillText(inv.tr))}」</small>` : ""}</div>` : ""}
-        ${taken ? `<div class="iv-warn">这天已经约了 ${esc(Invites.name(taken.who))}</div>` : ""}
+        ${taken ? `<div class="iv-warn">${day === "WEEKEND" ? "这个时段" : "这天"}已经约了 ${esc(Invites.name(taken.who))}</div>` : ""}
         ${otherLove ? `<div class="iv-warn">这个周末你已经约了 ${esc(Invites.name(otherLove.who))}（同一个周末约两个人会翻车）</div>` : ""}
         <div class="iv-btns">${taken ? "" : `<button data-r="accept">答应 ✓</button>`}<button data-r="move">改时间</button><button data-r="decline">拒绝 ×</button></div></div>`;
       $("#stage").appendChild(el);
       playSfx("ui_popup");
+      setTimeout(() => Guide.show("invite", el.querySelector(".iv-card")), 500);
       el.querySelectorAll("button").forEach((b) => b.onclick = () => {
         const r = b.dataset.r;
         if (r === "accept") playSfx("ticket_punch");
@@ -79,13 +92,14 @@ const Invites = {
   // 处理一次邀约（卡 → 结果 → 写进日程或扣分）。inv: { who, day, place, text, tr, source, festival }
   async offer(inv) {
     const r = await Invites.card(inv);
-    if (r.startsWith("reschedule:")) inv = { ...inv, day: r.split(":")[1] };
+    if (r.startsWith("reschedule:")) inv = { ...inv, day: r.split(":")[1], slot: null };
     if (r === "accept" || r.startsWith("reschedule:")) {
       const day = Invites.normDay(inv.day);
-      Invites.list().push({ who: inv.who, week: absWeek(), day, place: inv.place, source: inv.source || "npc", status: "accepted", festival: !!inv.festival });
+      const slot = day === "WEEKEND" ? (inv.slot || Invites.pickSlot(inv.place, inv.day)) : null;
+      Invites.list().push({ who: inv.who, week: absWeek(), day, slot, place: inv.place, source: inv.source || "npc", status: "accepted", festival: !!inv.festival });
       if (day === "WEEKEND" && Invites.isLove(inv.who)) S.weekendDates.push(inv.who);   // 同一个周末约了两个攻略对象 → 原规则必翻车
       S.lastMet[inv.who] = absWeek();
-      toast(`约好了：${DAY_CN[day]} 和 ${Invites.name(inv.who)}，${Invites.placeName(inv.place)}`, 2200);
+      toast(`约好了：${day === "WEEKEND" ? Invites.slotName({ slot }) : DAY_CN[day]} 和 ${Invites.name(inv.who)}，${Invites.placeName(inv.place)}`, 2200);
       return "accept";
     }
     const love = Invites.isLove(inv.who), T = Invites.T;
@@ -108,7 +122,7 @@ const Invites = {
       if (!line.place) continue;   // 地点是对方家里、联谊这类不在地图上的，先不发
       let day = Invites.normDay(line.day);
       if (day === "WEEKDAY") day = DAY_KEYS.filter((d) => !Invites.on(d))[Math.floor(Math.random() * 5)] || "WEEKEND";   // “工作日”随便挑一天空的
-      if (Invites.on(day) || Invites.busy(c, day, line.place)) continue;
+      if ((day !== "WEEKEND" && Invites.on(day)) || Invites.busy(c, day, line.place)) continue;
       n++;
       await Invites.offer({ who: c, day, place: line.place, text: line.text, tr: line.tr, source: "npc" });
     }
@@ -123,7 +137,7 @@ const Invites = {
     return applyFx({ [(love ? "aff_" : "fr_") + a.who]: love ? Invites.T.goneLove : Invites.T.goneFriend });
   },
   async cancel(a) {   // 提前说去不了
-    if (!confirm(`你和 ${Invites.name(a.who)} 约了${DAY_CN[a.day]}，确定不去吗？`)) return false;
+    if (!confirm(`你和 ${Invites.name(a.who)} 约了${a.day === "WEEKEND" ? Invites.slotName(a) : DAY_CN[a.day]}，确定不去吗？`)) return false;
     a.status = "cancelled";
     const love = Invites.isLove(a.who);
     showFx(applyFx({ [(love ? "aff_" : "fr_") + a.who]: love ? Invites.T.cancelLove : Invites.T.cancelFriend }));
@@ -148,7 +162,7 @@ const Invites = {
   async ask(c, day, place) {
     const love = Invites.isLove(c), need = Invites.placeNeed(place, love);
     day = Invites.normDay(day);
-    if (Invites.on(day)) return { ok: false, text: "那天你已经有约了。" };
+    if (day !== "WEEKEND" && Invites.on(day)) return { ok: false, text: "那天你已经有约了。" };
     if (Invites.busy(c, day, place)) return { ok: false, line: Invites.line(c, "busy") };
     if (Invites.rel(c) < need) return { ok: false, line: Invites.line(c, "decline") };
     const r = await Invites.offer({ who: c, day, place, source: "player", text: "", tr: "" });

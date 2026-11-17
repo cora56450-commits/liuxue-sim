@@ -268,7 +268,7 @@ const Rules = {
   // 一格活动的实际效果（基础值在 DATA.activities，这里加上性格、tag、英语、精力过低的修正）
   activityFx(id, opt = {}) {
     const T = DATA.tuning;
-    const a = DATA.activities.find((x) => x.id === id);
+    const a = Rules.act(id);
     const fx = { ...a.fx };
     const eff = S.stats.energy < T.lowEnergy ? T.lowEnergyFactor : 1;
     if (id === "class") fx.study *= 0.6 + S.stats.english / 100;
@@ -315,6 +315,16 @@ const Rules = {
     while (DATA.calendar.find((x) => x.week === w && x.vacation)) w++;
     return w;
   },
+  // 现在有没有发布了、还没交的作业（大二大三按关键周走，一直算有）
+  currentAssignment() {
+    if (S.year !== 1) return "later";
+    return Object.keys(DATA.assignments).filter((id) => DATA.assignments[id].release <= S.week && Rules.deadlineWeek(id) >= S.week)
+      .sort((a, b) => Rules.deadlineWeek(a) - Rules.deadlineWeek(b))[0] || null;
+  },
+  hasAssignment() { return !!Rules.currentAssignment(); },
+  releasedThisWeek() { return S.year === 1 ? Object.keys(DATA.assignments).filter((id) => DATA.assignments[id].release === S.week) : []; },
+  // 日程活动的定义：没有作业的周，“做作业”是“预习”
+  act(id) { return id === "homework" && !Rules.hasAssignment() ? DATA.previewActivity : DATA.activities.find((x) => x.id === id); },
   deadlineThisWeek() {
     if (S.year !== 1) return null;
     const a = Object.keys(DATA.assignments).find((id) => Rules.deadlineWeek(id) === S.week);

@@ -4,6 +4,7 @@ async function runScript(steps) {
     if (st.bg !== undefined) setBg(st.bg);
     if (st.cg !== undefined) showCg(st.cg);
     if (st.sfx) playSfx(st.sfx);
+    if (st.alarm !== undefined) FX.alarm(st.alarm);     // { alarm: true } 火警红灯开始闪；{ alarm: false } 停
     if (st.bgm !== undefined) BGM.play(st.bgm);          // { bgm: "comedy" } 切歌；{ bgm: null } 停
     if (st.mail) await showMail(st.mail);                // { mail: { from, title, body } } 邮件卡片，看完就关
     if (st.msg) await showMsg(st.msg);                   // { msg: { from, text, tr } } 手机消息：弹一条通知，同时存进聊天记录

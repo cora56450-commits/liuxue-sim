@@ -32,22 +32,42 @@ const AI = {
     const tagNames = S.tags.map((id) => DATA.tags.find((t) => t.id === id).name).join("、") || "无";
     return `玩家叫${S.name || "（没起名）"}，中国女留学生，在英国北方城市读本科。家乡${h.name}，${optName("personality")}，专业${optName("major")}（${DATA.majorFlavor.ai[S.bg.major] || ""}），家境${optName("wealth")}，住${optName("accommodation")}。tag：${tagNames}。现在是${timeLabel().join(" ")}。`;
   },
-  RULES: "规则：像真人发消息一样简短，一次1到3句；吐槽喜剧基调；不要写动作描写和旁白；不要油腻情话，不要写“融入骨血”之类的套话；不写色情内容；不替玩家说话。",
+  RULES: "规则：像真人发消息一样简短（长度按上面的关系阶段）；吐槽喜剧基调；不要写动作描写和旁白；不要油腻情话，不要写“融入骨血”之类的套话；不写色情内容；不替玩家说话。",
 
   // 邀约（邀约系统.md 第七部分）：告诉 AI 玩家这周哪天有约、这个角色固定什么时候忙；AI 想约就在末尾写机器能读的标记，由游戏校验
   inviteBrief(charId) {
     if (S.year !== 1 || typeof Invites === "undefined") return "";
-    const taken = Invites.thisWeek().map((a) => `${DAY_CN[a.day]}约了${charName(a.who)}`).join("、") || "这周还没有约";
+    const taken = Invites.thisWeek().map((a) => `${a.day === "WEEKEND" ? Invites.slotName(a) : DAY_CN[a.day]}约了${charName(a.who)}`).join("、") || "这周还没有约";
     const b = (DATA.busy || {})[charId];
     const places = DATA.mapCity.filter((l) => !l.travel && l.id !== "dorm_room").map((l) => `${l.id}=${l.name}`).join("，");
     return `玩家这周：${taken}。${b ? `你自己固定的忙：${JSON.stringify(b)}。` : ""}如果你想约玩家、或者答应玩家的提议，在回复最后单独一行写 [[INVITE day=MON|TUE|WED|THU|FRI|WEEKEND place=地点id]]（地点id：${places}，出城写 travel）。不约就不要写。`;
   },
 
+  // 关系阶段（试玩修改第 12 项）：只给数字 AI 不知道代表什么关系，所以按阶段写清楚语气和回复长度
+  STAGES: [
+    { min: 0,  love: "认识", fr: "认识", tone: "客气、简短，像刚加微信的同学；不主动找话题，不用昵称，不用表情；不问私事。", len: "一两句。" },
+    { min: 20, love: "熟人", fr: "熟人", tone: "友好但有分寸，会接话、偶尔开个小玩笑；只聊共同的事（课、小组、宿舍）。", len: "一到三句。" },
+    { min: 40, love: "心动", fr: "朋友", tone: "主动一点，会记得上次聊过的事，会关心一句。", loveExtra: "开始有一点试探。", len: "两到四句。" },
+    { min: 60, love: "暧昧", fr: "好朋友", tone: "明显亲近，会约玩家，会分享自己的私事。", loveExtra: "有暧昧感，但不挑明。", len: "可以长一点，三到五句。" },
+    { min: 80, love: "告白前后", fr: "挚友", tone: "很亲近。", loveExtra: "如果正在交往，可以说情话，但保持角色本身的性格。", len: "想说多少说多少，但仍然像发消息。" },
+  ],
+  // 每个角色的“底色”不变，低好感时也照这个来
+  BASE: {
+    local: "你天生热情，但好感低的时候这种热情是社交性的（对谁都这样），不是对玩家特别；好感 30 以下时不要像老朋友一样嘘寒问暖、分享行程。",
+    otaku: "你话很少。好感低的时候几乎只回一个字或一个词（“yeah”“ok”“lol”）；聊到番才会多说。",
+    senior: "好感低的时候你只聊房子、代购这些生意上的事；熟了以后也依然会提钱。",
+  },
+  stageOf(v) { return [...AI.STAGES].reverse().find((x) => v >= x.min); },
   // 对这个人的关系怎么告诉 AI：攻略对象说好感（−3～+3，2026-11-17 起敷衍、冒犯会扣），固定 NPC 说友情（0～+2），Essay学姐 不算
   relation(charId) {
-    if (DATA.loveIds.includes(charId)) return { line: `你对玩家的好感是${Math.round(S.aff[charId])}（0-100）${S.flags["confessed_" + charId] ? "，你们正在交往" : ""}。`, tag: "好感", max: 3, min: -3 };
-    if (charId in S.fr) return { line: `你和玩家的友情是${Math.round(S.fr[charId])}（0-100，${frTier(S.fr[charId])}）。你们是朋友关系，不是恋爱对象。`, tag: "友情", max: 2, min: 0 };
-    return { line: "", tag: "", max: 0 };
+    const love = DATA.loveIds.includes(charId);
+    if (!love && !(charId in S.fr)) return { line: "", tag: "", max: 0 };
+    const v = Math.round(love ? S.aff[charId] : S.fr[charId]), st = AI.stageOf(v);
+    const dating = love && S.flags["confessed_" + charId];
+    const head = love ? `你对玩家的好感是${v}（0-100）${dating ? "，你们正在交往" : ""}。` : `你和玩家的友情是${v}（0-100）。你们是朋友关系，不是恋爱对象。`;
+    const stage = `现在的关系阶段：${love ? st.love : st.fr}。语气：${st.tone}${love && st.loveExtra ? st.loveExtra : ""}回复长度：${st.len}`;
+    const base = AI.BASE[charId] ? `你的底色：${AI.BASE[charId]}` : "";
+    return { line: [head, stage, base].filter(Boolean).join("\n"), tag: love ? "好感" : "友情", max: love ? 3 : 2, min: love ? -3 : 0 };
   },
   scoreLine(rel) {
     if (!rel.max) return "";

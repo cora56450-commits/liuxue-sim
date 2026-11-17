@@ -1,0 +1,93 @@
+{
+ "_说明": "下巴位置（占图片高度的比例），2026-11-17 Claude Code 在带刻度的放大截图上人工量（没装 OpenCV 时 tools/auto_calib.py 用它）。同一套表情图取景一样（不透明区域重合 99% 以上），共用 expr_1 量的值。",
+ "me": {
+  "autumn": 0.35,
+  "winter": 0.283,
+  "home": 0.367
+ },
+ "senior": {
+  "base": 0.268,
+  "summer": 0.301
+ },
+ "local": {
+  "base": 0.301,
+  "summer": 0.308,
+  "coffee": 0.296,
+  "expr_normal": 0.31,
+  "expr_smile": 0.31,
+  "expr_annoyed": 0.31,
+  "expr_shy": 0.31,
+  "expr_surprised": 0.31,
+  "expr_speechless": 0.31,
+  "expr_stunned": 0.31
+ },
+ "groupmate": {
+  "base": 0.338,
+  "summer": 0.315,
+  "home": 0.362
+ },
+ "otaku": {
+  "base": 0.364,
+  "summer": 0.34,
+  "club": 0.308,
+  "figure": 0.318,
+  "expr_normal": 0.359,
+  "expr_smile": 0.359,
+  "expr_annoyed": 0.359,
+  "expr_shy": 0.359,
+  "expr_surprised": 0.359,
+  "expr_speechless": 0.359,
+  "expr_sparkle": 0.359
+ },
+ "nikos": {
+  "base": 0.277
+ },
+ "jake": {
+  "base": 0.297
+ },
+ "ben": {
+  "base": 0.285
+ },
+ "pike": {
+  "base": 0.308
+ },
+ "zhao_zihao": {
+  "base": 0.257
+ },
+ "dave": {
+  "base": 0.294
+ },
+ "chen_jianguo": {
+  "base": 0.284
+ },
+ "giulia": {
+  "base": 0.353
+ },
+ "zhou_kexin": {
+  "base": 0.273
+ },
+ "chen_siqi": {
+  "base": 0.31
+ },
+ "hannah": {
+  "base": 0.362
+ },
+ "yu_xiao": {
+  "base": 0.343
+ },
+ "linda": {
+  "base": 0.331
+ },
+ "mei": {
+  "base": 0.306
+ },
+ "sophie": {
+  "base": 0.347
+ },
+ "marcia": {
+  "base": 0.327
+ },
+ "wu_tong": {
+  "base": 0.306
+ }
+}

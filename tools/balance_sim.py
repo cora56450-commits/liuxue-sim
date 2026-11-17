@@ -87,6 +87,7 @@ def later(y1,focus):
     introvert=s["introvert"]; week_plan,wk=FOCUS[focus]; ym={1:y1["avg"]}
     for year,periods in LATER.items():
         e=100; hw=0; marks=[]; w=0
+        study*=0.9   # 每个学年开始时学业 ×0.9（试玩修改第 7 项）
         for span,mk,ex in periods:
             for _ in range(span):
                 w+=1

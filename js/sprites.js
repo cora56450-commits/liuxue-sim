@@ -1,14 +1,14 @@
-// 立绘的选图和摆放规则。游戏和 tools/lineup.html 共用这一个文件。
+// 立绘的选图和摆放规则。游戏、tools/lineup.html、tools/check_sprites.py 用同一套规则。
 //
-// 立绘都是画到大腿的半身图，所以按头顶对齐，不按脚底：
-//   1. 每张图按 calib.scale 缩放，让所有人的头一样大；
-//   2. 头顶 y = 基准线 −（身高 − 160）× 每厘米像素；
-//   3. calib.headTop 是这张图里头顶离图片上边缘的比例，用来算图片该放多高。
+// 按“头顶＋下巴”校准（给ClaudeCode_试玩修改.md 第4条）：
+//   1. 每张图记头顶 top、下巴 chin（占图片高度的比例），存在 data/characters.js 的 calib 里；
+//   2. 缩放：图片显示高度 = faceHeight ÷ (chin − top)，这样所有人“头顶到下巴”一样高；
+//   3. 位置：头顶 y = ground − 身高(cm) × pxPerCm，图片上边缘 = 头顶 y − top × 显示高度。
 const Sprites = {
-  // 这张图用哪组校准值
-  calib(c, key, isExpr) {
-    const by = c.calibBy || {};
-    return (isExpr ? by.expr : by[key]) || c.calib || { scale: 1, headTop: 0 };
+  // 这张图的校准值（key：姿势名，或 expr_表情名）
+  calib(c, key) {
+    const k = c.calib || {};
+    return k[key] || k.base || Object.values(k)[0] || { top: 0, chin: 0.3 };
   },
 
   // 选图：有表情用表情图，没有就用姿势图。返回 null 表示这个角色没有立绘（用名牌占位）
@@ -24,7 +24,7 @@ const Sprites = {
     if (!c.sprites[pose]) pose = Object.keys(c.sprites)[0];
     // 表情图的衣服和 base 一样，所以只有 base 姿势时才换成表情图
     if (opt.expr && c.expr && c.expr[opt.expr] && pose === "base") {
-      return { src: c.expr[opt.expr], key: opt.expr, isExpr: true };
+      return { src: c.expr[opt.expr], key: "expr_" + opt.expr, isExpr: true };
     }
     if (!pose) return null;
     return { src: c.sprites[pose], key: pose, isExpr: false };
@@ -37,13 +37,16 @@ const Sprites = {
     return (week >= r.winterWeeks[0] && week <= r.winterWeeks[1]) ? "winter" : "autumn";
   },
 
-  // 算出图片在舞台上的高度和上边缘位置（像素，舞台 1920×1080）
+  // 头顶应该在的 y（舞台 1920×1080）
+  headY(c) { const r = DATA.spriteRule; return r.ground - c.height * r.pxPerCm; },
+
+  // 算出图片在舞台上的高度和上边缘位置
   layout(charId, picked, calibOverride) {
     const c = DATA.characters[charId];
     const r = DATA.spriteRule;
-    const cal = calibOverride || Sprites.calib(c, picked.key, picked.isExpr);
-    const height = r.baseHeight * cal.scale;
-    const headY = r.baseline - (c.height - 160) * r.pxPerCm;
-    return { height, top: headY - cal.headTop * height, headY };
+    const cal = calibOverride || Sprites.calib(c, picked.key);
+    const height = r.faceHeight / Math.max(0.02, cal.chin - cal.top);
+    const headY = Sprites.headY(c);
+    return { height, top: headY - cal.top * height, headY, chinY: headY + r.faceHeight };
   },
 };

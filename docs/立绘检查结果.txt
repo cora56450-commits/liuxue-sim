@@ -1,0 +1,52 @@
+检查了 46 张立绘（22 个人有立绘）。规则：头顶到下巴 150px，每厘米 6.5px，地面线 y=1280。
+人物　图　身高　应在y　实际y　差(cm)　下巴y
+Ollie　base　187　64　64　0.0　215
+Ollie　summer　187　64　64　0.0　214
+Ollie　coffee　187　64　64　0.0　214
+Ollie　expr_normal　187　64　64　0.0　214
+Ollie　expr_smile　187　64　64　0.0　215
+Ollie　expr_annoyed　187　64　64　0.0　214
+Ollie　expr_shy　187　64　64　0.0　215
+Ollie　expr_surprised　187　64　64　0.0　215
+Ollie　expr_speechless　187　64　64　0.0　214
+Ollie　expr_stunned　187　64　64　0.0　215
+Kieran　base　184　84　84　0.0　234
+Kieran　summer　184　84　84　0.0　234
+Kieran　club　184　84　84　0.0　234
+Kieran　figure　184　84　84　0.0　234
+Kieran　expr_normal　184　84　84　0.0　234
+Kieran　expr_smile　184　84　84　0.0　234
+Kieran　expr_annoyed　184　84　84　0.0　234
+Kieran　expr_shy　184　84　84　0.0　234
+Kieran　expr_surprised　184　84　84　0.0　234
+Kieran　expr_speechless　184　84　84　0.0　234
+Kieran　expr_sparkle　184　84　84　0.0　234
+Nikos　base　183　90　90　0.0　241
+Jake　base　180　110　110　0.0　260
+学长　base　178　123　123　0.0　273
+学长　summer　178　123　123　0.0　273
+Ben　base　178　123　123　0.0　273
+Pike　base　176　136　136　0.0　286
+赵子豪　base　176　136　136　0.0　286
+Dave　base　175　142　142　0.0　292
+陈老板　base　172　162　162　0.0　312
+Giulia　base　170　175　175　0.0　325
+Ploy　base　168　188　188　0.0　338
+Ploy　summer　168　188　188　0.0　338
+Ploy　home　168　188　188　0.0　338
+周可欣　base　167　194　194　0.0　344
+陈思琪　base　165　208　208　0.0　358
+Hannah　base　165　208　208　0.0　358
+于晓　base　163　220　220　0.0　370
+Marcia　base　163　220　220　0.0　370
+我　autumn　162　227　227　0.0　377
+我　winter　162　227　227　0.0　377
+我　home　162　227　227　0.0　377
+Linda　base　162　227　227　0.0　377
+Mei　base　160　240　240　0.0　390
+Sophie　base　158　253　253　0.0　403
+吴桐　base　155　272　272　0.0　422
+
+没有问题。
+
+同框图：docs/lineup_同框.jpg（每人一张），docs/lineup_全部.jpg（所有姿势和表情）

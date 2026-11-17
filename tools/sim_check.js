@@ -42,6 +42,7 @@ const run = vm.runInContext(`(function (wealth, planFn, weekend, focus, opt) {
   const plan = DATA.focusPlans.find((f) => f.id === focus);
   for (const y of DATA.laterYears) {
     S.year = y.year; S.week = 0; S.stats.energy = energyMax();
+    S.stats.study = r1(S.stats.study * DATA.tuning.newYearStudy);   // 新学年：学业 ×0.9
     for (const p of y.periods) {
       if (p.span > 0) Rules.simulate(plan, p.span);
       if (p.mark) {

@@ -91,7 +91,9 @@ const Scenes = {
         html += `</div></div>`;
       }
       html += `</div><div class="next-btn"></div>`;
+      const sc = $("#panel .scroll"), top = sc ? sc.scrollTop : 0;
       const p = panel(html);
+      p.querySelector(".scroll").scrollTop = top;
       p.querySelectorAll("[data-t]").forEach((el) => el.onclick = () => {
         const id = el.dataset.t;
         S.tags = S.tags.includes(id) ? S.tags.filter((x) => x !== id) : [...S.tags, id];
@@ -103,6 +105,9 @@ const Scenes = {
   },
 
   async begin() {
+    // 点“落地英国”：BGM 压到 20%，放飞机降落音效（没有文件就跳过），2 秒后回到正常音量
+    BGM.dip(0.2, 400); playSfx("airplane_landing");
+    setTimeout(() => BGM.dip(1, 1200), 2000);
     // 把开局选项的数值写进状态：money/monthly/living/english/adapt 直接设定，其余在初始值上加
     for (const g of DATA.backgroundOptions) {
       const e = g.options.find((x) => x.id === S.bg[g.id]).effects || {};
@@ -126,7 +131,7 @@ const Scenes = {
     hideAll(); Stage.hide(true); showCg(null);
     const r = S.resume || {};
     if (r.scene === "schedule") return Scenes.schedule();
-    if (r.scene === "weekend") return Scenes.weekend(r.ap);
+    if (r.scene === "weekend") return Scenes.weekend(r.slot || 0);
     if (r.scene === "summer") return Scenes.summerMonth();
     return S.year === 1 ? Scenes.week() : Scenes.period();
   },
@@ -142,13 +147,15 @@ const Scenes = {
 
   // ===== 大一：一周的开始 =====
   async week() {
-    hideAll(); Stage.hide(true);
+    hideAll(); Stage.hide(true); FX.alarm(false);
     if (S.year > 1) return Scenes.period();
     const cal = Rules.cal();
     if (!cal) return Scenes.yearEnd();
     S.resume = null;
     let notes = [];
-    if (S.weekStarted !== S.week) { S.weekStarted = S.week; notes = Rules.weekStart(); S.scheduleLocked = false; }
+    if (S.weekStarted !== S.week) { S.weekStarted = S.week; notes = Rules.weekStart(); S.scheduleLocked = false;
+      if (S.hangover === "mon") { S.hangover = null; applyFx({ energy: DATA.tuning.hangoverEnergy }); notes.push("宿醉：周日晚上的 pub，周一上午还在头疼。精力 −10"); }
+    }
     if (S.lastTerm !== cal.term) {   // 换学期、放假：到站广播
       const EN = { "大一·秋": "Autumn Term", "大一·春": "Spring Term", "大一·夏": "Summer Term", "圣诞假": "Christmas Break", "复活节假": "Easter Break" };
       if (S.lastTerm) await FX.announce(cal.term, EN[cal.term] || "");
@@ -164,8 +171,13 @@ const Scenes = {
       if (id.startsWith("tutor_meeting")) S.lastTutor = S.week;
       await runEvent(id);
     }
+    for (const aid of Rules.releasedThisWeek()) {   // 作业发布：弹一封邮件（试玩修改第 8 项）
+      if (S.flags["released_" + aid]) continue;
+      S.flags["released_" + aid] = 1;
+      await showMail({ from: "Module Leader", title: "Assignment brief released", tr: "作业要求已发布", body: `${assignmentName(aid)} · Deadline: Week ${Rules.deadlineWeek(aid)}`, bodyTr: `截止：第${Rules.deadlineWeek(aid)}周` });
+    }
     await Scenes.systemEvents();
-    if (!cal.vacation) { await Scenes.loveEvents(); await Invites.weekly(); }   // 攻略线事件（每周最多一段）、NPC 主动邀约
+    if (!cal.vacation) { await Scenes.loveEvents(); await Scenes.episode(); await Invites.weekly(); }   // 攻略线事件（每周最多一段）、NPC 主动邀约
     await Scenes.checkMoney();
     if (cal.vacation) {   // 假期周：不排日程，回满精力
       S.stats.energy = energyMax();
@@ -268,7 +280,7 @@ const Scenes = {
     const apps = [0, 1, 2, 3, 4].map((i) => (S.rushWeek || locked[i] ? null : Invites.dayApp(i)));   // 邀约占掉的工作日
     apps.forEach((a, i) => { if (a) { S.schedule[i] = "social"; locked[i] = "app"; } });
     let first = true;
-    const acts = DATA.activities.filter((a) => !a.unlock || S.unlocked[a.unlock]);
+    const acts = DATA.activities.filter((a) => !a.unlock || S.unlocked[a.unlock]).map((a) => Rules.act(a.id));
     const cal = Rules.cal();
     const due = Rules.deadlineThisWeek();
     const hint = S.rushWeek ? "赶ddl周：这周只能做作业" : (cal.exam ? "考试周：五天都在复习" : null) || (S.sickLock ? `生病了：前${S.sickLock}天只能躺着` : (due ? `这周周末交：${assignmentName(due)}` : (cal.exam ? "这周考试（只看学业和英语）" : "")));
@@ -285,17 +297,18 @@ const Scenes = {
       const cur = S.schedule.findIndex((x, i) => !x && !locked[i]);   // 当前要填的那一天
       let rows = "";
       DAYS.forEach((d, i) => {
-        const a = DATA.activities.find((x) => x.id === S.schedule[i]);
+        const a = Rules.act(S.schedule[i]);
         const ap = locked[i] === "app" ? apps[i] : null;
-        const label = ap ? `<span>约·${charName(ap.who)}</span><b>${Invites.placeName(ap.place)}</b>` : a ? `<span>${a.name}</span><b>${EN[a.id] || ""}</b>` : `<i class="empty"></i>`;
+        const label = ap ? `<span>约·${charName(ap.who)}</span><b>${Invites.placeName(ap.place)}</b>` : a ? `<span>${a.name}</span><b>${a === DATA.previewActivity ? "PREVIEW" : EN[a.id] || ""}</b>` : `<i class="empty"></i>`;
         rows += `<div class="board-row tt ${i === cur ? "cur" : ""} ${locked[i] ? "locked" : ""} ${ap ? "app" : ""}" tabindex="0" data-i="${i}" style="top:${20.5 + i * 15.2}%">
           <div class="day"><b>${DAY_EN[i]}</b><span>${d}</span></div><div class="dots"></div><div class="act-name">${label}</div></div>`;
       });
-      const list = acts.map((a) => `<div class="act" tabindex="0" data-a="${a.id}"><img src="assets/ui/act_${a.id}.png"><span class="bi"><span class="zh">${a.name}</span><span class="en">${EN[a.id] || ""}</span></span><small>${a.desc}</small></div>`).join("");
+      const list = acts.map((a) => `<div class="act" tabindex="0" data-a="${a.id}"><img src="assets/ui/act_${a.id}.png"><span class="bi"><span class="zh">${a.name}</span><span class="en">${a === DATA.previewActivity ? "PREVIEW" : EN[a.id] || ""}</span></span><small>${a.desc}</small></div>`).join("");
       const e = forecast(), left = S.schedule.filter((x) => !x).length;
       const p = panel(`<div class="sched ${first ? "anim" : ""}"><div class="panel-title"><span>本周日程</span></div><div class="board">${rows}</div>
         <div class="forecast">本周预计：周五晚上精力约 <b>${e}</b>${e < DATA.tuning.lowEnergy ? `<span class="warn">▼偏低　效率会打折</span>` : ""}${left ? `　（还有 ${left} 天没排）` : ""}</div>
         <div class="act-list">${hint ? `<div class="hint">${hint}</div>` : ""}<h3>选一个活动，填进下一个空格<em>ACTIVITIES</em></h3>${list}</div><div class="next-btn"></div></div>`);
+      setTimeout(() => Guide.seq([["sched_rows", "#panel .board"], ["sched_acts", "#panel .act-list"], ["hud", "#hud .hud-bars"]]), 900);
       first = false;
       // 点排好的一行：清空这一行（被约占掉的：先确认取消）
       p.querySelectorAll("[data-i]").forEach((el) => el.onclick = async () => {
@@ -345,7 +358,7 @@ const Scenes = {
     let sick = false;
     const firstClass = S.schedule.indexOf("class");
     for (let i = 0; i < 5; i++) {
-      const a = DATA.activities.find((x) => x.id === S.schedule[i]);
+      const a = Rules.act(S.schedule[i]);
       const late = S.tags.includes("nightowl") && i === firstClass;   // 昼伏夜出：每周第一节课固定迟到
       const r = Rules.doActivity(a.id, { late });
       const ap = Invites.dayApp(i);
@@ -365,23 +378,29 @@ const Scenes = {
     const bud = Rules.libraryBuddy(S.schedule);
     if (bud) lines.push(`图书馆搭子：${charName(DATA.tuning.buddy)}也在　${fxText([[charName(DATA.tuning.buddy) + "友情", r1(bud)]])}`);
     renderHud();
+    { const dl = Scenes.dailyLine(); if (dl) lines.push(dl); }   // 一句话小事件
     await Scenes.report("这周过完了", lines, "周末出门");
     if (sick) await runEvent("got_sick");
-    FX.tear(() => Scenes.weekend(T.weekendAP));
+    FX.tear(() => Scenes.weekend(0));
   },
 
-  // 周末地图：城市大地图上的行李牌标记
-  weekend(ap) {
+  // 周末地图：城市大地图上的行李牌标记。slot = 现在是第几个时段（0 周六上午 … 5 周日晚上，6 = 周末过完）
+  weekend(slot) {
+    slot = slot || 0;
+    if (slot >= DATA.tuning.weekendSlots) return Scenes.endWeek();
     hideAll(); setBg("map_city"); Stage.hide(true); renderHud();
     BGM.auto(weekBgm("weekend"));
     { const c = Rules.cal(); AMB.play(c && c.rain ? "amb_rain" : null); }
-    S.resume = { scene: "weekend", ap };
-    if (ap === DATA.tuning.weekendAP) {   // 周末开始时提醒有约
-      const ds = Invites.thisWeek().filter((a) => a.day === "WEEKEND");
-      if (ds.length) setTimeout(() => toast(ds.map((a) => `今天和 ${charName(a.who)} 约了${Invites.placeName(a.place)}`).join("<br>"), 2600), 400);
+    if (slot >= 3 && S.hangover === "sun") {   // 周六晚上去了 pub：周日上午宿醉
+      S.hangover = null;
+      showFx(applyFx({ energy: DATA.tuning.hangoverEnergy })); toast("宿醉：昨晚的 pub 还在脑袋里。", 2200);
     }
+    S.resume = { scene: "weekend", slot };
+    const sl = DATA.weekendSlots[slot];
+    const dates = Invites.thisWeek().filter((a) => a.day === "WEEKEND");
+    if (slot === 0 && dates.length) setTimeout(() => toast(dates.map((a) => `${Invites.slotName(a)} 和 ${charName(a.who)} 约了${Invites.placeName(a.place)}`).join("<br>"), 2600), 400);
     const p = panel(`<div class="map-layer"></div>
-      <div class="ap-tag"><span>周末 · 行动点 ${ap}</span></div><div class="next-btn"></div>`, "full");
+      <div class="ap-tag"><span>${sl.name}<small>　还剩 ${DATA.tuning.weekendSlots - slot} 个时段</small></span></div><div class="next-btn"></div>`, "full");
     const layer = p.querySelector(".map-layer");
     const here = document.createElement("img");
     here.src = "assets/ui/marker_here.png"; here.className = "here";
@@ -390,46 +409,52 @@ const Scenes = {
     layer.appendChild(here);
     DATA.mapCity.forEach((loc, i) => {
       if (loc.needTag && !S.tags.includes(loc.needTag)) return;
-      const can = loc.travel ? ap === DATA.tuning.weekendAP : ap >= loc.cost;   // 路痴第一次去多花的1点不算在门槛里（不够就把剩下的用完）
+      const can = slotOpen(loc, slot);
       const el = document.createElement("div");
       el.className = "marker" + (can ? "" : " locked");
       el.style.left = loc.x + "px"; el.style.top = loc.y + "px";
       el.style.animationDelay = i * 50 + "ms";
-      const date = Invites.thisWeek().find((a) => a.day === "WEEKEND" && (a.place === loc.id || (loc.travel && a.place === "travel")));
-      el.innerHTML = `<span>${loc.name}${loc.travel ? "" : `<small>${loc.cost}点</small>`}</span>${date ? `<i class="mk-who">约·${charName(date.who)}</i>` : ""}`;
-      if (can) el.onclick = () => FX.tear(() => Scenes.visit(loc, ap));
+      const date = dates.find((a) => a.place === loc.id || (loc.travel && a.place === "travel"));
+      const hours = loc.travel ? "上午出发" : (loc.open || []).map((t) => DATA.todName[t]).join("、") + ((loc.closed || []).includes("sun_pm") ? "（周日只上午）" : "");
+      el.innerHTML = `<span>${loc.name}<small>${can ? (loc.travel ? "一天／两天" : hours) : hours}</small></span>${date ? `<i class="mk-who">约·${charName(date.who)}·${Invites.slotName(date)}</i>` : ""}`;
+      if (can) el.onclick = () => FX.tear(() => Scenes.visit(loc, slot));
       layer.appendChild(el);
     });
-    p.querySelector(".next-btn").appendChild(receipt("结束这周", 4, () => FX.tear(() => Scenes.endWeek())));
+    setTimeout(() => Guide.seq([["map", p.querySelector(".ap-tag")], ["map_people", p.querySelector(".marker:not(.locked)")]]), 1100);
+    const nb = p.querySelector(".next-btn");
+    nb.appendChild(receipt(slot % 3 === 2 ? "回家睡觉" : "待在家，等到" + DATA.todName[DATA.weekendSlots[slot + 1].tod], 3, () => FX.tear(() => Scenes.weekend(slot + 1))));
+    nb.appendChild(receipt("结束这周", 4, () => FX.tear(() => Scenes.endWeek())));
   },
 
-  // 旅游地图
-  travelMap() {
+  // 旅游地图：slot 是周六上午时可以选两天的地方
+  travelMap(slot) {
     hideAll(); setBg("map_uk"); Stage.hide(true); renderHud();
     const p = panel(`<div class="map-layer"></div><div class="ap-tag"><span>出城 · 去哪</span></div><div class="next-btn"></div>`, "full");
     const layer = p.querySelector(".map-layer");
     return new Promise((resolve) => {
       DATA.mapTravel.forEach((t, i) => {
+        const ok = (t.days || 1) === 1 || slot === 0;   // 两天的只能周六上午出发
         const el = document.createElement("div");
-        el.className = "marker train";
+        el.className = "marker train" + (ok ? "" : " locked");
         el.style.left = t.x + "px"; el.style.top = t.y + "px";
         el.style.animationDelay = i * 80 + "ms";
-        el.innerHTML = `<span>${t.name}<small>${money(t.fx.money)}</small></span>`;
-        el.onclick = () => resolve(t);
+        el.innerHTML = `<span>${t.name}<small>${(t.days || 1) === 2 ? "两天" : "一天"}　${money(t.fx.money)}</small></span>`;
+        if (ok) el.onclick = () => resolve(t);
         layer.appendChild(el);
       });
       p.querySelector(".next-btn").appendChild(receipt("不去了", 2, () => resolve(null)));
+      setTimeout(() => Guide.show("travel", layer), 900);
     });
   },
 
-  async visit(loc, ap) {
+  async visit(loc, slot) {
     { const c = Rules.cal(); AMB.play(loc.id === "pub_street" ? "amb_pub" : c && c.rain ? "amb_rain" : null); }
     playSfx({ pub_street: "glass_clink", chinese_market: "coin", indoor_market: "coin", supermarket: "cash", brunch: "cash" }[loc.id]);
     hideAll();
     S.resume = null;
     if (loc.travel) {
-      const t = await Scenes.travelMap();
-      if (!t) return FX.tear(() => Scenes.weekend(ap));
+      const t = await Scenes.travelMap(slot);
+      if (!t) return FX.tear(() => Scenes.weekend(slot));
       await FX.tear(() => { hideAll(); hideHud(); setBg(t.bg); });
       BGM.play("travel");
       playSfx("train_door"); AMB.play("amb_station");
@@ -444,42 +469,46 @@ const Scenes = {
       await say(t.text);
       showFx(applyFx(t.fx));
       S.visits[t.id] = (S.visits[t.id] || 0) + 1;
+      const trip = Invites.thisWeek().find((a) => a.day === "WEEKEND" && a.place === "travel");
+      if (trip) showFx(Invites.attend(trip));
       hideDialog();
-      return FX.tear(() => Scenes.endWeek());
+      // 一天：占掉这一整天（周六去的，周日还能出门）；两天：整个周末
+      return FX.tear(() => Scenes.weekend((t.days || 1) === 2 ? DATA.tuning.weekendSlots : (slot < 3 ? 3 : DATA.tuning.weekendSlots)));
     }
     hideHud();
     setBg(loc.bg);
-    let cost = loc.cost;
+    let cost = loc.cost || 1;
     if (S.tags.includes("lost") && !S.lostSeen[loc.id] && loc.id !== "dorm_room") {   // 天生路痴：每个地点第一次去必定迷路
       S.lostSeen[loc.id] = 1;
       await say(DATA.lostText[loc.id] || DATA.lostText._default);
       showFx(applyFx({ energy: DATA.tuning.lostEnergy }));
-      cost = Math.min(ap, cost + DATA.tuning.lostAP);
+      cost += DATA.tuning.lostAP;   // 迷路多占一个时段
     }
     await say(loc.text);
     showFx(applyFx(Rules.locationFx(loc)));
     S.visits[loc.id] = (S.visits[loc.id] || 0) + 1;
     const cal = Rules.cal();
-    if (cal && cal.rain && (loc.id === "pub_street" || loc.id === "campus")) S.flags.rainy_outing = 1;   // Ollie 心动事件的条件
+    if (cal && cal.rain && (loc.id === "pub_street" || loc.id === "campus")) S.flags.rainy_outing = 1;
+    if (loc.id === "pub_street") S.hangover = slot < 3 ? "sun" : "mon";   // 晚上去 pub：第二天上午精力 −10   // Ollie 心动事件的条件
     // 答应过的周末约会：去了约好的地点就演约会（不再随机偶遇）
     // 约会：答应过的周末邀约，去了约好的地点必定见到对方（不靠 60% 偶遇）
-    const date = Invites.thisWeek().find((a) => a.day === "WEEKEND" && a.place === loc.id);
+    const date = Invites.thisWeek().find((a) => a.day === "WEEKEND" && a.place === loc.id && (!a.slot || a.slot === DATA.weekendSlots[slot].id));
     if (date) {
       Stage.show(date.who);
       await runEvent(DATA.events["date_" + date.who] ? "date_" + date.who : "weekend_date");
       showFx(Invites.attend(date));
       hideDialog(); Stage.hide(true);
-      return FX.tear(() => Scenes.weekend(ap - cost));
+      return FX.tear(() => Scenes.weekend(slot + cost));
     }
     // 攻略线事件里标了 place 的：周末去那个地点时演（代替这次的偶遇）
-    if (await Scenes.loveEvents(loc.id)) { hideDialog(); return FX.tear(() => Scenes.weekend(ap - cost)); }
+    if (await Scenes.loveEvents(loc.id)) { hideDialog(); return FX.tear(() => Scenes.weekend(slot + cost)); }
     // 不是室友时的第一次见面（DATA.firstMeets）：还不认识、条件满足就一定演，演完算认识
     const fm = (DATA.firstMeets || []).find((m) => m.place === loc.id && !(m.who in S.fr) && (!m.cond || evalCond(m.cond)));
     if (fm) {
       await runEvent(fm.event);
       knowFriend(fm.who);
       hideDialog(); Stage.hide(true);
-      return FX.tear(() => Scenes.weekend(ap - cost));
+      return FX.tear(() => Scenes.weekend(slot + cost));
     }
     // 周末特殊偶遇（DATA.encounters）：满足条件、还没演过的，按顺序取第一个，代替这次的普通偶遇；一个周末最多一段
     S.encountersSeen = S.encountersSeen || {};
@@ -488,7 +517,7 @@ const Scenes = {
       S.encountersSeen[enc.id] = 1; S.encounterWeek = absWeek();
       await runEvent(enc.event || enc.id);
       hideDialog();
-      return FX.tear(() => Scenes.weekend(ap - cost));
+      return FX.tear(() => Scenes.weekend(slot + cost));
     }
     // 偶遇：攻略对象（第一次可以在这里认识）＋认识了的固定 NPC（友情+3）；一个地方一次只撞见一个人
     const meetList = (loc.meet || []).flatMap((c) => (c === "roommates" ? roommates() : [c]));
@@ -517,7 +546,41 @@ const Scenes = {
       Stage.hide(true);
     }
     hideDialog();
-    FX.tear(() => Scenes.weekend(ap - cost));
+    FX.tear(() => Scenes.weekend(slot + cost));
+  },
+
+  // 固定剧情的铺垫：这一周结算时，给下一周的固定事件提前一句（DATA.foreshadow，按周）
+  async foreshadow() {
+    const list = (DATA.foreshadow || []).filter((f) => f.week === S.week && (!f.if || evalCond(f.if)));
+    for (const f of list) {
+      const key = "fs_" + S.week + "_" + DATA.foreshadow.indexOf(f);
+      if (S.flags[key]) continue;
+      S.flags[key] = 1;
+      if (f.kind === "mail") await showMail({ from: f.from, title: f.title, tr: f.tr, body: f.body, bodyTr: f.bodyTr });
+      else if (f.kind === "msg") await showMsg({ from: fillText(f.from), text: f.text, tr: f.tr });
+      else if (f.kind === "toast") toast(f.text, 2400);
+      else { setBg("dorm_night"); await say(f.text); hideDialog(); }
+    }
+  },
+  // 小插曲（DATA.episodes）：每周最多一段，按顺序取第一个满足条件、没演过的
+  async episode() {
+    if (S.year !== 1) return;
+    const ep = (DATA.episodes || []).find((e) => !S.flags["done_" + e.id] && evalCond(e.if));
+    if (!ep) return;
+    S.flags["done_" + ep.id] = 1;
+    setBg("dorm_room");
+    await runEvent(ep.id);
+  },
+  // 一句话小事件（DATA.dailyLines）：工作日结算时随机一条，不重复。返回结算单上的一行
+  dailyLine() {
+    if (S.year !== 1) return null;
+    S.dailySeen = S.dailySeen || {};
+    const pool = (DATA.dailyLines || []).filter((d) => !S.dailySeen[d.id] && (!d.if || evalCond(d.if)));
+    if (!pool.length) return null;
+    const d = pool[Math.floor(Math.random() * pool.length)];
+    S.dailySeen[d.id] = 1;
+    const ch = d.fx ? applyFx(d.fx) : [];
+    return `<i class="daily">${Gloss.mark(fillText(d.text))}</i>${ch.length ? "　" + fxText(ch) : ""}`;
   },
 
   async endWeek() {
@@ -544,6 +607,7 @@ const Scenes = {
       S.flags["done_" + id] = 1;
       await runEvent(id);
     }
+    if (S.year === 1) await Scenes.foreshadow();   // 下一周固定剧情的铺垫（剧本「固定剧情的铺垫」）
     S.schedule = [null, null, null, null, null];
     S.week += 1;
     Save.write("auto");   // 每周自动存档
@@ -632,7 +696,7 @@ const Scenes = {
       await runEvent("summer_7_results");
       if ((await Scenes.closeYear(1, true)) === "resit") sm.resit = true;
     }
-    await runEvent(`summer_${sm.month}_${sm.loc}`);
+    if (DATA.events[`summer_${sm.month}_${sm.loc}`]) await runEvent(`summer_${sm.month}_${sm.loc}`);   // 九月人在英国没有单独的段落（剧本只有“九月·国内”）
     if (sm.month === 8 && sm.resit) {   // 八月底补考
       const resit = Rules.examMark() - T.resitPenalty;   // 补考判定在剧情之前：剧情里按 resit_passed 分两种
       if (resit >= 40) { S.yearMarks[1] = 40; S.flags.resit_passed = 1; }
@@ -649,6 +713,7 @@ const Scenes = {
   toYear2() {
     S.stats.energy = energyMax();
     S.year = 2; S.period = 0; S.week = 0; S.resume = null;
+    S.stats.study = r1(S.stats.study * DATA.tuning.newYearStudy);   // 新学年：学业 ×0.9
     Save.write("auto");
     FX.tear(() => Scenes.period());
   },
@@ -666,6 +731,7 @@ const Scenes = {
       if (DATA.events["summer_break_" + S.year]) await runEvent("summer_break_" + S.year);
       S.stats.energy = energyMax();
       S.year += 1; S.period = 0; S.week = 0;
+      S.stats.study = r1(S.stats.study * DATA.tuning.newYearStudy);   // 新学年：学业 ×0.9
       Save.write("auto");
       return FX.tear(() => Scenes.period());
     }

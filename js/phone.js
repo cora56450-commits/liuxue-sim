@@ -27,6 +27,7 @@ const Phone = {
     const o = Phone.frame(`<div class="app-grid">${apps.map(([id, name, , ph], i) => `<div class="app" data-i="${i}">${ph ? `<span class="app-ph"><img src="assets/ui/${ph}.png" alt=""></span>` : `<img src="assets/ui/app_${id}.png" alt="">`}<span>${name}</span>${id === "mail" && unread ? `<i class="app-badge">${unread}</i>` : ""}</div>`).join("")}</div>
       <div class="ph-wall">${timeLabel().join("<br>")}</div>`, { title: S.name || "手机", cls: "home" });
     o.querySelectorAll(".app").forEach((el) => el.onclick = apps[+el.dataset.i][2]);
+    setTimeout(() => Guide.show("phone", o.querySelector(".app")), 400);
   },
 
   // 通讯录（docs/手机与友情.md）：见过面的攻略对象 + 认识了的、有联系方式的固定 NPC + Essay学姐
@@ -114,7 +115,7 @@ const Phone = {
   // ===== 约人（邀约系统.md）：选时间＋地点，对方按门槛回“答应／婉拒／没空” =====
   canAsk(c) { return S.year === 1 && !["sophie", "khan", "essay_senior"].includes(c) && Invites.rel(c) >= Invites.T.askMin; },
   askFlow(c) {
-    const days = [...(S.resume && S.resume.scene === "schedule" ? DAY_KEYS : []), "WEEKEND"].filter((d) => !Invites.on(d));
+    const days = [...(S.resume && S.resume.scene === "schedule" ? DAY_KEYS : []), "WEEKEND"].filter((d) => d === "WEEKEND" || !Invites.on(d));
     const places = DATA.mapCity.filter((l) => !l.travel && l.id !== "dorm_room" && (!l.needTag || S.tags.includes(l.needTag))).map((l) => l.id).concat(["travel"]);
     let day = null;
     const draw = () => {
@@ -375,7 +376,7 @@ const Phone = {
     }
     // 已经答应的邀约（这周和以后）
     const apps = Invites.list().filter((a) => a.status === "accepted" && a.week >= absWeek())
-      .map((a) => `<div class="cal-row now"><b>${DAY_CN[a.day]}</b><span>约·${charName(a.who)}</span><em>${Invites.placeName(a.place)}</em></div>`).join("");
+      .map((a) => `<div class="cal-row now"><b>${a.day === "WEEKEND" ? Invites.slotName(a) : DAY_CN[a.day]}</b><span>约·${charName(a.who)}</span><em>${Invites.placeName(a.place)}</em></div>`).join("");
     const marks = S.marks.map((m) => `<div class="cal-row past"><b>${m.mark}</b><span>${m.name}</span><em>${Rules.band(m.mark)}</em></div>`).join("");
     const o = Phone.frame(`<div class="cal-list">${apps ? `<h4>约好的</h4>${apps}<h4>这学年</h4>` : ""}${rows}${marks ? `<h4>已经出的分</h4>${marks}` : ""}</div>`, { title: "日历", back: () => Phone.home() });
     const now = o.querySelector(".cal-row.now"); if (now) now.scrollIntoView({ block: "center" });

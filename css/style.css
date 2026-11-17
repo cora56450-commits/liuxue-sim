@@ -292,9 +292,12 @@ select.chip { appearance: none; }
   border-image: url(../assets/ui/bubble_me.png) 30 60 50 30 fill stretch !important; }
 .msg.them { color: var(--navy) !important; border: solid transparent !important; border-width: 14px 14px 24px 30px !important;
   border-image: url(../assets/ui/bubble_them.png) 30 30 50 60 fill stretch !important; }
-.phone-input { border-top: none; height: 74px; background: url(../assets/ui/phone_input.png) center/100% 100% no-repeat; padding: 0 80px 0 30px; position: relative; }
-.phone-input input { padding: 0 6px; }
-.phone-input button { position: absolute; right: 2%; top: 10%; width: 16%; height: 80%; background: transparent; }
+/* 输入框只用素材图的框：素材 995×125，内框约 x 9.5%–83.5%、y 14%–83%，文字放在内框里；不要焦点描边（会在外面再套一层框） */
+.phone-input { border-top: none; height: auto; aspect-ratio: 995 / 125; background: url(../assets/ui/phone_input.png) center/100% 100% no-repeat; padding: 0; position: relative; }
+.phone-input input { position: absolute; left: 11%; right: 18%; top: 16%; bottom: 19%; width: auto; height: auto; padding: 0 4px; font-size: 20px; color: var(--ink); }
+.phone-input input:focus, .phone-input input:focus-visible { outline: none; box-shadow: none; }
+.phone-input button { position: absolute; right: 1.5%; top: 8%; width: 16%; height: 84%; padding: 0; background: transparent; }
+.phone-input button:focus-visible { outline: 3px solid var(--orange); outline-offset: -4px; }
 
 /* 结局明信片：文字放在明信片左侧图片框里，水平垂直居中 */
 .postcard { position: absolute; left: 50%; top: 50%; width: 1100px; height: 590px; margin: -295px 0 0 -550px;

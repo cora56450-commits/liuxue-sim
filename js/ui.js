@@ -10,7 +10,7 @@ window.addEventListener("resize", fitStage);
 // ===== 设置（存在本机，不随存档） =====
 const Settings = {
   KEY: "liuxue_settings",
-  v: { textSpeed: 28, volume: 70, bgmVolume: 60, ambVolume: 30, showAvatar: true, showTr: true },   // textSpeed：每个字的毫秒数；volume 是音效音量
+  v: { textSpeed: 28, volume: 70, bgmVolume: 60, ambVolume: 30, showAvatar: true, showTr: true, guide: true },   // textSpeed：每个字的毫秒数；volume 是音效音量
   load() { try { Object.assign(this.v, JSON.parse(localStorage.getItem(this.KEY) || "{}")); } catch (e) {} },
   set(k, val) { this.v[k] = val; localStorage.setItem(this.KEY, JSON.stringify(this.v)); },
 };
@@ -145,20 +145,22 @@ function playSfx(id) {
 }
 // 环境音：循环，一次只有一层，音量单独调（默认 30）。AMB.play("amb_rain") / AMB.stop()
 const AMB = {
-  el: null, id: null,
+  el: new Audio(), id: null,
   vol() { return (Settings.v.ambVolume ?? 30) / 100; },
   play(id) {
     if (AMB.id === id) return;
     AMB.stop();
     if (!id || _sfxMissing[id]) return;
-    const a = new Audio(sfxUrl(id));
-    a.loop = true; a.volume = AMB.vol();
-    a.onerror = () => { _sfxMissing[id] = 1; if (AMB.el === a) { AMB.el = null; AMB.id = null; } };
+    const a = AMB.el;
+    a.src = sfxUrl(id); a.loop = true; a.volume = AMB.vol();
+    a.onerror = () => { _sfxMissing[AMB.id] = 1; AMB.id = null; };
+    AMB.id = id;
     a.play().catch(() => {});
-    AMB.el = a; AMB.id = id;
   },
-  stop() { if (AMB.el) { AMB.el.pause(); AMB.el = null; } AMB.id = null; },
-  setVolume() { if (AMB.el) AMB.el.volume = AMB.vol(); },
+  stop() { AMB.el.pause(); AMB.id = null; },
+  setVolume() { AMB.el.volume = AMB.vol(); },
+  prime() { if (!AMB.id) { AMB.el.src = SILENT_WAV; AMB.el.play().catch(() => {}); AMB.el.pause(); } },
+  retry() { if (AMB.id && AMB.el.paused) AMB.el.play().catch(() => {}); },
 };
 // 界面音效：点按钮、选选项、地图标记（具体的打孔、撕票、盖章各自在自己的地方播）
 document.addEventListener("click", (e) => {
@@ -289,6 +291,10 @@ function say(text, nameId, opt = {}) {
     box.textContent = "";
     function finish() {
       clearInterval(timer); box.innerHTML = Gloss.mark(full); if (tr) trBox.innerHTML = Gloss.mark(tr); trBox.style.visibility = "visible"; done = true; next.classList.remove("hidden");
+      // 新手指引：第一次对话、第一次英文台词、第一次划线词、第一次价格（汇率脑）
+      Guide.show("dialog", "#dialog");
+      if (tr) Guide.show("tr", "#dialog-tr");
+      const gl = d.querySelector(".gl"); if (gl) Guide.show("gloss", gl);
       Flow.markRead(text);
       if (Flow.skip) autoT = setTimeout(advance, 70);
       else if (Flow.auto) autoT = setTimeout(advance, 900 + full.length * 55);
@@ -300,12 +306,12 @@ function say(text, nameId, opt = {}) {
       resolve();
     }
     function key(e) {
-      if (document.getElementById("overlay")) return;
+      if (document.getElementById("overlay") || document.getElementById("guide")) return;
       if (e.key === " " || e.key === "Enter") { e.preventDefault(); advance(); }
     }
     if (Flow.skip || Settings.v.textSpeed <= 0) finish();
     else timer = setInterval(() => { i++; box.textContent = full.slice(0, i); if (i >= full.length) finish(); }, Settings.v.textSpeed);
-    d.onclick = advance;
+    d.onclick = () => { if (!document.getElementById("guide")) advance(); };
     sayAdvance = () => { if (done && (Flow.auto || Flow.skip)) { clearTimeout(autoT); autoT = setTimeout(advance, Flow.skip ? 70 : 600); } };
     document.addEventListener("keydown", key);
   });
@@ -424,13 +430,18 @@ function renderHud() {
     <div class="flapbox">${digits ? `<div class="flap-hud">${digits.map((d) => `<div class="fd"><i>${d}</i></div>`).join("")}</div>` : ""}
       <div><div class="bi term"><span class="zh">${term}</span><span class="en">${TERM_EN[term] || ""}</span></div><div class="wk">${digits ? `WEEK ${digits.join("")} / 28` : label}</div></div></div>
     <div class="hud-tag">${money(st.money)}</div>
-    <div class="hud-bars readouts">${bar("energy", "精力", "ENERGY", st.energy, energyMax(), st.energy < 25 ? "▼偏低" : "")}${bar("study", "学业", "STUDY", st.study, 100)}${bar("loneliness", "孤独", "LONELY", st.loneliness, 100, st.loneliness >= 70 ? "▲偏高" : "")}${bar("belonging", "融入", "BELONG", st.belonging, 100)}${bar("homework", "作业", "ESSAY", S.homework, 100)}</div>
+    <div class="hud-bars readouts">${bar("energy", "精力", "ENERGY", st.energy, energyMax(), st.energy < 25 ? "▼偏低" : "")}${bar("study", "学业", "STUDY", st.study, 100)}${bar("loneliness", "孤独", "LONELY", st.loneliness, 100, st.loneliness >= 70 ? "▲偏高" : "")}${bar("belonging", "融入", "BELONG", st.belonging, 100)}${Rules.hasAssignment() ? bar("homework", "作业", "ESSAY", S.homework, 100) : ""}</div>
     <div class="hud-btns"><button class="hud-btn" id="btn-phone"><span class="zh">手机</span><span class="en">PHONE</span></button><button class="hud-btn" id="btn-save"><span class="zh">存档</span><span class="en">SAVE</span></button><button class="hud-btn" id="btn-settings"><span class="zh">设置</span><span class="en">CONFIG</span></button></div>`;
   // 换周时周数一位一位翻过去（上一次显示的数字记在 h.dataset.wk）
   if (digits && h.dataset.wk && h.dataset.wk !== digits.join("")) flipHud(h.dataset.wk.split(""), digits);
   h.dataset.wk = digits ? digits.join("") : "";
   $("#btn-save").onclick = () => Sys.slots("save");
   $("#btn-phone").onclick = () => Phone.open();
+  // 新手指引：第一次看到汇率脑、第一次出现作业条（HUD 刚滑进来时等它停稳）
+  setTimeout(() => {
+    if (h.querySelector(".hud-tag small")) Guide.show("price", h.querySelector(".hud-tag"));
+    if (h.querySelector('[data-k="homework"]')) Guide.show("homework", h.querySelector('[data-k="homework"]'));
+  }, fresh ? 700 : 50);
   $("#btn-settings").onclick = () => Sys.settings();
 }
 function hideHud() { $("#hud").classList.add("hidden"); }

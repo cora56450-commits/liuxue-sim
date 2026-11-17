@@ -2,143 +2,156 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>排排站 · 立绘校准</title>
+<title>立绘校准</title>
 <style>
-  :root { --orange: #FF7A45; --navy: #3A4766; --paper: #F6F1E7; }
+  :root { --orange: #FF7A45; --navy: #3A4766; --paper: #F6F1E7; --blue: #1E8CDC; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; background: #1d2233; color: var(--paper); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-  header { padding: 10px 16px; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; background: #2A3150; font-size: 14px; }
+  body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; background: #e9e4da; color: #2A3150; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+  header { padding: 10px 16px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; background: var(--paper); border-bottom: 3px solid var(--navy); font-size: 14px; }
   header b { font-size: 18px; }
-  header label { display: flex; align-items: center; gap: 6px; }
-  button { font: inherit; font-weight: 700; padding: 6px 14px; border: 2px solid var(--paper); background: var(--orange); color: var(--paper); cursor: pointer; }
-  button.plain { background: transparent; }
-  #scroller { flex: 1; overflow-x: auto; overflow-y: hidden; position: relative; }
-  #row { position: relative; height: 1080px; transform-origin: 0 0; display: flex; background: #8891a8; }
-  .col { position: relative; width: 430px; height: 1080px; flex: none; border-right: 1px dashed rgba(255,255,255,.25); overflow: hidden; }
-  .col img { position: absolute; left: 50%; transform: translateX(-50%); pointer-events: none; }
-  .col .none { position: absolute; left: 0; right: 0; top: 400px; text-align: center; font-size: 30px; font-weight: 800; color: var(--navy); background: var(--paper); padding: 20px 0; }
-  .line { position: absolute; left: 0; right: 0; height: 0; border-top: 3px solid var(--orange); z-index: 3; }
-  .line.chin { border-top: 2px dashed #fff; }
-  .line span { position: absolute; left: 4px; top: -24px; font-size: 18px; font-weight: 800; background: var(--orange); color: #fff; padding: 0 6px; }
-  .base { position: absolute; left: 0; right: 0; border-top: 3px solid var(--navy); z-index: 2; }
-  .ctrl { position: absolute; left: 0; right: 0; bottom: 0; z-index: 5; background: rgba(42,49,80,.93); padding: 12px 14px; font-size: 22px; }
-  .ctrl h3 { font-size: 26px; display: flex; justify-content: space-between; }
-  .ctrl select { font: inherit; width: 100%; margin: 6px 0; }
-  .ctrl .r { display: flex; align-items: center; gap: 8px; }
-  .ctrl .r input[type=range] { flex: 1; height: 30px; }
-  .ctrl .r input[type=number] { width: 110px; font: inherit; }
-  .ctrl .r span { width: 70px; }
-  #row.all .ctrl { display: none; }
-  #out { position: fixed; inset: 60px; z-index: 20; background: var(--paper); color: #2A3150; padding: 20px; display: none; flex-direction: column; gap: 10px; border: 6px solid var(--orange); }
-  #out textarea { flex: 1; font: 14px/1.5 Menlo, monospace; padding: 10px; }
+  button { font: inherit; font-weight: 700; padding: 6px 14px; border: 2px solid var(--navy); background: var(--orange); color: #fff; cursor: pointer; border-radius: 6px; }
+  button.plain { background: #fff; color: var(--navy); }
+  button.on { background: var(--navy); color: #fff; }
+  main { flex: 1; overflow: auto; position: relative; }
+  /* 校准模式 */
+  #cal { display: flex; flex-wrap: wrap; gap: 12px; padding: 12px; }
+  .card { background: #fff; border: 2px solid var(--navy); border-radius: 8px; width: 300px; padding: 8px; }
+  .card h3 { font-size: 16px; display: flex; justify-content: space-between; }
+  .card h3 small { color: #889; font-weight: 400; }
+  .card select { width: 100%; font: inherit; margin: 4px 0; }
+  .view { position: relative; width: 284px; height: 420px; overflow: hidden; background: repeating-conic-gradient(#eee 0 25%, #fff 0 50%) 0 0/16px 16px; }
+  .view img { position: absolute; left: 0; top: 0; pointer-events: none; }
+  .h { position: absolute; left: 0; right: 0; height: 0; border-top: 3px solid; cursor: ns-resize; touch-action: none; }
+  .h::before { content: ""; position: absolute; left: 0; right: 0; top: -9px; height: 18px; }
+  .h span { position: absolute; right: 2px; top: -20px; font-size: 12px; font-weight: 700; color: #fff; padding: 0 4px; }
+  .h.top { border-color: var(--orange); } .h.top span { background: var(--orange); }
+  .h.chin { border-color: var(--blue); } .h.chin span { background: var(--blue); }
+  .vals { font: 12px Menlo, monospace; margin-top: 4px; color: #556; }
+  .vals.changed { color: var(--orange); font-weight: 700; }
+  /* 同框预览 */
+  #pre { position: relative; height: 1080px; transform-origin: 0 0; display: none; background: var(--paper); }
+  #pre .col { position: absolute; top: 0; height: 1080px; overflow: hidden; }
+  #pre .col img { position: absolute; left: 50%; transform: translateX(-50%); }
+  #pre .name { position: absolute; top: 4px; left: 4px; right: 4px; background: #fff; font-size: 18px; font-weight: 700; padding: 2px 6px; border: 2px solid var(--navy); z-index: 3; }
+  #pre .ref { position: absolute; left: 0; right: 0; height: 0; border-top: 1px dashed rgba(58,71,102,.35); z-index: 2; }
+  #pre .line { position: absolute; height: 0; border-top: 3px solid var(--orange); z-index: 2; }
+  #pre .line.chin { border-top: 2px dashed var(--blue); }
+  #pre .dlg { position: absolute; left: 0; right: 0; top: 768px; bottom: 0; background: rgba(58,71,102,.45); z-index: 2; color: #fff; font-size: 22px; padding: 8px; }
+  #pre .heights { position: absolute; left: 0; top: 0; width: 120px; height: 1080px; background: #fff; border-right: 2px solid var(--navy); font-size: 14px; }
+  #pre .heights div { position: absolute; left: 4px; }
+  #out { position: fixed; inset: 60px; z-index: 20; background: var(--paper); padding: 20px; display: none; flex-direction: column; gap: 10px; border: 6px solid var(--orange); }
+  #out textarea { flex: 1; font: 13px/1.5 Menlo, monospace; padding: 10px; }
 </style>
 </head>
 <body>
 <header>
-  <b>排排站 · 立绘校准</b>
-  <span>橙线＝这个人的头顶应该在的位置；白虚线＝下巴参考线。先调“缩放”让头顶到下巴正好卡在两条线之间，再调“头顶”让头顶贴住橙线。</span>
-  <label>头的高度参考 <input type="range" id="headSize" min="150" max="360" value="250"> <span id="headSizeV"></span>px</label>
-  <label>背景 <select id="bgSel"><option value="#8891a8">灰蓝</option><option value="#F6F1E7">米白</option><option value="#2A3150">深蓝</option></select></label>
-  <label><input type="checkbox" id="overview"> 全部挤进一屏（只看整体，调的时候关掉）</label>
+  <b>立绘校准</b>
+  <button id="mCal" class="on">校准（拖头顶线、下巴线）</button>
+  <button id="mPre" class="plain">同框预览</button>
+  <span>橙线＝头顶（头发最高处，不算呆毛），蓝线＝下巴。拖好后点“导出”，贴进 <code>tools/calib_confirmed.json</code>，再跑 <code>python3 tools/auto_calib.py</code> 和 <code>python3 tools/check_sprites.py</code>。</span>
   <button id="export">导出</button>
-  <button class="plain" id="reset">恢复成 characters.js 里的值</button>
+  <button class="plain" id="reset">清掉本页的改动</button>
 </header>
-<div id="scroller"><div id="row"></div></div>
-<div id="out"><b>把下面每一行里的 calib / calibBy 贴回 data/characters.js 对应的角色（或者整段发给 Claude Code 让它贴）</b><textarea readonly></textarea><div><button id="copy">复制</button> <button class="plain" id="closeOut" style="color:#2A3150;border-color:#2A3150">关闭</button></div></div>
+<main><div id="cal"></div><div id="pre"></div></main>
+<div id="out"><b>人工确认的校准值：整段贴进 tools/calib_confirmed.json（或发给 Claude Code）</b><textarea readonly></textarea><div><button id="copy">复制</button> <button class="plain" id="closeOut">关闭</button></div></div>
 
 <script src="../data/characters.js"></script>
 <script src="../js/sprites.js"></script>
 <script>
-const KEY = "liuxue_lineup_wip";
+const KEY = "lineup_calib_v2";
 const R = DATA.spriteRule;
-const ids = Object.keys(DATA.characters).sort((a, b) => DATA.characters[b].height - DATA.characters[a].height);
-// 工作中的校准值：{ 角色: { 图的键: {scale, headTop} } }，表情图共用 "expr" 这一组
-let work = {};
-function fromData() {
-  const w = {};
-  for (const id of ids) {
-    const c = DATA.characters[id]; w[id] = {};
-    for (const k of Object.keys(c.sprites)) w[id][k] = { ...Sprites.calib(c, k, false) };
-    if (c.expr) w[id].expr = { ...Sprites.calib(c, "", true) };
-  }
-  return w;
-}
-try { work = JSON.parse(localStorage.getItem(KEY)) || fromData(); } catch (e) { work = fromData(); }
-for (const [id, v] of Object.entries(fromData())) { work[id] = Object.assign(v, work[id] || {}); }
-const shown = {};  // 每个人现在显示哪张图："pose:base" 或 "expr:smile"
+const ids = Object.keys(DATA.characters).filter((id) => Object.keys(DATA.characters[id].sprites || {}).length).sort((a, b) => DATA.characters[b].height - DATA.characters[a].height);
+const imgsOf = (id) => { const c = DATA.characters[id]; return [...Object.entries(c.sprites), ...Object.entries(c.expr || {}).map(([k, v]) => ["expr_" + k, v])]; };
+let edits = {};
+try { edits = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(edits)); } catch (e) {} };
+const calOf = (id, k) => (edits[id] && edits[id][k]) || Sprites.calib(DATA.characters[id], k);
+const shown = {};
+const VIEW_FRAC = 0.5;   // 校准视图只看图片上半部分（头在这里），放大好拖
 
-const row = document.getElementById("row");
-function fit() {
-  const box = document.getElementById("scroller");
-  const all = document.getElementById("overview").checked;
-  const sc = all ? box.clientWidth / (ids.length * 430) : box.clientHeight / 1080;
-  row.style.transform = `scale(${sc})`;
-  row.style.width = ids.length * 430 + "px";
-  row.classList.toggle("all", all);
-}
-window.addEventListener("resize", fit);
-
-function draw() {
-  const hs = +document.getElementById("headSize").value;
-  document.getElementById("headSizeV").textContent = hs;
-  row.innerHTML = "";
+function drawCal() {
+  const box = document.getElementById("cal"); box.innerHTML = "";
   for (const id of ids) {
-    const c = DATA.characters[id];
-    const col = document.createElement("div"); col.className = "col";
-    const opts = [...Object.keys(c.sprites).map((k) => ["pose:" + k, "姿势 " + k]), ...Object.keys(c.expr || {}).map((k) => ["expr:" + k, "表情 " + (c.exprNames[k] || k)])];
-    if (!shown[id] && opts.length) shown[id] = opts[0][0];
-    const headY = R.baseline - (c.height - 160) * R.pxPerCm;
-    let html = `<div class="base" style="top:${R.baseline}px"></div><div class="line" style="top:${headY}px"><span>${c.height}cm</span></div><div class="line chin" style="top:${headY + hs}px"></div>`;
-    let ctrl = `<h3><span>${c.short}</span><small>${id}</small></h3>`;
-    if (!opts.length) html += `<div class="none">${c.name}<br><small>还没有立绘</small></div>`;
-    else {
-      const [type, k] = shown[id].split(":");
-      const calKey = type === "expr" ? "expr" : k;
-      const cal = work[id][calKey];
-      const src = type === "expr" ? c.expr[k] : c.sprites[k];
-      const lay = Sprites.layout(id, { key: k, isExpr: type === "expr" }, cal);
-      html += `<img src="../assets/${src}" style="height:${lay.height}px;top:${lay.top}px">`;
-      ctrl += `<select data-id="${id}">${opts.map(([v, t]) => `<option value="${v}" ${v === shown[id] ? "selected" : ""}>${t}</option>`).join("")}</select>
-        <div class="r"><span>缩放</span><input type="range" min="0.4" max="1.6" step="0.005" value="${cal.scale}" data-id="${id}" data-k="${calKey}" data-f="scale"><input type="number" step="0.005" value="${cal.scale}" data-id="${id}" data-k="${calKey}" data-f="scale"></div>
-        <div class="r"><span>头顶</span><input type="range" min="-0.15" max="0.25" step="0.001" value="${cal.headTop}" data-id="${id}" data-k="${calKey}" data-f="headTop"><input type="number" step="0.001" value="${cal.headTop}" data-id="${id}" data-k="${calKey}" data-f="headTop"></div>`;
+    const c = DATA.characters[id], list = imgsOf(id);
+    if (!shown[id]) shown[id] = list[0][0];
+    const [k, src] = list.find((x) => x[0] === shown[id]);
+    const card = document.createElement("div"); card.className = "card";
+    card.innerHTML = `<h3><span>${c.short}　${c.height}cm</span><small>${id}</small></h3>
+      ${list.length > 1 ? `<select>${list.map(([kk]) => `<option ${kk === k ? "selected" : ""}>${kk}</option>`).join("")}</select>` : ""}
+      <div class="view"><img src="../assets/${src}"><div class="h top"><span>头顶</span></div><div class="h chin"><span>下巴</span></div></div>
+      <div class="vals"></div>`;
+    const view = card.querySelector(".view"), img = card.querySelector("img");
+    // 图片按高度放：上半部分（VIEW_FRAC）正好填满视图
+    const place = () => {
+      const Hs = view.clientHeight / VIEW_FRAC;
+      const W = Hs / (img.naturalHeight || 1) * (img.naturalWidth || 1);
+      img.style.height = Hs + "px"; img.style.left = (view.clientWidth - W) / 2 + "px";
+      const cc = calOf(id, k);
+      card.querySelector(".top").style.top = cc.top * Hs + "px";
+      card.querySelector(".chin").style.top = cc.chin * Hs + "px";
+      const v = card.querySelector(".vals");
+      v.textContent = `top ${(+cc.top).toFixed(4)}　chin ${(+cc.chin).toFixed(4)}`;
+      v.classList.toggle("changed", !!(edits[id] && edits[id][k]));
+      return Hs;
+    };
+    img.onload = place; if (img.complete) setTimeout(place);
+    for (const which of ["top", "chin"]) {
+      const h = card.querySelector("." + which);
+      h.onpointerdown = (e) => {
+        e.preventDefault(); h.setPointerCapture(e.pointerId);
+        h.onpointermove = (ev) => {
+          const Hs = view.clientHeight / VIEW_FRAC, y = ev.clientY - view.getBoundingClientRect().top;
+          const cc = { ...calOf(id, k) }; cc[which] = Math.max(-0.1, Math.min(0.5, +(y / Hs).toFixed(4)));
+          (edits[id] = edits[id] || {})[k] = cc; save(); place();
+        };
+        h.onpointerup = () => { h.onpointermove = null; };
+      };
     }
-    col.innerHTML = html + `<div class="ctrl">${ctrl}</div>`;
-    row.appendChild(col);
+    const sel = card.querySelector("select");
+    if (sel) sel.onchange = () => { shown[id] = sel.value; drawCal(); };
+    box.appendChild(card);
   }
-  row.querySelectorAll("select").forEach((s) => s.onchange = () => { shown[s.dataset.id] = s.value; draw(); });
-  row.querySelectorAll("input[data-f]").forEach((inp) => inp.oninput = () => {
-    const { id, k, f } = inp.dataset;
-    work[id][k][f] = +inp.value;
-    localStorage.setItem(KEY, JSON.stringify(work));
-    // 只更新这一列，拖滑杆时不会丢焦点
-    const col = inp.closest(".col"), img = col.querySelector("img");
-    const [type, key] = shown[id].split(":");
-    const lay = Sprites.layout(id, { key, isExpr: type === "expr" }, work[id][k]);
-    img.style.height = lay.height + "px"; img.style.top = lay.top + "px";
-    col.querySelectorAll(`input[data-f="${f}"]`).forEach((o) => { if (o !== inp) o.value = inp.value; });
-  });
-  fit();
 }
 
-const fmt = (c) => `{ scale: ${+(+c.scale).toFixed(3)}, headTop: ${+(+c.headTop).toFixed(3)} }`;
-document.getElementById("export").onclick = () => {
-  const lines = ids.filter((id) => Object.keys(work[id]).length).map((id) => {
-    const keys = Object.keys(work[id]);
-    const main = keys.includes("base") ? "base" : keys[0];
-    const by = keys.filter((k) => k !== main).map((k) => `${k}: ${fmt(work[id][k])}`);
-    return `${id}:  calib: ${fmt(work[id][main])},` + (by.length ? `\n    calibBy: { ${by.join(", ")} },` : "");
+function drawPre() {
+  const box = document.getElementById("pre");
+  const SL = 230, X0 = 130;
+  box.style.width = X0 + SL * ids.length + "px";
+  const hs = [...new Set(ids.map((id) => DATA.characters[id].height))];
+  // 页面左边：身高表；每个身高一条参考线
+  box.innerHTML = `<div class="heights">${hs.map((h) => `<div style="top:${R.ground - h * R.pxPerCm - 9}px">${h}cm —</div>`).join("")}</div>`
+    + hs.map((h) => `<div class="ref" style="top:${R.ground - h * R.pxPerCm}px"></div>`).join("") + `<div class="dlg">↑ 对话框上沿（y=768）</div>`;
+  ids.forEach((id, i) => {
+    const c = DATA.characters[id], k = shown[id] || imgsOf(id)[0][0], src = imgsOf(id).find((x) => x[0] === k)[1];
+    const lay = Sprites.layout(id, { key: k }, calOf(id, k));
+    const col = document.createElement("div"); col.className = "col";
+    col.style.left = X0 + SL * i + "px"; col.style.width = SL + "px";
+    col.innerHTML = `<div class="name">${c.short} ${c.height}</div><img src="../assets/${src}" style="height:${lay.height}px;top:${lay.top}px">
+      <div class="line" style="left:0;right:0;top:${lay.headY}px"></div><div class="line chin" style="left:0;right:0;top:${lay.chinY}px"></div>`;
+    box.appendChild(col);
   });
-  const out = document.getElementById("out");
-  out.querySelector("textarea").value = lines.join("\n");
-  out.style.display = "flex";
+  box.style.transform = `scale(${Math.min(1, document.querySelector("main").clientHeight / 1080)})`;
+}
+
+function mode(m) {
+  document.getElementById("cal").style.display = m === "cal" ? "flex" : "none";
+  document.getElementById("pre").style.display = m === "pre" ? "block" : "none";
+  document.getElementById("mCal").className = m === "cal" ? "on" : "plain";
+  document.getElementById("mPre").className = m === "pre" ? "on" : "plain";
+  m === "cal" ? drawCal() : drawPre();
+}
+document.getElementById("mCal").onclick = () => mode("cal");
+document.getElementById("mPre").onclick = () => mode("pre");
+document.getElementById("reset").onclick = () => { if (confirm("清掉本页拖过的所有改动？")) { edits = {}; save(); mode("cal"); } };
+document.getElementById("export").onclick = () => {
+  const out = {};
+  for (const [id, m] of Object.entries(edits)) for (const [k, v] of Object.entries(m)) (out[id] = out[id] || {})[k] = [v.top, v.chin];
+  document.querySelector("#out textarea").value = JSON.stringify(out, null, 1);
+  document.getElementById("out").style.display = "flex";
 };
-document.getElementById("copy").onclick = () => { const t = document.querySelector("#out textarea"); t.select(); document.execCommand("copy"); };
-document.getElementById("closeOut").onclick = () => document.getElementById("out").style.display = "none";
-document.getElementById("reset").onclick = () => { if (confirm("丢掉在这个页面上调过的值，恢复成 characters.js 里写的？")) { localStorage.removeItem(KEY); work = fromData(); draw(); } };
-document.getElementById("headSize").oninput = draw;
-document.getElementById("overview").onchange = fit;
-document.getElementById("bgSel").onchange = (e) => row.style.background = e.target.value;
-draw();
+document.getElementById("copy").onclick = () => { const t = document.querySelector("#out textarea"); t.select(); if (navigator.clipboard) navigator.clipboard.writeText(t.value); };
+document.getElementById("closeOut").onclick = () => { document.getElementById("out").style.display = "none"; };
+mode("cal");
 </script>
 </body>
 </html>

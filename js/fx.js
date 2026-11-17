@@ -1,5 +1,15 @@
 // 动画与过场：撕票转场、发车牌翻牌、数值飘字、飘落的单据
 const FX = {
+  // 火警：右上角红色警报灯一闪一闪，整个画面叠一层很淡的红光，0.6 秒一次明暗（试玩修改第 6 项）
+  alarm(on) {
+    const old = document.getElementById("alarm");
+    if (!on) { if (old) old.remove(); return; }
+    if (old) return;
+    const el = document.createElement("div");
+    el.id = "alarm"; el.innerHTML = `<i class="alarm-lamp"></i>`;
+    document.getElementById("stage").appendChild(el);
+  },
+
   // 撕票转场：两片锯齿边的“小票”合上 → 执行换场 → 再拉开
   async tear(fn) {
     playSfx("paper_tear");

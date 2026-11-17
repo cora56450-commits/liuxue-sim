@@ -290,3 +290,32 @@ body, button, input, textarea { font-family: var(--font); }
 .pc-flip-hint { color: var(--navy); }
 
 /* 小红书、手机里沿用 phase2 的样式 */
+
+/* 火警：红灯＋一阵一阵往下洒的红光（FX.alarm） */
+#alarm { position: absolute; inset: 0; pointer-events: none; z-index: 40; }
+#alarm::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(255, 40, 40, .30), rgba(255, 40, 40, .08) 70%, rgba(255, 40, 40, .04)); animation: alarmWash .6s ease-in-out infinite alternate; }
+#alarm .alarm-lamp { position: absolute; right: 70px; top: 130px; width: 34px; height: 34px; border-radius: 50%; background: #ff2a2a;
+  box-shadow: 0 0 24px 10px rgba(255, 42, 42, .75), 0 0 90px 40px rgba(255, 42, 42, .35); animation: alarmLamp .6s steps(1, end) infinite; }
+@keyframes alarmWash { from { opacity: .15; } to { opacity: 1; } }
+@keyframes alarmLamp { 0% { opacity: 1; } 50% { opacity: .25; } }
+
+/* 周末分时段：关门的地点也写名字和开门时间（灰掉、不能点），玩家知道什么时候能去 */
+.marker.locked { background-image: url(../assets/ui/marker.png); filter: grayscale(1) opacity(.55); }
+.marker.locked span { opacity: 1; }
+.marker.locked:hover { transform: none; background-image: url(../assets/ui/marker.png); }
+.marker.locked:hover span { color: var(--navy); }
+.marker .mk-who { white-space: nowrap; }
+.ap-tag { top: 128px; }
+.ap-tag small { font-size: 20px; opacity: .8; letter-spacing: 0; }
+
+/* 新手指引（js/guide.js）：其他地方压暗，高亮框，旁边一张 INFO 问讯处小卡 */
+#guide { position: absolute; inset: 0; z-index: 90; cursor: pointer; }
+#guide .gd-hole { position: absolute; border-radius: 14px; box-shadow: 0 0 0 4000px rgba(30, 36, 60, .55); outline: 4px solid var(--orange); outline-offset: 2px; pointer-events: none; animation: gdPulse 1.4s ease-in-out infinite; }
+#guide .gd-card { position: absolute; width: 520px; background: var(--paper); border: 4px solid var(--navy); border-radius: 12px; padding: 16px 22px 14px; box-shadow: 8px 8px 0 rgba(255, 122, 69, .9); }
+#guide .gd-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+#guide .gd-head b { background: var(--navy); color: var(--paper); font-size: 22px; padding: 2px 12px; border-radius: 6px; letter-spacing: 2px; }
+#guide .gd-head span { font-size: 24px; font-weight: 900; color: var(--navy); }
+#guide p { font-size: 26px; line-height: 1.5; color: var(--ink, #2A3150); font-weight: 700; }
+#guide small { display: block; text-align: right; font-size: 18px; color: var(--orange); margin-top: 4px; }
+@keyframes gdPulse { 50% { outline-offset: 8px; } }
+.result-list .daily { font-style: normal; color: var(--navy); opacity: .85; }

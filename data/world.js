@@ -12,31 +12,44 @@ DATA.activities = [
   { id: "work",     name: "打工",   desc: "中超5小时，现金£40",          fx: { energy: -14, loneliness: -2, money: 40 }, unlock: "work" },
 ];
 
-// 周末地图（日常城市），cost=行动点。数值照 docs/数值规划.md 第四部分。
+// 周末地图（日常城市）。数值照 docs/数值规划.md 第四部分。
+// 周末两天，每天上午 am／下午 pm／晚上 eve 三个时段（试玩修改第 9 项）。open：哪些时段开门；closed：额外关门的时段（室内市场周日下午关）；
+// cost：去一次占几个时段。出城（station）只能从上午出发，占一整天或两天（DATA.mapTravel 的 days）。
 // meet：可能偶遇的人。攻略对象第一次可以在这里认识；固定 NPC 要先在剧情里认识过才会偶遇（友情+3）。"roommates" = 同住的室友。
 // 固定 NPC 放在哪个地点是编程这边暂定的，见 docs/问题记录.md
 DATA.mapCity = [
   // x,y：在城市大地图（1920x1080）上的位置
-  { id: "dorm_room",      name: "住处",     bg: "dorm_room",      x: 344,  y: 200, cost: 1, fx: { energy: 15 },                         text: "你决定什么都不干，躺平一下午。", meet: ["roommates"] },
-  { id: "campus",         name: "校园",     bg: "campus",         x: 827,  y: 175, cost: 1, fx: { belonging: 1, loneliness: -3 },       text: "周末的草坪上有人在晒太阳，难得出太阳。", meet: ["mei", "ben"] },
-  { id: "library",        name: "图书馆",   bg: "library",        x: 1263, y: 255, cost: 1, fx: { study: 2.5, energy: -6 },            text: "周末的图书馆空荡荡的，适合补作业。", meet: ["chen_siqi", "hannah"] },
-  { id: "gym",            name: "健身房",   bg: "gym",            x: 1665, y: 230, cost: 1, fx: { energy: -5, loneliness: -2 },        text: "跑步机上跑了二十分钟，你觉得自己又行了。", meet: ["otaku", "jake"] },
-  { id: "club_room",      name: "社团活动室", bg: "club_room",    x: 264,  y: 440, cost: 2, fx: { belonging: 2, loneliness: -6 },      text: "今晚放映会，屋里黑漆漆的，屏幕上的光照在每个人脸上。", meet: ["otaku"], needTag: "otaku" },
-  { id: "supermarket",    name: "超市",     bg: "supermarket_day", x: 1446, y: 415, cost: 1, fx: { money: -15, energy: 5 },            text: "又是meal deal。三明治、薯片、饮料，一个都不能少。", meet: ["giulia"] },
-  { id: "chinese_market", name: "中超",     bg: "chinese_market", x: 1693, y: 430, cost: 1, fx: { money: -25, loneliness: -6 },        text: "货架上摆着{food}的同款调料，你站在那里看了很久。", meet: ["senior", "chen_jianguo", "wu_tong"] },
-  { id: "indoor_market",  name: "室内市场", bg: "indoor_market",  x: 1475, y: 600, cost: 1, fx: { money: -8, belonging: 1 },          text: "水果摊老板叫你love，你愣了一下。", meet: ["zhou_kexin"] },
-  { id: "pub_street",     name: "酒吧街",   bg: "pub_street",     x: 1607, y: 800, cost: 2, fx: { money: -25, belonging: 3, loneliness: -6, energy: -8 }, text: "小组的人在pub门口招手。", meet: ["local", "groupmate", "jake", "zhao_zihao"] },
-  { id: "brunch",         name: "brunch店", bg: "brunch",         x: 1114, y: 815, cost: 2, fx: { money: -18, energy: 10, loneliness: -5 }, text: "炸鸡华夫饼还是那么好吃，至少今天有在好好生活。", meet: ["local", "groupmate", "sophie"] },
-  { id: "station",        name: "车站·出城", bg: "station",       x: 511,  y: 830, cost: 99, travel: true,                             text: "去哪儿？火车票不便宜。" },
+  { id: "dorm_room",      name: "住处",     bg: "dorm_room",      x: 344,  y: 200, cost: 1, open: ["am", "pm", "eve"], fx: { energy: 15 },                         text: "你决定什么都不干，躺平一下午。", meet: ["roommates"] },
+  { id: "campus",         name: "校园",     bg: "campus",         x: 827,  y: 175, cost: 1, open: ["am", "pm", "eve"], fx: { belonging: 1, loneliness: -3 },       text: "周末的草坪上有人在晒太阳，难得出太阳。", meet: ["mei", "ben"] },
+  { id: "library",        name: "图书馆",   bg: "library",        x: 1263, y: 255, cost: 1, open: ["am", "pm"], fx: { study: 2.5, energy: -6 },            text: "周末的图书馆空荡荡的，适合补作业。", meet: ["chen_siqi", "hannah"] },
+  { id: "gym",            name: "健身房",   bg: "gym",            x: 1665, y: 230, cost: 1, open: ["am", "pm", "eve"], fx: { energy: -5, loneliness: -2 },        text: "跑步机上跑了二十分钟，你觉得自己又行了。", meet: ["otaku", "jake"] },
+  { id: "club_room",      name: "社团活动室", bg: "club_room",    x: 264,  y: 440, cost: 1, open: ["eve"], fx: { belonging: 2, loneliness: -6 },      text: "今晚放映会，屋里黑漆漆的，屏幕上的光照在每个人脸上。", meet: ["otaku"], needTag: "otaku" },
+  { id: "supermarket",    name: "超市",     bg: "supermarket_day", x: 1446, y: 415, cost: 1, open: ["am", "pm"], fx: { money: -15, energy: 5 },            text: "又是meal deal。三明治、薯片、饮料，一个都不能少。", meet: ["giulia"] },
+  { id: "chinese_market", name: "中超",     bg: "chinese_market", x: 1693, y: 430, cost: 1, open: ["am", "pm"], fx: { money: -25, loneliness: -6 },        text: "货架上摆着{food}的同款调料，你站在那里看了很久。", meet: ["senior", "chen_jianguo", "wu_tong"] },
+  { id: "indoor_market",  name: "室内市场", bg: "indoor_market",  x: 1475, y: 600, cost: 1, open: ["am", "pm"], closed: ["sun_pm"], fx: { money: -8, belonging: 1 },          text: "水果摊老板叫你love，你愣了一下。", meet: ["zhou_kexin"] },
+  { id: "pub_street",     name: "pub",      bg: "pub",     x: 1607, y: 800, cost: 1, open: ["eve"], fx: { money: -25, belonging: 3, loneliness: -6, energy: -8 }, text: "小组的人在pub门口招手。", meet: ["local", "groupmate", "jake", "zhao_zihao"] },
+  { id: "brunch",         name: "brunch店", bg: "brunch",         x: 1114, y: 815, cost: 1, open: ["am"], fx: { money: -18, energy: 10, loneliness: -5 }, text: "炸鸡华夫饼还是那么好吃，至少今天有在好好生活。", meet: ["local", "groupmate", "sophie"] },
+  { id: "station",        name: "车站·出城", bg: "station",       x: 511,  y: 830, cost: 99, travel: true, open: ["am"],                             text: "去哪儿？火车票不便宜。" },
 ];
 
-// 旅游地（占掉整个周末）
+// 周末的 6 个时段
+DATA.weekendSlots = [
+  { id: "sat_am", day: "SAT", tod: "am", name: "周六上午" }, { id: "sat_pm", day: "SAT", tod: "pm", name: "周六下午" }, { id: "sat_eve", day: "SAT", tod: "eve", name: "周六晚上" },
+  { id: "sun_am", day: "SUN", tod: "am", name: "周日上午" }, { id: "sun_pm", day: "SUN", tod: "pm", name: "周日下午" }, { id: "sun_eve", day: "SUN", tod: "eve", name: "周日晚上" },
+];
+DATA.todName = { am: "上午", pm: "下午", eve: "晚上" };
+function slotOpen(loc, i) {
+  const sl = DATA.weekendSlots[i];
+  return !!sl && (!loc.open || loc.open.includes(sl.tod)) && !(loc.closed || []).includes(sl.id);
+}
+
+// 旅游地（days：占一整天＝1，占两天＝2）
 DATA.homeOnUK = { x: 970, y: 471 };  // 旅游地图上“我们的城市”星标
 DATA.mapTravel = [
-  { id: "london",        name: "伦敦",   bg: "london",        x: 1182, y: 830,        fx: { money: -90,  energy: -10, loneliness: -8, belonging: 3 }, text: "人好多，比你住的地方热闹十倍。" },
-  { id: "york",          name: "约克",   bg: "york",          x: 1205, y: 485,          fx: { money: -45,  energy: -6,  loneliness: -6 },              text: "城墙上的风很大，但古街很好看。" },
-  { id: "edinburgh",     name: "爱丁堡", bg: "edinburgh",     x: 872,  y: 205,     fx: { money: -120, energy: -14, loneliness: -10 },             text: "上坡、下坡、再上坡。苏格兰口音你只听懂一半。" },
-  { id: "lake_district", name: "湖区",   bg: "lake_district", x: 723,  y: 510, fx: { money: -70,  energy: 8,   loneliness: -8 },              text: "羊比人多。手机没信号，反而很安静。" },
+  { id: "london",        name: "伦敦",   days: 1, bg: "london",        x: 1182, y: 830,        fx: { money: -90,  energy: -10, loneliness: -8, belonging: 3 }, text: "人好多，比你住的地方热闹十倍。" },
+  { id: "york",          name: "约克",   days: 1, bg: "york",          x: 1205, y: 485,          fx: { money: -45,  energy: -6,  loneliness: -6 },              text: "城墙上的风很大，但古街很好看。" },
+  { id: "edinburgh",     name: "爱丁堡", days: 2, bg: "edinburgh",     x: 872,  y: 205,     fx: { money: -120, energy: -14, loneliness: -10 },             text: "上坡、下坡、再上坡。苏格兰口音你只听懂一半。" },
+  { id: "lake_district", name: "湖区",   days: 2, bg: "lake_district", x: 723,  y: 510, fx: { money: -70,  energy: 8,   loneliness: -8 },              text: "羊比人多。手机没信号，反而很安静。" },
 ];
 
 // 角色数据搬到了 data/characters.js
@@ -80,12 +93,16 @@ DATA.calendar = [
 ];
 
 // 作业（docs/数值规划.md 第六部分）
+// release：哪一周发布（截止前 4 周；试玩修改第 8 项）。发布前没有这份作业，“做作业”换成“预习”，HUD 作业条隐藏。
+// 大一空窗周按策划给的表：第1–3、12、18–19、23–25周（a4 从第20周发布）
 DATA.assignments = {
-  a1: { name: "作业1：essay／小作业" },
-  a2: { name: "作业2：期末大作业" },
-  a3: { name: "作业3：小组presentation" },
-  a4: { name: "作业4：期末大作业" },
+  a1: { name: "作业1：essay／小作业", release: 4 },
+  a2: { name: "作业2：期末大作业", release: 7 },
+  a3: { name: "作业3：小组presentation", release: 13 },
+  a4: { name: "作业4：期末大作业", release: 20 },
 };
+// 没有作业的周，日程里“做作业”换成这个
+DATA.previewActivity = { id: "homework", name: "预习", desc: "学业+1，不推进作业", fx: { energy: -8, study: 1 } };
 
 // 专业差异（docs/专业设定.md）：作业名按专业显示；“上课”的结算文字按专业换一句；“做作业”的地点
 DATA.assignmentsByMajor = {
@@ -159,9 +176,11 @@ DATA.groups = {
 };
 
 DATA.tuning = {
+  newYearStudy: 0.9,   // 每个学年开始时学业 ×0.9（新学年的课更难；试玩修改第 7 项）
   exchangeRate: 9.3,           // 汇率脑显示用
   exchangeBrainUntil: 60,      // adapt 低于此值时价格旁显示≈¥
-  weekendAP: 4,
+  weekendSlots: 6,     // 周末两天 × 上午／下午／晚上（试玩修改第 9 项，代替原来的 4 个行动点）
+  hangoverEnergy: -10, // 晚上去 pub，第二天上午精力 −10
   energyMax: 100,              // 完美作息 +20
   // —— 每周自然变化 ——
   weeklyEnergy: 30,
