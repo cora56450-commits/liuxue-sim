@@ -84,6 +84,7 @@ for f in sorted(os.listdir(d)):
         continue
     copy_sprite(os.path.join(d, f), f"chara/npc/{NPC[stem]}.png")
 copy_sprite(os.path.join(SRC, "角色抠图", "赵子豪.png"), "chara/npc/zhao_zihao.png")
+copy_sprite(os.path.join(SRC, "角色抠图", "Dr. Marcia Campbell.png"), "chara/npc/marcia.png")   # 2026-11-17 第四批
 
 # ---------- 4. 主角立绘 + 小头像（只裁切） ----------
 ME = {"常规": "autumn", "冬装": "winter", "居家": "home"}

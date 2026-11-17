@@ -11,10 +11,18 @@ Object.assign(DATA.events, {
     { bg: "shared_house" },
     { say: "（占位）大二。搬进社会房：inventory 拍照、水电账户、室友分账规矩。" },
   ],
+  // 实习申请：选“投”记 flag_intern_applied；关键周结束时系统按条件判定（英语≥60 且融入≥40，有 uk_intern_y1 时融入≥30），
+  // 成功记 flag_intern_offer 并演 intern_offer，没成演 intern_rejected
   y2_internship: [
     { bg: "library" },
     { say: "（占位）实习申请季。身边的人都在投简历、做作品集。" },
+    { choice: [
+      { text: "（占位）投暑期实习", fx: { flag_intern_applied: 1 } },
+      { text: "（占位）今年先不投" },
+    ] },
   ],
+  intern_offer: [{ mail: { from: "（占位）HR", title: "（占位）Summer Internship Offer", body: "" } }, { say: "（占位）实习申请过了。" }],
+  intern_rejected: [{ mail: { from: "（占位）HR", title: "（占位）Thank you for your application", body: "" } }, { say: "（占位）没过。" }],
   y2_xmas_ddl: [
     { bg: "library" },
     { say: "（占位）圣诞前的 ddl 周。老一套，但大二的你已经会偷懒了。" },
@@ -43,7 +51,7 @@ Object.assign(DATA.events, {
     { bg: "airport" },
     { say: "（占位）大二暑假。怎么过？" },
     { choice: [
-      { text: "去实习", fx: { flag_internship: 1 } },
+      { text: "去实习", if: "flag('intern_offer')", fx: { flag_internship: 1 } },
       { text: "回国" },
       { text: "欧洲旅行" },
     ] },
@@ -87,7 +95,8 @@ Object.assign(DATA.events, {
   y3_after: [
     { bg: "pub_street" },
     { say: "（占位）典礼之后。" },
-    { if: "交往中('otaku')", then: [
+    { if: "交往中('otaku') && DATA.events.otaku_pub_public", then: [{ run: "otaku_pub_public" }] },   // 正文在 data/events/love.js
+    { if: "交往中('otaku') && !DATA.events.otaku_pub_public", then: [
       { say: "（占位）Kieran 的 pub 公开事件。" },
       { choice: [
         { text: "（占位）公开", fx: { flag_otaku_public: 1 } },
@@ -98,10 +107,11 @@ Object.assign(DATA.events, {
 
   // ===== 恋爱线：告白（confessed_{id}）和考验（trial_{id}，1 过／−1 没过）=====
   // 告白：大一第24–28周，或大二搬家周、实习申请季。条件：好感≥80 且推进CG已触发（剧情里设 flag_advance_{id}）
-  confess_senior:    [{ say: "（占位）学长的告白。" },  { choice: [{ text: "答应", fx: { flag_confessed_senior: 1 } },    { text: "（占位）还没想好" }] }],
-  confess_local:     [{ say: "（占位）Ollie 的告白。" }, { choice: [{ text: "答应", fx: { flag_confessed_local: 1 } },     { text: "（占位）还没想好" }] }],
-  confess_groupmate: [{ say: "（占位）Ploy 的告白。" },  { choice: [{ text: "答应", fx: { flag_confessed_groupmate: 1 } }, { text: "（占位）还没想好" }] }],
-  confess_otaku:     [{ say: "（占位）Kieran 的告白。" }, { choice: [{ text: "答应", fx: { flag_confessed_otaku: 1 } },     { text: "（占位）还没想好" }] }],
+  // 告白出 CG（{id}_confess，图还没出时会自动跳过）
+  confess_senior:    [{ cg: "senior_confess" }, { say: "（占位）学长的告白。" }, { cg: null }, { choice: [{ text: "答应", fx: { flag_confessed_senior: 1 } },    { text: "（占位）还没想好" }] }],
+  confess_local:     [{ cg: "local_confess" }, { say: "（占位）Ollie 的告白。" }, { cg: null }, { choice: [{ text: "答应", fx: { flag_confessed_local: 1 } },     { text: "（占位）还没想好" }] }],
+  confess_groupmate: [{ cg: "groupmate_confess" }, { say: "（占位）Ploy 的告白。" }, { cg: null }, { choice: [{ text: "答应", fx: { flag_confessed_groupmate: 1 } }, { text: "（占位）还没想好" }] }],
+  confess_otaku:     [{ cg: "otaku_confess" }, { say: "（占位）Kieran 的告白。" }, { cg: null }, { choice: [{ text: "答应", fx: { flag_confessed_otaku: 1 } },     { text: "（占位）还没想好" }] }],
 
   trial_senior: [
     { say: "（占位）考验：发现佣金。" },

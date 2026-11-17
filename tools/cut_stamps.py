@@ -1,6 +1,6 @@
 # 结局明信片的邮票、邮戳切图（只裁切，原图本来就是透明底）
 # 运行：python3 tools/cut_stamps.py   （在 game/ 下运行；原图在上一级文件夹）
-# 邮票：4x2 格子按格子裁；邮戳：3x3，有几枚边缘挨着，按“离哪枚中心近”分像素，再去掉伸进来的碎边
+# 邮票：4x2 格子按格子裁；邮戳：3x3，有几枚边缘挨着，从每枚中心往外长、在接触处分开，再去掉伸进来的碎边
 import os, sys
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 from PIL import Image
@@ -38,8 +38,22 @@ for r in range(3):
 cent = np.array(cent)
 yy, xx = np.mgrid[0:H, 0:W]
 # 每个像素归给最近的中心（横向距离压缩一点，邮戳是横着的椭圆）
+# 每枚从自己的中心往外“长”（多源广度优先），只能长在有颜色的像素上；两枚挨着的地方在真正接触的位置分开。
+# （原来按“离哪个中心近”分，大小不一的两枚挨着时，大的那枚边缘会被分给小的，Wonderwall 下半圈就被切掉过。）
+from collections import deque
+own = np.full((H, W), -1, int)
+q = deque()
+for i, (cy, cx) in enumerate(cent):
+    cy, cx = int(cy), int(cx)
+    own[cy, cx] = i; q.append((cy, cx))
+while q:
+    y, x = q.popleft(); i = own[y, x]
+    for ny, nx in ((y+1, x), (y-1, x), (y, x+1), (y, x-1)):
+        if 0 <= ny < H and 0 <= nx < W and own[ny, nx] < 0 and A[ny, nx]:
+            own[ny, nx] = i; q.append((ny, nx))
+# 中心正好落在透明像素上的（或者有颜色但没连上的碎点）：退回按最近中心分
 d = np.stack([((yy-cy))**2 + ((xx-cx)*0.8)**2 for cy, cx in cent])
-own = d.argmin(0)
+own = np.where(own < 0, d.argmin(0), own)
 for i, n in enumerate(names):
     m = A & (own == i)
     ys, xs = np.nonzero(m)

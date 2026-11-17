@@ -49,16 +49,19 @@ const Sys = {
       ${row("文字速度", slider("textSpeed", speedPos))}
       ${row("BGM 音量", slider("bgmVolume", v.bgmVolume ?? 60))}
       ${row("音效音量", slider("volume", v.volume))}
+      ${row("环境音音量", slider("ambVolume", v.ambVolume ?? 30))}
       ${row("对话时显示主角头像", toggle("showAvatar", v.showAvatar))}
       ${row("英文台词显示中文翻译", toggle("showTr", v.showTr))}
       <div class="set-api"><h3>API（手机聊天、小红书用；Key 只存在本机）</h3>
         <label>接口地址（OpenAI兼容，例如 DeepSeek）</label><input id="api-base" value="${c.base}">
         <label>API Key</label><input id="api-key" type="password" value="${c.key}">
         <label>模型名</label><input id="api-model" value="${c.model}"></div>
+      ${Sys.leaveRow()}
       </div>`, "ov-settings");
     const saveApi = () => AI.save({ base: $("#api-base").value.trim(), key: $("#api-key").value.trim(), model: $("#api-model").value.trim() });
     Sys.closeBtn(o, null);
     o.querySelector(".ov-close").onclick = () => { saveApi(); closeOverlay(); toast("设置已保存"); };
+    Sys.bindLeave(o, saveApi);
     o.querySelectorAll(".toggle").forEach((t) => t.onclick = () => {
       const k = t.dataset.t; Settings.set(k, !Settings.v[k]); t.classList.toggle("on", Settings.v[k]);
     });
@@ -71,9 +74,37 @@ const Sys = {
         if (s.dataset.s === "textSpeed") Settings.set("textSpeed", Math.round(60 - val * 0.6));
         else Settings.set(s.dataset.s, val);
         if (s.dataset.s === "bgmVolume") BGM.setVolume();
+        if (s.dataset.s === "ambVolume") AMB.setVolume();
       };
       s.onpointerdown = (e) => { s.setPointerCapture(e.pointerId); setFrom(e); s.onpointermove = setFrom; };
       s.onpointerup = () => { s.onpointermove = null; };
+    });
+  },
+
+  // ===== 设置最下面：回到标题、退出游戏 =====
+  // 回到标题：只在游戏里（不是标题画面）出现，先确认。退出游戏：只在桌面版（Electron 打包）里出现，网页版关不了自己的标签页。
+  inGame() { return !!S && !document.querySelector("#panel .title-wrap"); },
+  isDesktop() { return /Electron/i.test(navigator.userAgent) || !!window.desktopApp; },
+  leaveRow() {
+    const btns = [];
+    if (Sys.inGame()) btns.push(`<button class="hud-btn leave-btn" data-leave="title">回到标题</button>`);
+    if (Sys.isDesktop()) btns.push(`<button class="hud-btn leave-btn" data-leave="quit">退出游戏</button>`);
+    return btns.length ? `<div class="set-leave">${btns.join("")}</div>` : "";
+  },
+  bindLeave(o, before) {
+    o.querySelectorAll("[data-leave]").forEach((b) => b.onclick = () => {
+      const auto = Save.read("auto");
+      const when = auto && auto.meta ? `上次自动存档在「${auto.meta.label}」，之后的进度会丢。` : "这一局还没有自动存档，进度会丢。";
+      if (b.dataset.leave === "title") {
+        if (!confirm(`回到标题画面？\n${when}\n（想留着现在的进度，先点 HUD 上的“存档”。）`)) return;
+        if (before) before();
+        closeOverlay(); Flow.set("auto", false); Flow.set("skip", false);
+        FX.tear(() => Scenes.title());
+      } else {
+        if (!confirm(`退出游戏？\n${when}`)) return;
+        if (before) before();
+        if (window.desktopApp && window.desktopApp.quit) window.desktopApp.quit(); else window.close();
+      }
     });
   },
 
@@ -90,11 +121,24 @@ const Sys = {
   // ===== 回忆：CG 画廊 =====
   gallery() {
     const got = Gallery.all();
-    const n = DATA.cgList.filter((c) => got[c.id]).length;
-    const cells = DATA.cgList.map((c) => got[c.id]
+    const n = DATA.cgList.filter((c) => got[c.id] && !c.pending).length;
+    const cells = DATA.cgList.map((c) => got[c.id] && !c.pending
       ? `<div class="cg-cell" data-cg="${c.id}"><img src="assets/cg/${c.id}.jpg" loading="lazy" alt=""><span>${c.title}</span></div>`
       : `<div class="cg-cell locked"><i>?</i></div>`).join("");
-    const o = overlay(`<div class="panel-title"><span>回忆　${n} / ${DATA.cgList.length}</span></div><div class="cg-grid">${cells}</div>`, "ov-gallery");
+    // 结局：主线／特殊结局（邮票）＋盖章（邮戳），和 CG 放在同一页
+    const E = DATA.endings, art = DATA.endingArt || { stamps: {}, postmarks: {} }, gotE = Gallery.endings();
+    const ends = [...Object.values(E.main), E.special.ghost, E.special.brain, E.stamps.first, E.stamps.love_trial, E.stamps.love_ing,
+      ...DATA.loveIds.flatMap((c) => [E.love[c].he, E.love[c].be])].filter(Boolean);
+    const endCells = ends.map((x) => {
+      const img = art.stamps[x.id] ? `stamps/${art.stamps[x.id]}` : art.postmarks[x.id] ? `postmarks/${art.postmarks[x.id]}` : "";
+      return gotE[x.id]
+        ? `<div class="end-cell"><div class="pic">${img ? `<img src="assets/ui/${img}.png?v=2" alt="">` : `<b>${x.title}</b>`}</div><span>${x.title}</span></div>`
+        : `<div class="end-cell locked"><div class="pic">?</div><span>？？？</span></div>`;
+    }).join("");
+    const nE = ends.filter((x) => gotE[x.id]).length;
+    const o = overlay(`<div class="panel-title"><span>回忆</span></div>
+      <div class="mem-h"><span class="bi"><span class="zh">CG</span><span class="en">Illustrations</span></span><b>${n} / ${DATA.cgList.length}</b></div><div class="cg-grid">${cells}</div>
+      <div class="mem-h"><span class="bi"><span class="zh">结局</span><span class="en">Postcards &amp; Stamps</span></span><b>${nE} / ${ends.length}</b></div><div class="end-grid">${endCells}</div>`, "ov-gallery");
     Sys.closeBtn(o);
     o.querySelectorAll("[data-cg]").forEach((el) => el.onclick = () => {
       const v = document.createElement("div");

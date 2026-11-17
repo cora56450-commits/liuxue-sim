@@ -20,8 +20,11 @@ const Phone = {
   bindTabs(o) { o.querySelectorAll("[data-ct]").forEach((b) => b.onclick = () => (b.dataset.ct === "chat" ? Phone.chatList() : Phone.moments())); },
 
   home() {
-    const apps = [["chat", "聊天", () => Phone.chatList()], ["notes", "小红书", () => Phone.notes("feed")], ["calendar", "日历", () => Phone.calendar()], ["settings", "设置", () => Sys.settings()]];
-    const o = Phone.frame(`<div class="app-grid">${apps.map(([id, name], i) => `<div class="app" data-i="${i}"><img src="assets/ui/app_${id}.png" alt=""><span>${name}</span></div>`).join("")}</div>
+    // 邮件、便签本还没有图标（要 app_mail.png、app_glossary.png），先用现有的图顶着
+    const apps = [["chat", "聊天", () => Phone.chatList()], ["notes", "小红书", () => Phone.notes("feed")], ["calendar", "日历", () => Phone.calendar()],
+      ["mail", "邮件", () => Phone.mailbox(), "shipping_label"], ["glossary", "便签本", () => Phone.glossary(), "stamp_rect"], ["settings", "设置", () => Sys.settings()]];
+    const unread = (S.mailbox || []).filter((m) => !m.seenInBox).length;
+    const o = Phone.frame(`<div class="app-grid">${apps.map(([id, name, , ph], i) => `<div class="app" data-i="${i}">${ph ? `<span class="app-ph"><img src="assets/ui/${ph}.png" alt=""></span>` : `<img src="assets/ui/app_${id}.png" alt="">`}<span>${name}</span>${id === "mail" && unread ? `<i class="app-badge">${unread}</i>` : ""}</div>`).join("")}</div>
       <div class="ph-wall">${timeLabel().join("<br>")}</div>`, { title: S.name || "手机", cls: "home" });
     o.querySelectorAll(".app").forEach((el) => el.onclick = apps[+el.dataset.i][2]);
   },
@@ -59,23 +62,27 @@ const Phone = {
     const c = DATA.characters[cur];
     S.chats[cur] = S.chats[cur] || [];
     const head = () => Phone.relLabel(cur).replace(/<\/?em[^>]*>/g, "");
-    const o = Phone.frame(`<div class="phone-log"></div>`, { title: c.name, right: head(), back: () => Phone.chatList(), input: "说点什么……" });
+    const o = Phone.frame(`<div class="phone-log"></div>${Phone.canAsk(cur) ? `<button class="hud-btn ask-btn">约</button>` : ""}`, { title: c.name, right: head(), back: () => Phone.chatList(), input: "说点什么……" });
+    if (Phone.canAsk(cur)) o.querySelector(".ask-btn").onclick = () => Phone.askFlow(cur);
     const log = o.querySelector(".phone-log");
     let busy = false;
     const render = () => {
-      log.innerHTML = S.chats[cur].map((m) => `<div class="msg ${m.role === "user" ? "me" : "them"}">${Phone.esc(m.content)}</div>`).join("") + (busy ? `<div class="msg them typing">…</div>` : "");
+      log.innerHTML = S.chats[cur].map((m) => `<div class="msg ${m.role === "user" ? "me" : "them"}">${Gloss.mark(fillText(m.content))}${m.tr && Settings.v.showTr ? `<em class="msg-tr">${Gloss.mark(fillText(m.tr))}</em>` : ""}</div>`).join("") + (busy ? `<div class="msg them typing">…</div>` : "");
       log.scrollTop = log.scrollHeight;
     };
     render();
+    if (!AI.hasKey()) return Phone.chatFallback(cur, o, render, head);   // 没有 Key：每周一次固定三选一
     const input = o.querySelector(".phone-input input");
     const send = async () => {
-      const text = input.value.trim(); if (!text || busy) return;
+      const text = input.value.trim(); if (!text || busy) return; playSfx("phone_send");
       input.value = ""; S.chats[cur].push({ role: "user", content: text }); busy = true; render();
       const r = await AI.chat(cur, S.chats[cur]);
       busy = false;
       if (r.failed) { S.chats[cur].pop(); input.value = text; toast(r.text, 2600); return render(); }
-      S.chats[cur].push({ role: "assistant", content: r.text });
+      const iv = Invites.parseAI(r.text);   // AI 想约你：[[INVITE day=SAT place=brunch]]，由游戏校验后弹邀约卡
+      S.chats[cur].push({ role: "assistant", content: iv ? r.text.replace(iv.raw, "").trim() : r.text });
       Phone.gain(cur, r.aff);
+      if (iv && iv.place) { closeOverlay(); await Invites.offer({ who: cur, day: iv.day, place: iv.place, source: "ai" }); return Phone.chat(cur); }
       o.querySelector(".phone-head em").innerHTML = head();
       if (document.getElementById("overlay") === o) render();
     };
@@ -84,11 +91,85 @@ const Phone = {
     input.focus();
   },
 
+  // 没有 API Key 时的聊天：每人每周一次，三选一固定回复（文本在 data/notes.js 的 DATA.chatFallback，策划这边写）
+  chatFallback(cur, o, render, head) {
+    const box = o.querySelector(".phone-input");
+    const pool = DATA.chatFallback[cur] || DATA.chatFallback._default;
+    if (S.chatWeek[cur] === weekKey()) { box.innerHTML = `<div class="fb-done">这周已经聊过了</div>`; return; }
+    const set = pool.sets[Math.abs(absWeek()) % pool.sets.length];   // 每周换一组
+    const lastMsg = S.chats[cur][S.chats[cur].length - 1];
+    if (!lastMsg || lastMsg.fbWeek !== weekKey()) { S.chats[cur].push({ role: "assistant", content: set.ask, tr: set.askTr, fbWeek: weekKey() }); render(); }
+    box.innerHTML = `<div class="fb-opts">${set.options.map((x, i) => `<button data-i="${i}">${Gloss.escape(fillText(x.text))}</button>`).join("")}</div>`;
+    box.querySelectorAll("button").forEach((b) => b.onclick = () => {
+      const x = set.options[+b.dataset.i];
+      S.chats[cur].push({ role: "user", content: x.text });
+      if (x.reply) S.chats[cur].push({ role: "assistant", content: x.reply, tr: x.replyTr });
+      Phone.gain(cur, x.d);
+      o.querySelector(".phone-head em").innerHTML = head();
+      render();
+      box.innerHTML = `<div class="fb-done">这周已经聊过了</div>`;
+    });
+  },
+
+  // ===== 约人（邀约系统.md）：选时间＋地点，对方按门槛回“答应／婉拒／没空” =====
+  canAsk(c) { return S.year === 1 && !["sophie", "khan", "essay_senior"].includes(c) && Invites.rel(c) >= Invites.T.askMin; },
+  askFlow(c) {
+    const days = [...(S.resume && S.resume.scene === "schedule" ? DAY_KEYS : []), "WEEKEND"].filter((d) => !Invites.on(d));
+    const places = DATA.mapCity.filter((l) => !l.travel && l.id !== "dorm_room" && (!l.needTag || S.tags.includes(l.needTag))).map((l) => l.id).concat(["travel"]);
+    let day = null;
+    const draw = () => {
+      const body = !day
+        ? `<h4 class="ask-h">哪天？</h4>${days.map((d) => `<button class="ask-opt" data-d="${d}">${DAY_CN[d]}</button>`).join("") || "<p>这周没有空的时间了</p>"}`
+        : `<h4 class="ask-h">去哪？（${DAY_CN[day]}）</h4>${places.filter((p) => (day === "WEEKEND") || p !== "travel").map((p) => `<button class="ask-opt" data-p="${p}">${Invites.placeName(p)}</button>`).join("")}`;
+      const o = Phone.frame(`<div class="ask-box">${body}</div>`, { title: `约 ${DATA.characters[c].name}`, back: () => (day ? (day = null, draw()) : Phone.chat(c)) });
+      o.querySelectorAll("[data-d]").forEach((b) => b.onclick = () => { day = b.dataset.d; draw(); });
+      o.querySelectorAll("[data-p]").forEach((b) => b.onclick = async () => {
+        const place = b.dataset.p, uk = (DATA.characters[c].friend || {}).from !== "cn" && c !== "senior";
+        const tpl = (DATA.invitePlayerLines || {})[place] || (DATA.invitePlayerLines || {})[["supermarket", "chinese_market", "indoor_market"].includes(place) ? "supermarket" : place];
+        const sub = (t) => (t || "").replace(/\{哪天\}/g, DAY_CN[day]).replace(/\{day\}/g, day === "WEEKEND" ? "the weekend" : day).replace(/\{地点\}/g, Invites.placeName(place)).replace(/\{place\}/g, Invites.placeName(place)).replace(/\{城市\}|\{city\}/g, "外地");
+        S.chats[c] = S.chats[c] || [];
+        S.chats[c].push(tpl ? (uk ? { role: "user", content: sub(tpl.uk), tr: sub(tpl.ukTr) } : { role: "user", content: sub(tpl.cn) }) : { role: "user", content: `${DAY_CN[day]}一起去${Invites.placeName(place)}？` });
+        closeOverlay();
+        const r = await Invites.ask(c, day, place);
+        const l = r.line || { text: r.text };
+        if (l && l.text) S.chats[c].push({ role: "assistant", content: l.text, tr: l.tr });
+        Phone.chat(c);
+      });
+    };
+    draw();
+  },
+
+  // ===== 信箱：剧情里弹出过的邮件 =====
+  mailbox(i) {
+    const list = S.mailbox || [];
+    if (i !== undefined) {
+      list[i].seenInBox = 1;
+      return Phone.frame(`<div class="mail-in-phone">${mailHtml(list[i])}</div>`, { title: "邮件", back: () => Phone.mailbox() });
+    }
+    const rows = list.map((m, k) => `<div class="contact" data-m="${k}"><div class="c-ava">${m.seenInBox ? "✉" : "●"}</div><div><b>${Gloss.escape(fillText(m.from))}</b><small>${Gloss.escape(fillText(m.title))}</small>${m.tr && Settings.v.showTr ? `<small>${Gloss.escape(fillText(m.tr))}</small>` : ""}</div><em>${Gloss.escape(m.when || "")}</em></div>`).join("");
+    const o = Phone.frame(`<div class="contact-list">${rows || `<div class="note-empty">还没有邮件</div>`}</div>`, { title: "邮件", back: () => Phone.home() });
+    o.querySelectorAll("[data-m]").forEach((el) => el.onclick = () => Phone.mailbox(+el.dataset.m));
+  },
+
+  // ===== 便签本：看过的词条，按首字母排；集齐有个小成就 =====
+  glossary() {
+    const all = DATA.glossary || [], seen = all.filter((g) => Gloss.seen(g.id));
+    seen.sort((a, b) => a.title.localeCompare(b.title, "zh-Hans-CN"));
+    let last = "", html = "";
+    for (const g of seen) {
+      const k = /[A-Za-z]/.test(g.title[0]) ? g.title[0].toUpperCase() : "中";
+      if (k !== last) { html += `<h4 class="gl-h">${k}</h4>`; last = k; }
+      html += `<div class="gl-row"><b>${Gloss.escape(g.title)}</b><p>${Gloss.escape(g.text)}</p></div>`;
+    }
+    Phone.frame(`<div class="gl-book">${html || `<div class="note-empty">还没有看过词条。对话里划线的词点一下就会记在这里。</div>`}</div>`,
+      { title: "便签本", right: `${seen.length}/${all.length}${seen.length === all.length && all.length ? " ★" : ""}`, back: () => Phone.home() });
+  },
+
   // 私聊、评论动态都算互动：AI 判断加多少，每人每周只算一次
   gain(cur, n) {
     S.lastMet[cur] = absWeek();
     const love = DATA.loveIds.includes(cur);
-    if (!(n > 0) || S.chatWeek[cur] === weekKey() || (!love && !(cur in S.fr))) return;
+    if (!n || S.chatWeek[cur] === weekKey() || (!love && !(cur in S.fr))) return;   // 攻略对象可以是负的（敷衍、冒犯）
     S.chatWeek[cur] = weekKey();
     FX.float(applyFx({ [(love ? "aff_" : "fr_") + cur]: love ? n : Math.min(DATA.tuning.frChatMax, n) }));
   },
@@ -139,7 +220,7 @@ const Phone = {
       { title: "评论", back: () => Phone.moments(), input: "写评论……", cls: "moments" });
     const input = o.querySelector(".phone-input input");
     const send = async () => {
-      const text = input.value.trim(); if (!text) return;
+      const text = input.value.trim(); if (!text) return; playSfx("phone_send");
       input.disabled = true;
       p.comments.push({ who: "me", text });
       logLine(`〔评论了${charName(p.who)}的动态〕${text}`);
@@ -189,7 +270,7 @@ const Phone = {
     render();
     const input = o.querySelector(".phone-input input");
     const send = async () => {
-      const text = input.value.trim(); if (!text || busy) return;
+      const text = input.value.trim(); if (!text || busy) return; playSfx("phone_send");
       if (!AI.hasKey()) return toast("还没设置API Key：设置里填写", 2600);
       input.value = ""; msgs.push({ who: "me", text }); busy = true; render();
       const rs = await AI.group(gid, msgs);
@@ -281,15 +362,18 @@ const Phone = {
     let rows;
     if (S.year === 1) {
       rows = DATA.calendar.map((c) => {
-        const what = c.deadline ? "交：" + DATA.assignments[c.deadline].name : c.exam ? "期末考试" : c.vacation ? "假期" : "";
+        const what = c.deadline ? "交：" + assignmentName(c.deadline) : c.exam ? "期末考试" : c.vacation ? "假期" : "";
         return `<div class="cal-row ${c.week === S.week ? "now" : ""} ${c.week < S.week ? "past" : ""}"><b>${c.label}</b><span>${c.term}</span><em>${what}</em></div>`;
       }).join("");
     } else {
       const y = DATA.laterYears.find((x) => x.year === S.year);
       rows = y.periods.map((p, i) => `<div class="cal-row ${i === S.period ? "now" : ""} ${i < S.period ? "past" : ""}"><b>${p.label}</b><span>${y.name}</span><em>${p.mark ? "出分" : p.exam ? "考试" : ""}</em></div>`).join("");
     }
+    // 已经答应的邀约（这周和以后）
+    const apps = Invites.list().filter((a) => a.status === "accepted" && a.week >= absWeek())
+      .map((a) => `<div class="cal-row now"><b>${DAY_CN[a.day]}</b><span>约·${charName(a.who)}</span><em>${Invites.placeName(a.place)}</em></div>`).join("");
     const marks = S.marks.map((m) => `<div class="cal-row past"><b>${m.mark}</b><span>${m.name}</span><em>${Rules.band(m.mark)}</em></div>`).join("");
-    const o = Phone.frame(`<div class="cal-list">${rows}${marks ? `<h4>已经出的分</h4>${marks}` : ""}</div>`, { title: "日历", back: () => Phone.home() });
+    const o = Phone.frame(`<div class="cal-list">${apps ? `<h4>约好的</h4>${apps}<h4>这学年</h4>` : ""}${rows}${marks ? `<h4>已经出的分</h4>${marks}` : ""}</div>`, { title: "日历", back: () => Phone.home() });
     const now = o.querySelector(".cal-row.now"); if (now) now.scrollIntoView({ block: "center" });
   },
 };

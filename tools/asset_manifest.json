@@ -271,9 +271,14 @@
    "headTop": 0.0295
   },
   "chara/npc/zhao_zihao.png": {
-   "w": 864,
-   "h": 1152,
-   "headTop": 0.0
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.029
+  },
+  "chara/npc/marcia.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0325
   },
   "chara/me/autumn.png": {
    "w": 864,
@@ -292,9 +297,7 @@
   }
  },
  "missing": [],
- "warnings": [
-  "chara/npc/zhao_zihao.png：几乎没有透明区域，看起来还没抠图"
- ],
+ "warnings": [],
  "expr": {
   "senior": {
    "normal": {

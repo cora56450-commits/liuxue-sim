@@ -4,41 +4,46 @@
 <meta charset="UTF-8">
 <title>UI 样张 · 车站标识风</title>
 <style>
-/* UI 样张（给ClaudeCode_UI重做.md 第五部分第 1 步）。双击打开，或者用 http 服务打开。
+/* UI 样张（给ClaudeCode_UI重做.md 第五部分第 1 步；按 docs/UI样张评审.md 改过一轮，2026-11-17）。
    只用三种颜色：墨蓝 #3A4766、橙 #FF7A45、米白 #F6F1E7；框体用 assets/ui 的素材图，CSS 只管排版、大小、位置、动画。
-   字：中文思源黑体（Heavy 标题和大字、Medium 正文），英文和数字 Barlow Condensed，都在 assets/fonts/。 */
-/* 正式字体（assets/fonts/，SIL OFL，见那里的 README） */
-@font-face { font-family: "SHS"; src: url(../assets/fonts/SourceHanSansSC-Medium.otf); font-weight: 400 600; font-display: swap; }
-@font-face { font-family: "SHS"; src: url(../assets/fonts/SourceHanSansSC-Heavy.otf); font-weight: 700 900; font-display: swap; }
-@font-face { font-family: "Barlow C"; src: url(../assets/fonts/BarlowCondensed-Medium.ttf); font-weight: 500; }
-@font-face { font-family: "Barlow C"; src: url(../assets/fonts/BarlowCondensed-SemiBold.ttf); font-weight: 600; }
-@font-face { font-family: "Barlow C"; src: url(../assets/fonts/BarlowCondensed-Bold.ttf); font-weight: 700 900; }
+   字：中文思源黑体（Heavy 标题和大字、Medium 正文），英文和数字 Barlow Condensed，都在 assets/fonts/。
+   评审定下的规则：
+   - 字号下限（1920 舞台）：装饰英文 ≥14px；承载信息的字，中文 ≥20px、英文 ≥16px。
+   - 橙色只表示“当前／选中”和“主操作”。悬停＝墨蓝加深（或箭头前移、下划线），不变橙。警告用 ▲／▼ 加“偏高／偏低”两个字，不靠颜色。
+   - 焦点＝悬停：键盘、手柄移到哪里，就显示和鼠标悬停一样的状态，外加墨蓝粗框。 */
+@font-face { font-family: "SHS"; src: url(../assets/fonts/SourceHanSansSC-Medium.otf); font-weight: 400 600; font-display: block; }
+@font-face { font-family: "SHS"; src: url(../assets/fonts/SourceHanSansSC-Heavy.otf); font-weight: 700 900; font-display: block; }
+@font-face { font-family: "Barlow C"; src: url(../assets/fonts/BarlowCondensed-SemiBold.ttf); font-weight: 400 600; font-display: block; }
+@font-face { font-family: "Barlow C"; src: url(../assets/fonts/BarlowCondensed-Bold.ttf); font-weight: 700 900; font-display: block; }
 :root {
-  --navy: #3A4766; --orange: #FF7A45; --paper: #F6F1E7;
+  --navy: #3A4766; --navy-d: #2A3350; --orange: #FF7A45; --paper: #F6F1E7;
   --cn: "SHS", "PingFang SC", "Hiragino Sans GB", sans-serif;
   --en: "Barlow C", "DIN Condensed", "Avenir Next Condensed", sans-serif;
-  --u: 8px;                       /* 网格基础单位 */
-  --t: 200ms;                     /* 动效时长：机械、干脆，不弹跳 */
-  --ease: cubic-bezier(.4, 0, .2, 1);
+  --t: 200ms; --ease: cubic-bezier(.4, 0, .2, 1);   /* 动效：机械、干脆，不弹跳 */
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: #1d2233; font-family: var(--cn); color: var(--navy); }
 #page { width: 1920px; transform-origin: 0 0; }
 .sec { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--paper) center / cover no-repeat; }
-.note + .sec { margin-top: 24px; }
 .note { width: 1920px; font: 500 22px/1.5 var(--cn); color: var(--paper); background: #2A3150; padding: 12px 24px; }
+.note + .sec { margin-top: 24px; }
 .note b { font-family: var(--en); letter-spacing: 3px; color: var(--orange); margin-right: 10px; }
+.note a { color: var(--paper); text-decoration: underline; cursor: pointer; margin-left: 14px; }
+.note kbd { font: 700 18px var(--en); border: 2px solid var(--paper); padding: 0 6px; margin: 0 2px; }
 
 /* ===== 字：中文大字 + 英文窄体全大写小字 ===== */
 .en { font-family: var(--en); font-weight: 700; text-transform: uppercase; letter-spacing: .14em; }
 .bi { display: inline-flex; flex-direction: column; line-height: 1; }
 .bi .zh { font-weight: 800; }
-.bi .en { font-size: .42em; margin-top: .28em; opacity: .8; }
+.bi .en { margin-top: .3em; opacity: .85; }
+
+/* ===== 焦点（键盘／手柄）＝悬停；外加墨蓝粗框 ===== */
+.f { outline: none; }
+.f:focus-visible, .f.focus { outline: 5px solid var(--navy); outline-offset: 6px; }
 
 /* ===== HUD：一条米白细条 ===== */
-.hud { position: absolute; left: 0; right: 0; top: 0; height: 128px; display: flex; align-items: center; gap: 32px; padding: 0 40px;
+.hud { position: absolute; left: 0; right: 0; top: 0; height: 136px; display: flex; align-items: center; gap: 24px; padding: 0 32px;
   background: var(--paper); border-bottom: 4px solid var(--navy); }
-/* 周数翻牌：常驻 HUD，换周时一位一位翻 */
 .flapbox { display: flex; align-items: center; gap: 16px; }
 .flap { display: flex; gap: 6px; }
 .fd { position: relative; width: 72px; height: 104px; background: var(--navy); color: var(--paper); border-radius: 6px; overflow: hidden; perspective: 300px;
@@ -48,145 +53,388 @@ body { background: #1d2233; font-family: var(--cn); color: var(--navy); }
 .fd.flip i { animation: flipIn 140ms var(--ease); }
 @keyframes flipIn { from { transform: rotateX(-90deg); transform-origin: 50% 51px; } to { transform: none; } }
 .term .zh { font-size: 32px; }
-.term .en { font-size: 16px; color: var(--orange); opacity: 1; }
-.wk { font: 700 22px var(--en); letter-spacing: .2em; margin-top: 4px; }
-/* 钱：价签素材，数字是画面里最大的字之一 */
-.price { width: 300px; height: 110px; background: url(../assets/ui/price_tag.png) center / 100% 100% no-repeat; display: flex; align-items: center; justify-content: center;
+.term .en { font-size: 16px; }
+.wk { font: 700 22px var(--en); letter-spacing: .16em; margin-top: 6px; white-space: nowrap; }
+.hud > * { flex: none; }
+.price { width: 272px; height: 100px; background: url(../assets/ui/price_tag.png) center / 100% 100% no-repeat; display: flex; align-items: center; justify-content: center;
   padding: 0 24px 0 72px; font: 700 56px var(--en); letter-spacing: .04em; }
-.price small { font: 600 18px var(--en); opacity: .55; margin-left: 10px; letter-spacing: .1em; }
-/* 数值：站牌信息栏一排读数 */
-.readouts { display: flex; gap: 0; margin-left: auto; border-left: 4px solid var(--navy); }
-.ro { width: 150px; padding: 0 16px; border-right: 2px solid rgba(58,71,102,.25); }
+.price small { font: 600 18px var(--en); opacity: .7; margin-left: 10px; letter-spacing: .1em; }
+/* 数值读数：中文名 20px，英文 15px（装饰），数字大；有上限的写 /100；偏高偏低用 ▲▼ 加字 */
+.readouts { display: flex; margin-left: auto; border-left: 4px solid var(--navy); }
+.ro { width: 156px; padding: 0 14px; border-right: 2px solid rgba(58,71,102,.25); }
 .ro .k { display: flex; justify-content: space-between; align-items: baseline; }
 .ro .k span { font-weight: 800; font-size: 20px; }
-.ro .k em { font: 700 13px var(--en); letter-spacing: .16em; font-style: normal; opacity: .6; }
-.ro .v { font: 700 40px/1.05 var(--en); }
+.ro .k em { font: 700 15px var(--en); letter-spacing: .14em; font-style: normal; opacity: .75; }
+.ro .v { display: flex; align-items: baseline; gap: 6px; font: 700 40px/1.05 var(--en); }
+.ro .v small { font: 600 18px var(--en); opacity: .7; }
+.ro .v .warn { font: 800 16px var(--cn); background: var(--paper); border: 2px solid var(--navy); padding: 1px 5px; margin-left: auto; align-self: center; }
 .ro .bar { height: 6px; background: rgba(58,71,102,.18); }
 .ro .bar i { display: block; height: 100%; background: var(--navy); }
-.ro.low .bar i { background: var(--orange); }
-.hudbtns { display: flex; gap: 8px; }
+.ro.warnbar .bar i { background: repeating-linear-gradient(-45deg, var(--navy) 0 4px, transparent 4px 7px); }
+.hudbtns { display: flex; gap: 6px; }
 
-/* ===== 按钮：主按钮橙色站牌，次按钮米白描边牌子；悬停箭头往前走一格 ===== */
-.btn { display: inline-flex; align-items: center; gap: 16px; height: 72px; padding: 0 28px; border: 4px solid var(--navy); background: var(--paper); color: var(--navy);
+/* ===== 按钮：主按钮橙色（主操作），次按钮米白描边；悬停／焦点＝墨蓝加深、箭头前移 ===== */
+.btn { display: inline-flex; align-items: center; gap: 16px; height: 76px; padding: 0 28px; border: 4px solid var(--navy); background: var(--paper); color: var(--navy);
   cursor: pointer; transition: background var(--t) var(--ease), color var(--t) var(--ease); }
 .btn .zh { font-size: 26px; }
-.btn .en { font-size: 14px; margin-top: 6px; }
+.btn .en { font-size: 15px; }
 .btn .arr { font: 700 32px var(--en); transition: transform var(--t) var(--ease); }
-.btn:hover, .btn.hover { background: var(--orange); border-color: var(--orange); color: var(--paper); }
-.btn:hover .arr, .btn.hover .arr { transform: translateX(8px); }
-.btn.primary { height: 96px; padding: 0 40px; background: var(--orange); border-color: var(--orange); color: var(--paper); }
+.btn:hover, .btn.hover, .btn:focus-visible { background: var(--navy); color: var(--paper); }
+.btn:hover .arr, .btn.hover .arr, .btn:focus-visible .arr { transform: translateX(8px); }
+.btn.primary { height: 100px; padding: 0 40px; background: var(--orange); border-color: var(--orange); color: var(--paper); }
 .btn.primary .zh { font-size: 36px; }
 .btn.primary .en { font-size: 17px; }
 .btn.primary .arr { font-size: 44px; }
-.btn.primary:hover, .btn.primary.hover { background: var(--navy); border-color: var(--navy); }
-.btn.small { height: 56px; padding: 0 18px; gap: 10px; }
+.btn.primary:hover, .btn.primary.hover, .btn.primary:focus-visible { background: var(--orange); color: var(--paper); }
+.btn.primary:hover .zh, .btn.primary.hover .zh, .btn.primary:focus-visible .zh { text-decoration: underline 4px; text-underline-offset: 8px; }
+.btn.small { height: 64px; padding: 0 14px; gap: 10px; white-space: nowrap; }
 .btn.small .zh { font-size: 22px; }
-.btn.small .en { font-size: 12px; margin-top: 4px; }
-.btn.off { opacity: .35; pointer-events: none; }
+.btn.small .en { font-size: 14px; }
 
-/* ===== 标题牌：墨蓝底白字站牌 + 箭头 + 下面一行小英文 ===== */
+/* ===== 标题牌 ===== */
 .board { display: inline-flex; align-items: center; gap: 24px; background: var(--navy); color: var(--paper); padding: 16px 32px 14px; }
 .board .zh { font-size: 48px; }
-.board .en { color: var(--orange); opacity: 1; font-size: 20px; }
+.board .en { font-size: 20px; }
 .board .arr { font: 700 52px var(--en); }
 
-/* ===== 对话框：dialog.png（登机牌），九宫格拉伸；小头像在票根里 ===== */
+/* ===== 对话框：dialog.png，头像在票根里 ===== */
 .dialog { position: absolute; left: 160px; right: 160px; bottom: 40px; height: 272px;
   border-style: solid; border-width: 48px 84px 48px 156px; border-image: url(../assets/ui/dialog.png) 40 70 40 130 fill stretch; }
-.dialog .ava { position: absolute; left: -132px; top: 6px; width: 108px; height: 120px; overflow: hidden; border: 3px solid var(--paper); background: var(--paper); }
+/* 主角头像：放大一倍、倾斜约 20°，可以压出框外（破形） */
+.dialog .ava { position: absolute; left: -196px; top: -120px; width: 216px; height: 240px; overflow: hidden; border: 6px solid var(--paper); outline: 4px solid var(--navy); background: var(--paper); transform: rotate(-20deg); z-index: 2; }
 .dialog .ava img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
-.dialog .txt { position: absolute; inset: -16px 0 -16px 24px; display: flex; flex-direction: column; justify-content: center; }
-.dialog .txt p { font: 600 34px/1.5 var(--cn); }
-.dialog .txt .tr { font: 500 24px/1.4 var(--cn); opacity: .7; margin-top: 4px; }
+.dialog .txt { position: absolute; inset: -16px 0 -16px 104px; display: flex; flex-direction: column; justify-content: center; }
+.dialog .txt .src { font: 600 34px/1.45 var(--cn); }
+.dialog .txt .tr { font: 500 24px/1.4 var(--cn); color: var(--navy-d); margin-top: 6px; }
+/* 译文“中文优先”：中文 30px 墨蓝在上，英文 22px 在下 */
+.dialog.cnfirst .txt { flex-direction: column-reverse; }
+.dialog.cnfirst .txt .tr { font: 700 30px/1.45 var(--cn); color: var(--navy); margin: 0 0 6px; }
+.dialog.cnfirst .txt .src { font: 500 22px/1.4 var(--cn); color: var(--navy-d); }
 .dialog .next { position: absolute; right: -40px; bottom: -28px; color: var(--orange); font-size: 26px; animation: nextStep 900ms steps(2) infinite; }
 @keyframes nextStep { 50% { transform: translateY(6px); } }
-.dialog .links { position: absolute; right: 0; top: -40px; display: flex; gap: 24px; }
-.dialog .links a { font: 700 18px var(--en); letter-spacing: .16em; color: var(--navy); text-decoration: none; cursor: pointer; }
-.dialog .links a span { font: 700 20px var(--cn); letter-spacing: 0; margin-right: 6px; }
-.dialog .links a:hover, .dialog .links a.on { color: var(--orange); }
-.name { position: absolute; left: 120px; top: -120px; width: 300px; height: 150px; background: url(../assets/ui/nameplate.png) center / contain no-repeat;
+/* 记录／自动／快进：挪到对话框上沿外面，和名牌同一行的右侧；开着的是墨蓝底白字 */
+.dialog .links { position: absolute; right: -84px; top: -112px; display: flex; gap: 8px; }
+.dialog .links a { display: flex; align-items: baseline; gap: 6px; height: 48px; padding: 0 16px; align-items: center; background: var(--paper); border: 3px solid var(--navy);
+  color: var(--navy); cursor: pointer; text-decoration: none; }
+.dialog .links a span { font: 800 20px var(--cn); }
+.dialog .links a em { font: 700 15px var(--en); letter-spacing: .14em; font-style: normal; opacity: .8; }
+.dialog .links a:hover, .dialog .links a:focus-visible { text-decoration: underline; }
+.dialog .links a.on { background: var(--navy); color: var(--paper); }
+.name { position: absolute; left: 64px; top: -120px; width: 300px; height: 150px; background: url(../assets/ui/nameplate.png) center / contain no-repeat;
   display: flex; align-items: center; justify-content: center; padding: 30px 40px 20px; }
 .name .bi .zh { font-size: 34px; }
-.name .bi .en { font-size: 14px; }
+.name .bi .en { font-size: 15px; }
 
-/* ===== 选项：choice.png 车票，票根印站台字母 ===== */
+/* ===== 选项：车票；票根是大字母和对应的按键；焦点＝悬停 ===== */
 .veil { position: absolute; inset: 0; background: rgba(58,71,102,.4); }
-.choices { position: absolute; left: 50%; top: 180px; transform: translateX(-50%); display: flex; flex-direction: column; gap: 16px; }
-.tk { position: relative; width: 760px; height: 150px; border-style: solid; border-width: 40px 54px; border-image: url(../assets/ui/choice.png) 30 40 30 40 fill stretch;
+.choices { position: absolute; left: 50%; top: 160px; transform: translateX(-50%); display: flex; flex-direction: column; gap: 20px; }
+.tk { position: relative; width: 780px; height: 150px; border-style: solid; border-width: 40px 54px; border-image: url(../assets/ui/choice.png) 30 40 30 40 fill stretch;
   display: flex; align-items: center; cursor: pointer; animation: slideIn var(--t) var(--ease) both; transition: transform var(--t) var(--ease); }
-.tk.hl, .tk:hover { border-image-source: url(../assets/ui/choice_hl.png); transform: translateX(16px); }
-.tk .plat { width: 112px; height: 100%; margin-left: -10px; border-right: 3px dashed rgba(58,71,102,.4); display: flex; flex-direction: column; align-items: center; justify-content: center; flex: none; }
-.tk .plat b { font: 700 72px/0.9 var(--en); }
-.tk .plat em { font: 700 11px var(--en); letter-spacing: .2em; font-style: normal; opacity: .6; }
-.tk.hl .plat b, .tk:hover .plat b { color: var(--orange); }
+.tk:hover, .tk.f:focus-visible, .tk.focus { border-image-source: url(../assets/ui/choice_hl.png); transform: translateX(16px); }
+.tk::before { content: "▶"; position: absolute; left: -110px; top: 50%; margin-top: -22px; font: 700 40px/44px var(--en); color: var(--paper); opacity: 0; transition: opacity var(--t); }
+.tk:hover::before, .tk.f:focus-visible::before, .tk.focus::before { opacity: 1; }
+.tk .plat { width: 112px; height: 100%; margin-left: -10px; border-right: 3px dashed rgba(58,71,102,.4); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; flex: none; }
+.tk .plat b { font: 700 72px/0.85 var(--en); }
+.tk .plat kbd { font: 700 16px var(--en); border: 2px solid currentColor; padding: 0 6px; opacity: .8; }
+.tk:hover .plat b, .tk.focus .plat b, .tk.f:focus-visible .plat b { color: var(--orange); }
 .tk .opt { flex: 1; padding: 0 16px 0 32px; text-align: center; }
 .tk .opt p { font: 700 30px/1.3 var(--cn); }
-.tk .opt small { display: block; font: 500 18px var(--cn); opacity: .65; margin-top: 4px; }
 .tk:nth-child(2) { animation-delay: 60ms; } .tk:nth-child(3) { animation-delay: 120ms; } .tk:nth-child(4) { animation-delay: 180ms; }
+.tk.picked { border-image-source: url(../assets/ui/choice_hl.png); transform: translateX(16px); }
 @keyframes slideIn { from { transform: translateX(-80px); opacity: 0; } to { transform: none; opacity: 1; } }
 
-/* ===== 日程：schedule_board.png 底板 + 时刻表行 ===== */
-.panel { position: absolute; left: 80px; top: 176px; width: 1100px; }   /* 面板最多 60% 宽，背景露出来 */
-.sched { position: relative; width: 1100px; height: 712px; margin-top: 24px; background: url(../assets/ui/schedule_board.png) center / 100% 100% no-repeat; }
-.row { position: absolute; left: 5%; width: 91.6%; height: 12%; margin-top: -6px; display: flex; align-items: center; padding: 0 28px; gap: 16px; cursor: pointer; }
-.row:not(.sel) { background: var(--paper); }                         /* 没选中的行盖住底板的橙条；选中的那天露出橙色“线路条” */
-.row .day { width: 176px; white-space: nowrap; display: flex; align-items: baseline; gap: 12px; }
-.row .day b { font: 700 34px var(--en); letter-spacing: .1em; }
-.row .day span { font-weight: 800; font-size: 26px; }
+/* ===== 日程：左边时刻表、右边活动列表；点活动填进下一个空格，点一行清空 ===== */
+.panel { position: absolute; left: 80px; top: 176px; }
+.schedwrap { display: flex; gap: 24px; margin-top: 24px; align-items: flex-start; }
+.sched { position: relative; width: 720px; height: 466px; background: url(../assets/ui/schedule_board.png) center / 100% 100% no-repeat; flex: none; }
+.row { position: absolute; left: 5%; width: 91.6%; height: 12%; margin-top: -4px; display: flex; align-items: center; padding: 0 20px; gap: 12px; cursor: pointer; }
+.row:not(.cur) { background: var(--paper); }       /* 不是当前那一天的行盖住底板的橙条；当前那一天露出橙色线路条 */
+.row .day { width: 124px; display: flex; align-items: baseline; gap: 10px; white-space: nowrap; }
+.row .day b { font: 700 28px var(--en); letter-spacing: .1em; }
+.row .day span { font-weight: 800; font-size: 22px; }
 .row .dots { flex: 1; height: 0; border-bottom: 4px dotted rgba(58,71,102,.45); transform: translateY(6px); }
-.row .act { display: flex; align-items: baseline; gap: 12px; }
-.row .act span { font-weight: 800; font-size: 30px; }
-.row .act b { font: 700 22px var(--en); letter-spacing: .16em; opacity: .7; width: 120px; }
-.row.sel { color: var(--paper); }
-.row.sel .dots { border-color: rgba(246,241,231,.7); }
-.row.empty .act { width: 260px; height: 48px; border: 3px dashed rgba(58,71,102,.45); }
-.row.empty.sel .act { border-color: rgba(246,241,231,.8); }
+.row .act { display: flex; align-items: baseline; gap: 10px; white-space: nowrap; }
+.row .act span { font-weight: 800; font-size: 26px; }
+.row .act b { font: 700 16px var(--en); letter-spacing: .14em; opacity: .8; }
+.row.cur { color: var(--paper); }
+.row.cur .dots { border-color: rgba(246,241,231,.7); }
+.row .empty { width: 180px; height: 40px; border: 3px dashed rgba(58,71,102,.45); }
+.row.cur .empty { border-color: rgba(246,241,231,.85); }
+.row:hover .act span, .row:focus-visible .act span { text-decoration: line-through 3px; }   /* 点一下清空 */
+.forecast { margin-top: 16px; background: var(--paper); border-left: 8px solid var(--navy); padding: 12px 20px; font: 600 24px var(--cn); width: 720px; }
+.forecast b { font: 700 32px var(--en); }
+.forecast .warn { font-weight: 800; border: 2px solid var(--navy); padding: 0 6px; margin-left: 8px; font-size: 20px; }
+.acts { width: 380px; display: flex; flex-direction: column; gap: 8px; }
+.acts h3 { display: flex; align-items: baseline; justify-content: space-between; font-size: 22px; font-weight: 800; padding-bottom: 6px; border-bottom: 4px solid var(--navy); }
+.acts h3 em { font: 700 15px var(--en); letter-spacing: .14em; font-style: normal; opacity: .8; }
+.ac { display: flex; align-items: center; gap: 14px; padding: 8px 14px; background: var(--paper); border: 3px solid var(--navy); cursor: pointer; transition: background var(--t), color var(--t); }
+.ac img { width: 52px; height: 52px; object-fit: contain; flex: none; }
+.ac .bi .zh { font-size: 26px; }
+.ac .bi .en { font-size: 15px; }
+.ac .eff { margin-left: auto; text-align: right; font: 600 20px/1.3 var(--cn); }
+.ac:hover, .ac:focus-visible { background: var(--navy); color: var(--paper); }
 
-/* ===== 到站广播：换学期、假期 ===== */
+/* ===== 到站广播：点一下或按任意键跳过 ===== */
 .announce { position: absolute; left: 0; right: 0; top: 380px; height: 320px; background: var(--navy); color: var(--paper); display: flex; align-items: center; padding-left: 160px; gap: 48px;
-  animation: annIn 250ms var(--ease) both; border-top: 8px solid var(--orange); }
-.announce .lbl { font: 700 24px var(--en); letter-spacing: .3em; color: var(--orange); writing-mode: horizontal-tb; }
+  animation: annIn 250ms var(--ease) both; border-top: 8px solid var(--orange); cursor: pointer; }
+.announce.gone { animation: annOut 180ms var(--ease) both; }
+.announce .lbl { font: 700 24px var(--en); letter-spacing: .3em; color: var(--paper); opacity: .8; }
 .announce .main .zh { font-size: 96px; }
-.announce .main .en { font-size: 32px; color: var(--orange); opacity: 1; }
+.announce .main .en { font-size: 32px; }
 .announce .arr { font: 700 140px var(--en); margin-left: auto; margin-right: 120px; animation: arrIn 250ms 120ms var(--ease) both; }
+.announce .skip { position: absolute; right: 40px; bottom: 20px; font: 600 20px var(--cn); opacity: .8; }
 @keyframes annIn { from { transform: translateX(100%); } to { transform: none; } }
+@keyframes annOut { to { transform: translateX(-100%); } }
 @keyframes arrIn { from { transform: translateX(200px); opacity: 0; } to { transform: none; opacity: 1; } }
 
-/* ===== 出城地图：铁路线路图 ===== */
-.route { position: absolute; inset: 0; }
+/* ===== 出城：铁路线路图。线平时是墨蓝；选中（焦点）的那条线和城市变橙 ===== */
 .route svg { position: absolute; inset: 0; }
-.stn { position: absolute; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 16px; cursor: pointer; }
-.stn i { width: 36px; height: 36px; border-radius: 50%; background: var(--paper); border: 8px solid var(--navy); flex: none; transition: border-color var(--t) var(--ease); }
-.stn.home i { width: 44px; height: 44px; background: var(--orange); border-color: var(--orange); }
+.route line { stroke: var(--navy); stroke-width: 10; stroke-linecap: round; transition: stroke var(--t); }
+.route line.cur { stroke: var(--orange); stroke-width: 14; }
+.stn { position: absolute; transform: translate(-22px, -50%); display: flex; align-items: center; gap: 14px; cursor: pointer; }
+.stn i { width: 40px; height: 40px; border-radius: 50%; background: var(--paper); border: 8px solid var(--navy); flex: none; transition: border-color var(--t); }
 .stn .bi { background: var(--paper); padding: 8px 14px; border-left: 6px solid var(--navy); }
 .stn .bi .zh { font-size: 30px; }
-.stn .bi .en { font-size: 14px; }
-.stn .fare { font: 700 26px var(--en); background: var(--navy); color: var(--paper); padding: 4px 10px; }
-.stn:hover i, .stn.hover i { border-color: var(--orange); }
-.stn:hover .bi, .stn.hover .bi { border-color: var(--orange); }
+.stn .bi .en { font-size: 15px; }
+.stn .fare { font: 700 28px var(--en); background: var(--navy); color: var(--paper); padding: 4px 10px; }
+.stn.home { cursor: default; transform: translate(-28px, -50%); }
+.stn.home .bi { position: absolute; left: 30px; bottom: 44px; white-space: nowrap; }
+.stn.home i { width: 48px; height: 48px; background: var(--navy); border: 8px solid var(--paper); box-shadow: 0 0 0 4px var(--navy); }
+.stn.cur i, .stn:focus-visible i { border-color: var(--orange); }
+.stn.cur .bi, .stn:focus-visible .bi { border-color: var(--orange); }
+.legend { position: absolute; left: 60px; bottom: 60px; background: var(--paper); border-top: 6px solid var(--navy); padding: 16px 24px; display: flex; flex-direction: column; gap: 10px; font: 600 22px var(--cn); }
+.legend div { display: flex; align-items: center; gap: 14px; }
+.legend .ln { width: 56px; height: 10px; background: var(--navy); }
+.legend .ln.cur { background: var(--orange); height: 14px; }
+.legend .dot { width: 28px; height: 28px; border-radius: 50%; border: 6px solid var(--navy); background: var(--paper); margin: 0 14px; }
+.legend .dot.home { background: var(--navy); border-color: var(--paper); box-shadow: 0 0 0 3px var(--navy); }
+.trip { position: absolute; right: 60px; top: 60px; width: 520px; background: var(--paper); border-top: 6px solid var(--orange); padding: 20px 28px; }
+.trip .bi .zh { font-size: 40px; }
+.trip .bi .en { font-size: 16px; }
+.trip p { font: 600 24px/1.6 var(--cn); margin-top: 10px; }
+.trip p b { font: 700 30px var(--en); }
 
-/* ===== 开局选项：小票根，选中橙色、不能选变灰 ===== */
-.chips { display: flex; flex-wrap: wrap; gap: 16px; }
-.chip { min-width: 232px; height: 88px; border-style: solid; border-width: 24px 32px; border-image: url(../assets/ui/choice_2.png) 30 40 30 40 fill stretch;
+/* ===== 开局选项：小票根；选中＝橙框橙字；不能选的灰掉并直接写原因；下面一行显示焦点项的说明 ===== */
+.chips { display: flex; flex-wrap: wrap; gap: 16px 16px; }
+.chipw { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.chip { min-width: 232px; height: 92px; border-style: solid; border-width: 24px 32px; border-image: url(../assets/ui/choice_2.png) 30 40 30 40 fill stretch;
   display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; }
 .chip .zh { font-size: 26px; }
-.chip .en { font-size: 13px; margin-top: 6px; }
+.chip .en { font-size: 14px; }
 .chip.on { border-image-source: url(../assets/ui/choice_hl.png); color: var(--orange); }
-.chip.off { filter: grayscale(1); opacity: .4; pointer-events: none; }
+.chip:hover .zh, .chip:focus-visible .zh { text-decoration: underline 3px; text-underline-offset: 5px; }
+.chip.off { filter: grayscale(1); opacity: .45; cursor: not-allowed; }
+.why { font: 600 20px var(--cn); }
+.desc { margin-top: 14px; font: 600 22px var(--cn); min-height: 32px; }
+.desc b { font-weight: 800; margin-right: 10px; }
 
-/* ===== 结局 ===== */
-.postcard { position: absolute; left: 50%; top: 52%; width: 1100px; height: 590px; transform: translate(-50%, -50%); background: url(../assets/ui/postcard.png) center / 100% 100% no-repeat; }
-.terminus { position: absolute; left: 50%; top: 96px; transform: translateX(-50%); }
-.postcard .pc-title { position: absolute; left: 4%; top: 9%; width: 50%; height: 50%; display: flex; align-items: center; justify-content: center; font-size: 64px; font-weight: 800; }
+/* ===== 结局：左边相框放这个结局的 CG，右边横线上写明信片正文 ===== */
+.postcard { position: absolute; left: 50%; top: 50%; width: 1100px; height: 590px; transform: translate(-50%, -54%); background: url(../assets/ui/postcard.png) center / 100% 100% no-repeat; }
+.terminus { position: absolute; left: 50%; top: 56px; transform: translateX(-50%); }
+.pc-photo { position: absolute; left: 6.4%; top: 11%; width: 46.6%; height: 69%; object-fit: cover; }
+.pc-head { position: absolute; left: 57.5%; top: 9.5%; width: 26%; }
+.pc-head .zh { font-size: 40px; }
+.pc-head .en { font-size: 15px; }
+/* 明信片右边三条横线在原图（658×353）的第 194／235／277 行 → 放大后间距 68.8px；字压在线上方一点 */
+.pc-lines { position: absolute; left: 58.4%; top: 46.3%; width: 35.6%; font: 600 23px/68.8px var(--cn); }
 .postcard .stamp { position: absolute; right: 4.5%; top: 6%; width: 12%; }
-.postcard .pm { position: absolute; left: 6%; bottom: -60px; display: flex; gap: 16px; }
-.postcard .pm img { height: 150px; }
+.postcard .pm { position: absolute; left: 4%; bottom: -50px; display: flex; gap: 16px; }
+.postcard .pm img { height: 140px; }
+.endbtns { position: absolute; right: 120px; bottom: 56px; display: flex; gap: 16px; }
+
+/* ===================== 第二批画面（2026-11-17）===================== */
+/* 系统页（设置、存档、回忆）：米白满屏，左上角标题牌，右上角“返回 BACK”＋Esc */
+.sys { background: var(--paper); }
+.sys .board { position: absolute; left: 80px; top: 64px; }
+.sys .back { position: absolute; right: 80px; top: 72px; }
+.keycap { font: 700 16px var(--en); border: 2px solid currentColor; padding: 0 6px; margin-left: 6px; letter-spacing: .1em; }
+
+/* ===== 标题：menu_1~4 撕纸条压在背景自带的色带上，没有外框 ===== */
+.logo { position: absolute; left: 140px; top: 200px; font: 900 150px/1.08 var(--cn); color: var(--navy); text-shadow: 10px 10px 0 var(--orange); letter-spacing: -2px; }
+.logo-sub { position: absolute; left: 148px; top: 560px; font: 600 30px var(--cn); color: var(--navy); }
+.logo-sub .en { font-size: 16px; display: block; margin-top: 8px; }
+.tmenu { position: absolute; right: 70px; top: 300px; display: flex; flex-direction: column; }
+.tm { width: 420px; height: 150px; margin-top: -26px; background: center / 100% 100% no-repeat; display: flex; align-items: center; justify-content: center; cursor: pointer;
+  padding: 0 70px; transition: transform var(--t) var(--ease); position: relative; }
+.tm:nth-child(1) { background-image: url(../assets/ui/menu_1.png); } .tm:nth-child(2) { background-image: url(../assets/ui/menu_2.png); margin-left: 30px; }
+.tm:nth-child(3) { background-image: url(../assets/ui/menu_3.png); margin-left: 10px; } .tm:nth-child(4) { background-image: url(../assets/ui/menu_4.png); margin-left: 40px; }
+.tm .bi { transform: rotate(-6deg); text-align: center; align-items: center; }
+.tm .zh { font-size: 40px; }
+.tm .en { font-size: 15px; }
+.tm:hover, .tm:focus-visible { transform: translateX(-20px); }
+.tm:hover .zh, .tm:focus-visible .zh { text-decoration: underline 4px; text-underline-offset: 8px; }
+.tm::before { content: "▶"; position: absolute; left: -36px; top: 50%; margin-top: -20px; font: 700 36px/40px var(--en); color: var(--navy); opacity: 0; transition: opacity var(--t); }
+.tm:hover::before, .tm:focus-visible::before { opacity: 1; }
+.tm.off { cursor: not-allowed; }
+.tm.off .bi { opacity: .45; }
+.tm .why { position: absolute; bottom: 18px; font: 600 16px var(--cn); transform: rotate(-6deg); }
+
+/* ===== 设置：settings_panel.png（登机牌）做每一行 ===== */
+.setlist { position: absolute; left: 80px; top: 176px; width: 1300px; display: flex; flex-direction: column; gap: 10px; }
+.srow { height: 104px; border-style: solid; border-width: 22px 52px 22px 72px; border-image: url(../assets/ui/settings_panel.png) 60 130 60 180 fill stretch;
+  display: flex; align-items: center; gap: 24px; padding-left: 40px; }
+.srow > .bi { width: 360px; flex: none; }
+.srow > .bi .zh { font-size: 28px; }
+.srow > .bi .en { font-size: 15px; }
+.srow .ctl { flex: 1; display: flex; align-items: center; justify-content: flex-end; gap: 20px; }
+.slider { position: relative; width: 480px; height: 28px; border: 4px solid var(--navy); border-radius: 14px; background: var(--paper); }
+.slider i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--orange); border-radius: 10px 0 0 10px; }
+.slider b { position: absolute; top: 50%; width: 48px; height: 48px; margin: -24px 0 0 -24px; border-radius: 50%; background: var(--paper); border: 4px solid var(--navy); }
+.sval { width: 64px; text-align: right; font: 700 34px var(--en); }
+.toggle { width: 120px; height: 62px; background: url(../assets/ui/toggle_off.png) center / 100% 100% no-repeat; }
+.toggle.on { background-image: url(../assets/ui/toggle_on.png); }
+.tstate { width: 64px; font: 800 22px var(--cn); }
+.seg { display: flex; border: 4px solid var(--navy); }
+.seg span { padding: 8px 20px; font: 800 22px var(--cn); border-right: 2px solid var(--navy); cursor: pointer; }
+.seg span:last-child { border-right: none; }
+.seg span.on { background: var(--orange); color: var(--paper); }
+.srow.f:focus-visible, .srow.focus { outline: 5px solid var(--navy); outline-offset: 4px; }
+.leaverow { display: flex; justify-content: flex-end; gap: 16px; margin-top: 12px; padding-top: 16px; border-top: 4px solid var(--navy); }
+.sidehelp { position: absolute; right: 80px; top: 200px; width: 380px; background: var(--paper); border-top: 6px solid var(--navy); padding: 20px 24px; font: 600 22px/1.6 var(--cn); }
+.sidehelp h4 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+
+/* ===== 存档：save_slot.png 行李牌，两列三行 ===== */
+.slots { position: absolute; left: 80px; top: 200px; display: grid; grid-template-columns: 700px 700px; gap: 24px 40px; }
+.slot { position: relative; width: 700px; height: 234px; background: url(../assets/ui/save_slot.png) center / 100% 100% no-repeat; cursor: pointer; transition: transform var(--t) var(--ease); }
+.slot:hover, .slot:focus-visible { transform: translateX(10px); }
+.slot .thumb { position: absolute; left: 17.2%; top: 17%; width: 32.5%; height: 66%; overflow: hidden; }
+.slot .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.slot .info { position: absolute; left: 56%; top: 13%; width: 38%; height: 63%; }
+.slot .info > * { position: absolute; left: 2px; right: 0; height: 33.3%; display: flex; align-items: flex-end; gap: 10px; padding-bottom: 6px; white-space: nowrap; overflow: hidden; }
+.slot .info .l1 { top: 0; font: 800 26px var(--cn); }
+.slot .info .l1 em { font: 700 16px var(--en); font-style: normal; letter-spacing: .14em; opacity: .8; }
+.slot .info .l2 { top: 33.3%; font: 700 24px var(--cn); }
+.slot .info .l3 { top: 66.6%; font: 600 20px var(--en); letter-spacing: .06em; opacity: .85; }
+.slot.empty .thumb { border: 3px dashed rgba(58,71,102,.45); }
+.slot.empty .info .l2 { opacity: .55; }
+.slot.cur .info .l1::after { content: "当前"; font: 800 16px var(--cn); background: var(--orange); color: var(--paper); padding: 0 8px; margin-left: 4px; }
+.tabs { position: absolute; left: 600px; top: 84px; display: flex; gap: 8px; }
+.tabs span { padding: 8px 22px; border: 4px solid var(--navy); font: 800 22px var(--cn); }
+.tabs span.on { background: var(--orange); border-color: var(--orange); color: var(--paper); }
+
+/* ===== 邮件卡片：shipping_label.png（快递面单），格子里排发件人、日期、标题、正文 ===== */
+.mail { position: absolute; left: 50%; top: 52%; width: 820px; height: 708px; transform: translate(-50%, -50%); background: url(../assets/ui/shipping_label.png) center / 100% 100% no-repeat; }
+.mail .from { position: absolute; left: 6%; top: 21%; width: 58%; height: 23%; display: flex; flex-direction: column; justify-content: center; }
+.mail .lab { font: 700 15px var(--en); letter-spacing: .2em; opacity: .75; }
+.mail .from b { font: 800 34px/1.25 var(--cn); margin-top: 6px; }
+.mail .from small { font: 600 20px var(--cn); margin-top: 4px; }
+.mail .date { position: absolute; left: 68%; top: 21%; width: 26%; height: 23%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.mail .date b { font: 700 40px var(--en); margin-top: 4px; }
+.mail .date small { font: 600 18px var(--cn); }
+.mail .subj { position: absolute; left: 6%; top: 47%; width: 88%; height: 11%; display: flex; align-items: center; gap: 16px; }
+.mail .subj b { font: 800 30px var(--cn); }
+.mail .body { position: absolute; left: 6%; top: 61%; width: 88%; height: 23%; display: flex; flex-direction: column; justify-content: center; font: 600 26px/1.5 var(--cn); }
+.mail .body small { font: 500 22px/1.4 var(--cn); margin-top: 6px; }
+.mailtag { position: absolute; left: 50%; top: 70px; transform: translateX(-50%); }
+.mailbtn { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%); }
+
+/* ===== 手机：phone_frame.png；背景压 50% 墨蓝 ===== */
+.veil50 { position: absolute; inset: 0; background: rgba(58,71,102,.5); }
+.phone { position: absolute; top: 50px; width: 452px; height: 1000px; background: url(../assets/ui/phone_frame.png) center / 100% 100% no-repeat; padding: 72px 30px 50px; display: flex; flex-direction: column; }
+.ph-top { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 12px 14px; border-bottom: 4px solid var(--navy); }
+.ph-top b { font: 800 26px var(--cn); }
+.ph-top span { font: 700 18px var(--en); letter-spacing: .12em; }
+.apps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px 8px; padding: 32px 8px; }
+.app { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; padding: 6px 0; }
+.app img { width: 96px; height: 106px; object-fit: contain; }
+.app .zh { font-size: 22px; }
+.app .en { font-size: 14px; }
+.app:hover .zh, .app:focus-visible .zh { text-decoration: underline 3px; text-underline-offset: 5px; }
+.mailicon { width: 96px; height: 106px; display: flex; align-items: center; justify-content: center; border: 4px solid var(--navy); border-radius: 18px; background: var(--paper); }
+.mailicon img { width: 74px; }
+.badge { position: absolute; margin: -6px 0 0 70px; background: var(--navy); color: var(--paper); font: 700 16px var(--en); padding: 0 7px; }
+.ph-wall { margin-top: auto; padding: 0 12px 20px; }
+.ph-wall .zh { font-size: 40px; }
+.ph-wall .en { font-size: 16px; }
+.clist { display: flex; flex-direction: column; }
+.ctab { display: flex; margin: 14px 4px 6px; border: 3px solid var(--navy); }
+.ctab span { flex: 1; text-align: center; padding: 6px 0; font: 800 22px var(--cn); }
+.ctab span.on { background: var(--orange); color: var(--paper); }
+.crow { display: flex; align-items: center; gap: 12px; padding: 12px 8px; border-bottom: 2px solid rgba(58,71,102,.2); cursor: pointer; }
+.crow .av { width: 52px; height: 52px; border-radius: 50%; background: var(--navy); color: var(--paper); display: flex; align-items: center; justify-content: center; font: 800 24px var(--cn); flex: none; }
+.crow .who { flex: 1; min-width: 0; }
+.crow .who b { display: block; font: 800 22px var(--cn); }
+.crow .who small { display: block; font: 500 20px var(--cn); opacity: .75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.crow .rel { text-align: right; font: 700 20px var(--cn); white-space: nowrap; }
+.crow .rel em { display: block; font-style: normal; font-size: 16px; border: 2px solid var(--navy); padding: 0 6px; margin-top: 4px; }
+.crow:hover, .crow:focus-visible { background: rgba(58,71,102,.08); }
+
+/* ===== 回忆：CG 画廊 7×4 ===== */
+.gal { position: absolute; left: 80px; right: 80px; top: 236px; display: grid; grid-template-columns: repeat(11, 1fr); gap: 12px; }
+.memhead { position: absolute; left: 80px; right: 80px; display: flex; align-items: baseline; gap: 20px; border-bottom: 4px solid var(--navy); padding-bottom: 6px; }
+.memhead .zh { font-size: 30px; }
+.memhead .en { font-size: 15px; }
+.memhead .cnt { margin-left: auto; font: 700 32px var(--en); }
+.ends { position: absolute; left: 80px; right: 80px; top: 636px; display: grid; grid-template-columns: repeat(9, 1fr); gap: 10px 12px; }
+.ec { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 4px; }
+.ec .pic { width: 118px; height: 104px; display: flex; align-items: center; justify-content: center; }
+.ec .pic img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.ec span { font: 800 17px var(--cn); white-space: nowrap; }
+.ec.locked .pic { border: 3px dashed rgba(58,71,102,.45); font: 700 40px var(--en); }
+.ec.locked span { opacity: .55; }
+.ec.f:focus-visible, .ec.focus { outline: 5px solid var(--orange); outline-offset: 2px; }
+.gc { position: relative; aspect-ratio: 16 / 9; border: 4px solid var(--navy); background: var(--paper); overflow: hidden; cursor: pointer; }
+.gc img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gc span { position: absolute; left: 0; right: 0; bottom: 0; background: var(--navy); color: var(--paper); font: 700 16px var(--cn); padding: 3px 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gc.locked { border-style: dashed; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: default; }
+.gc.locked b { font: 700 48px var(--en); line-height: 1; }
+.gc.locked small { font: 700 15px var(--en); letter-spacing: .2em; opacity: .7; }
+.gc.f:focus-visible, .gc.focus { outline: 5px solid var(--orange); outline-offset: 4px; }
+
+
+/* ===== 周结算＋出分 ===== */
+.report { position: absolute; left: 80px; top: 176px; width: 1100px; }
+.rlist { margin-top: 24px; background: rgba(246,241,231,.95); border-top: 6px solid var(--navy); padding: 12px 32px; }
+.rl { display: flex; align-items: baseline; gap: 14px; padding: 12px 0; border-bottom: 2px dotted rgba(58,71,102,.4); font: 600 24px var(--cn); }
+.rl .day { width: 124px; display: flex; gap: 10px; align-items: baseline; }
+.rl .day b { font: 700 26px var(--en); letter-spacing: .1em; }
+.rl .what { width: 150px; font-weight: 800; }
+.rl .fx { margin-left: auto; display: flex; gap: 18px; }
+.rl .fx span b { font: 700 26px var(--en); margin-left: 4px; }
+.rl.ev { padding-left: 138px; font-size: 22px; }
+.markcard { margin-top: 24px; display: flex; align-items: center; gap: 32px; background: var(--navy); color: var(--paper); padding: 20px 32px; border-top: 8px solid var(--orange); }
+.markcard .bi .zh { font-size: 30px; }
+.markcard .bi .en { font-size: 16px; }
+.markcard .big { font: 700 120px/1 var(--en); margin-left: auto; }
+.markcard .band { font: 700 44px var(--en); border: 4px solid var(--paper); padding: 2px 16px; }
+
+/* ===== 周末城市地图：插画版保留，行李牌地点；右上角一块行动点站牌 ===== */
+/* ===== 信箱 ===== */
+.mlist { display: flex; flex-direction: column; margin-top: 8px; }
+.mrow { display: flex; align-items: flex-start; gap: 12px; padding: 14px 8px; border-bottom: 2px solid rgba(58,71,102,.2); cursor: pointer; }
+.mrow i { width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--navy); margin-top: 8px; flex: none; }
+.mrow.unread i { background: var(--navy); }
+.mrow .who { flex: 1; min-width: 0; }
+.mrow .who b { display: block; font: 800 21px var(--cn); }
+.mrow .who small { display: block; font: 600 18px/1.35 var(--en); letter-spacing: .02em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mrow .who small.tr { font: 500 18px var(--cn); opacity: .75; }
+.mrow .wk { font: 700 18px var(--en); letter-spacing: .1em; }
+.mrow.cur { background: rgba(255,122,69,.18); box-shadow: inset 6px 0 0 var(--orange); }
+.mrow:hover, .mrow:focus-visible { background: rgba(58,71,102,.08); }
+.marker { position: absolute; width: 230px; height: 116px; margin: -58px 0 0 -40px; background: url(../assets/ui/marker.png) center / 100% 100% no-repeat;
+  display: flex; align-items: center; justify-content: center; padding-left: 62px; cursor: pointer; transition: transform var(--t) var(--ease); transform-origin: 12% 30%; }
+.marker .bi { align-items: center; }
+.marker .zh { font-size: 26px; }
+.marker .en { font-size: 14px; }
+.marker small { font: 700 16px var(--en); margin-top: 4px; letter-spacing: .1em; }
+.marker:hover, .marker:focus-visible { transform: rotate(-6deg) scale(1.06); }
+.marker.locked { background-image: url(../assets/ui/marker_locked.png); cursor: not-allowed; }
+.marker.locked .bi { opacity: 0; }
+.marker .lk { position: absolute; left: 40px; right: -20px; bottom: -30px; padding: 0 6px; text-align: center; font: 700 18px var(--cn); background: var(--paper); border: 2px solid var(--navy); white-space: nowrap; }
+.aptag { position: absolute; right: 60px; top: 48px; background: var(--navy); color: var(--paper); padding: 16px 28px; display: flex; align-items: center; gap: 24px; }
+.aptag .bi .zh { font-size: 34px; }
+.aptag .bi .en { font-size: 15px; }
+.aptag .ap { display: flex; gap: 10px; }
+.aptag .ap i { width: 30px; height: 30px; border-radius: 50%; border: 4px solid var(--paper); }
+.aptag .ap i.full { background: var(--paper); }
+.aptag .apn { font: 700 44px var(--en); }
+.wkbtn { position: absolute; right: 60px; bottom: 48px; }
 </style>
 </head>
 <body>
 <div id="page">
 
-  <!-- 1. HUD + 对话框 + 立绘 -->
+  <!-- 1. HUD + 对话框 -->
   <section class="sec" style="background-image:url(../assets/bg/flat_kitchen.jpg)">
     <div class="hud">
       <div class="flapbox">
@@ -195,87 +443,96 @@ body { background: #1d2233; font-family: var(--cn); color: var(--navy); }
       </div>
       <div class="price">£520<small>≈¥4836</small></div>
       <div class="readouts">
-        <div class="ro"><div class="k"><span>精力</span><em>ENERGY</em></div><div class="v">80</div><div class="bar"><i style="width:80%"></i></div></div>
-        <div class="ro"><div class="k"><span>学业</span><em>STUDY</em></div><div class="v">36</div><div class="bar"><i style="width:36%"></i></div></div>
-        <div class="ro low"><div class="k"><span>孤独</span><em>LONELY</em></div><div class="v">72</div><div class="bar"><i style="width:72%"></i></div></div>
-        <div class="ro"><div class="k"><span>融入</span><em>BELONG</em></div><div class="v">18</div><div class="bar"><i style="width:18%"></i></div></div>
-        <div class="ro"><div class="k"><span>作业</span><em>ESSAY</em></div><div class="v">40</div><div class="bar"><i style="width:40%"></i></div></div>
+        <div class="ro"><div class="k"><span>精力</span><em>ENERGY</em></div><div class="v">80<small>/100</small></div><div class="bar"><i style="width:80%"></i></div></div>
+        <div class="ro"><div class="k"><span>学业</span><em>STUDY</em></div><div class="v">36<small>/100</small></div><div class="bar"><i style="width:36%"></i></div></div>
+        <div class="ro warnbar"><div class="k"><span>孤独</span><em>LONELY</em></div><div class="v">72<span class="warn">▲偏高</span></div><div class="bar"><i style="width:72%"></i></div></div>
+        <div class="ro"><div class="k"><span>融入</span><em>BELONG</em></div><div class="v">18<small>/100</small></div><div class="bar"><i style="width:18%"></i></div></div>
+        <div class="ro"><div class="k"><span>作业</span><em>ESSAY</em></div><div class="v">40<small>/100</small></div><div class="bar"><i style="width:40%"></i></div></div>
       </div>
       <div class="hudbtns">
-        <div class="btn small"><span class="bi"><span class="zh">手机</span><span class="en">Phone</span></span></div>
-        <div class="btn small hover"><span class="bi"><span class="zh">存档</span><span class="en">Save</span></span></div>
-        <div class="btn small"><span class="bi"><span class="zh">设置</span><span class="en">Config</span></span></div>
+        <div class="btn small f" tabindex="0"><span class="bi"><span class="zh">手机</span><span class="en">Phone</span></span></div>
+        <div class="btn small hover f" tabindex="0"><span class="bi"><span class="zh">存档</span><span class="en">Save</span></span></div>
+        <div class="btn small f" tabindex="0"><span class="bi"><span class="zh">设置</span><span class="en">Config</span></span></div>
       </div>
     </div>
     <img src="../assets/chara/local/base.png" style="position:absolute;left:1180px;top:150px;height:914px">
-    <div class="dialog">
+    <div class="dialog" id="dialog">
       <div class="ava"><img src="../assets/chara/me/winter_avatar.png"></div>
       <div class="name"><span class="bi"><span class="zh">Ollie</span><span class="en">Oliver Bennett</span></span></div>
-      <div class="links"><a><span>记录</span>LOG</a><a class="on"><span>自动</span>AUTO</a><a><span>快进</span>SKIP</a></div>
-      <div class="txt"><p>Hey — you're the one from the group project, right? Love your bag.</p><p class="tr">嘿，你是小组作业那个人对吧？你的包好好看。</p></div>
+      <div class="links"><a class="f" tabindex="0"><span>记录</span><em>LOG</em></a><a class="on f" tabindex="0"><span>自动</span><em>AUTO</em></a><a class="f" tabindex="0"><span>快进</span><em>SKIP</em></a></div>
+      <div class="txt"><p class="src">Hey — you're the one from the group project, right? Love your bag.</p><p class="tr">嘿，你是小组作业那个人对吧？你的包好好看。</p></div>
       <div class="next">▼</div>
     </div>
-    <div class="note"><b>01</b>HUD：左上角周数翻牌（点一下“换周”看翻牌）、钱、五个读数、三个按钮（“存档”是悬停状态）。对话框用 dialog.png，头像在票根里，名牌用 nameplate.png，记录/自动/快进是小字链接（“自动”是开着的状态）。<a id="flipBtn" style="color:var(--orange);cursor:pointer;margin-left:12px">▶ 换周</a></div>
   </section>
+  <div class="note"><b>01</b>HUD：周数翻牌、钱、五个读数（有上限的写 /100；孤独偏高用“▲偏高”和斜纹进度条提示，不用橙色）、三个按钮（“存档”是悬停／焦点状态：墨蓝底）。对话框：记录／自动／快进挪到框外右上方，“自动”开着是墨蓝底白字。
+    <a id="flipBtn">▶ 换周（看翻牌）</a><a id="trBtn">▶ 切换译文：小字 ／ 中文优先</a>
+    <br>操作：<kbd>空格</kbd><kbd>回车</kbd>／手柄 A 前进，按住 <kbd>Ctrl</kbd>／RB 快进，<kbd>Esc</kbd>／Start 菜单，滚轮上滚／LB 记录。</div>
 
   <!-- 2. 选项 -->
   <section class="sec" style="background-image:url(../assets/bg/crit_room.jpg)">
     <div class="veil"></div>
-    <div class="choices">
-      <div class="tk"><div class="plat"><b>A</b><em>PLATFORM</em></div><div class="opt"><p>Thanks! Yours is gorgeous.</p></div></div>
-      <div class="tk hl"><div class="plat"><b>B</b><em>PLATFORM</em></div><div class="opt"><p>我们先建个群分工吧</p><small>Ploy 好感 +1　学业 +1</small></div></div>
-      <div class="tk"><div class="plat"><b>C</b><em>PLATFORM</em></div><div class="opt"><p>（不说话）</p></div></div>
+    <div class="choices" id="choices">
+      <div class="tk f" tabindex="0"><div class="plat"><b>A</b><kbd>1</kbd></div><div class="opt"><p>Thanks! Yours is gorgeous.</p></div></div>
+      <div class="tk f focus" tabindex="0"><div class="plat"><b>B</b><kbd>2</kbd></div><div class="opt"><p>我们先建个群分工吧</p></div></div>
+      <div class="tk f" tabindex="0"><div class="plat"><b>C</b><kbd>3</kbd></div><div class="opt"><p>（不说话）</p></div></div>
     </div>
-    <div class="note"><b>02</b>选项：choice.png 车票，票根印站台字母 A/B/C/D；B 是悬停／选中（choice_hl.png）。背景压 40% 墨蓝。依次从左滑入，200ms，不弹跳。</div>
   </section>
+  <div class="note"><b>02</b>选项：车票，票根是大字母和对应的数字键。选项上不显示任何数值（Cora 定）。B 是焦点／悬停状态（同一个样子：换成高亮车票、往右挪、左边出现 ▶）。
+    <br>操作：<kbd>1</kbd>–<kbd>4</kbd> 直接选；<kbd>↑</kbd><kbd>↓</kbd>／方向键移动，<kbd>回车</kbd>／A 确认。可以在这页上试。</div>
 
-  <!-- 3. 日程（时刻表） -->
+  <!-- 3. 日程 -->
   <section class="sec" style="background-image:url(../assets/bg/dorm_room.jpg)">
-    <div class="panel">
+    <div class="panel" style="width:1124px">
       <div class="board"><span class="bi"><span class="zh">本周日程</span><span class="en">This Week · Departures</span></span><span class="arr">→</span></div>
-      <div class="sched">
-        <div class="row" style="top:20.5%"><div class="day"><b>MON</b><span>周一</span></div><div class="dots"></div><div class="act"><span>上课</span><b>Lecture</b></div></div>
-        <div class="row" style="top:35.7%"><div class="day"><b>TUE</b><span>周二</span></div><div class="dots"></div><div class="act"><span>图书馆</span><b>Library</b></div></div>
-        <div class="row sel" style="top:50.9%"><div class="day"><b>WED</b><span>周三</span></div><div class="dots"></div><div class="act"><span>做作业</span><b>Essay</b></div></div>
-        <div class="row empty" style="top:66.1%"><div class="day"><b>THU</b><span>周四</span></div><div class="dots"></div><div class="act"></div></div>
-        <div class="row empty" style="top:81.3%"><div class="day"><b>FRI</b><span>周五</span></div><div class="dots"></div><div class="act"></div></div>
+      <div class="schedwrap">
+        <div>
+          <div class="sched" id="sched"></div>
+          <div class="forecast" id="forecast"></div>
+        </div>
+        <div class="acts" id="acts"><h3>选一个活动，填进下一个空格<em>ACTIVITIES</em></h3></div>
       </div>
     </div>
-    <div style="position:absolute;right:120px;bottom:120px;display:flex;gap:16px;align-items:center">
-      <div class="btn"><span class="bi"><span class="zh">清空</span><span class="en">Clear</span></span></div>
-      <div class="btn primary"><span class="bi"><span class="zh">开始这一周</span><span class="en">Depart</span></span><span class="arr">→</span></div>
+    <div style="position:absolute;right:120px;bottom:100px;display:flex;gap:16px;align-items:center">
+      <div class="btn f" tabindex="0" id="clearBtn"><span class="bi"><span class="zh">清空</span><span class="en">Clear</span></span></div>
+      <div class="btn primary f" tabindex="0"><span class="bi"><span class="zh">开始这一周</span><span class="en">Depart</span></span><span class="arr">→</span></div>
     </div>
-    <div class="note"><b>03</b>日程做成时刻表：schedule_board.png 底板，选中的周三露出底板的橙色线路条；周四周五还没排，是虚线空位。面板占左边 57%，背景露出来。右下主按钮“开始这一周 DEPART →”。</div>
   </section>
+  <div class="note"><b>03</b>日程：右边点一个活动（或者键盘 <kbd>↑</kbd><kbd>↓</kbd> 选、<kbd>回车</kbd> 放），自动填进下一个空着的日子；点时刻表里排好的一行就清空那一行。当前要填的那一天露出底板的橙色线路条。下面一行“本周预计”替玩家算好周五晚上的精力。可以在这页上试。</div>
 
-  <!-- 4. 组件：标题牌、按钮、开局选项 -->
+  <!-- 4. 开局 -->
   <section class="sec" style="background-image:url(../assets/bg/airport.jpg)">
-    <div class="panel" style="width:1060px">
+    <div class="panel" style="width:1100px">
       <div class="board"><span class="bi"><span class="zh">开局 · 你是谁</span><span class="en">Arrivals · Who Are You</span></span><span class="arr">↗</span></div>
-      <div style="margin-top:40px;background:rgba(246,241,231,.94);padding:32px;border-top:6px solid var(--navy)">
-        <div class="bi" style="margin-bottom:16px"><span class="zh" style="font-size:28px">家境</span><span class="en" style="font-size:13px">Budget</span></div>
-        <div class="chips">
-          <div class="chip"><span class="bi"><span class="zh">拮据</span><span class="en">Tight</span></span></div>
-          <div class="chip on"><span class="bi"><span class="zh">中产</span><span class="en">Middle</span></span></div>
-          <div class="chip"><span class="bi"><span class="zh">富裕</span><span class="en">Comfy</span></span></div>
+      <div style="margin-top:32px;background:rgba(246,241,231,.94);padding:28px 32px;border-top:6px solid var(--navy)">
+        <div class="bi" style="margin-bottom:14px"><span class="zh" style="font-size:28px">家境</span><span class="en" style="font-size:15px">Budget</span></div>
+        <div class="chips" data-group="wealth">
+          <div class="chipw"><div class="chip f" tabindex="0" data-d="每月生活费紧，打工线开放。"><span class="bi"><span class="zh">拮据</span><span class="en">Tight</span></span></div></div>
+          <div class="chipw"><div class="chip on f" tabindex="0" data-d="够用，偶尔肉疼。"><span class="bi"><span class="zh">中产</span><span class="en">Middle</span></span></div></div>
+          <div class="chipw"><div class="chip f" tabindex="0" data-d="爸妈可能会来英国看你。"><span class="bi"><span class="zh">富裕</span><span class="en">Comfy</span></span></div></div>
         </div>
-        <div style="height:4px;background:var(--navy);margin:32px 0"></div>
-        <div class="bi" style="margin-bottom:16px"><span class="zh" style="font-size:28px">住宿</span><span class="en" style="font-size:13px">Housing</span></div>
-        <div class="chips">
-          <div class="chip on"><span class="bi"><span class="zh">学校宿舍</span><span class="en">Halls</span></span></div>
-          <div class="chip"><span class="bi"><span class="zh">ensuite</span><span class="en">Ensuite</span></span></div>
-          <div class="chip off"><span class="bi"><span class="zh">studio</span><span class="en">Studio</span></span></div>
+        <div class="desc" data-for="wealth"><b>中产</b>够用，偶尔肉疼。</div>
+        <div style="height:4px;background:var(--navy);margin:24px 0"></div>
+        <div class="bi" style="margin-bottom:14px"><span class="zh" style="font-size:28px">住宿</span><span class="en" style="font-size:15px">Housing</span></div>
+        <div class="chips" data-group="housing">
+          <div class="chipw"><div class="chip on f" tabindex="0" data-d="国际 flat，室友随机。"><span class="bi"><span class="zh">学校宿舍</span><span class="en">Halls</span></span></div></div>
+          <div class="chipw"><div class="chip f" tabindex="0" data-d="在异乡好居拼室友。"><span class="bi"><span class="zh">ensuite</span><span class="en">Ensuite</span></span></div></div>
+          <div class="chipw"><div class="chip off f" tabindex="0" data-d="贵、清净、更孤独，隔音差。" data-why="家境富裕才能选"><span class="bi"><span class="zh">studio</span><span class="en">Studio</span></span></div><span class="why">家境富裕才能选</span></div>
         </div>
-      </div>
-      <div style="margin-top:40px;display:flex;gap:24px;align-items:center">
-        <div class="btn"><span class="bi"><span class="zh">返回</span><span class="en">Back</span></span></div>
-        <div class="btn hover"><span class="bi"><span class="zh">存档</span><span class="en">Save</span></span><span class="arr">→</span></div>
-        <div class="btn primary"><span class="bi"><span class="zh">下一步</span><span class="en">Next</span></span><span class="arr">→</span></div>
-        <div class="btn primary hover"><span class="bi"><span class="zh">落地英国</span><span class="en">Land</span></span><span class="arr">→</span></div>
+        <div class="desc" data-for="housing"><b>学校宿舍</b>国际 flat，室友随机。</div>
       </div>
     </div>
-    <div class="note"><b>04</b>标题牌（墨蓝站牌＋箭头＋小英文）；开局选项是小票根（choice_2.png），选中橙框橙字，studio 不能选变灰；按钮：次按钮、次按钮悬停、主按钮、主按钮悬停。粗横线分区。</div>
+    <div style="position:absolute;right:120px;bottom:100px;display:flex;flex-direction:column;gap:20px;align-items:flex-end">
+      <div style="display:flex;gap:16px">
+        <div class="btn f" tabindex="0"><span class="bi"><span class="zh">返回</span><span class="en">Back</span></span></div>
+        <div class="btn hover f" tabindex="0"><span class="bi"><span class="zh">存档</span><span class="en">Save</span></span><span class="arr">→</span></div>
+      </div>
+      <div style="display:flex;gap:16px">
+        <div class="btn primary f" tabindex="0"><span class="bi"><span class="zh">下一步</span><span class="en">Next</span></span><span class="arr">→</span></div>
+        <div class="btn primary hover f" tabindex="0"><span class="bi"><span class="zh">落地英国</span><span class="en">Land</span></span><span class="arr">→</span></div>
+      </div>
+    </div>
   </section>
+  <div class="note"><b>04</b>开局：选中是橙框橙字；焦点停在哪个选项，下面一行就显示它的说明（不用悬停）；studio 灰掉，下面直接写“家境富裕才能选”。按钮四种状态：次按钮、次按钮悬停（墨蓝底）、主按钮、主按钮悬停（橙色不变，字加下划线、箭头前移）。可以用方向键在选项间移动试试。</div>
 
   <!-- 5. 到站广播 -->
   <section class="sec" style="background-image:url(../assets/bg/station.jpg)">
@@ -283,46 +540,200 @@ body { background: #1d2233; font-family: var(--cn); color: var(--navy); }
       <div class="lbl">NOW<br>ARRIVING</div>
       <div class="main bi"><span class="zh">下一站：大一·春</span><span class="en">Next Stop: Spring Term</span></div>
       <div class="arr">→</div>
+      <div class="skip">点一下或按任意键跳过</div>
     </div>
-    <div class="note"><b>05</b>换学期、假期：到站广播从右边滑进来，250ms 停住。<a id="annBtn" style="color:var(--orange);cursor:pointer;margin-left:12px">▶ 再播一次</a></div>
   </section>
+  <div class="note"><b>05</b>换学期、假期：到站广播从右边滑进来，250ms 停住；点一下或按任意键马上划走。同一个存档第二次看到时只停 1 秒。<a id="annBtn">▶ 再播一次</a></div>
 
-  <!-- 6. 出城：铁路线路图 -->
+  <!-- 6. 出城 -->
   <section class="sec" style="background-image:url(../assets/bg/map_uk.jpg)">
-    <div class="route">
-      <svg viewBox="0 0 1920 1080"><polyline points="872,205 970,471 1205,485" fill="none" stroke="#FF7A45" stroke-width="12" stroke-linejoin="round"/>
-        <polyline points="723,510 970,471 1182,830" fill="none" stroke="#FF7A45" stroke-width="12" stroke-linejoin="round"/></svg>
-      <div class="stn home" style="left:970px;top:471px"><i></i><span class="bi"><span class="zh">我们的城市</span><span class="en">You Are Here</span></span></div>
-      <div class="stn" style="left:872px;top:205px"><i></i><span class="bi"><span class="zh">爱丁堡</span><span class="en">Edinburgh</span></span><span class="fare">£120</span></div>
-      <div class="stn hover" style="left:1205px;top:485px"><i></i><span class="bi"><span class="zh">约克</span><span class="en">York</span></span><span class="fare">£45</span></div>
-      <div class="stn" style="left:723px;top:510px"><i></i><span class="bi"><span class="zh">湖区</span><span class="en">Lake District</span></span><span class="fare">£70</span></div>
-      <div class="stn" style="left:1182px;top:830px"><i></i><span class="bi"><span class="zh">伦敦</span><span class="en">London</span></span><span class="fare">£90</span></div>
+    <div class="route" id="route">
+      <svg viewBox="0 0 1920 1080"></svg>
     </div>
-    <div class="note"><b>06</b>出城地图做成铁路线路图：橙色线连着城市圆点，橙色实心点是“我们的城市”，约克是悬停状态。日常城市地图保持插画版不动。</div>
+    <div class="legend">
+      <div><span class="ln"></span>火车线路</div>
+      <div><span class="ln cur"></span>你选中的路线</div>
+      <div><span class="dot home"></span>你住的城市</div>
+      <div><span class="dot"></span>可以去的城市</div>
+    </div>
+    <div class="trip" id="trip"></div>
   </section>
+  <div class="note"><b>06</b>出城地图：线平时是墨蓝，焦点停在哪个城市，那条线和那个城市变橙（橙色＝当前）；右下角写清楚去那里要花什么：钱、占整个周末、精力。左下角是图例。底图自带的白色点线不是我们画的，见下面的说明。可以用方向键在城市间移动试试。</div>
 
   <!-- 7. 结局 -->
   <section class="sec" style="background-image:url(../assets/bg/station_night.jpg)">
-    <div class="board terminus"><span class="bi"><span class="zh">终点站</span><span class="en">Terminus</span></span></div>
+    <div class="board terminus"><span class="bi"><span class="zh">终点站 · ‘普通DISCO’</span><span class="en">Terminus · Ordinary Disco</span></span></div>
     <div class="postcard">
-      <div class="pc-title">‘普通DISCO’</div>
-      <img class="stamp" src="../assets/ui/stamps/disco.png">
-      <div class="pm"><img src="../assets/ui/postmarks/first.png"><img src="../assets/ui/postmarks/local_he.png"></div>
+      <img class="pc-photo" src="../assets/cg/graduation.jpg">
+      <div class="pc-lines">三年。没有什么大事。图书馆四楼靠窗的位置，中超周四到货，楼下那家炸鱼薯条醋放得最多。挺好的。</div>
+      <img class="stamp" src="../assets/ui/stamps/disco.png?v=2">
+      <div class="pm"><img src="../assets/ui/postmarks/first.png?v=2"><img src="../assets/ui/postmarks/local_he.png?v=2"></div>
     </div>
-    <div class="note"><b>07</b>结局：postcard.png 照旧，邮票、邮戳用切好的图，上面加一块“终点站 / TERMINUS”站牌。</div>
+    <div class="endbtns">
+      <div class="btn f" tabindex="0"><span class="bi"><span class="zh">回到标题</span><span class="en">Title</span></span></div>
+      <div class="btn primary f" tabindex="0"><span class="bi"><span class="zh">继续</span><span class="en">Continue</span></span><span class="arr">→</span></div>
+    </div>
   </section>
+  <div class="note"><b>07</b>结局：左边相框放这个结局对应的 CG（样张里先用毕业典礼那张占位，哪个结局配哪张 CG 等策划定），右边横线上是明信片正文（照 结局明信片文案.md），结局名写在上面的“终点站”站牌里，右下角两个按钮。</div>
+
+  <!-- 8. 标题 -->
+  <section class="sec" style="background-image:url(../assets/bg/title.jpg)">
+    <div class="logo">留学生活<br>模拟器</div>
+    <div class="logo-sub">（暂名）大一，从落地开始<span class="en">Study Abroad Simulator</span></div>
+    <div class="tmenu">
+      <div class="tm f" tabindex="0"><span class="bi"><span class="zh">新游戏</span><span class="en">New Game</span></span></div>
+      <div class="tm f" tabindex="0"><span class="bi"><span class="zh">继续</span><span class="en">Continue</span></span></div>
+      <div class="tm f" tabindex="0"><span class="bi"><span class="zh">设置</span><span class="en">Config</span></span></div>
+      <div class="tm f" tabindex="0"><span class="bi"><span class="zh">回忆</span><span class="en">Memories</span></span></div>
+    </div>
+  </section>
+  <div class="note"><b>08</b>标题：用 menu_1~4 四张撕纸条做菜单，斜着排在右边、压在背景自带的色带上，没有外框；Logo 墨蓝字加橙色错位阴影，副标题小一号墨蓝字。悬停／焦点：纸条往左移、字加下划线、左边出现 ▶。没有存档时“继续”变灰并写一行原因（样张里先都能点）。</div>
+
+  <!-- 9. 设置 -->
+  <section class="sec sys">
+    <div class="board"><span class="bi"><span class="zh">设置</span><span class="en">Config</span></span><span class="arr">↗</span></div>
+    <div class="btn back f" tabindex="0"><span class="bi"><span class="zh">返回</span><span class="en">Back</span></span><span class="keycap">ESC</span></div>
+    <div class="setlist">
+      <div class="srow f" tabindex="0"><span class="bi"><span class="zh">文字速度</span><span class="en">Text Speed</span></span><div class="ctl"><div class="slider"><i style="width:60%"></i><b style="left:60%"></b></div><span class="sval">60</span></div></div>
+      <div class="srow f focus" tabindex="0"><span class="bi"><span class="zh">BGM 音量</span><span class="en">Music</span></span><div class="ctl"><div class="slider"><i style="width:60%"></i><b style="left:60%"></b></div><span class="sval">60</span></div></div>
+      <div class="srow f" tabindex="0"><span class="bi"><span class="zh">音效音量</span><span class="en">Sound</span></span><div class="ctl"><div class="slider"><i style="width:70%"></i><b style="left:70%"></b></div><span class="sval">70</span></div></div>
+      <div class="srow f" tabindex="0"><span class="bi"><span class="zh">对话时显示主角头像</span><span class="en">Show Portrait</span></span><div class="ctl"><span class="tstate">开</span><div class="toggle on"></div></div></div>
+      <div class="srow f" tabindex="0"><span class="bi"><span class="zh">英文台词的译文</span><span class="en">Translation</span></span><div class="ctl"><div class="seg"><span>小字</span><span class="on">中文优先</span><span>关</span></div></div></div>
+      <div class="srow f" tabindex="0"><span class="bi"><span class="zh">API 设置</span><span class="en">AI Chat</span></span><div class="ctl"><span style="font:600 22px var(--cn)">手机聊天、小红书用；Key 只存在本机</span><span class="arr" style="font:700 32px var(--en)">→</span></div></div>
+      <div class="leaverow"><div class="btn f" tabindex="0"><span class="bi"><span class="zh">回到标题</span><span class="en">Title</span></span><span class="arr">↩</span></div><div class="btn f" tabindex="0"><span class="bi"><span class="zh">退出游戏</span><span class="en">Quit</span></span><span class="arr">→</span></div></div>
+    </div>
+    <div class="sidehelp"><h4>BGM 音量</h4>背景音乐的音量，和音效分开调。<br><br><b>←</b> <b>→</b> 或手柄左右调大小，<b>回车</b>／A 确认。</div>
+  </section>
+  <div class="note"><b>09</b>设置：满屏系统页。每一行用 settings_panel.png（登机牌）；滑杆是墨蓝描边、橙色填充；开关用 toggle_on／off.png，旁边写“开／关”两个字（不只靠颜色）；译文三档（评审第 7 条）。焦点在哪一行，右边说明框就讲这一行是干什么的。右上角“返回 BACK”＋Esc。最下面一条粗线隔开“回到标题”和“退出游戏”：回到标题先弹确认（写明上次自动存档在哪、之后的进度会丢），只在游戏里出现；退出游戏只在桌面版出现，网页版关不了自己的标签页。</div>
+
+  <!-- 10. 存档 -->
+  <section class="sec sys">
+    <div class="board"><span class="bi"><span class="zh">存档</span><span class="en">Save</span></span><span class="arr">↗</span></div>
+    <div class="tabs"><span class="on">存档</span><span>读档</span></div>
+    <div class="btn back f" tabindex="0"><span class="bi"><span class="zh">返回</span><span class="en">Back</span></span><span class="keycap">ESC</span></div>
+    <div class="slots">
+      <div class="slot f cur" tabindex="0"><div class="thumb"><img src="../assets/bg/flat_kitchen.jpg"></div><div class="info"><span class="l1">存档 1<em>SLOT 01</em></span><span class="l2">小林　大一·秋 第8周</span><span class="l3">2026-11-17　21:04</span></div></div>
+      <div class="slot f" tabindex="0"><div class="thumb"><img src="../assets/bg/library.jpg"></div><div class="info"><span class="l1">存档 2<em>SLOT 02</em></span><span class="l2">小林　大一·秋 第11周</span><span class="l3">2026-11-16　23:40</span></div></div>
+      <div class="slot f" tabindex="0"><div class="thumb"><img src="../assets/bg/campus.jpg"></div><div class="info"><span class="l1">存档 3<em>SLOT 03</em></span><span class="l2">阿秋　大二·搬家周</span><span class="l3">2026-11-15　12:18</span></div></div>
+      <div class="slot f empty" tabindex="0"><div class="thumb"></div><div class="info"><span class="l1">存档 4<em>SLOT 04</em></span><span class="l2">空　EMPTY</span><span class="l3"></span></div></div>
+      <div class="slot f empty" tabindex="0"><div class="thumb"></div><div class="info"><span class="l1">存档 5<em>SLOT 05</em></span><span class="l2">空　EMPTY</span><span class="l3"></span></div></div>
+      <div class="slot f empty" tabindex="0"><div class="thumb"></div><div class="info"><span class="l1">存档 6<em>SLOT 06</em></span><span class="l2">空　EMPTY</span><span class="l3"></span></div></div>
+    </div>
+  </section>
+  <div class="note"><b>10</b>存档／读档：save_slot.png 行李牌，两列三行；缩略图用存档时的背景，三行字分别压在牌子的三条线上（名字和进度、日期）；空的格子是虚线框加“空 EMPTY”；刚才存的那格标“当前”。上面两个页签切换存档／读档；读档页多一格“自动存档”。</div>
+
+  <!-- 11. 邮件 -->
+  <section class="sec" style="background-image:url(../assets/bg/dorm_room.jpg)">
+    <div class="veil"></div>
+    <div class="board mailtag"><span class="bi"><span class="zh">新邮件</span><span class="en">New Mail</span></span><span class="arr">✉</span></div>
+    <div class="mail">
+      <div class="from"><span class="lab">FROM 发件人</span><b>Dr. Marcia Campbell</b><small>Personal Tutor · 社会学系</small></div>
+      <div class="date"><span class="lab">WEEK</span><b>19</b><small>周二 上午</small></div>
+      <div class="subj"><span class="lab">SUBJECT</span><b>Tea. Thursday. 2pm. Not optional.</b></div>
+      <div class="body"><span class="lab">标题译文</span>喝茶。周四。下午两点。不是可选的。<small>（邮件没有正文，只有这一行标题。）</small></div>
+    </div>
+    <div class="btn primary mailbtn f" tabindex="0"><span class="bi"><span class="zh">知道了</span><span class="en">OK</span></span><span class="arr">→</span></div>
+  </section>
+  <div class="note"><b>11</b>邮件卡片（剧本里的【邮件：发件人｜标题】）：用 shipping_label.png 快递面单，格子里分别是发件人、第几周、标题、正文；英文标题下面跟中文翻译。背景压 40% 墨蓝，看完点“知道了”关掉，不存档（照 手机与友情.md，不做邮箱系统）。</div>
+
+  <!-- 12. 手机 -->
+  <section class="sec" style="background-image:url(../assets/bg/dorm_night.jpg)">
+    <div class="veil50"></div>
+    <div class="phone" style="left:520px">
+      <div class="ph-top"><b>小林</b><span>WEEK 08</span></div>
+      <div class="apps">
+        <div class="app f" tabindex="0"><img src="../assets/ui/app_chat.png"><span class="bi" style="align-items:center"><span class="zh">聊天</span><span class="en">Chat</span></span><span class="badge">3</span></div>
+        <div class="app f" tabindex="0"><img src="../assets/ui/app_camera.png"><span class="bi" style="align-items:center"><span class="zh">动态</span><span class="en">Moments</span></span></div>
+        <div class="app f" tabindex="0"><img src="../assets/ui/app_notes.png"><span class="bi" style="align-items:center"><span class="zh">小红书</span><span class="en">Notes</span></span></div>
+        <div class="app f" tabindex="0"><img src="../assets/ui/app_calendar.png"><span class="bi" style="align-items:center"><span class="zh">日历</span><span class="en">Calendar</span></span></div>
+        <div class="app f" tabindex="0"><img src="../assets/ui/app_settings.png"><span class="bi" style="align-items:center"><span class="zh">设置</span><span class="en">Config</span></span></div>
+        <div class="app f" tabindex="0"><span class="mailicon"><img src="../assets/ui/shipping_label.png"></span><span class="bi" style="align-items:center"><span class="zh">邮件</span><span class="en">Mail</span></span><span class="badge">1</span></div>
+      </div>
+      <div class="ph-wall bi"><span class="zh">大一·秋<br>第 8 周</span><span class="en">Autumn Term · Week 08</span></div>
+    </div>
+    <div class="phone" style="left:1040px">
+      <div class="ph-top"><b>‹　聊天</b><span>CHAT</span></div>
+      <div class="ctab"><span class="on">消息</span><span>动态</span></div>
+      <div class="clist">
+        <div class="crow f" tabindex="0"><div class="av">群</div><div class="who"><b>小组群</b><small>Hannah：I've made a doc…</small></div></div>
+        <div class="crow f" tabindex="0"><div class="av">O</div><div class="who"><b>Ollie</b><small>see you at the pub? x</small></div><div class="rel">好感 72<em>交往中</em></div></div>
+        <div class="crow f" tabindex="0"><div class="av">J</div><div class="who"><b>Jake</b><small>who ate my noodles</small></div><div class="rel">友情 65<em>朋友</em></div></div>
+        <div class="crow f" tabindex="0"><div class="av">吴</div><div class="who"><b>吴桐</b><small>电饭煲谁用了</small></div><div class="rel">友情 34<em>熟人</em></div></div>
+        <div class="crow f" tabindex="0"><div class="av">E</div><div class="who"><b>Essay学姐</b><small>亲～加急也可以的哦</small></div></div>
+      </div>
+    </div>
+  </section>
+  <div class="note"><b>12</b>手机：背景压 50% 墨蓝；手机框用 phone_frame.png，标题栏不加框。主屏六个 App：聊天、动态、小红书、日历、设置、邮件（动态暂时用相机图标；邮件还没有图标，先用快递面单缩小顶着，要一张 app_mail.png）。聊天列表：攻略对象写“好感”，固定 NPC 写“友情”和档位；“交往中”是墨蓝描边的小标签（不用橙色，橙色只留给当前页签“消息”）。</div>
+
+  <!-- 13. 回忆：CG 和结局同一页 -->
+  <section class="sec sys">
+    <div class="board"><span class="bi"><span class="zh">回忆</span><span class="en">Memories</span></span><span class="arr">↗</span></div>
+    <div class="btn back f" tabindex="0"><span class="bi"><span class="zh">返回</span><span class="en">Back</span></span><span class="keycap">ESC</span></div>
+    <div class="memhead" style="top:176px"><span class="bi"><span class="zh">CG</span><span class="en">Illustrations</span></span><span class="cnt">12 / 32</span></div>
+    <div class="gal" id="gal"></div>
+    <div class="memhead" style="top:570px"><span class="bi"><span class="zh">结局</span><span class="en">Postcards &amp; Stamps</span></span><span class="cnt">5 / 18</span></div>
+    <div class="ends" id="ends"></div>
+  </section>
+  <div class="note"><b>13</b>回忆：CG 和结局放在同一页，不分页签。上面是 CG（32 格，三行，含 4 张告白 CG），点开全屏看；下面是结局：主线结局（邮票）和盖章（邮戳：First、恋爱裁判、恋爱ing、四个人的 HE／BE），拿到过的显示图和名字，点开重看那张明信片；没拿到的是虚线框加“?”。焦点框用橙色（当前）。</div>
+
+  <!-- 14. 周结算 + 出分 -->
+  <section class="sec" style="background-image:url(../assets/bg/dorm_room.jpg)">
+    <div class="report">
+      <div class="board"><span class="bi"><span class="zh">这周过完了</span><span class="en">Week 08 · Report</span></span><span class="arr">→</span></div>
+      <div class="rlist">
+        <div class="rl"><span class="day"><b>MON</b>周一</span><span class="what">上课</span><span class="fx"><span>精力<b>−8</b></span><span>学业<b>+1.2</b></span></span></div>
+        <div class="rl"><span class="day"><b>TUE</b>周二</span><span class="what">图书馆</span><span class="fx"><span>精力<b>−12</b></span><span>学业<b>+2.1</b></span><span>孤独<b>+1</b></span></span></div>
+        <div class="rl ev">└ 室友用了你的锅没洗。<span class="fx" style="margin-left:auto"><span>孤独<b>+1</b></span></span></div>
+        <div class="rl"><span class="day"><b>WED</b>周三</span><span class="what">做作业</span><span class="fx"><span>精力<b>−12</b></span><span>作业<b>+20</b></span></span></div>
+        <div class="rl"><span class="day"><b>THU</b>周四</span><span class="what">社交</span><span class="fx"><span>精力<b>−3</b></span><span>孤独<b>−7.5</b></span><span>融入<b>+1.8</b></span></span></div>
+        <div class="rl"><span class="day"><b>FRI</b>周五</span><span class="what">宅家</span><span class="fx"><span>精力<b>+15</b></span></span></div>
+      </div>
+      <div class="markcard"><span class="bi"><span class="zh">出分了：作业 1</span><span class="en">Results · Assignment 1</span></span><span class="big">67.5</span><span class="band">2:1</span></div>
+    </div>
+    <div class="btn primary f" tabindex="0" style="position:absolute;right:120px;bottom:100px"><span class="bi"><span class="zh">周末出门</span><span class="en">Weekend</span></span><span class="arr">→</span></div>
+  </section>
+  <div class="note"><b>14</b>周结算和出分：时刻表的写法（MON 周一 · 上课 ……… 数值变化），涨跌只用 + / − 号，不靠红绿；随机小事件缩进一格。出分用一块墨蓝站牌，分数是画面里最大的字，等级（First、2:1……）放在框里。出分时播一次短音效。</div>
+
+  <!-- 15. 周末城市地图 -->
+  <section class="sec" style="background-image:url(../assets/bg/map_city.jpg)">
+    <div id="citymap"></div>
+    <div class="aptag"><span class="bi"><span class="zh">周末</span><span class="en">Weekend</span></span><span class="ap"><i class="full"></i><i></i><i></i><i></i></span><span class="apn">1/4</span></div>
+    <div class="btn primary wkbtn f" tabindex="0"><span class="bi"><span class="zh">结束这周</span><span class="en">End Week</span></span><span class="arr">→</span></div>
+  </section>
+  <div class="note"><b>15</b>周末城市地图：插画和行李牌照旧（任务单说它是标准）。右上角一块“周末 / WEEKEND”站牌，行动点用 4 个圆点＋数字（剩 1 点）；花 2 点的地方（酒吧街、brunch）和车站锁上，牌子下面直接写地名和原因（“酒吧街：要 2 点，不够”）。焦点／悬停：牌子转一下、放大一点。</div>
+
+  <!-- 16. 信箱 -->
+  <section class="sec" style="background-image:url(../assets/bg/dorm_night.jpg)">
+    <div class="veil50"></div>
+    <div class="phone" style="left:300px">
+      <div class="ph-top"><b>‹　邮件</b><span>MAIL</span></div>
+      <div class="mlist">
+        <div class="mrow f unread cur" tabindex="0"><i></i><div class="who"><b>Dr. Marcia Campbell</b><small>Tea. Thursday. 2pm. Not optional.</small><small class="tr">喝茶。周四。下午两点。不是可选的。</small></div><span class="wk">W19</span></div>
+        <div class="mrow f" tabindex="0"><i></i><div class="who"><b>Student Records</b><small>Your Semester 1 results are now available</small><small class="tr">第一学期成绩已经出来了</small></div><span class="wk">W13</span></div>
+        <div class="mrow f" tabindex="0"><i></i><div class="who"><b>Dr. Marcia Campbell</b><small>Personal tutor meeting – Week 2</small><small class="tr">personal tutor 见面 · 第2周</small></div><span class="wk">W02</span></div>
+        <div class="mrow f" tabindex="0"><i></i><div class="who"><b>Accommodation Office</b><small>Fire alarm test this Thursday</small><small class="tr">本周四火警演习</small></div><span class="wk">W01</span></div>
+      </div>
+    </div>
+    <div class="mail" style="left:1180px;transform:translate(-50%,-50%) scale(.92)">
+      <div class="from"><span class="lab">FROM 发件人</span><b>Dr. Marcia Campbell</b><small>Personal Tutor · 社会学系</small></div>
+      <div class="date"><span class="lab">WEEK</span><b>19</b><small>周二 上午</small></div>
+      <div class="subj"><span class="lab">SUBJECT</span><b>Tea. Thursday. 2pm. Not optional.</b></div>
+      <div class="body"><span class="lab">标题译文</span>喝茶。周四。下午两点。不是可选的。<small>（邮件没有正文，只有这一行标题。）</small></div>
+    </div>
+  </section>
+  <div class="note"><b>16</b>信箱（Cora 2026-11-17 要加）：剧情里弹出过的邮件都存进手机的“邮件”App，可以回头看。左边是列表（发件人、英文标题＋中文、第几周），没看过的前面一个实心点；右边是选中的那封，样子和弹出来的邮件卡片（11）一样。邮件要跟着存档走。</div>
 </div>
 <script>
-// 说明文字挪到每个画面下面，不压在画面上
-document.querySelectorAll(".sec > .note").forEach((n) => n.parentNode.after(n));
 // 按窗口宽度缩放整页（舞台 1920 宽）
 function fit() { const s = window.innerWidth / 1920; const p = document.getElementById("page"); p.style.transform = `scale(${s})`; document.body.style.height = p.scrollHeight * s + "px"; }
 window.addEventListener("resize", fit); fit();
-// 周数翻牌：一位一位翻（个位先翻，十位后翻），每次 140ms
+const $ = (q, el = document) => el.querySelector(q), $$ = (q, el = document) => [...el.querySelectorAll(q)];
+
+// ===== 01 周数翻牌：一位一位翻，每次 140ms =====
 let week = 8;
 async function flipTo(n) {
   const digits = String(n).padStart(2, "0").split("");
-  const cells = [...document.querySelectorAll("#flap .fd")];
+  const cells = $$("#flap .fd");
   for (let i = cells.length - 1; i >= 0; i--) {
     const cell = cells[i], target = digits[i];
     let cur = +cell.firstChild.textContent;
@@ -333,10 +744,135 @@ async function flipTo(n) {
       await new Promise((r) => setTimeout(r, 140));
     }
   }
-  document.querySelector(".wk").textContent = `WEEK ${String(n).padStart(2, "0")} / 28`;
+  $(".wk").textContent = `WEEK ${String(n).padStart(2, "0")} / 28`;
 }
-document.getElementById("flipBtn").onclick = () => { week = week >= 28 ? 1 : week + 1; flipTo(week); };
-document.getElementById("annBtn").onclick = () => { const a = document.getElementById("announce"); a.style.animation = "none"; void a.offsetWidth; a.style.animation = ""; a.querySelector(".arr").style.animation = "none"; void a.offsetWidth; a.querySelector(".arr").style.animation = ""; };
+$("#flipBtn").onclick = () => { week = week >= 28 ? 1 : week + 1; flipTo(week); };
+$("#trBtn").onclick = () => $("#dialog").classList.toggle("cnfirst");
+
+// ===== 通用：方向键在同一个区域里移动焦点，回车／空格＝点击 =====
+document.addEventListener("keydown", (e) => {
+  const cur = document.activeElement;
+  if (!cur || !cur.classList.contains("f")) return;
+  const group = cur.closest("[data-nav]") || cur.closest("section");
+  const items = $$(".f", group).filter((x) => x.offsetParent !== null);
+  const i = items.indexOf(cur);
+  if (["ArrowDown", "ArrowRight"].includes(e.key)) { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+  if (["ArrowUp", "ArrowLeft"].includes(e.key)) { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); cur.click(); }
+});
+// 焦点和悬停同一个样子：鼠标移上去也把焦点给它
+document.addEventListener("mouseover", (e) => { const f = e.target.closest(".f"); if (f && document.activeElement !== f) f.focus({ preventScroll: true }); });
+
+// ===== 02 选项：1–4 直接选 =====
+const tks = $$("#choices .tk");
+tks.forEach((t) => {
+  t.onfocus = () => tks.forEach((x) => x.classList.toggle("focus", x === t));
+  t.onclick = () => { tks.forEach((x) => x.classList.toggle("picked", x === t)); };
+});
+document.addEventListener("keydown", (e) => {
+  const n = +e.key;
+  if (n >= 1 && n <= tks.length && document.activeElement && document.activeElement.closest("#choices")) { tks[n - 1].focus(); tks[n - 1].click(); }
+});
+
+// ===== 03 日程：点活动填下一个空格；点一行清空；底下算周五晚上的精力 =====
+const DAYS = [["MON", "周一"], ["TUE", "周二"], ["WED", "周三"], ["THU", "周四"], ["FRI", "周五"]];
+const ACTS = [   // 精力变化照 data/world.js（E人社交 −3）；效果写法用 + / ++，不写具体数
+  { id: "class", zh: "上课", en: "Lecture", e: -8, eff: "精力 −8　学业 +" },
+  { id: "library", zh: "图书馆", en: "Library", e: -12, eff: "精力 −12　学业 ++" },
+  { id: "homework", zh: "做作业", en: "Essay", e: -12, eff: "精力 −12　作业 +20" },
+  { id: "social", zh: "社交", en: "Social", e: -3, eff: "精力 −3　孤独 −　£15" },
+  { id: "home", zh: "宅家", en: "Stay In", e: 15, eff: "精力 +15" },
+  { id: "work", zh: "打工", en: "Shift", e: -14, eff: "精力 −14　+£40" },
+];
+const plan = ["class", "library", null, null, null];
+const START = 80;
+function drawSched() {
+  const cur = plan.indexOf(null);
+  $("#sched").innerHTML = DAYS.map(([en, zh], i) => {
+    const a = ACTS.find((x) => x.id === plan[i]);
+    return `<div class="row f ${i === cur ? "cur" : ""}" tabindex="0" data-i="${i}" style="top:${20.5 + i * 15.2}%"><div class="day"><b>${en}</b><span>${zh}</span></div><div class="dots"></div>
+      ${a ? `<div class="act"><span>${a.zh}</span><b>${a.en}</b></div>` : `<div class="empty"></div>`}</div>`;
+  }).join("");
+  $$("#sched .row").forEach((r) => r.onclick = () => { plan[+r.dataset.i] = null; drawSched(); });
+  let e = START;
+  for (const id of plan) if (id) e = Math.max(0, Math.min(100, e + ACTS.find((x) => x.id === id).e));
+  const left = plan.filter((x) => !x).length;
+  $("#forecast").innerHTML = `本周预计：周五晚上精力约 <b>${Math.round(e)}</b>${e < 25 ? `<span class="warn">▼偏低　效率会打折</span>` : ""}${left ? `　（还有 ${left} 天没排）` : ""}`;
+}
+$("#acts").insertAdjacentHTML("beforeend", ACTS.map((a) => `<div class="ac f" tabindex="0" data-a="${a.id}"><img src="../assets/ui/act_${a.id}.png"><span class="bi"><span class="zh">${a.zh}</span><span class="en">${a.en}</span></span><span class="eff">${a.eff.replace("　", "<br>")}</span></div>`).join(""));
+$$("#acts .ac").forEach((el) => el.onclick = () => { const i = plan.indexOf(null); if (i >= 0) { plan[i] = el.dataset.a; drawSched(); } });
+$("#clearBtn").onclick = () => { plan.fill(null); drawSched(); };
+$("#acts").dataset.nav = "1";
+drawSched();
+
+// ===== 04 开局：焦点停在哪个选项，下面就显示它的说明；点了就选中 =====
+$$(".chips").forEach((g) => {
+  g.dataset.nav = "1";
+  const desc = $(`.desc[data-for="${g.dataset.group}"]`);
+  const show = (c) => { desc.innerHTML = `<b>${$(".zh", c).textContent}</b>${c.dataset.d}${c.dataset.why ? `　（${c.dataset.why}）` : ""}`; };
+  $$(".chip", g).forEach((c) => {
+    c.onfocus = () => show(c);
+    c.onblur = () => { const on = $(".chip.on", g); if (on) show(on); };
+    c.onclick = () => { if (c.classList.contains("off")) return; $$(".chip", g).forEach((x) => x.classList.toggle("on", x === c)); show(c); };
+  });
+});
+
+// ===== 05 到站广播：点一下或按任意键跳过 =====
+const ann = $("#announce");
+function skipAnn() { if (!ann.classList.contains("gone")) ann.classList.add("gone"); }
+ann.onclick = skipAnn;
+document.addEventListener("keydown", (e) => { const r = ann.getBoundingClientRect(); if (r.top < innerHeight && r.bottom > 0 && !e.target.closest?.(".f")) skipAnn(); });
+$("#annBtn").onclick = () => { ann.classList.remove("gone"); ann.style.animation = "none"; void ann.offsetWidth; ann.style.animation = ""; };
+
+// ===== 06 出城：线路图。数值照 data/world.js 的 mapTravel =====
+const HOME = { x: 970, y: 471 };
+const CITIES = [
+  { zh: "爱丁堡", en: "Edinburgh", x: 872, y: 205, money: 120, energy: -14 },
+  { zh: "约克", en: "York", x: 1205, y: 485, money: 45, energy: -6 },
+  { zh: "湖区", en: "Lake District", x: 723, y: 510, money: 70, energy: +8 },
+  { zh: "伦敦", en: "London", x: 1182, y: 830, money: 90, energy: -10 },
+];
+const svg = $("#route svg");
+svg.innerHTML = CITIES.map((c, i) => `<line data-i="${i}" x1="${HOME.x}" y1="${HOME.y}" x2="${c.x}" y2="${c.y}"/>`).join("");
+const route = $("#route");
+route.insertAdjacentHTML("beforeend", `<div class="stn home" style="left:${HOME.x}px;top:${HOME.y}px"><i></i><span class="bi"><span class="zh">我们的城市</span><span class="en">You Live Here</span></span></div>`
+  + CITIES.map((c, i) => `<div class="stn f" tabindex="0" data-i="${i}" style="left:${c.x}px;top:${c.y}px"><i></i><span class="bi"><span class="zh">${c.zh}</span><span class="en">${c.en}</span></span><span class="fare">£${c.money}</span></div>`).join(""));
+route.dataset.nav = "1";
+function pickCity(i) {
+  $$("#route line").forEach((l) => l.classList.toggle("cur", +l.dataset.i === i));
+  $$("#route .stn.f").forEach((s) => s.classList.toggle("cur", +s.dataset.i === i));
+  const c = CITIES[i];
+  $("#trip").innerHTML = `<span class="bi"><span class="zh">${c.zh}</span><span class="en">${c.en}</span></span>
+    <p>火车票 <b>£${c.money}</b><br>占整个周末（4 个行动点）<br>精力 <b>${c.energy > 0 ? "+" : "−"}${Math.abs(c.energy)}</b>　孤独 −</p>`;
+}
+$$("#route .stn.f").forEach((s) => { s.onfocus = () => pickCity(+s.dataset.i); s.onclick = () => pickCity(+s.dataset.i); });
+pickCity(1);
+
+// ===== 13 回忆：CG 32 格（前 12 格解锁）＋ 结局 18 个（拿到 5 个） =====
+const CGS = [["first_night", "第一晚"], ["fire_alarm", "凌晨火警"], ["dark_at_four", "四点天黑"], ["spring_festival", "春节"], ["first_snow", "第一场雪"], ["library_allnighter", "图书馆通宵"],
+  ["graduation", "毕业典礼"], ["fishpond", "鱼塘大翻车！"], ["shop_work", "中超打工"], ["hermit", "老鼠留子"], ["travel_airport", "出发 机场"], ["travel_train", "出发 火车站"]];
+$("#gal").innerHTML = Array.from({ length: 32 }, (_, i) => CGS[i]
+  ? `<div class="gc f ${i === 2 ? "focus" : ""}" tabindex="0"><img src="../assets/cg/${CGS[i][0]}.jpg"><span>${CGS[i][1]}</span></div>`
+  : `<div class="gc locked f" tabindex="0"><b>?</b><small>LOCKED</small></div>`).join("");
+$("#gal").dataset.nav = "1";
+// 结局：主线／特殊结局用邮票，盖章用邮戳；got = 这台电脑上拿到过（独立保存，不随存档删除，和 CG 一样）
+const ENDS = [["stamps/home", "好久不见", 1], ["stamps/alien", "外星人外星人", 0], ["stamps/creep", "Creep", 0], ["stamps/disco", "普通DISCO", 1], ["stamps/lonely", "孤独患者", 0],
+  ["stamps/ghost_rule", "猛毒", 0], ["stamps/brain_girl", "脑浆炸裂女孩", 0], ["postmarks/first", "威风堂堂", 1], ["", "恋爱裁判", 0], ["", "恋爱ing", 0],
+  ["postmarks/senior_he", "告白预演", 0], ["postmarks/senior_be", "Money for Nothing", 0], ["postmarks/local_he", "Wonderwall", 1], ["postmarks/local_be", "没有明天", 0],
+  ["postmarks/groupmate_he", "融化", 1], ["postmarks/groupmate_be", "吸血鬼", 0], ["postmarks/otaku_he", "神的随波逐流", 0], ["postmarks/otaku_be", "拜启二重身", 0]];
+$("#ends").innerHTML = ENDS.map(([img, name, got]) => got
+  ? `<div class="ec f" tabindex="0"><div class="pic"><img src="../assets/ui/${img}.png?v=2"></div><span>${name}</span></div>`
+  : `<div class="ec locked f" tabindex="0"><div class="pic">?</div><span>？？？</span></div>`).join("");
+$("#ends").dataset.nav = "1";
+
+// ===== 15 周末城市地图：地点照 data/world.js 的 mapCity，剩 1 个行动点 =====
+const CITY = [["住处", "Home", 344, 200, 1], ["校园", "Campus", 827, 175, 1], ["图书馆", "Library", 1263, 255, 1], ["健身房", "Gym", 1665, 230, 1],
+  ["超市", "Tesco", 1446, 415, 1], ["中超", "Asian Mart", 1693, 430, 1], ["室内市场", "Market", 1475, 600, 1], ["酒吧街", "Pubs", 1607, 800, 2], ["brunch店", "Brunch", 1114, 815, 2], ["车站·出城", "Station", 511, 830, 4]];
+const AP = 1;
+$("#citymap").innerHTML = CITY.map(([zh, en, x, y, c]) => c > AP
+  ? `<div class="marker locked f" tabindex="0" style="left:${x}px;top:${y}px"><span class="bi"><span class="zh">${zh}</span><span class="en">${en}</span></span><span class="lk">${zh}：${c === 4 ? "要整个周末" : `要 ${c} 点，不够`}</span></div>`
+  : `<div class="marker f" tabindex="0" style="left:${x}px;top:${y}px"><span class="bi"><span class="zh">${zh}</span><span class="en">${en}</span><small>${c} 点</small></span></div>`).join("");
+$("#citymap").dataset.nav = "1";
 </script>
 </body>
 </html>

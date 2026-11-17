@@ -2,6 +2,7 @@
 const FX = {
   // 撕票转场：两片锯齿边的“小票”合上 → 执行换场 → 再拉开
   async tear(fn) {
+    playSfx("paper_tear");
     const w = document.createElement("div");
     w.className = "tear";
     w.innerHTML = `<div class="tear-a"></div><div class="tear-b"></div>`;
@@ -89,4 +90,22 @@ const FX = {
   },
 
   wait(ms) { return new Promise((r) => setTimeout(r, ms)); },
+
+  // 到站广播：换学期、放假时“下一站：大一·春 / NEXT STOP: SPRING TERM”从右边滑进来。
+  // 点一下或按任意键马上划走；同一个存档里第二次看到同一条只停 1 秒
+  announce(zh, en) {
+    playSfx("station_chime");
+    return new Promise((resolve) => {
+      const key = "ann_" + zh, seen = S && S.flags[key];
+      if (S) S.flags[key] = 1;
+      const el = document.createElement("div");
+      el.className = "announce";
+      el.innerHTML = `<div class="lbl">NOW<br>ARRIVING</div><div class="main bi"><span class="zh">下一站：${zh}</span><span class="en">Next Stop: ${en}</span></div><div class="arr">→</div><div class="skip">点一下或按任意键跳过</div>`;
+      $("#stage").appendChild(el);
+      let done = false;
+      const go = () => { if (done) return; done = true; document.removeEventListener("keydown", go, true); el.classList.add("gone"); setTimeout(() => { el.remove(); resolve(); }, 180); };
+      el.onclick = go; document.addEventListener("keydown", go, true);
+      setTimeout(go, seen ? 1000 : 2200);
+    });
+  },
 };

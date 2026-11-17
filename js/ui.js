@@ -10,7 +10,7 @@ window.addEventListener("resize", fitStage);
 // ===== 设置（存在本机，不随存档） =====
 const Settings = {
   KEY: "liuxue_settings",
-  v: { textSpeed: 28, volume: 70, bgmVolume: 60, showAvatar: true, showTr: true },   // textSpeed：每个字的毫秒数；volume 是音效音量
+  v: { textSpeed: 28, volume: 70, bgmVolume: 60, ambVolume: 30, showAvatar: true, showTr: true },   // textSpeed：每个字的毫秒数；volume 是音效音量
   load() { try { Object.assign(this.v, JSON.parse(localStorage.getItem(this.KEY) || "{}")); } catch (e) {} },
   set(k, val) { this.v[k] = val; localStorage.setItem(this.KEY, JSON.stringify(this.v)); },
 };
@@ -112,35 +112,70 @@ const Gallery = {
   all() { try { return JSON.parse(localStorage.getItem(this.KEY) || "{}"); } catch (e) { return {}; } },
   unlock(id) { const g = this.all(); if (!g[id]) { g[id] = 1; localStorage.setItem(this.KEY, JSON.stringify(g)); } },
   has(id) { return !!this.all()[id]; },
+  // 结局（回忆页下半部分）：主线结局和盖章，拿到过的记下来
+  ENDKEY: "liuxue_endings",
+  endings() { try { return JSON.parse(localStorage.getItem(this.ENDKEY) || "{}"); } catch (e) { return {}; } },
+  endingSeen(ids) { const g = this.endings(); ids.forEach((id) => { g[id] = 1; }); try { localStorage.setItem(this.ENDKEY, JSON.stringify(g)); } catch (e) {} },
 };
 function showCg(id) {
   const el = $("#cg");
   if (!id) return el.classList.add("hidden");
-  if (!DATA.cgList.find((c) => c.id === id)) console.warn("CG 列表里没有：", id);
+  const entry = DATA.cgList.find((c) => c.id === id);
+  if (!entry) console.warn("CG 列表里没有：", id);
+  if (entry && entry.pending) return;   // 图还没出：先跳过，不显示也不解锁
   el.src = `assets/cg/${id}.jpg`;
   el.classList.remove("hidden"); el.classList.remove("cg-in"); void el.offsetWidth; el.classList.add("cg-in");
   Gallery.unlock(id);
   if (S) { S.cgSeen = S.cgSeen || {}; S.cgSeen[id] = 1; }
 }
 
-// ===== 音效（先留接口：assets/sfx/{id}.mp3 存在就播，不存在就跳过） =====
+// ===== 音效（docs/音效试听清单.md）：assets/sfx/{id}.mp3 存在就播，不存在就跳过（找不到的记下来，不再反复请求） =====
+const _sfxMissing = {};
 function playSfx(id) {
+  if (!id || _sfxMissing[id] || !Settings.v.volume) return;
   try {
     const a = new Audio(`assets/sfx/${id}.mp3`);
+    a.onerror = () => { _sfxMissing[id] = 1; };
     a.volume = Settings.v.volume / 100;
     a.play().catch(() => {});
   } catch (e) {}
 }
+// 环境音：循环，一次只有一层，音量单独调（默认 30）。AMB.play("amb_rain") / AMB.stop()
+const AMB = {
+  el: null, id: null,
+  vol() { return (Settings.v.ambVolume ?? 30) / 100; },
+  play(id) {
+    if (AMB.id === id) return;
+    AMB.stop();
+    if (!id || _sfxMissing[id]) return;
+    const a = new Audio(`assets/sfx/${id}.mp3`);
+    a.loop = true; a.volume = AMB.vol();
+    a.onerror = () => { _sfxMissing[id] = 1; if (AMB.el === a) { AMB.el = null; AMB.id = null; } };
+    a.play().catch(() => {});
+    AMB.el = a; AMB.id = id;
+  },
+  stop() { if (AMB.el) { AMB.el.pause(); AMB.el = null; } AMB.id = null; },
+  setVolume() { if (AMB.el) AMB.el.volume = AMB.vol(); },
+};
+// 界面音效：点按钮、选选项、地图标记（具体的打孔、撕票、盖章各自在自己的地方播）
+document.addEventListener("click", (e) => {
+  const t = e.target.closest && e.target.closest("button, .btn, .ticket, .opt, .marker, .board-row, .act, .tab, .app");
+  if (t && !t.classList.contains("receipt")) playSfx("ui_click");
+}, true);
 
-// ===== 邮件卡片：剧情里弹出来，看完就关，不存档（docs/手机与友情.md） =====
+// ===== 邮件卡片：剧情里弹出来，看完就关；同时存进信箱（手机“邮件”App，跟存档走；2026-11-17 Cora 要加） =====
 function showMail(m) {
   return new Promise((resolve) => {
     hideDialog();
-    const esc = (t) => String(fillText(t || "")).replace(/&/g, "&amp;").replace(/</g, "&lt;");
     const el = document.createElement("div");
     el.id = "mail";
-    el.innerHTML = `<div class="mail-card"><div class="mail-head"><span class="mail-ico">✉</span><div><b>${esc(m.title)}</b><small>From: ${esc(m.from)}</small></div></div>
-      <div class="mail-body">${esc(m.body).replace(/\n/g, "<br>") || "<i>（没有正文）</i>"}</div><div class="mail-close">关闭</div></div>`;
+    el.innerHTML = mailHtml(m) + `<div class="mail-close">关闭</div>`;
+    el.firstElementChild.appendChild(el.lastElementChild);
+    if (S) {   // 信箱：弹出过的邮件都存下来（跟存档走），手机“邮件”App 里可以回头看
+      S.mailbox = S.mailbox || [];
+      S.mailbox.unshift({ ...m, when: timeLabel().join(" "), read: true });
+      if (S.mailbox.length > 60) S.mailbox.pop();
+    }
     Flow.push("邮件", `${fillText(m.from)}｜${fillText(m.title)}`, m.body ? fillText(m.body) : "");
     const close = () => { el.remove(); document.removeEventListener("keydown", key); resolve(); };
     const key = (e) => { if (e.key === " " || e.key === "Enter" || e.key === "Escape") { e.preventDefault(); close(); } };
@@ -149,6 +184,32 @@ function showMail(m) {
     $("#stage").appendChild(el);
     if (Flow.skip) setTimeout(close, 300);
   });
+}
+
+// ===== 手机消息通知：剧情里的【消息】。弹一条通知，点一下关掉；同时存进对方的聊天记录 =====
+function showMsg(m) {
+  playSfx("phone_msg");
+  return new Promise((resolve) => {
+    const from = m.from, name = DATA.characters[from] ? DATA.characters[from].name : from;
+    if (S && DATA.characters[from]) { S.chats[from] = S.chats[from] || []; S.chats[from].push({ role: "assistant", content: m.text, tr: m.tr || "" }); }
+    Flow.push(name + "（消息）", fillText(m.text), m.tr ? fillText(m.tr) : "");
+    const el = document.createElement("div");
+    el.id = "msgnote";
+    el.innerHTML = `<div class="mn-card"><div class="mn-head"><b>${Gloss.escape(name)}</b><span>MESSAGE</span></div><p>${Gloss.mark(fillText(m.text))}</p>${m.tr && Settings.v.showTr ? `<small>${Gloss.mark(fillText(m.tr))}</small>` : ""}</div>`;
+    const close = () => { el.remove(); document.removeEventListener("keydown", key); resolve(); };
+    const key = (e) => { if (e.key === " " || e.key === "Enter" || e.key === "Escape") { e.preventDefault(); close(); } };
+    el.onclick = close; document.addEventListener("keydown", key);
+    $("#stage").appendChild(el);
+    if (Flow.skip) setTimeout(close, 300);
+  });
+}
+
+// 邮件卡片的内容（弹出来和信箱里共用）。m: { from, title, body, tr（标题翻译）, bodyTr（正文翻译） }
+function mailHtml(m) {
+  const t = (x) => Gloss.mark(fillText(x || ""));
+  const showTr = Settings.v.showTr;
+  return `<div class="mail-card"><div class="mail-head"><span class="mail-ico">✉</span><div><b>${t(m.title)}</b>${m.tr && showTr ? `<em class="mail-tr">${t(m.tr)}</em>` : ""}<small>From: ${t(m.from)}${m.when ? `　·　${m.when}` : ""}</small></div></div>
+    <div class="mail-body">${m.body ? t(m.body).replace(/\n/g, "<br>") : "<i>（没有正文）</i>"}${m.bodyTr && showTr ? `<em class="mail-tr">${t(m.bodyTr).replace(/\n/g, "<br>")}</em>` : ""}</div></div>`;
 }
 
 function hideAll() {
@@ -224,7 +285,7 @@ function say(text, nameId, opt = {}) {
     let i = 0, done = false, timer = null, autoT = null;
     box.textContent = "";
     function finish() {
-      clearInterval(timer); box.textContent = full; trBox.style.visibility = "visible"; done = true; next.classList.remove("hidden");
+      clearInterval(timer); box.innerHTML = Gloss.mark(full); if (tr) trBox.innerHTML = Gloss.mark(tr); trBox.style.visibility = "visible"; done = true; next.classList.remove("hidden");
       Flow.markRead(text);
       if (Flow.skip) autoT = setTimeout(advance, 70);
       else if (Flow.auto) autoT = setTimeout(advance, 900 + full.length * 55);
@@ -264,32 +325,63 @@ function choose(options) {
     const box = $("#choices");
     box.innerHTML = "";
     box.classList.toggle("many", options.length > 4);
+    const L = "ABCDEFGH";
+    let done = false;
+    const pick = async (el, i) => {
+      if (done || options[i].disabled) return; done = true;
+      document.removeEventListener("keydown", key);
+      box.querySelectorAll(".ticket").forEach((t) => t.classList.add(t === el ? "punched" : "gone"));
+      await FX.wait(300);
+      box.classList.add("hidden");
+      Flow.push("", "▶ " + fillText(options[i].text));
+      resolve(i);
+    };
     options.forEach((o, i) => {
       const el = document.createElement("div");
       el.className = "ticket" + (o.disabled ? " disabled" : "");
-      el.style.animationDelay = i * 80 + "ms";
-      el.innerHTML = `<div>${fillText(o.text)}${o.sub ? `<em class="sub">${o.sub}</em>` : ""}</div>`;
-      el.onclick = async () => {
-        box.querySelectorAll(".ticket").forEach((t) => t.classList.add(t === el ? "punched" : "gone"));
-        await FX.wait(420);
-        box.classList.add("hidden");
-        Flow.push("", "▶ " + fillText(o.text));
-        resolve(i);
-      };
+      el.tabIndex = 0;
+      el.style.animationDelay = i * 60 + "ms";
+      const tr = o.tr && Settings.v.showTr ? `<em class="sub tr">${Gloss.mark(fillText(o.tr))}</em>` : "";   // 选项的中文翻译，跟对白同一个开关
+      el.innerHTML = `<div class="plat"><b>${L[i]}</b>${i < 9 ? `<kbd>${i + 1}</kbd>` : ""}</div><div class="opt">${Gloss.mark(fillText(o.text))}${tr}${o.sub ? `<em class="sub">${o.sub}</em>` : ""}</div>`;
+      el.onclick = () => pick(el, i);
       box.appendChild(el);
     });
+    const tks = [...box.querySelectorAll(".ticket")];
+    const key = (e) => {
+      if (document.getElementById("overlay") || document.getElementById("gnote")) return;
+      const n = +e.key;
+      if (n >= 1 && n <= tks.length) { e.preventDefault(); return pick(tks[n - 1], n - 1); }
+      const i = tks.indexOf(document.activeElement);
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); tks[(Math.max(0, i) + (e.key === "ArrowDown" ? 1 : tks.length - 1)) % tks.length].focus(); }
+      if ((e.key === "Enter" || e.key === " ") && i >= 0) { e.preventDefault(); pick(tks[i], i); }
+    };
+    document.addEventListener("keydown", key);
     box.classList.remove("hidden");
   });
 }
 
-function panel(html, cls = "") { const p = $("#panel"); p.className = cls; p.innerHTML = html; return p; }
+// 标题牌：墨蓝站牌＋箭头＋下面一行小英文（按中文标题自动补）
+const TITLE_EN = { "本周日程": "This Week · Departures", "这周过完了": "Week Report", "出分了": "Results", "设置": "Config", "存档": "Save", "读档": "Load", "对话记录": "Log",
+  "开局 · 你是谁": "Arrivals · Who Are You", "开局 · 自选tag": "Arrivals · Your Tags", "回忆": "Memories", "大一结束": "Year One Report" };
+function boardTitles(root) {
+  root.querySelectorAll(".panel-title").forEach((t) => {
+    if (t.dataset.done) return; t.dataset.done = 1;
+    const span = t.querySelector("span"); const zh = span ? span.textContent.trim() : "";
+    const key = Object.keys(TITLE_EN).find((k) => zh.startsWith(k));
+    t.innerHTML = `<span class="bi"><span class="zh">${span ? span.innerHTML : ""}</span><span class="en">${key ? TITLE_EN[key] : ""}</span></span><span class="arr">→</span>`;
+  });
+}
+function panel(html, cls = "") { const p = $("#panel"); p.className = cls; p.innerHTML = html; boardTitles(p); return p; }
 
+// 按钮的小英文（车站标识风：中文大字＋下面一行英文）
+const BTN_EN = { "开始这一周": "DEPART", "周末出门": "WEEKEND", "结束这周": "END WEEK", "下一步": "NEXT", "落地英国": "LAND", "继续": "CONTINUE", "回到标题": "TITLE", "不去了": "BACK", "知道了": "OK" };
 function receipt(label, n, onclick) {
   const el = document.createElement("div");
-  el.className = "receipt";
-  el.style.backgroundImage = `url(assets/ui/menu_${((n - 1) % 5) + 1}.png)`;
-  el.innerHTML = `<span>${label}</span>`;
+  el.className = "receipt btn primary";
+  el.tabIndex = 0;
+  el.innerHTML = `<span class="bi"><span class="zh">${label}</span><span class="en">${BTN_EN[label] || ""}</span></span><span class="arr">→</span>`;
   el.onclick = onclick;
+  el.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onclick(); } };
   return el;
 }
 
@@ -299,6 +391,7 @@ function toast(msg, ms = 1800) {
 }
 
 function stamp(text) {
+  playSfx("stamp");
   return new Promise((resolve) => {
     const s = $("#stamp"); s.querySelector("span").innerHTML = text;
     s.classList.remove("hidden"); s.style.animation = "none"; void s.offsetWidth; s.style.animation = "";
@@ -316,21 +409,41 @@ function renderHud() {
   const fresh = h.classList.contains("hidden");
   h.classList.remove("hidden");
   if (fresh) { h.classList.remove("slide"); void h.offsetWidth; h.classList.add("slide"); }
-  const bar = (k, label, val, max) =>
-    `<div class="bar" data-k="${k}"><img src="assets/ui/stat_${k}.png"><div class="bar-body">${label} ${Math.round(val)}<div class="track"><div class="fill" style="width:${Math.min(100, val / max * 100)}%"></div></div></div></div>`;
-  // 左上角日期块：学期小字 + 周数大数字（“第3周” → 3）；大二大三的关键周名直接写字
+  // 读数：有上限的写 /100；孤独偏高、精力偏低用 ▲▼ 加两个字（不只靠颜色）
+  const bar = (k, label, en, val, max, warn) =>
+    `<div class="bar ro ${warn ? "warnbar" : ""}" data-k="${k}"><div class="k"><span>${label}</span><em>${en}</em></div><div class="v">${Math.round(val)}${warn ? `<span class="warn">${warn}</span>` : `<small>/${max}</small>`}</div><div class="track"><div class="fill" style="width:${Math.min(100, val / max * 100)}%"></div></div></div>`;
   const [term, label] = timeLabel();
   const n = /^第(\d+)周$/.exec(label || "");
+  const TERM_EN = { "大一·秋": "Autumn Term", "大一·春": "Spring Term", "大一·夏": "Summer Term", "圣诞假": "Christmas Break", "复活节假": "Easter Break", "大一暑假": "Summer Break", "大二": "Year Two", "大三": "Year Three" };
+  const digits = n ? String(n[1]).padStart(2, "0").split("") : null;
+  const st = S.stats;
   h.innerHTML = `
-    <div class="hud-date ${n ? "" : "word"}"><small>${term}</small>${n ? `<b>${n[1]}</b><em>周<i>WEEK</i></em>` : `<b>${label}</b>`}</div>
-    <div class="hud-tag">${money(S.stats.money)}</div>
-    <div class="hud-bars">${bar("energy", "精力", S.stats.energy, energyMax())}${bar("study", "学业", S.stats.study, 100)}${bar("loneliness", "孤独感", S.stats.loneliness, 100)}${bar("belonging", "融入度", S.stats.belonging, 100)}${bar("homework", "作业", S.homework, 100)}</div>
-    <div class="hud-btns"><button class="hud-btn" id="btn-phone">手机</button><button class="hud-btn" id="btn-save">存档</button><button class="hud-btn" id="btn-settings">设置</button></div>`;
+    <div class="flapbox">${digits ? `<div class="flap-hud">${digits.map((d) => `<div class="fd"><i>${d}</i></div>`).join("")}</div>` : ""}
+      <div><div class="bi term"><span class="zh">${term}</span><span class="en">${TERM_EN[term] || ""}</span></div><div class="wk">${digits ? `WEEK ${digits.join("")} / 28` : label}</div></div></div>
+    <div class="hud-tag">${money(st.money)}</div>
+    <div class="hud-bars readouts">${bar("energy", "精力", "ENERGY", st.energy, energyMax(), st.energy < 25 ? "▼偏低" : "")}${bar("study", "学业", "STUDY", st.study, 100)}${bar("loneliness", "孤独", "LONELY", st.loneliness, 100, st.loneliness >= 70 ? "▲偏高" : "")}${bar("belonging", "融入", "BELONG", st.belonging, 100)}${bar("homework", "作业", "ESSAY", S.homework, 100)}</div>
+    <div class="hud-btns"><button class="hud-btn" id="btn-phone"><span class="zh">手机</span><span class="en">PHONE</span></button><button class="hud-btn" id="btn-save"><span class="zh">存档</span><span class="en">SAVE</span></button><button class="hud-btn" id="btn-settings"><span class="zh">设置</span><span class="en">CONFIG</span></button></div>`;
+  // 换周时周数一位一位翻过去（上一次显示的数字记在 h.dataset.wk）
+  if (digits && h.dataset.wk && h.dataset.wk !== digits.join("")) flipHud(h.dataset.wk.split(""), digits);
+  h.dataset.wk = digits ? digits.join("") : "";
   $("#btn-save").onclick = () => Sys.slots("save");
   $("#btn-phone").onclick = () => Phone.open();
   $("#btn-settings").onclick = () => Sys.settings();
 }
 function hideHud() { $("#hud").classList.add("hidden"); }
+async function flipHud(from, to) {
+  playSfx("flap");
+  const cells = [...document.querySelectorAll("#hud .flap-hud .fd i")];
+  for (let i = cells.length - 1; i >= 0; i--) {
+    let cur = +from[i];
+    while (String(cur) !== to[i]) {
+      cur = (cur + 1) % 10; cells[i].textContent = cur;
+      cells[i].parentNode.classList.remove("flip"); void cells[i].offsetWidth; cells[i].parentNode.classList.add("flip");
+      await FX.wait(110);
+    }
+    cells[i].textContent = to[i];
+  }
+}
 
 // 数值变化：飘字 + 刷新HUD
 function showFx(changes) {
@@ -345,6 +458,7 @@ function overlay(html, cls = "") {
   const o = document.createElement("div");
   o.id = "overlay"; o.className = cls;
   o.innerHTML = html;
+  boardTitles(o);
   $("#stage").appendChild(o);
   return o;
 }

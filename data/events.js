@@ -26,6 +26,11 @@
 //     flag_advance_senior: 1     推进CG已经演过（告白的条件之一，推进CG的事件里要写）
 //     skip_week: 1     这一周不排日程（翻课回国）：作业进度−15、出勤记缺勤由系统算，文本里不用再写
 //     extend: 2        最近一份没交的作业截止推后 2 周（Marcia 帮你申请延期）
+//     date_promise: "local:brunch"   答应这周末和谁在哪个地点约会：去了那里就演 date_local（或通用 weekend_date），没去好感 −8
+//     flag_library_buddy: 1  图书馆搭子（陈思琪）　flag_intern_applied: 1  大二投了实习　flag_uk_intern_y1: 1  大一在英国实习过
+//   { choice: [ { text: "Sure!", tr: "好啊！", ... } ] }   选项也可以带 tr（中文翻译）
+//   { mail: { from, title, tr: "标题译文", body, bodyTr: "正文译文" } }   邮件会存进手机“邮件”App
+//   词条（docs/词条表.md）会自动划线，不用在文本里标
 //
 // 条件里能直接用（中英文都行）：
 //   周数 week　学年 year　家境 wealth（'拮据'/'中产'/'富裕'；wealth 是 'poor'/'middle'/'rich'）

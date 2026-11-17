@@ -30,22 +30,35 @@ const AI = {
   playerBrief() {
     const h = hometown();
     const tagNames = S.tags.map((id) => DATA.tags.find((t) => t.id === id).name).join("、") || "无";
-    return `玩家叫${S.name || "（没起名）"}，中国女留学生，在英国北方城市读本科。家乡${h.name}，${optName("personality")}，专业${optName("major")}，家境${optName("wealth")}，住${optName("accommodation")}。tag：${tagNames}。现在是${timeLabel().join(" ")}。`;
+    return `玩家叫${S.name || "（没起名）"}，中国女留学生，在英国北方城市读本科。家乡${h.name}，${optName("personality")}，专业${optName("major")}（${DATA.majorFlavor.ai[S.bg.major] || ""}），家境${optName("wealth")}，住${optName("accommodation")}。tag：${tagNames}。现在是${timeLabel().join(" ")}。`;
   },
   RULES: "规则：像真人发消息一样简短，一次1到3句；吐槽喜剧基调；不要写动作描写和旁白；不要油腻情话，不要写“融入骨血”之类的套话；不写色情内容；不替玩家说话。",
 
-  // 对这个人的关系怎么告诉 AI：攻略对象说好感（0–3），固定 NPC 说友情（0–2），Essay学姐 不算
+  // 邀约（邀约系统.md 第七部分）：告诉 AI 玩家这周哪天有约、这个角色固定什么时候忙；AI 想约就在末尾写机器能读的标记，由游戏校验
+  inviteBrief(charId) {
+    if (S.year !== 1 || typeof Invites === "undefined") return "";
+    const taken = Invites.thisWeek().map((a) => `${DAY_CN[a.day]}约了${charName(a.who)}`).join("、") || "这周还没有约";
+    const b = (DATA.busy || {})[charId];
+    const places = DATA.mapCity.filter((l) => !l.travel && l.id !== "dorm_room").map((l) => `${l.id}=${l.name}`).join("，");
+    return `玩家这周：${taken}。${b ? `你自己固定的忙：${JSON.stringify(b)}。` : ""}如果你想约玩家、或者答应玩家的提议，在回复最后单独一行写 [[INVITE day=MON|TUE|WED|THU|FRI|WEEKEND place=地点id]]（地点id：${places}，出城写 travel）。不约就不要写。`;
+  },
+
+  // 对这个人的关系怎么告诉 AI：攻略对象说好感（−3～+3，2026-11-17 起敷衍、冒犯会扣），固定 NPC 说友情（0～+2），Essay学姐 不算
   relation(charId) {
-    if (DATA.loveIds.includes(charId)) return { line: `你对玩家的好感是${Math.round(S.aff[charId])}（0-100）${S.flags["confessed_" + charId] ? "，你们正在交往" : ""}。`, tag: "好感", max: 3 };
-    if (charId in S.fr) return { line: `你和玩家的友情是${Math.round(S.fr[charId])}（0-100，${frTier(S.fr[charId])}）。你们是朋友关系，不是恋爱对象。`, tag: "友情", max: 2 };
+    if (DATA.loveIds.includes(charId)) return { line: `你对玩家的好感是${Math.round(S.aff[charId])}（0-100）${S.flags["confessed_" + charId] ? "，你们正在交往" : ""}。`, tag: "好感", max: 3, min: -3 };
+    if (charId in S.fr) return { line: `你和玩家的友情是${Math.round(S.fr[charId])}（0-100，${frTier(S.fr[charId])}）。你们是朋友关系，不是恋爱对象。`, tag: "友情", max: 2, min: 0 };
     return { line: "", tag: "", max: 0 };
   },
   scoreLine(rel) {
-    return rel.max ? `回复完以后，另起一行写 [${rel.tag}+N]，N 是 0 到 ${rel.max} 的整数：玩家这句话让你更喜欢她就给高一点，敷衍或者冒犯就给 0。这一行玩家看不到。` : "";
+    if (!rel.max) return "";
+    return rel.min < 0
+      ? `回复完以后，另起一行写 [${rel.tag}+N] 或 [${rel.tag}-N]，N 是 0 到 ${rel.max} 的整数：玩家这句话让你更喜欢她就加，平常的聊天给 0，敷衍、冷淡给 -1 到 -2，冒犯给 -3。这一行玩家看不到。`
+      : `回复完以后，另起一行写 [${rel.tag}+N]，N 是 0 到 ${rel.max} 的整数：玩家这句话让你更喜欢她就给高一点，敷衍或者冒犯就给 0。这一行玩家看不到。`;
   },
   parseScore(r, rel) {
-    const m = r.match(/\[(?:好感|友情)\s*\+\s*(\d)\]/);
-    return { text: r.replace(/\[(?:好感|友情)[^\]]*\]/g, "").trim(), aff: m ? Math.min(rel.max, +m[1]) : 0 };
+    const m = r.match(/\[(?:好感|友情)\s*([+\-−])\s*(\d)\]/);
+    const n = m ? (m[1] === "+" ? 1 : -1) * +m[2] : 0;
+    return { text: r.replace(/\[(?:好感|友情)[^\]]*\]/g, "").trim(), aff: Math.max(rel.min || 0, Math.min(rel.max, n)) };
   },
 
   // 单聊。返回 { text, aff }：aff 是 AI 判断这轮聊天该加多少好感／友情
@@ -54,7 +67,8 @@ const AI = {
     const sys = [
       `你在扮演留学生活模拟游戏里的角色「${c.name}」，正在用手机和玩家聊天。`,
       `人设：${c.persona || "（还没有人设，按名字自然地聊）"}`,
-      this.playerBrief(), rel.line, this.RULES, this.scoreLine(rel),
+      DATA.profiles && DATA.profiles[charId] ? `专业、年级和认识的人：${DATA.profiles[charId]}` : "",
+      this.playerBrief(), rel.line, this.inviteBrief(charId), this.RULES, this.scoreLine(rel),
     ].filter(Boolean).join("\n");
     const r = await this.request([{ role: "system", content: sys }, ...history.filter((m) => !m.sys).slice(-20).map(({ role, content }) => ({ role, content }))]);
     if (r.error) return { text: r.error, aff: 0, failed: true };

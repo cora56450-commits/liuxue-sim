@@ -236,3 +236,8 @@
 .note-cover.text.big { height: 340px; padding: 40px 30px 30px; border-radius: 10px; border: 3px solid var(--text); }
 .note-cover.text.big i { font-size: 96px; left: 24px; top: 10px; }
 .note-cover.text.big p { font-size: 34px; -webkit-line-clamp: 5; }
+
+/* 设置最下面：回到标题、退出游戏 */
+.set-leave { display: flex; justify-content: flex-end; gap: 16px; margin-top: 6px; }
+#overlay .leave-btn { background: var(--white); border: 4px solid var(--peach); border-radius: 999px; font-size: 26px; padding: 10px 34px; box-shadow: 4px 4px 0 var(--pink); }
+#overlay .leave-btn:hover { background: var(--butter); color: var(--text); }

@@ -43,23 +43,23 @@ DATA.mapTravel = [
 
 // ===== 大一日历：28 个可玩周 =====
 // term    学期名（HUD 和翻牌用）
-// fixed   这周开头要演的固定事件（data/events 里的 id），可以写多个
+// fixed   这周开头要演的固定事件（data/events 里的 id），可以写多个；after：这周结束、出分以后再演的
 // vacation 假期周：不排日程，演完 fixed 里的假期事件直接过完
 // deadline 这周周末交哪份作业（延期以后实际是哪周交，看 Rules.deadlineWeek）；exam 这周考试
 // tutor_meeting_* 是 personal tutor 见面（第2、14、25周）；第14周先演找房子
 // rain    下雨周（Ollie 心动事件的条件之一）
 DATA.calendar = [
-  { week: 1,  term: "大一·秋", label: "第1周",  fixed: ["freshers", "freshers_group", "fire_alarm"] },
+  { week: 1,  term: "大一·秋", label: "第1周",  fixed: ["freshers", "fire_alarm"] },
   { week: 2,  term: "大一·秋", label: "第2周",  fixed: ["first_lecture", "tutor_meeting_1"] },
   { week: 3,  term: "大一·秋", label: "第3周",  fixed: ["group_project"], rain: true },
   { week: 4,  term: "大一·秋", label: "第4周",  fixed: ["chinese_shop"] },
   { week: 5,  term: "大一·秋", label: "第5周",  fixed: ["first_sick"], rain: true },
   { week: 6,  term: "大一·秋", label: "第6周",  fixed: ["reading_week"] },
   { week: 7,  term: "大一·秋", label: "第7周",  fixed: ["dark_at_four"] },
-  { week: 8,  term: "大一·秋", label: "第8周",  fixed: ["bonfire_night"], deadline: "a1", rain: true },
+  { week: 8,  term: "大一·秋", label: "第8周",  after: ["bonfire_night"], deadline: "a1", rain: true },   // 篝火节开头要读作业1的分数，所以放在这周出分以后演
   { week: 9,  term: "大一·秋", label: "第9周",  fixed: ["first_presentation"] },
-  { week: 10, term: "大一·秋", label: "第10周", fixed: ["xmas_market"], rain: true },
-  { week: 11, term: "大一·秋", label: "第11周", fixed: ["ddl_before_xmas"], deadline: "a2" },
+  { week: 10, term: "大一·秋", label: "第10周", fixed: ["essay_senior_offer"], rain: true },
+  { week: 11, term: "大一·秋", label: "第11周", fixed: ["ddl_before_xmas", "xmas_market"], deadline: "a2" },
   { week: 12, term: "圣诞假",  label: "第12周", fixed: ["term_end"], vacation: true },
   { week: 13, term: "大一·春", label: "第13周", fixed: ["results_day"], rain: true },
   { week: 14, term: "大一·春", label: "第14周", fixed: ["house_hunting", "tutor_meeting_2"] },
@@ -68,13 +68,13 @@ DATA.calendar = [
   { week: 17, term: "大一·春", label: "第17周", fixed: ["group_presentation"], deadline: "a3" },
   { week: 18, term: "大一·春", label: "第18周", fixed: ["first_snow"] },
   { week: 19, term: "大一·春", label: "第19周", rain: true },
-  { week: 20, term: "大一·春", label: "第20周" },
-  { week: 21, term: "大一·春", label: "第21周", rain: true },
+  { week: 20, term: "大一·春", label: "第20周", fixed: ["strike"] },
+  { week: 21, term: "大一·春", label: "第21周", fixed: ["essay_senior_again"], rain: true },
   { week: 22, term: "大一·春", label: "第22周", fixed: ["final_assignment"], deadline: "a4" },
   { week: 23, term: "复活节假", label: "第23周", fixed: ["easter_break"], vacation: true },
-  { week: 24, term: "大一·夏", label: "第24周" },
+  { week: 24, term: "大一·夏", label: "第24周", fixed: ["term3_start"] },
   { week: 25, term: "大一·夏", label: "第25周", fixed: ["tutor_meeting_3"], rain: true },
-  { week: 26, term: "大一·夏", label: "第26周" },
+  { week: 26, term: "大一·夏", label: "第26周", fixed: ["first_sunny_day"] },
   { week: 27, term: "大一·夏", label: "第27周", fixed: ["exam_week"], exam: true },
   { week: 28, term: "大一·夏", label: "第28周", fixed: ["year1_end"] },
 ];
@@ -86,6 +86,24 @@ DATA.assignments = {
   a3: { name: "作业3：小组presentation" },
   a4: { name: "作业4：期末大作业" },
 };
+
+// 专业差异（docs/专业设定.md）：作业名按专业显示；“上课”的结算文字按专业换一句；“做作业”的地点
+DATA.assignmentsByMajor = {
+  design:   { a1: "作业1：概念板＋草图本", a2: "作业2：第一个完整项目“身份”", a3: "作业3：小组展示", a4: "作业4：第二个项目＋作品集", exam: "期末：作品集评审" },
+  media:    { a1: "作业1：媒体分析短文",   a2: "作业2：期末论文",           a3: "作业3：小组展示", a4: "作业4：短视频项目＋反思报告", exam: "期末：闭卷考试" },
+  business: { a1: "作业1：案例分析报告",   a2: "作业2：期末论文",           a3: "作业3：小组展示", a4: "作业4：带数据模型的商业报告", exam: "期末：闭卷考试" },
+};
+DATA.majorFlavor = {
+  class: { design: "在工作室改图", media: "听媒体理论", business: "抄了十二页PPT" },
+  homeworkBg: { design: "studio_night", media: "library", business: "library" },
+  examBg: { design: "crit_room", media: "exam_hall", business: "exam_hall" },
+  ai: {   // 传给聊天和小红书的专业说明
+    design: "设计：作业是项目和作品集，常在工作室熬夜，crit 时要用英语解释灵感；在国内常被以为是“学画画的”。",
+    media: "传媒：作业是论文、短视频和小组项目；常被亲戚以为是“学拍抖音的”。",
+    business: "商科：中国学生最多的专业，大课两百人，作业是报告和案例分析，期末有闭卷考试；自嘲“水专业”，但并不轻松。",
+  },
+};
+function assignmentName(id) { const m = DATA.assignmentsByMajor[(typeof S !== "undefined" && S && S.bg.major) || "design"]; return (m && m[id]) || (DATA.assignments[id] || {}).name || id; }
 
 // 三个学期各包含哪些周（出勤按学期统计）
 DATA.terms = [[1, 11], [13, 22], [24, 28]];
@@ -159,6 +177,10 @@ DATA.tuning = {
   // —— 好感 ——
   firstMeet: 5, firstMeetSilver: 3, prettyStart: 10, weekendMeet: 4, meetChance: 0.6,
   affDecayAfterWeeks: 3, affDecayMin: 40, affDecay: -2,
+  datingDecayAfterWeeks: 2, datingDecay: -3,   // 交往中：连续2周没互动，每周 −3
+  busyDating: -1,                              // 大二大三浓缩：交往中、这一段选了“卷”或“打工攒钱”，每周 −1（没空陪）
+  dateNoShow: -8,                              // 答应了周末约会又没去
+  buddy: "chen_siqi", buddyLibrary: 2, buddyFr: 2,   // 图书馆搭子：flag_library_buddy 之后，每周工作日去图书馆≥2格，陈思琪友情 +2
   pondLevel: 60, pondChance: 0.06, pondPenalty: -20,
   // —— 钱 ——
   livingFactor: { kitchen_killer: 1.3, saver: 0.85, chef: 0.8 },
@@ -184,6 +206,10 @@ DATA.tuning = {
   lostEnergy: -5, lostAP: 1, lostMoney: -5,
   // tutor
   tutorCheckinLoneliness: 70, tutorCheckinGap: 4,
+  // 2026-11-17 晚（问题记录·补充）
+  resitPenalty: 8,                                   // 补考：考试公式再扣 8 分
+  summerUkLoneliness: 3, summerJuneRent: 300, summerFlight: 400,   // 大一暑假：在英国孤独每周 +3；六月短租 £300；暑假中间换国家机票 £400
+  internEnglish: 60, internBelonging: 40, internBelongingUK: 30,   // 大二实习申请成功的条件（有 uk_intern_y1 时融入门槛降到 30）
 };
 
 // 家教森严：每周日的家庭视频（固定文本，策划这边可以改）

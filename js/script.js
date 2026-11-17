@@ -6,6 +6,8 @@ async function runScript(steps) {
     if (st.sfx) playSfx(st.sfx);
     if (st.bgm !== undefined) BGM.play(st.bgm);          // { bgm: "comedy" } 切歌；{ bgm: null } 停
     if (st.mail) await showMail(st.mail);                // { mail: { from, title, body } } 邮件卡片，看完就关
+    if (st.msg) await showMsg(st.msg);                   // { msg: { from, text, tr } } 手机消息：弹一条通知，同时存进聊天记录
+    if (st.invite) await Invites.offer({ source: "story", ...st.invite });   // { invite: { who, day, place, text, tr, festival } } 剧情固定邀约
     if (st.show) {
       // { show: "senior", expr: "smile", pose: "summer", at: "left" }；也可以写成 "senior:smile"
       const [id, ex] = st.show.split(":");
@@ -21,6 +23,7 @@ async function runScript(steps) {
     if (st.hide) Stage.hide(st.hide);
     if (st.meet) showFx(meetChar(st.meet));
     if (st.fx && !st.say) showFx(applyFx(st.fx));
+    await pondNow();
     if (st.say) {
       if (st.expr && st.name && !st.show) Stage.setExpr(st.name, st.expr);
       await say(st.say, st.name, { tr: st.tr });
@@ -29,9 +32,10 @@ async function runScript(steps) {
     if (st.choice) {
       const opts = st.choice.filter((c) => c.if === undefined || evalCond(c.if));
       hideDialog();
-      const i = await choose(opts.map((c) => ({ text: c.text, sub: c.sub })));
+      const i = await choose(opts.map((c) => ({ text: c.text, sub: c.sub, tr: c.tr })));   // tr：选项的中文翻译
       const c = opts[i];
       showFx(applyFx(c.fx));
+      await pondNow();
       if (c.then) await runScript(c.then);
     }
     if (st.if !== undefined) await runScript(evalCond(st.if) ? st.then : st.else);
@@ -46,6 +50,20 @@ function meetChar(c) {
   S.flags["met_" + c] = 1;
   const T = DATA.tuning;
   return applyFx({ ["aff_" + c]: T.firstMeet + (S.tags.includes("silver") ? T.firstMeetSilver : 0) });
+}
+
+// fx 里写了 pond_trigger（节日“都答应”）：当场判定鱼塘翻车
+// 节日“都答应”：当场判定翻车，30%（恋爱脑 ×2）；翻了设 flag_pond_blown，后面的剧情用 !标记('pond_blown') 判断
+async function pondNow() {
+  if (!S || !S.pondTriggerNow) return;
+  S.pondTriggerNow = 0;
+  const T = DATA.tuning, who = DATA.loveIds.filter((c) => S.aff[c] >= 30);
+  if (who.length < 2 || Math.random() >= 0.3 * (S.tags.includes("lovebrain") ? 2 : 1)) return;
+  S.flags.pond_blown = 1;
+  for (const c of who) S.aff[c] = Math.max(0, S.aff[c] + T.pondPenalty);
+  S.pond.count++; S.pond.maxPeople = Math.max(S.pond.maxPeople, who.length);
+  S.pond.involved = S.pond.involved || {}; for (const c of who) S.pond.involved[c] = 1;
+  await runScript(DATA.events.fishpond_blowup);
 }
 
 async function runEvent(id) {

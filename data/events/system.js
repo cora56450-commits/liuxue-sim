@@ -90,3 +90,9 @@ Object.assign(DATA.events, {
 DATA.lostText = {
   _default: "（占位）你迷路了，多绕了一大圈才到。",
 };
+
+// ===== 周末约会（剧情里写 fx: { date_promise: "local:brunch" } 答应约会；可以按人写 date_local、date_noshow_local 覆盖）=====
+Object.assign(DATA.events, {
+  weekend_date: [{ say: "（占位）约好的人已经在那儿等你了。" }],
+  date_noshow: [{ bg: "dorm_room" }, { say: "（占位）手机上有一条消息：“你今天还来吗？”" }],
+});

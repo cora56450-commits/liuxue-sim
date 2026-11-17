@@ -68,7 +68,7 @@ DATA.characters = {
                 calib: { scale: 1.019, headTop: 0.015 } },
   pike:         { name: "Professor Geoffrey Pike", short: "Pike", height: 176, color: "#8A6A45", sprites: { base: "chara/npc/pike.png" },    calib: { scale: 1.091, headTop: 0.037 } },
   zhao_zihao:   { name: "赵子豪",            short: "赵子豪", height: 176, color: "#2A3150", sprites: { base: "chara/npc/zhao_zihao.png" },  friend: { from: "cn" }, contact: true, persona: "华人学生会主席，家里有关系。办联谊、运营公众号，说话像在拉赞助；推的“留学辅导”其实是代写，但不会明说。出事时第一个撇清关系。说中文。",
-                calib: { scale: 1.178, headTop: 0.02 } },  // 素材还是白底，等抠好的图
+                calib: { scale: 1.178, headTop: 0.03 } },  // 2026-11-17 换成抠好的图
   dave:         { name: "Dave",              short: "Dave",  height: 175, color: "#C9A227", sprites: { base: "chara/npc/dave.png" },         calib: { scale: 1.305, headTop: 0.047 } },
   chen_jianguo: { name: "陈建国",            short: "陈老板", height: 172, color: "#4E7A5A", sprites: { base: "chara/npc/chen_jianguo.png" }, friend: { from: "cn", event: true }, contact: true, persona: "中超老板，温州人，2000年代来英国，从后厨做到开店。女儿在读A-level，常向你打听英国大学；会给你留冻饺子、帮你兑硬币。说中文，带一点温州口音的普通话。",
                 calib: { scale: 1.199, headTop: 0.034 } },  // 原图人物偏大，这里调小
@@ -88,7 +88,7 @@ DATA.characters = {
                 calib: { scale: 1, headTop: 0 } },  // 还没有立绘，名牌占位
   sophie:       { name: "Sophie",            short: "Sophie", height: 158, color: "#B79AD0", sprites: { base: "chara/npc/sophie.png" },      friend: { from: "uk" }, contact: true, persona: "brunch店店员，艺术生，攒钱想开自己的店。每次把你的名字写错，错法每次不同；记得你常点的东西。用英文，语气很轻快。",
                 calib: { scale: 0.914, headTop: 0.025 } },
-  marcia:       { name: "Dr. Marcia Campbell", short: "Marcia", height: 163, color: "#8A6A45", sprites: {}, calib: { scale: 1, headTop: 0 } },  // personal tutor，社会学讲师；还没有立绘，名牌占位；没有联系方式（只发邮件）
+  marcia:       { name: "Dr. Marcia Campbell", short: "Marcia", height: 163, color: "#8A6A45", sprites: { base: "chara/npc/marcia.png" }, calib: { scale: 1.039, headTop: 0.07 } },  // personal tutor，社会学讲师；没有联系方式（只发邮件）
   wu_tong:      { name: "吴桐",              short: "吴桐",  height: 155, color: "#4E7A5A", sprites: { base: "chara/npc/wu_tong.png" },      friend: { from: "cn", roommate: "ensuite", event: true }, contact: true, persona: "四川人，ensuite室友，家里在成都开火锅店。情绪稳定得离谱，只有她那口电饭煲（外婆送的）被人偷用、饭放到长毛的时候会破防。说中文，带四川话。",
                 calib: { scale: 0.989, headTop: 0.027 } },
 };
@@ -116,4 +116,36 @@ DATA.spriteRule = {
   summerFromWeek: 24, // 大一第几周开始自动换夏装（脚本里写了 pose 的以脚本为准）
   winterWeeks: [7, 20],
   homeBgs: ["dorm_room", "dorm_night", "studio_night", "flat_kitchen", "shared_house", "home_china"],  // 这些背景算“居家场景”
+};
+
+// 每个人的专业、年级和互相的关系（docs/人物关系与专业.md），聊天时和 persona 一起传给 AI，让 AI 知道谁认识谁
+DATA.profiles = {
+  senior: "金融 Finance，大三（主角大一结束时毕业，之后用毕业生签证留下工作）。Kieran 一直找他代购动漫周边，在主角之前他是唯一知道 Kieran 是二次元的人，一直替他保密；是中超陈建国的老主顾，也帮陈建国进一部分货；在学生会群里打广告，赵子豪收他“赞助费”；给 Mr. Khan 介绍租客拿介绍费；每年开学帮新生搬宿舍，楼管 Dave 叫他“Leo, love”。会说：“赵子豪又找我拉赞助了。你别加他们那个辅导群。”",
+  local: "Fashion Marketing，大一（gap year 后入学，比主角大两岁），迎新时在时尚社帮忙摆摊。和 Ploy 同专业同年级，是朋友，没有感情纠葛；brunch 店常客，店员 Sophie 每次都把他的名字写对。",
+  groupmate: "Fashion Marketing，大一，和 Ollie 同专业同年级；和主角、Hannah、Ben 同一门选修课一组。家里讲粤语，和 Mei 碰到会用粤语聊得很快。会说：“Ollie said you two had brunch?? spill「Ollie说你俩吃了brunch？？快说」”",
+  otaku: "工程 Engineering（四年制本硕连读），大二，和主角同一年毕业；迎新时是动漫社干事。一直找学长代购周边，学长替他保密；Jake 是他健身房那群朋友之一，也不知道他是二次元；只有妈妈一直知道他的两面。",
+  chen_siqi: "精算 Actuarial Science，大一，ensuite 室友。和周可欣是两个极端（一个永远在图书馆，一个永远在伦敦），但互相嘴硬地关心；和 Hannah 是图书馆四楼的常客，暗暗较劲谁先到。会说：“图书馆那个英国女生（Hannah）今天比我早到了十分钟。我明天七点半去。”",
+  zhou_kexin: "传媒，大一，ensuite 室友，男朋友在伦敦。主角是传媒专业的话专业课一起上，她会分享笔记（因为她周五总缺课）。",
+  wu_tong: "酒店与餐饮管理（爸妈选的），大一，ensuite 室友，家里开火锅店；是思琪和可欣都会去找的“稳定器”；每周去中超买底料，陈建国给她留成都那个牌子。会说：“可欣这周又去伦敦了？她男朋友到底长啥样。”",
+  jake: "体育科学 Sport Science，大一，学校宿舍室友，想当体育老师，大二下学期去交换。和 Giulia 是厨房冤家；是 Kieran 健身房朋友之一（叫他 Kez），不知道 Kieran 是二次元。",
+  giulia: "建筑 Architecture，大一，学校宿舍室友。和 Jake 是厨房冤家；主角是设计专业的话，两人共用工作室楼层，凌晨两点一起排打印机。",
+  mei: "会计 Accounting，大一，学校宿舍室友，以后去新加坡；是 flat 里的翻译，夹在 Jake 和 Giulia 中间劝架；和 Ploy 都讲粤语。",
+  hannah: "政治与国际关系，大一，奖学金生，选修课组员；是第一个知道 Ben 在打两份工的人，后来不再在群里催他；和陈思琪在图书馆四楼较劲。",
+  ben: "计算机 Computer Science，大一，选修课组员，打两份工。",
+  zhao_zihao: "国际商务，大二，华人学生会主席；主角是商科的话是同专业学长。收学长的“赞助费”；学生会传单背面印着 Essay学姐的广告，出事时第一个撇清关系。",
+  essay_senior: "传媒硕士；真身是靠代写赚学费的留学生；广告印在学生会传单背面。",
+  sophie: "纯艺术 Fine Art，大二，在 brunch 店打工；每次都把 Ollie 的名字写对，只把主角的写错。",
+  chen_jianguo: "中超老板。学长是老主顾、帮他进货；给吴桐留成都牌子的底料；女儿在读 A-level，想报主角的学校。会说：“那个四川小姑娘（吴桐）是你室友啊？她买底料比我进货还准时。”",
+  khan: "社会房的中介兼房东；学长给他介绍租客拿介绍费。",
+};
+
+// 邀约：每个人固定的忙（docs/邀约系统.md 第六部分），js/invites.js 的 Invites.busy 读这张表
+//   days：哪几天没空；weekendUntilFlag：周末没空，直到这个标记出现；examDdl：考试周和 ddl 周没空；onlyPlaces：只能约在这些地点
+DATA.busy = {
+  otaku:        { days: ["TUE", "THU"] },                 // 周二、周四晚上健身房
+  zhou_kexin:   { weekendUntilFlag: "kexin_breakup" },    // 周末去伦敦，大二分手后（剧情设 flag_kexin_breakup）有空
+  chen_siqi:    { examDdl: true },
+  ben:          { onlyPlaces: ["campus", "library"] },    // 打两份工，只有约在学校能成
+  chen_jianguo: { onlyPlaces: ["chinese_market"] },       // 只能约在中超
+  // 学长：周六上午寄代购——周末不分上下午，按“下午可以”处理，不算没空
 };

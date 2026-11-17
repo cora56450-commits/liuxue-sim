@@ -15,3 +15,15 @@ DATA.noteCovers = ["supermarket", "indoor_market", "studio_night", "crit_room", 
 DATA.momentsFallback = {
   _default: ["（占位）发了一张照片。", "（占位）今天的天空。", "（占位）又是下雨的一天。"],
 };
+
+// 没有 API Key 时的手机聊天：每人每周一次，对方先发一句，玩家三选一（好的 +2、一般 0、敷衍 −2），每周换一组。
+// 策划这边按人写（键是角色 id，没写的人用 _default）。英文的加 askTr／replyTr 翻译。
+DATA.chatFallback = {
+  _default: { sets: [
+    { ask: "（占位）在吗？最近怎么样？", options: [
+      { text: "（占位）认真回", reply: "（占位）", d: 2 },
+      { text: "（占位）一般地回", reply: "（占位）", d: 0 },
+      { text: "（占位）敷衍", reply: "（占位）", d: -2 },
+    ] },
+  ] },
+};
