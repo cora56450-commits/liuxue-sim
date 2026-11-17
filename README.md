@@ -12,6 +12,7 @@
 index.html            入口
 css/style.css         第一阶段样式（主题色在最上面的 :root）
 css/phase2.css        第二阶段新增样式（立绘同框、CG、头像、系统界面、手机、结局盖章）
+css/phase3.css        第三阶段 UI 重设计（参考 Persona 3–5 的版式，说明见 docs/UI设计.md）
 js/state.js           存档状态、数值规则 Rules（每周结算、活动、作业分数、结局判定）、存档栏位
 js/sprites.js         立绘选图和按身高摆放的规则（游戏和校准页共用）
 js/ui.js              背景/立绘/CG/对话框/选项/HUD/设置项/记录·自动·快进/邮件卡片
@@ -120,5 +121,5 @@ assets/ui/            UI件；fx/ 是切好的10个漫画符号
 
 ## 注意
 
-- 字体目前用的是系统自带字体（苹方/微软雅黑），上Steam前要换成可商用的免费字体，例如思源黑体（Noto Sans SC）、阿里巴巴普惠体，打包进游戏里。
+- 字体：思源黑体（中文）和 Barlow Condensed（英文、数字）已经放进 `assets/fonts/`，都是 SIL OFL，可商用、可打包，授权写在 `assets/fonts/README.md`。现在只有 UI 样张页 `tools/ui_sheet.html` 在用，游戏界面重做时换上。
 - 存档、设置、已读记录、画廊都存在浏览器的 localStorage 里，换浏览器或清缓存会丢。

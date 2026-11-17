@@ -15,17 +15,17 @@ const Scenes = {
     // 标题背景右侧自带三条色带，菜单文字直接压在色带上；“回忆”是另外加的第四条
     const bars = p.querySelector(".title-bars");
     const items = [
-      ["新游戏", () => FX.tear(() => Scenes.create()), true],
-      ["继续", () => Sys.slots("load"), Save.any()],
-      ["设置", () => Sys.settings(), true],
-      ["回忆", () => Sys.gallery(), true],
+      ["新游戏", "NEW GAME", () => FX.tear(() => Scenes.create()), true],
+      ["继续", "CONTINUE", () => Sys.slots("load"), Save.any()],
+      ["设置", "CONFIG", () => Sys.settings(), true],
+      ["回忆", "MEMORIES", () => Sys.gallery(), true],
     ];
-    items.forEach(([t, fn, ok], i) => {
+    items.forEach(([t, en, fn, ok], i) => {
       const el = document.createElement("div");
       el.className = "title-bar" + (ok ? "" : " off") + (i === 3 ? " extra" : "");
-      el.style.top = [356, 459, 563, 667][i] + "px";
+      el.style.top = [330, 452, 574, 696][i] + "px";
       el.style.animationDelay = 600 + i * 110 + "ms";
-      el.innerHTML = `<span>${t}</span>`;
+      el.innerHTML = `<span>${t}</span><i>${en}</i>`;
       if (ok) el.onclick = fn;
       bars.appendChild(el);
     });

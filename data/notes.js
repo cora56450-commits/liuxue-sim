@@ -1,5 +1,5 @@
 // 小红书（虚拟）没有设置 API Key 时用的固定信息流。占位内容，可以直接改。
-// cover 是 assets/bg/ 里的图，当帖子封面用。
+// cover 是 assets/bg/ 里的图，当帖子封面用；不写 cover 的帖子用标题自动生成文字封面（API 生成的和玩家发的都是这种）。
 window.DATA = window.DATA || {};
 DATA.notesFallback = [
   { title: "英国超市黄标时间表", body: "（占位）晚上七点以后去，面包和三明治会贴黄标。去晚了只剩鹰嘴豆泥。", author: "省钱留子", likes: 1203, cover: "supermarket" },

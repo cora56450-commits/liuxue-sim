@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI 样张 · 车站标识风</title>
+<style>
+/* UI 样张（给ClaudeCode_UI重做.md 第五部分第 1 步）。双击打开，或者用 http 服务打开。
+   只用三种颜色：墨蓝 #3A4766、橙 #FF7A45、米白 #F6F1E7；框体用 assets/ui 的素材图，CSS 只管排版、大小、位置、动画。
+   字：中文思源黑体（Heavy 标题和大字、Medium 正文），英文和数字 Barlow Condensed，都在 assets/fonts/。 */
+/* 正式字体（assets/fonts/，SIL OFL，见那里的 README） */
+@font-face { font-family: "SHS"; src: url(../assets/fonts/SourceHanSansSC-Medium.otf); font-weight: 400 600; font-display: swap; }
+@font-face { font-family: "SHS"; src: url(../assets/fonts/SourceHanSansSC-Heavy.otf); font-weight: 700 900; font-display: swap; }
+@font-face { font-family: "Barlow C"; src: url(../assets/fonts/BarlowCondensed-Medium.ttf); font-weight: 500; }
+@font-face { font-family: "Barlow C"; src: url(../assets/fonts/BarlowCondensed-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: "Barlow C"; src: url(../assets/fonts/BarlowCondensed-Bold.ttf); font-weight: 700 900; }
+:root {
+  --navy: #3A4766; --orange: #FF7A45; --paper: #F6F1E7;
+  --cn: "SHS", "PingFang SC", "Hiragino Sans GB", sans-serif;
+  --en: "Barlow C", "DIN Condensed", "Avenir Next Condensed", sans-serif;
+  --u: 8px;                       /* 网格基础单位 */
+  --t: 200ms;                     /* 动效时长：机械、干脆，不弹跳 */
+  --ease: cubic-bezier(.4, 0, .2, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #1d2233; font-family: var(--cn); color: var(--navy); }
+#page { width: 1920px; transform-origin: 0 0; }
+.sec { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--paper) center / cover no-repeat; }
+.note + .sec { margin-top: 24px; }
+.note { width: 1920px; font: 500 22px/1.5 var(--cn); color: var(--paper); background: #2A3150; padding: 12px 24px; }
+.note b { font-family: var(--en); letter-spacing: 3px; color: var(--orange); margin-right: 10px; }
+
+/* ===== 字：中文大字 + 英文窄体全大写小字 ===== */
+.en { font-family: var(--en); font-weight: 700; text-transform: uppercase; letter-spacing: .14em; }
+.bi { display: inline-flex; flex-direction: column; line-height: 1; }
+.bi .zh { font-weight: 800; }
+.bi .en { font-size: .42em; margin-top: .28em; opacity: .8; }
+
+/* ===== HUD：一条米白细条 ===== */
+.hud { position: absolute; left: 0; right: 0; top: 0; height: 128px; display: flex; align-items: center; gap: 32px; padding: 0 40px;
+  background: var(--paper); border-bottom: 4px solid var(--navy); }
+/* 周数翻牌：常驻 HUD，换周时一位一位翻 */
+.flapbox { display: flex; align-items: center; gap: 16px; }
+.flap { display: flex; gap: 6px; }
+.fd { position: relative; width: 72px; height: 104px; background: var(--navy); color: var(--paper); border-radius: 6px; overflow: hidden; perspective: 300px;
+  font: 700 92px/104px var(--en); text-align: center; }
+.fd::after { content: ""; position: absolute; left: 0; right: 0; top: 51px; height: 2px; background: rgba(246,241,231,.35); }
+.fd i { display: block; font-style: normal; }
+.fd.flip i { animation: flipIn 140ms var(--ease); }
+@keyframes flipIn { from { transform: rotateX(-90deg); transform-origin: 50% 51px; } to { transform: none; } }
+.term .zh { font-size: 32px; }
+.term .en { font-size: 16px; color: var(--orange); opacity: 1; }
+.wk { font: 700 22px var(--en); letter-spacing: .2em; margin-top: 4px; }
+/* 钱：价签素材，数字是画面里最大的字之一 */
+.price { width: 300px; height: 110px; background: url(../assets/ui/price_tag.png) center / 100% 100% no-repeat; display: flex; align-items: center; justify-content: center;
+  padding: 0 24px 0 72px; font: 700 56px var(--en); letter-spacing: .04em; }
+.price small { font: 600 18px var(--en); opacity: .55; margin-left: 10px; letter-spacing: .1em; }
+/* 数值：站牌信息栏一排读数 */
+.readouts { display: flex; gap: 0; margin-left: auto; border-left: 4px solid var(--navy); }
+.ro { width: 150px; padding: 0 16px; border-right: 2px solid rgba(58,71,102,.25); }
+.ro .k { display: flex; justify-content: space-between; align-items: baseline; }
+.ro .k span { font-weight: 800; font-size: 20px; }
+.ro .k em { font: 700 13px var(--en); letter-spacing: .16em; font-style: normal; opacity: .6; }
+.ro .v { font: 700 40px/1.05 var(--en); }
+.ro .bar { height: 6px; background: rgba(58,71,102,.18); }
+.ro .bar i { display: block; height: 100%; background: var(--navy); }
+.ro.low .bar i { background: var(--orange); }
+.hudbtns { display: flex; gap: 8px; }
+
+/* ===== 按钮：主按钮橙色站牌，次按钮米白描边牌子；悬停箭头往前走一格 ===== */
+.btn { display: inline-flex; align-items: center; gap: 16px; height: 72px; padding: 0 28px; border: 4px solid var(--navy); background: var(--paper); color: var(--navy);
+  cursor: pointer; transition: background var(--t) var(--ease), color var(--t) var(--ease); }
+.btn .zh { font-size: 26px; }
+.btn .en { font-size: 14px; margin-top: 6px; }
+.btn .arr { font: 700 32px var(--en); transition: transform var(--t) var(--ease); }
+.btn:hover, .btn.hover { background: var(--orange); border-color: var(--orange); color: var(--paper); }
+.btn:hover .arr, .btn.hover .arr { transform: translateX(8px); }
+.btn.primary { height: 96px; padding: 0 40px; background: var(--orange); border-color: var(--orange); color: var(--paper); }
+.btn.primary .zh { font-size: 36px; }
+.btn.primary .en { font-size: 17px; }
+.btn.primary .arr { font-size: 44px; }
+.btn.primary:hover, .btn.primary.hover { background: var(--navy); border-color: var(--navy); }
+.btn.small { height: 56px; padding: 0 18px; gap: 10px; }
+.btn.small .zh { font-size: 22px; }
+.btn.small .en { font-size: 12px; margin-top: 4px; }
+.btn.off { opacity: .35; pointer-events: none; }
+
+/* ===== 标题牌：墨蓝底白字站牌 + 箭头 + 下面一行小英文 ===== */
+.board { display: inline-flex; align-items: center; gap: 24px; background: var(--navy); color: var(--paper); padding: 16px 32px 14px; }
+.board .zh { font-size: 48px; }
+.board .en { color: var(--orange); opacity: 1; font-size: 20px; }
+.board .arr { font: 700 52px var(--en); }
+
+/* ===== 对话框：dialog.png（登机牌），九宫格拉伸；小头像在票根里 ===== */
+.dialog { position: absolute; left: 160px; right: 160px; bottom: 40px; height: 272px;
+  border-style: solid; border-width: 48px 84px 48px 156px; border-image: url(../assets/ui/dialog.png) 40 70 40 130 fill stretch; }
+.dialog .ava { position: absolute; left: -132px; top: 6px; width: 108px; height: 120px; overflow: hidden; border: 3px solid var(--paper); background: var(--paper); }
+.dialog .ava img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+.dialog .txt { position: absolute; inset: -16px 0 -16px 24px; display: flex; flex-direction: column; justify-content: center; }
+.dialog .txt p { font: 600 34px/1.5 var(--cn); }
+.dialog .txt .tr { font: 500 24px/1.4 var(--cn); opacity: .7; margin-top: 4px; }
+.dialog .next { position: absolute; right: -40px; bottom: -28px; color: var(--orange); font-size: 26px; animation: nextStep 900ms steps(2) infinite; }
+@keyframes nextStep { 50% { transform: translateY(6px); } }
+.dialog .links { position: absolute; right: 0; top: -40px; display: flex; gap: 24px; }
+.dialog .links a { font: 700 18px var(--en); letter-spacing: .16em; color: var(--navy); text-decoration: none; cursor: pointer; }
+.dialog .links a span { font: 700 20px var(--cn); letter-spacing: 0; margin-right: 6px; }
+.dialog .links a:hover, .dialog .links a.on { color: var(--orange); }
+.name { position: absolute; left: 120px; top: -120px; width: 300px; height: 150px; background: url(../assets/ui/nameplate.png) center / contain no-repeat;
+  display: flex; align-items: center; justify-content: center; padding: 30px 40px 20px; }
+.name .bi .zh { font-size: 34px; }
+.name .bi .en { font-size: 14px; }
+
+/* ===== 选项：choice.png 车票，票根印站台字母 ===== */
+.veil { position: absolute; inset: 0; background: rgba(58,71,102,.4); }
+.choices { position: absolute; left: 50%; top: 180px; transform: translateX(-50%); display: flex; flex-direction: column; gap: 16px; }
+.tk { position: relative; width: 760px; height: 150px; border-style: solid; border-width: 40px 54px; border-image: url(../assets/ui/choice.png) 30 40 30 40 fill stretch;
+  display: flex; align-items: center; cursor: pointer; animation: slideIn var(--t) var(--ease) both; transition: transform var(--t) var(--ease); }
+.tk.hl, .tk:hover { border-image-source: url(../assets/ui/choice_hl.png); transform: translateX(16px); }
+.tk .plat { width: 112px; height: 100%; margin-left: -10px; border-right: 3px dashed rgba(58,71,102,.4); display: flex; flex-direction: column; align-items: center; justify-content: center; flex: none; }
+.tk .plat b { font: 700 72px/0.9 var(--en); }
+.tk .plat em { font: 700 11px var(--en); letter-spacing: .2em; font-style: normal; opacity: .6; }
+.tk.hl .plat b, .tk:hover .plat b { color: var(--orange); }
+.tk .opt { flex: 1; padding: 0 16px 0 32px; text-align: center; }
+.tk .opt p { font: 700 30px/1.3 var(--cn); }
+.tk .opt small { display: block; font: 500 18px var(--cn); opacity: .65; margin-top: 4px; }
+.tk:nth-child(2) { animation-delay: 60ms; } .tk:nth-child(3) { animation-delay: 120ms; } .tk:nth-child(4) { animation-delay: 180ms; }
+@keyframes slideIn { from { transform: translateX(-80px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ===== 日程：schedule_board.png 底板 + 时刻表行 ===== */
+.panel { position: absolute; left: 80px; top: 176px; width: 1100px; }   /* 面板最多 60% 宽，背景露出来 */
+.sched { position: relative; width: 1100px; height: 712px; margin-top: 24px; background: url(../assets/ui/schedule_board.png) center / 100% 100% no-repeat; }
+.row { position: absolute; left: 5%; width: 91.6%; height: 12%; margin-top: -6px; display: flex; align-items: center; padding: 0 28px; gap: 16px; cursor: pointer; }
+.row:not(.sel) { background: var(--paper); }                         /* 没选中的行盖住底板的橙条；选中的那天露出橙色“线路条” */
+.row .day { width: 176px; white-space: nowrap; display: flex; align-items: baseline; gap: 12px; }
+.row .day b { font: 700 34px var(--en); letter-spacing: .1em; }
+.row .day span { font-weight: 800; font-size: 26px; }
+.row .dots { flex: 1; height: 0; border-bottom: 4px dotted rgba(58,71,102,.45); transform: translateY(6px); }
+.row .act { display: flex; align-items: baseline; gap: 12px; }
+.row .act span { font-weight: 800; font-size: 30px; }
+.row .act b { font: 700 22px var(--en); letter-spacing: .16em; opacity: .7; width: 120px; }
+.row.sel { color: var(--paper); }
+.row.sel .dots { border-color: rgba(246,241,231,.7); }
+.row.empty .act { width: 260px; height: 48px; border: 3px dashed rgba(58,71,102,.45); }
+.row.empty.sel .act { border-color: rgba(246,241,231,.8); }
+
+/* ===== 到站广播：换学期、假期 ===== */
+.announce { position: absolute; left: 0; right: 0; top: 380px; height: 320px; background: var(--navy); color: var(--paper); display: flex; align-items: center; padding-left: 160px; gap: 48px;
+  animation: annIn 250ms var(--ease) both; border-top: 8px solid var(--orange); }
+.announce .lbl { font: 700 24px var(--en); letter-spacing: .3em; color: var(--orange); writing-mode: horizontal-tb; }
+.announce .main .zh { font-size: 96px; }
+.announce .main .en { font-size: 32px; color: var(--orange); opacity: 1; }
+.announce .arr { font: 700 140px var(--en); margin-left: auto; margin-right: 120px; animation: arrIn 250ms 120ms var(--ease) both; }
+@keyframes annIn { from { transform: translateX(100%); } to { transform: none; } }
+@keyframes arrIn { from { transform: translateX(200px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ===== 出城地图：铁路线路图 ===== */
+.route { position: absolute; inset: 0; }
+.route svg { position: absolute; inset: 0; }
+.stn { position: absolute; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 16px; cursor: pointer; }
+.stn i { width: 36px; height: 36px; border-radius: 50%; background: var(--paper); border: 8px solid var(--navy); flex: none; transition: border-color var(--t) var(--ease); }
+.stn.home i { width: 44px; height: 44px; background: var(--orange); border-color: var(--orange); }
+.stn .bi { background: var(--paper); padding: 8px 14px; border-left: 6px solid var(--navy); }
+.stn .bi .zh { font-size: 30px; }
+.stn .bi .en { font-size: 14px; }
+.stn .fare { font: 700 26px var(--en); background: var(--navy); color: var(--paper); padding: 4px 10px; }
+.stn:hover i, .stn.hover i { border-color: var(--orange); }
+.stn:hover .bi, .stn.hover .bi { border-color: var(--orange); }
+
+/* ===== 开局选项：小票根，选中橙色、不能选变灰 ===== */
+.chips { display: flex; flex-wrap: wrap; gap: 16px; }
+.chip { min-width: 232px; height: 88px; border-style: solid; border-width: 24px 32px; border-image: url(../assets/ui/choice_2.png) 30 40 30 40 fill stretch;
+  display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; }
+.chip .zh { font-size: 26px; }
+.chip .en { font-size: 13px; margin-top: 6px; }
+.chip.on { border-image-source: url(../assets/ui/choice_hl.png); color: var(--orange); }
+.chip.off { filter: grayscale(1); opacity: .4; pointer-events: none; }
+
+/* ===== 结局 ===== */
+.postcard { position: absolute; left: 50%; top: 52%; width: 1100px; height: 590px; transform: translate(-50%, -50%); background: url(../assets/ui/postcard.png) center / 100% 100% no-repeat; }
+.terminus { position: absolute; left: 50%; top: 96px; transform: translateX(-50%); }
+.postcard .pc-title { position: absolute; left: 4%; top: 9%; width: 50%; height: 50%; display: flex; align-items: center; justify-content: center; font-size: 64px; font-weight: 800; }
+.postcard .stamp { position: absolute; right: 4.5%; top: 6%; width: 12%; }
+.postcard .pm { position: absolute; left: 6%; bottom: -60px; display: flex; gap: 16px; }
+.postcard .pm img { height: 150px; }
+</style>
+</head>
+<body>
+<div id="page">
+
+  <!-- 1. HUD + 对话框 + 立绘 -->
+  <section class="sec" style="background-image:url(../assets/bg/flat_kitchen.jpg)">
+    <div class="hud">
+      <div class="flapbox">
+        <div class="flap" id="flap"><div class="fd"><i>0</i></div><div class="fd"><i>8</i></div></div>
+        <div><div class="bi term"><span class="zh">大一·秋</span><span class="en">Autumn Term</span></div><div class="wk">WEEK 08 / 28</div></div>
+      </div>
+      <div class="price">£520<small>≈¥4836</small></div>
+      <div class="readouts">
+        <div class="ro"><div class="k"><span>精力</span><em>ENERGY</em></div><div class="v">80</div><div class="bar"><i style="width:80%"></i></div></div>
+        <div class="ro"><div class="k"><span>学业</span><em>STUDY</em></div><div class="v">36</div><div class="bar"><i style="width:36%"></i></div></div>
+        <div class="ro low"><div class="k"><span>孤独</span><em>LONELY</em></div><div class="v">72</div><div class="bar"><i style="width:72%"></i></div></div>
+        <div class="ro"><div class="k"><span>融入</span><em>BELONG</em></div><div class="v">18</div><div class="bar"><i style="width:18%"></i></div></div>
+        <div class="ro"><div class="k"><span>作业</span><em>ESSAY</em></div><div class="v">40</div><div class="bar"><i style="width:40%"></i></div></div>
+      </div>
+      <div class="hudbtns">
+        <div class="btn small"><span class="bi"><span class="zh">手机</span><span class="en">Phone</span></span></div>
+        <div class="btn small hover"><span class="bi"><span class="zh">存档</span><span class="en">Save</span></span></div>
+        <div class="btn small"><span class="bi"><span class="zh">设置</span><span class="en">Config</span></span></div>
+      </div>
+    </div>
+    <img src="../assets/chara/local/base.png" style="position:absolute;left:1180px;top:150px;height:914px">
+    <div class="dialog">
+      <div class="ava"><img src="../assets/chara/me/winter_avatar.png"></div>
+      <div class="name"><span class="bi"><span class="zh">Ollie</span><span class="en">Oliver Bennett</span></span></div>
+      <div class="links"><a><span>记录</span>LOG</a><a class="on"><span>自动</span>AUTO</a><a><span>快进</span>SKIP</a></div>
+      <div class="txt"><p>Hey — you're the one from the group project, right? Love your bag.</p><p class="tr">嘿，你是小组作业那个人对吧？你的包好好看。</p></div>
+      <div class="next">▼</div>
+    </div>
+    <div class="note"><b>01</b>HUD：左上角周数翻牌（点一下“换周”看翻牌）、钱、五个读数、三个按钮（“存档”是悬停状态）。对话框用 dialog.png，头像在票根里，名牌用 nameplate.png，记录/自动/快进是小字链接（“自动”是开着的状态）。<a id="flipBtn" style="color:var(--orange);cursor:pointer;margin-left:12px">▶ 换周</a></div>
+  </section>
+
+  <!-- 2. 选项 -->
+  <section class="sec" style="background-image:url(../assets/bg/crit_room.jpg)">
+    <div class="veil"></div>
+    <div class="choices">
+      <div class="tk"><div class="plat"><b>A</b><em>PLATFORM</em></div><div class="opt"><p>Thanks! Yours is gorgeous.</p></div></div>
+      <div class="tk hl"><div class="plat"><b>B</b><em>PLATFORM</em></div><div class="opt"><p>我们先建个群分工吧</p><small>Ploy 好感 +1　学业 +1</small></div></div>
+      <div class="tk"><div class="plat"><b>C</b><em>PLATFORM</em></div><div class="opt"><p>（不说话）</p></div></div>
+    </div>
+    <div class="note"><b>02</b>选项：choice.png 车票，票根印站台字母 A/B/C/D；B 是悬停／选中（choice_hl.png）。背景压 40% 墨蓝。依次从左滑入，200ms，不弹跳。</div>
+  </section>
+
+  <!-- 3. 日程（时刻表） -->
+  <section class="sec" style="background-image:url(../assets/bg/dorm_room.jpg)">
+    <div class="panel">
+      <div class="board"><span class="bi"><span class="zh">本周日程</span><span class="en">This Week · Departures</span></span><span class="arr">→</span></div>
+      <div class="sched">
+        <div class="row" style="top:20.5%"><div class="day"><b>MON</b><span>周一</span></div><div class="dots"></div><div class="act"><span>上课</span><b>Lecture</b></div></div>
+        <div class="row" style="top:35.7%"><div class="day"><b>TUE</b><span>周二</span></div><div class="dots"></div><div class="act"><span>图书馆</span><b>Library</b></div></div>
+        <div class="row sel" style="top:50.9%"><div class="day"><b>WED</b><span>周三</span></div><div class="dots"></div><div class="act"><span>做作业</span><b>Essay</b></div></div>
+        <div class="row empty" style="top:66.1%"><div class="day"><b>THU</b><span>周四</span></div><div class="dots"></div><div class="act"></div></div>
+        <div class="row empty" style="top:81.3%"><div class="day"><b>FRI</b><span>周五</span></div><div class="dots"></div><div class="act"></div></div>
+      </div>
+    </div>
+    <div style="position:absolute;right:120px;bottom:120px;display:flex;gap:16px;align-items:center">
+      <div class="btn"><span class="bi"><span class="zh">清空</span><span class="en">Clear</span></span></div>
+      <div class="btn primary"><span class="bi"><span class="zh">开始这一周</span><span class="en">Depart</span></span><span class="arr">→</span></div>
+    </div>
+    <div class="note"><b>03</b>日程做成时刻表：schedule_board.png 底板，选中的周三露出底板的橙色线路条；周四周五还没排，是虚线空位。面板占左边 57%，背景露出来。右下主按钮“开始这一周 DEPART →”。</div>
+  </section>
+
+  <!-- 4. 组件：标题牌、按钮、开局选项 -->
+  <section class="sec" style="background-image:url(../assets/bg/airport.jpg)">
+    <div class="panel" style="width:1060px">
+      <div class="board"><span class="bi"><span class="zh">开局 · 你是谁</span><span class="en">Arrivals · Who Are You</span></span><span class="arr">↗</span></div>
+      <div style="margin-top:40px;background:rgba(246,241,231,.94);padding:32px;border-top:6px solid var(--navy)">
+        <div class="bi" style="margin-bottom:16px"><span class="zh" style="font-size:28px">家境</span><span class="en" style="font-size:13px">Budget</span></div>
+        <div class="chips">
+          <div class="chip"><span class="bi"><span class="zh">拮据</span><span class="en">Tight</span></span></div>
+          <div class="chip on"><span class="bi"><span class="zh">中产</span><span class="en">Middle</span></span></div>
+          <div class="chip"><span class="bi"><span class="zh">富裕</span><span class="en">Comfy</span></span></div>
+        </div>
+        <div style="height:4px;background:var(--navy);margin:32px 0"></div>
+        <div class="bi" style="margin-bottom:16px"><span class="zh" style="font-size:28px">住宿</span><span class="en" style="font-size:13px">Housing</span></div>
+        <div class="chips">
+          <div class="chip on"><span class="bi"><span class="zh">学校宿舍</span><span class="en">Halls</span></span></div>
+          <div class="chip"><span class="bi"><span class="zh">ensuite</span><span class="en">Ensuite</span></span></div>
+          <div class="chip off"><span class="bi"><span class="zh">studio</span><span class="en">Studio</span></span></div>
+        </div>
+      </div>
+      <div style="margin-top:40px;display:flex;gap:24px;align-items:center">
+        <div class="btn"><span class="bi"><span class="zh">返回</span><span class="en">Back</span></span></div>
+        <div class="btn hover"><span class="bi"><span class="zh">存档</span><span class="en">Save</span></span><span class="arr">→</span></div>
+        <div class="btn primary"><span class="bi"><span class="zh">下一步</span><span class="en">Next</span></span><span class="arr">→</span></div>
+        <div class="btn primary hover"><span class="bi"><span class="zh">落地英国</span><span class="en">Land</span></span><span class="arr">→</span></div>
+      </div>
+    </div>
+    <div class="note"><b>04</b>标题牌（墨蓝站牌＋箭头＋小英文）；开局选项是小票根（choice_2.png），选中橙框橙字，studio 不能选变灰；按钮：次按钮、次按钮悬停、主按钮、主按钮悬停。粗横线分区。</div>
+  </section>
+
+  <!-- 5. 到站广播 -->
+  <section class="sec" style="background-image:url(../assets/bg/station.jpg)">
+    <div class="announce" id="announce">
+      <div class="lbl">NOW<br>ARRIVING</div>
+      <div class="main bi"><span class="zh">下一站：大一·春</span><span class="en">Next Stop: Spring Term</span></div>
+      <div class="arr">→</div>
+    </div>
+    <div class="note"><b>05</b>换学期、假期：到站广播从右边滑进来，250ms 停住。<a id="annBtn" style="color:var(--orange);cursor:pointer;margin-left:12px">▶ 再播一次</a></div>
+  </section>
+
+  <!-- 6. 出城：铁路线路图 -->
+  <section class="sec" style="background-image:url(../assets/bg/map_uk.jpg)">
+    <div class="route">
+      <svg viewBox="0 0 1920 1080"><polyline points="872,205 970,471 1205,485" fill="none" stroke="#FF7A45" stroke-width="12" stroke-linejoin="round"/>
+        <polyline points="723,510 970,471 1182,830" fill="none" stroke="#FF7A45" stroke-width="12" stroke-linejoin="round"/></svg>
+      <div class="stn home" style="left:970px;top:471px"><i></i><span class="bi"><span class="zh">我们的城市</span><span class="en">You Are Here</span></span></div>
+      <div class="stn" style="left:872px;top:205px"><i></i><span class="bi"><span class="zh">爱丁堡</span><span class="en">Edinburgh</span></span><span class="fare">£120</span></div>
+      <div class="stn hover" style="left:1205px;top:485px"><i></i><span class="bi"><span class="zh">约克</span><span class="en">York</span></span><span class="fare">£45</span></div>
+      <div class="stn" style="left:723px;top:510px"><i></i><span class="bi"><span class="zh">湖区</span><span class="en">Lake District</span></span><span class="fare">£70</span></div>
+      <div class="stn" style="left:1182px;top:830px"><i></i><span class="bi"><span class="zh">伦敦</span><span class="en">London</span></span><span class="fare">£90</span></div>
+    </div>
+    <div class="note"><b>06</b>出城地图做成铁路线路图：橙色线连着城市圆点，橙色实心点是“我们的城市”，约克是悬停状态。日常城市地图保持插画版不动。</div>
+  </section>
+
+  <!-- 7. 结局 -->
+  <section class="sec" style="background-image:url(../assets/bg/station_night.jpg)">
+    <div class="board terminus"><span class="bi"><span class="zh">终点站</span><span class="en">Terminus</span></span></div>
+    <div class="postcard">
+      <div class="pc-title">‘普通DISCO’</div>
+      <img class="stamp" src="../assets/ui/stamps/disco.png">
+      <div class="pm"><img src="../assets/ui/postmarks/first.png"><img src="../assets/ui/postmarks/local_he.png"></div>
+    </div>
+    <div class="note"><b>07</b>结局：postcard.png 照旧，邮票、邮戳用切好的图，上面加一块“终点站 / TERMINUS”站牌。</div>
+  </section>
+</div>
+<script>
+// 说明文字挪到每个画面下面，不压在画面上
+document.querySelectorAll(".sec > .note").forEach((n) => n.parentNode.after(n));
+// 按窗口宽度缩放整页（舞台 1920 宽）
+function fit() { const s = window.innerWidth / 1920; const p = document.getElementById("page"); p.style.transform = `scale(${s})`; document.body.style.height = p.scrollHeight * s + "px"; }
+window.addEventListener("resize", fit); fit();
+// 周数翻牌：一位一位翻（个位先翻，十位后翻），每次 140ms
+let week = 8;
+async function flipTo(n) {
+  const digits = String(n).padStart(2, "0").split("");
+  const cells = [...document.querySelectorAll("#flap .fd")];
+  for (let i = cells.length - 1; i >= 0; i--) {
+    const cell = cells[i], target = digits[i];
+    let cur = +cell.firstChild.textContent;
+    while (String(cur) !== target) {
+      cur = (cur + 1) % 10;
+      cell.firstChild.textContent = cur;
+      cell.classList.remove("flip"); void cell.offsetWidth; cell.classList.add("flip");
+      await new Promise((r) => setTimeout(r, 140));
+    }
+  }
+  document.querySelector(".wk").textContent = `WEEK ${String(n).padStart(2, "0")} / 28`;
+}
+document.getElementById("flipBtn").onclick = () => { week = week >= 28 ? 1 : week + 1; flipTo(week); };
+document.getElementById("annBtn").onclick = () => { const a = document.getElementById("announce"); a.style.animation = "none"; void a.offsetWidth; a.style.animation = ""; a.querySelector(".arr").style.animation = "none"; void a.offsetWidth; a.querySelector(".arr").style.animation = ""; };
+</script>
+</body>
+</html>

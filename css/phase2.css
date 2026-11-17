@@ -245,3 +245,8 @@
 .pc-friends { position: absolute; left: 8%; right: 8%; top: 34%; display: flex; flex-wrap: wrap; gap: 14px 28px; justify-content: center; font-size: 30px; font-weight: 900; color: var(--navy); }
 .pc-friends em { font-size: 22px; opacity: .6; font-style: normal; }
 .contact em.rel-love { display: flex; align-items: center; }
+
+/* 立绘够不到画面底时的补边（js/ui.js 的 Stage.render）：用图最下面几行拉长，不做渐隐 */
+.spr { width: max-content; }
+.spr-fill { position: absolute; left: 0; right: 0; background-repeat: no-repeat; background-position: center bottom; background-size: 100% 30000%; pointer-events: none; }
+.spr.float img { -webkit-mask-image: none; mask-image: none; }

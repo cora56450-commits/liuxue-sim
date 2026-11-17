@@ -83,7 +83,15 @@ const Stage = {
         if (img.getAttribute("src") !== src) img.src = src;
         img.style.height = lay.height + "px";
         el.style.top = lay.top + "px";
-        el.classList.toggle("float", lay.top + lay.height < 1075);   // 图片下边缘露在画面里时，底部做渐隐
+        // 图片下边缘够不到画面底（个子高、缩放小的人）：把图最下面几行往下拉长补满，看起来像衣服一直延续到画面外
+        const gap = Math.ceil(1080 - (lay.top + lay.height));
+        let fill = el.querySelector(".spr-fill");
+        if (gap > 1) {
+          if (!fill) { fill = document.createElement("div"); fill.className = "spr-fill"; el.appendChild(fill); }
+          fill.style.top = lay.height - 1 + "px"; fill.style.height = gap + 2 + "px";
+          fill.style.backgroundImage = `url("${src}")`;
+        } else if (fill) fill.remove();
+        el.classList.remove("float");
       } else {
         // 还没有立绘的角色：名牌占位
         el.style.top = "330px";
@@ -310,13 +318,14 @@ function renderHud() {
   if (fresh) { h.classList.remove("slide"); void h.offsetWidth; h.classList.add("slide"); }
   const bar = (k, label, val, max) =>
     `<div class="bar" data-k="${k}"><img src="assets/ui/stat_${k}.png"><div class="bar-body">${label} ${Math.round(val)}<div class="track"><div class="fill" style="width:${Math.min(100, val / max * 100)}%"></div></div></div></div>`;
+  // 左上角日期块：学期小字 + 周数大数字（“第3周” → 3）；大二大三的关键周名直接写字
+  const [term, label] = timeLabel();
+  const n = /^第(\d+)周$/.exec(label || "");
   h.innerHTML = `
-    <div class="hud-week"><span>${timeLabel().join(" · ")}</span></div>
+    <div class="hud-date ${n ? "" : "word"}"><small>${term}</small>${n ? `<b>${n[1]}</b><em>周<i>WEEK</i></em>` : `<b>${label}</b>`}</div>
     <div class="hud-tag">${money(S.stats.money)}</div>
     <div class="hud-bars">${bar("energy", "精力", S.stats.energy, energyMax())}${bar("study", "学业", S.stats.study, 100)}${bar("loneliness", "孤独感", S.stats.loneliness, 100)}${bar("belonging", "融入度", S.stats.belonging, 100)}${bar("homework", "作业", S.homework, 100)}</div>
-    <button class="hud-btn" id="btn-phone">手机</button>
-    <button class="hud-btn" id="btn-save">存档</button>
-    <button class="hud-btn" id="btn-settings">设置</button>`;
+    <div class="hud-btns"><button class="hud-btn" id="btn-phone">手机</button><button class="hud-btn" id="btn-save">存档</button><button class="hud-btn" id="btn-settings">设置</button></div>`;
   $("#btn-save").onclick = () => Sys.slots("save");
   $("#btn-phone").onclick = () => Phone.open();
   $("#btn-settings").onclick = () => Sys.settings();

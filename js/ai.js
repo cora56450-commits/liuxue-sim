@@ -115,9 +115,11 @@ const AI = {
 
   // 小红书信息流：返回 [{ title, body, author, likes }]，失败返回 null
   async notesFeed() {
-    const sys = `你在给一个留学生活模拟游戏生成虚拟的“小红书”信息流。${this.playerBrief()}\n生成 6 条英国留学生会刷到的帖子：省钱、踩雷、吐槽、想家、租房、作业、恋爱都可以，吐槽喜剧基调，贴近玩家现在的时间点。只输出 JSON 数组，每项 {"title":"不超过18字","body":"60到120字","author":"网名","likes":数字}，不要输出别的。`;
+    const sys = `你在给一个留学生活模拟游戏生成虚拟的“小红书”信息流。${this.playerBrief()}\n生成 6 条英国留学生会刷到的帖子：省钱、踩雷、吐槽、想家、租房、作业、恋爱都可以，吐槽喜剧基调，贴近玩家现在的时间点。帖子都没有配图，封面是一张“文字封面”：浅色底上印一句大字，所以每条再写一句 cover_text——像真的小红书文字封面那样，是帖子里最抓人的一句话或吐槽，口语化，不超过20个字，可以带1到2个 emoji，不要和标题一模一样。只输出 JSON 数组，每项 {"title":"不超过18字","cover_text":"封面大字","body":"60到120字","author":"网名","likes":数字}，不要输出别的。`;
     const j = this.parseJson(await this.request([{ role: "system", content: sys }, { role: "user", content: "生成" }], 1.0));
-    return Array.isArray(j) ? j.filter((p) => p && p.title && p.body).slice(0, 8) : null;
+    if (!Array.isArray(j)) return null;
+    return j.filter((p) => p && p.title && p.body).slice(0, 8)
+      .map((p) => ({ title: p.title, body: p.body, author: p.author, likes: p.likes, coverText: typeof p.cover_text === "string" ? p.cover_text.slice(0, 24) : "" }));
   },
 
   // 玩家发帖后的反应：返回 { likes, comments: [{ user, text }] }，失败返回 null

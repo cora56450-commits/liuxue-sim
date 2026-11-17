@@ -204,12 +204,20 @@ const Phone = {
 
   // ===== 小红书：信息流 + 发帖（内容走 API；没有 Key 时用 data/notes.js 的固定内容） =====
   cover(i) { return DATA.noteCovers[Math.abs(i) % DATA.noteCovers.length]; },
+  // 封面：有配图（cover）就用图；没有的像真的小红书那样，用标题做一张文字封面（浅色底、大引号、开头两个字划荧光笔）
+  TEXT_COVERS: [["#DDF7D4", "#B5E3A8", "#F2B8E4"], ["#FFE9D6", "#FFC9A3", "#BFE6D6"], ["#E3EDFF", "#BCD0F5", "#FFD86B"], ["#FFE3EC", "#F7B7C8", "#BFE6D6"], ["#FFF3C4", "#F5D77A", "#F7B7C8"]],
+  coverHtml(p, big) {
+    if (p.cover) return `<div class="note-cover ${big ? "big" : ""}" style="background-image:url(assets/bg/${p.cover}.jpg)"></div>`;
+    const [bg, mark, hl] = Phone.TEXT_COVERS[Math.abs(Flow.hash(p.title || "")) % Phone.TEXT_COVERS.length];
+    const t = [...fillText(p.coverText || p.title || "")];   // AI 生成的帖子带 coverText（封面大字），没有就用标题
+    const head = Phone.esc(t.slice(0, 2).join("")), rest = Phone.esc(t.slice(2).join(""));
+    return `<div class="note-cover text ${big ? "big" : ""}" style="--tc-bg:${bg};--tc-mark:${mark};--tc-hl:${hl}"><i>“</i><p><u>${head}</u>${rest}</p><s></s></div>`;
+  },
   async loadFeed(force) {
     const wk = S.year * 100 + S.week + S.period * 1000;
     if (!force && S.notes.feedWeek === wk && S.notes.feed.length) return;
     let feed = AI.hasKey() ? await AI.notesFeed() : null;
     if (!feed) feed = DATA.notesFallback.map((p) => ({ ...p }));
-    feed.forEach((p, i) => { if (!p.cover) p.cover = Phone.cover(Flow.hash(p.title) + i); });
     S.notes.feed = feed; S.notes.feedWeek = wk;
   },
 
@@ -227,7 +235,7 @@ const Phone = {
       o.querySelectorAll("[data-n]").forEach((el) => el.onclick = () => Phone.note(tab, +el.dataset.n));
       return o;
     };
-    const card = (p, i) => `<div class="note" data-n="${i}"><div class="note-cover" style="background-image:url(assets/bg/${p.cover}.jpg)"></div>
+    const card = (p, i) => `<div class="note" data-n="${i}">${Phone.coverHtml(p)}
       <div class="note-t">${Phone.esc(fillText(p.title))}</div><div class="note-m"><span>${Phone.esc(fillText(p.author || S.name))}</span><span class="likes">${p.likes || 0}</span></div></div>`;
     if (tab === "mine") {
       const mine = S.notes.mine;
@@ -241,7 +249,7 @@ const Phone = {
   note(tab, i) {
     const p = (tab === "mine" ? S.notes.mine : S.notes.feed)[i];
     const comments = (p.comments || []).map((c) => `<div class="cmt"><b>${Phone.esc(c.user)}</b>${Phone.esc(c.text)}</div>`).join("");
-    Phone.frame(`<div class="note-full"><div class="note-cover big" style="background-image:url(assets/bg/${p.cover}.jpg)"></div>
+    Phone.frame(`<div class="note-full">${Phone.coverHtml(p, true)}
       <h3>${Phone.esc(fillText(p.title))}</h3><div class="note-author">${Phone.esc(fillText(p.author || S.name))}</div>
       <p>${Phone.esc(fillText(p.body))}</p>
       <div class="note-acts"><span class="a-heart">${p.likes || 0}</span><span class="a-star"></span><span class="a-comment">${(p.comments || []).length}</span><span class="a-share"></span></div>
@@ -255,7 +263,7 @@ const Phone = {
       const title = $("#note-title").value.trim(), body = $("#note-body").value.trim();
       if (!title || !body) return toast("标题和正文都要写");
       const btn = $("#note-send"); btn.disabled = true; btn.textContent = "发布中……";
-      const post = { title, body, author: S.name, likes: 0, comments: [], cover: Phone.cover(Flow.hash(title)) };
+      const post = { title, body, author: S.name, likes: 0, comments: [] };   // 玩家发的帖子没有配图：用文字封面
       const r = AI.hasKey() ? await AI.notesReact(post) : null;
       const boost = S.tags.includes("surfer") ? 1.5 : 1;
       post.likes = Math.round((r ? clamp(r.likes, 0, 500) : 3 + Math.floor(Math.random() * 12)) * boost);
