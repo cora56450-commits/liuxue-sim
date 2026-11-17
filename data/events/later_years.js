@@ -1,0 +1,143 @@
+// 大二、大三：按关键周浓缩（关键周表见 data/world.js 的 DATA.laterYears，来源 docs/大二大三关键周.md）
+// 全部是占位文本，id 照关键周表。正式文本里要保留的标记：
+//   flag_house_khan（大一第14周或 y2_move_in 里设：住 Khan 的房 → 学长的考验挂在搬家周）
+//   flag_house_studio（大二以后住 studio：重度洁癖不扣精力）
+//   flag_internship（y2_summer 实习）　flag_pike_supervisor（y3_proposal）
+//   flag_stay_uk（y3_stay_or_go，1=留英）　flag_deposit_back（y3_leaving，有“Marcia提醒过押金”能全要回来）
+//   flag_otaku_public／flag_otaku_private（y3_after，Kieran 的 pub 公开事件）
+Object.assign(DATA.events, {
+  // ===== 大二 =====
+  y2_move_in: [
+    { bg: "shared_house" },
+    { say: "（占位）大二。搬进社会房：inventory 拍照、水电账户、室友分账规矩。" },
+  ],
+  y2_internship: [
+    { bg: "library" },
+    { say: "（占位）实习申请季。身边的人都在投简历、做作品集。" },
+  ],
+  y2_xmas_ddl: [
+    { bg: "library" },
+    { say: "（占位）圣诞前的 ddl 周。老一套，但大二的你已经会偷懒了。" },
+  ],
+  // 圣诞假四选一（沿用 term_end 的结构，数值等策划写正文时定）
+  y2_xmas_break: [
+    { bg: "station" },
+    { say: "（占位）大二的圣诞假怎么过？" },
+    { choice: [
+      { text: "回国" }, { text: "出去旅游" }, { text: "留下打工" }, { text: "宅着" },
+    ] },
+  ],
+  y2_spring: [
+    { bg: "flat_kitchen" },
+    { say: "（占位）又是春节。今年和谁过？" },
+  ],
+  y2_house_again: [
+    { bg: "shared_house" },
+    { say: "（占位）又要找房了。“今年一定早点看。”" },
+  ],
+  y2_exam: [
+    { bg: "library" },
+    { say: "（占位）大二期末。成绩开始计入学位了。" },
+  ],
+  y2_summer: [
+    { bg: "airport" },
+    { say: "（占位）大二暑假。怎么过？" },
+    { choice: [
+      { text: "去实习", fx: { flag_internship: 1 } },
+      { text: "回国" },
+      { text: "欧洲旅行" },
+    ] },
+  ],
+
+  // ===== 大三 =====
+  y3_proposal: [
+    { bg: "studio_night" },
+    { say: "（占位）大三。毕业设计开题，分配导师。" },
+  ],
+  y3_stay_or_go: [
+    { bg: "campus" },
+    { say: "（占位）毕业以后，留下还是回去？" },
+    { choice: [
+      { text: "留在英国", fx: { flag_stay_uk: 1 } },
+      { text: "回国", fx: { flag_stay_uk: 0 } },
+    ] },
+  ],
+  y3_last_xmas: [
+    { bg: "indoor_market" },
+    { say: "（占位）可能是最后一次在英国过圣诞了。" },
+  ],
+  y3_final_push: [
+    { bg: "studio_night" },
+    { say: "（占位）毕设冲刺。" },
+  ],
+  y3_final: [
+    { bg: "library" },
+    { say: "（占位）最终提交，然后是考试季。" },
+  ],
+  y3_leaving: [
+    { bg: "shared_house" },
+    { say: "（占位）退房、退押金、二手群甩卖、租学位服。" },
+  ],
+  y3_graduation: [
+    { bg: "graduation" },
+    { cg: "graduation" },
+    { say: "（占位）毕业典礼。" },
+    { cg: null },
+  ],
+  y3_after: [
+    { bg: "pub_street" },
+    { say: "（占位）典礼之后。" },
+    { if: "交往中('otaku')", then: [
+      { say: "（占位）Kieran 的 pub 公开事件。" },
+      { choice: [
+        { text: "（占位）公开", fx: { flag_otaku_public: 1 } },
+        { text: "（占位）不公开", fx: { flag_otaku_private: 1 } },
+      ] },
+    ] },
+  ],
+
+  // ===== 恋爱线：告白（confessed_{id}）和考验（trial_{id}，1 过／−1 没过）=====
+  // 告白：大一第24–28周，或大二搬家周、实习申请季。条件：好感≥80 且推进CG已触发（剧情里设 flag_advance_{id}）
+  confess_senior:    [{ say: "（占位）学长的告白。" },  { choice: [{ text: "答应", fx: { flag_confessed_senior: 1 } },    { text: "（占位）还没想好" }] }],
+  confess_local:     [{ say: "（占位）Ollie 的告白。" }, { choice: [{ text: "答应", fx: { flag_confessed_local: 1 } },     { text: "（占位）还没想好" }] }],
+  confess_groupmate: [{ say: "（占位）Ploy 的告白。" },  { choice: [{ text: "答应", fx: { flag_confessed_groupmate: 1 } }, { text: "（占位）还没想好" }] }],
+  confess_otaku:     [{ say: "（占位）Kieran 的告白。" }, { choice: [{ text: "答应", fx: { flag_confessed_otaku: 1 } },     { text: "（占位）还没想好" }] }],
+
+  trial_senior: [
+    { say: "（占位）考验：发现佣金。" },
+    { choice: [
+      { text: "（占位）谈一谈", fx: { flag_trial_senior: 1 } },
+      { text: "（占位）翻脸", fx: { flag_trial_senior: -1, flag_senior_fallout: 1 } },
+    ] },
+  ],
+  trial_local: [
+    { say: "（占位）考验：“我们算什么”。要不要一起住？" },
+    { choice: [
+      { text: "（占位）问出口", fx: { flag_trial_local: 1, flag_local_asked: 1 } },
+      { text: "（占位）算了", fx: { flag_trial_local: -1 } },
+    ] },
+  ],
+  trial_groupmate: [
+    { say: "（占位）考验：期末 Ploy 请你替她写。" },
+    { choice: [
+      { text: "（占位）拒绝", fx: { flag_trial_groupmate: 1 } },
+      { text: "（占位）写了", fx: { flag_trial_groupmate: -1 } },   // ploy_ghostwrite 计数由正文加
+    ] },
+  ],
+  trial_otaku: [
+    { say: "（占位）考验：健身房朋友的圣诞聚会，他带不带你去。" },
+    { choice: [
+      { text: "（占位）过了", fx: { flag_trial_otaku: 1 } },
+      { text: "（占位）没过", fx: { flag_trial_otaku: -1 } },
+    ] },
+  ],
+
+  // 家教森严：交往中，大二春节那周固定触发
+  strict_video: [
+    { say: "（占位）视频里被家里发现了。" },
+    { choice: [
+      { text: "坦白", fx: { loneliness: 5, flag_strict_told: 1 } },
+      { text: "隐瞒", sub: "毕业时 HE 的好感门槛 85 → 90", fx: { flag_strict_hidden: 1 } },
+    ] },
+  ],
+});

@@ -1,0 +1,92 @@
+// 动画与过场：撕票转场、发车牌翻牌、数值飘字、飘落的单据
+const FX = {
+  // 撕票转场：两片锯齿边的“小票”合上 → 执行换场 → 再拉开
+  async tear(fn) {
+    const w = document.createElement("div");
+    w.className = "tear";
+    w.innerHTML = `<div class="tear-a"></div><div class="tear-b"></div>`;
+    $("#stage").appendChild(w);
+    await FX.wait(20);
+    w.classList.add("close");
+    await FX.wait(380);
+    if (fn) fn();  // 不等待：换场函数可能包含整段剧情
+    await FX.wait(30);
+    w.classList.remove("close");
+    w.classList.add("open");
+    await FX.wait(420);
+    w.remove();
+  },
+
+  // 发车牌翻牌：把一行字一格一格翻出来
+  async flap(lines) {
+    const pool = "一二三四五六七八九十周第迎新期末读书课图馆超市车站英中";
+    const box = document.createElement("div");
+    box.className = "flap";
+    box.innerHTML = lines.map((l) => `<div class="flap-row">${[...l].map(() => `<span class="flap-cell"><i></i></span>`).join("")}</div>`).join("");
+    $("#stage").appendChild(box);
+    const rows = [...box.querySelectorAll(".flap-row")];
+    const jobs = [];
+    rows.forEach((row, r) => {
+      [...row.children].forEach((cell, i) => {
+        const target = [...lines[r]][i];
+        jobs.push((async () => {
+          const flips = 4 + i * 2 + r * 3;
+          for (let k = 0; k < flips; k++) {
+            cell.firstChild.textContent = pool[Math.floor(Math.random() * pool.length)];
+            cell.classList.remove("flip"); void cell.offsetWidth; cell.classList.add("flip");
+            await FX.wait(55);
+          }
+          cell.firstChild.textContent = target === " " ? "" : target;
+          cell.classList.remove("flip"); void cell.offsetWidth; cell.classList.add("flip");
+        })());
+      });
+    });
+    await Promise.all(jobs);
+    await FX.wait(650);
+    box.classList.add("out");
+    await FX.wait(300);
+    box.remove();
+  },
+
+  // 数值变化飘字：从对应的HUD条上飘出
+  float(changes) {
+    const map = { "生活费": ".hud-tag", "精力": '[data-k="energy"]', "学业": '[data-k="study"]', "孤独感": '[data-k="loneliness"]', "融入度": '[data-k="belonging"]', "作业进度": '[data-k="homework"]' };
+    const stage = $("#stage").getBoundingClientRect();
+    const sc = stage.width / 1920;
+    changes.filter(([, v]) => v).forEach(([name, v], idx) => {
+      const anchor = document.querySelector(map[name] || "#hud");
+      const el = document.createElement("div");
+      el.className = "float " + (v > 0 ? "up" : "down");
+      el.textContent = `${name}${v > 0 ? "+" : ""}${v}`;
+      let x = 960, y = 140;
+      if (anchor && !$("#hud").classList.contains("hidden")) {
+        const r = anchor.getBoundingClientRect();
+        x = (r.left - stage.left + r.width / 2) / sc; y = (r.bottom - stage.top) / sc + 10;
+      } else { y = 120 + idx * 46; }
+      el.style.left = x + "px"; el.style.top = y + "px";
+      el.style.animationDelay = idx * 90 + "ms";
+      $("#stage").appendChild(el);
+      setTimeout(() => el.remove(), 1700 + idx * 90);
+    });
+  },
+
+  // 标题画面背景里慢慢飘的单据
+  paperRain(n = 12) {
+    const box = document.createElement("div");
+    box.className = "paper-rain";
+    const pics = ["menu_1", "menu_2", "menu_3", "menu_4", "menu_5", "price_tag", "stamp_round", "stamp_rect", "choice"];
+    for (let i = 0; i < n; i++) {
+      const im = document.createElement("img");
+      im.src = `assets/ui/${pics[i % pics.length]}.png`;
+      im.style.left = (Math.random() * 100) + "%";
+      im.style.width = (90 + Math.random() * 120) + "px";
+      im.style.animationDuration = (9 + Math.random() * 8) + "s";
+      im.style.animationDelay = (-Math.random() * 14) + "s";
+      im.style.setProperty("--r", (Math.random() * 60 - 30) + "deg");
+      box.appendChild(im);
+    }
+    return box;
+  },
+
+  wait(ms) { return new Promise((r) => setTimeout(r, ms)); },
+};

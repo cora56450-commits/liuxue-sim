@@ -1,0 +1,306 @@
+/* 主题色（UI固定用色） */
+:root {
+  --orange: #FF7A45;
+  --navy: #3A4766;
+  --paper: #F6F1E7;
+  --ink: #2A3150;
+  --font: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; background: #1d2233; overflow: hidden; font-family: var(--font); color: var(--ink); }
+
+/* 1920x1080 舞台，按窗口等比缩放 */
+#viewport { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+#stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: center center; overflow: clip; background: var(--paper); }
+.hidden { display: none !important; }
+
+#bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+#sprite { position: absolute; left: 50%; bottom: 0; height: 1000px; transform: translateX(-50%); pointer-events: none; }
+
+/* 顶部状态栏 */
+#hud { position: absolute; top: 24px; left: 32px; right: 32px; display: flex; gap: 16px; align-items: center; z-index: 15; }
+.hud-tag { background: url(../assets/ui/price_tag.png) center/100% 100% no-repeat; width: 300px; height: 109px;
+  display: flex; align-items: center; justify-content: center; padding: 0 40px 0 70px; font-size: 30px; font-weight: 700; }
+.hud-week { white-space: nowrap; background: var(--navy); color: var(--paper); font-size: 30px; font-weight: 800; padding: 14px 28px;
+  transform: skewX(-12deg); }
+.hud-week span { display: inline-block; transform: skewX(12deg); }
+.hud-bars { display: flex; gap: 14px; margin-left: auto; }
+.bar { width: 150px; font-size: 20px; font-weight: 700; color: var(--navy); }
+.bar .track { height: 12px; background: rgba(58,71,102,.18); margin-top: 4px; }
+.bar .fill { height: 100%; background: var(--orange); }
+.hud-btn { background: var(--paper); border: 3px solid var(--navy); font-size: 22px; font-weight: 700; padding: 8px 18px; cursor: pointer; }
+.hud-btn:hover { background: var(--orange); color: var(--paper); }
+
+/* 对话框：九宫格，避免拉伸糊边 */
+#dialog { position: absolute; left: 120px; right: 120px; bottom: 36px; height: 260px; z-index: 10; cursor: pointer;
+  border-style: solid; border-width: 60px 70px 60px 170px;
+  border-image: url(../assets/ui/dialog.png) 60 70 60 170 fill stretch; }
+#dialog-text { position: absolute; inset: -20px -20px -20px 0; font-size: 34px; line-height: 1.6; padding: 0 12px; white-space: pre-wrap; }
+#dialog-next { position: absolute; right: -30px; bottom: -40px; font-size: 26px; color: var(--orange); animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: .2; } }
+#nameplate { position: absolute; left: -110px; top: -150px; width: 300px; height: 150px;
+  background: url(../assets/ui/nameplate.png) center/contain no-repeat;
+  display: flex; align-items: center; justify-content: center; }
+#nameplate span { font-size: 32px; font-weight: 800; color: var(--navy); transform: rotate(-5deg); padding: 0 30px; }
+
+/* 选项：车票按钮，文字水平垂直居中 */
+#choices { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; z-index: 20; background: rgba(246,241,231,.35); }
+.ticket { width: 640px; height: 193px; background: url(../assets/ui/choice.png) center/100% 100% no-repeat;
+  display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 90px;
+  font-size: 32px; font-weight: 700; color: var(--navy); cursor: pointer; transition: transform .12s; }
+.ticket:hover { background-image: url(../assets/ui/choice_hl.png); color: var(--navy); transform: translateX(14px) rotate(-1deg); }
+.ticket.disabled { opacity: .4; pointer-events: none; }
+.ticket small { display: block; font-size: 20px; font-weight: 500; margin-top: 4px; }
+
+/* 中央面板（开局、日程、地图等） */
+#panel { position: absolute; inset: 150px 80px 40px 80px; z-index: 8; overflow: clip; }
+.panel-title { font-size: 56px; font-weight: 900; color: var(--navy); margin-bottom: 18px; display: inline-block;
+  background: var(--paper); padding: 6px 26px; transform: skewX(-10deg); box-shadow: 10px 10px 0 var(--orange); }
+.panel-title span { display: inline-block; transform: skewX(10deg); }
+
+/* 菜单按钮：小票 */
+.receipt { width: 340px; height: 170px; display: flex; align-items: center; justify-content: center; text-align: center;
+  background: center/100% 100% no-repeat; font-size: 34px; font-weight: 800; color: var(--navy); cursor: pointer;
+  padding: 0 50px; transition: transform .12s; }
+.receipt:hover { transform: scale(1.06) rotate(-2deg); color: var(--orange); }
+
+/* 标题画面 */
+.title-logo { position: absolute; left: 120px; top: 160px; font-size: 120px; font-weight: 900; color: var(--navy); line-height: 1.1;
+  text-shadow: 8px 8px 0 var(--orange); }
+.title-sub { position: absolute; left: 128px; top: 430px; font-size: 32px; font-weight: 700; color: var(--navy); background: var(--paper); padding: 6px 16px; }
+.title-menu { position: absolute; right: 120px; top: 200px; display: flex; flex-direction: column; gap: 10px; }
+
+/* 开局 */
+.opt-group { margin-bottom: 16px; }
+.opt-group h3 { font-size: 28px; color: var(--navy); margin-bottom: 8px; }
+.opt-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip { background: var(--paper); border: 3px solid var(--navy); padding: 10px 22px; font-size: 24px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; text-align: center; }
+.chip small { font-weight: 500; font-size: 18px; margin-left: 8px; opacity: .75; }
+.chip.on { background: var(--orange); color: var(--paper); border-color: var(--orange); }
+.chip.off { opacity: .35; pointer-events: none; }
+.chip.neg { border-style: dashed; }
+.scroll { max-height: 640px; overflow-y: auto; padding: 0 16px 16px 4px; background: rgba(246,241,231,.85); }
+select.chip { appearance: none; }
+.points { font-size: 30px; font-weight: 900; color: var(--orange); margin: 6px 0 12px; }
+.next-btn { position: absolute; right: 0; bottom: 0; }
+
+/* 日程板：底图是发车牌，5条橙色横条上写日程 */
+.board { position: relative; width: 1130px; height: 732px; background: url(../assets/ui/schedule_board.png) center/100% 100% no-repeat; }
+.board-row { position: absolute; left: 5.3%; width: 89.2%; height: 10.7%; display: flex; align-items: center; justify-content: center;
+  font-size: 32px; font-weight: 800; color: var(--paper); cursor: pointer; }
+.board-row b { position: absolute; left: 24px; font-weight: 900; }
+.board-row:hover { filter: brightness(1.1); text-decoration: underline; }
+.act-list { position: absolute; left: 1180px; top: 90px; display: flex; flex-direction: column; gap: 10px; width: 520px; }
+.act { padding: 14px 20px; background: var(--paper); border: 3px solid var(--navy); font-size: 26px; font-weight: 800; cursor: pointer; }
+.act small { display: block; font-size: 18px; font-weight: 500; opacity: .8; }
+.act.on { background: var(--navy); color: var(--paper); }
+
+/* 地图 */
+.map-grid { display: grid; grid-template-columns: repeat(4, 360px); gap: 14px; margin-top: 10px; }
+.ap { font-size: 34px; font-weight: 900; color: var(--navy); }
+
+/* 手机聊天 */
+.phone { position: absolute; right: 60px; top: 0; width: 520px; height: 860px; background: var(--paper); border: 6px solid var(--navy); border-radius: 36px;
+  display: flex; flex-direction: column; overflow: hidden; }
+.phone-head { background: var(--navy); color: var(--paper); font-size: 26px; font-weight: 800; padding: 18px 24px; display: flex; justify-content: space-between; }
+.phone-log { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.msg { max-width: 80%; padding: 10px 16px; font-size: 22px; line-height: 1.45; border-radius: 16px; }
+.msg.me { align-self: flex-end; background: var(--orange); color: var(--paper); }
+.msg.them { align-self: flex-start; background: #fff; border: 2px solid var(--navy); }
+.phone-input { display: flex; border-top: 3px solid var(--navy); }
+.phone-input input { flex: 1; font-size: 22px; padding: 14px; border: none; background: transparent; font-family: var(--font); }
+.phone-input button { font-size: 22px; font-weight: 800; padding: 0 22px; background: var(--orange); color: var(--paper); border: none; cursor: pointer; }
+
+/* 设置 */
+.form label { display: block; font-size: 24px; font-weight: 700; margin: 14px 0 6px; color: var(--navy); }
+.form input { width: 900px; font-size: 22px; padding: 12px; border: 3px solid var(--navy); background: var(--paper); font-family: var(--font); }
+
+/* 提示条、入境章 */
+#toast { position: absolute; top: 160px; left: 50%; transform: translateX(-50%); background: var(--navy); color: var(--paper);
+  font-size: 26px; font-weight: 700; padding: 14px 30px; z-index: 30; white-space: nowrap; }
+#stamp { position: absolute; left: 50%; top: 50%; width: 420px; height: 420px; margin: -210px 0 0 -210px; z-index: 40;
+  background: url(../assets/ui/stamp_round.png) center/contain no-repeat; display: flex; align-items: center; justify-content: center;
+  animation: stamp .5s cubic-bezier(.2,1.6,.4,1) both; pointer-events: none; }
+#stamp span { font-size: 44px; font-weight: 900; color: var(--navy); transform: rotate(-12deg); text-align: center; line-height: 1.2; }
+@keyframes stamp { from { transform: scale(2.4) rotate(10deg); opacity: 0; } to { transform: scale(1) rotate(-6deg); opacity: 1; } }
+
+.result-list { font-size: 28px; line-height: 1.8; background: rgba(246,241,231,.92); padding: 20px 30px; width: 1200px; border-left: 10px solid var(--orange); }
+.fx-up { color: #2f8a5b; font-weight: 800; }
+.fx-down { color: #c8483b; font-weight: 800; }
+
+/* 浮层：手机、设置 */
+#overlay { position: absolute; inset: 0; z-index: 50; background: rgba(246,241,231,.94); padding: 60px 80px; }
+#overlay .phone { top: 140px; }
+
+/* ================= 动效与设计层 ================= */
+/* 背景切换：轻微推近 */
+#bg.bg-in { animation: bgIn .6s ease-out both; }
+@keyframes bgIn { from { transform: scale(1.06); filter: saturate(.6); } to { transform: scale(1); filter: none; } }
+
+/* 立绘登场：斜着滑入 */
+#sprite.enter { animation: spriteIn .45s cubic-bezier(.2,.9,.3,1.2) both; }
+@keyframes spriteIn { from { transform: translateX(calc(-50% + 160px)) skewX(-6deg); opacity: 0; } to { transform: translateX(-50%); opacity: 1; } }
+
+/* 对话框弹出、名牌拍上去 */
+#dialog.pop { animation: dlgIn .35s cubic-bezier(.2,1.3,.4,1) both; }
+@keyframes dlgIn { from { transform: translateY(80px) rotate(1.5deg); opacity: 0; } to { transform: none; opacity: 1; } }
+#nameplate.slap { animation: slap .32s cubic-bezier(.2,1.8,.4,1) both; }
+@keyframes slap { from { transform: translate(-60px,-40px) rotate(-20deg) scale(1.3); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* 选项车票：依次滑入；选中=打孔放大，其余飞出 */
+.ticket { animation: ticketIn .35s cubic-bezier(.2,1.2,.4,1) both; position: relative; }
+@keyframes ticketIn { from { transform: translateX(-260px) rotate(-6deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.ticket.punched { animation: punch .4s ease both; }
+.ticket.punched::after { content: ""; position: absolute; left: 70px; top: 50%; width: 34px; height: 34px; margin-top: -17px; border-radius: 50%;
+  background: var(--paper); box-shadow: inset 0 0 0 4px var(--navy); }
+@keyframes punch { 30% { transform: scale(1.08) rotate(-2deg); } to { transform: scale(1.02) rotate(-2deg); } }
+.ticket.gone { animation: gone .35s ease-in both; }
+@keyframes gone { to { transform: translateX(900px) rotate(12deg); opacity: 0; } }
+
+/* HUD：整条从上面滑下 */
+#hud.slide { animation: hudIn .4s cubic-bezier(.2,1.2,.4,1) both; }
+@keyframes hudIn { from { transform: translateY(-140px); } to { transform: none; } }
+.hud-tag { transform: rotate(-3deg); }
+
+/* 小票按钮：通用飞入 */
+.receipt.fly-in { animation: flyIn .45s cubic-bezier(.2,1.3,.4,1) both; }
+@keyframes flyIn { from { transform: translateX(300px) rotate(14deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.receipt.locked { opacity: .35; filter: grayscale(1); cursor: not-allowed; }
+.receipt span { display: block; }
+.receipt:active { transform: scale(.94) rotate(2deg); }
+
+/* 标题画面：大字斜排、逐字落下、背景飘单据 */
+.title-wrap { position: absolute; inset: 0; overflow: hidden; }
+#panel.full { inset: 0; }
+.paper-rain { position: absolute; inset: 0; pointer-events: none; }
+.paper-rain img { position: absolute; top: -220px; opacity: .55; animation: rain linear infinite; }
+@keyframes rain { from { transform: translateY(0) rotate(var(--r)); } to { transform: translateY(1400px) rotate(calc(var(--r) * -1)); } }
+.title-logo { position: absolute; left: 140px; top: 190px; width: 900px; font-size: 160px; line-height: 1.05; font-weight: 900; color: var(--navy);
+  transform: rotate(-6deg); text-shadow: 10px 10px 0 var(--orange); letter-spacing: -4px; }
+.title-logo span { display: inline-block; animation: drop .5s cubic-bezier(.2,1.6,.4,1) both; }
+@keyframes drop { from { transform: translateY(-260px) rotate(-30deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.title-sub { position: absolute; left: 180px; top: 620px; font-size: 34px; font-weight: 800; color: var(--paper); background: var(--navy);
+  padding: 8px 22px; transform: rotate(-6deg); animation: flyIn .4s .9s both; }
+.title-menu { position: absolute; right: 180px; top: 300px; display: flex; flex-direction: column; gap: 6px; }
+.title-menu .receipt:nth-child(2) { margin-left: 60px; }
+.title-menu .receipt:nth-child(3) { margin-left: 20px; }
+
+/* 日程：发车牌斜着压进来，活动卡依次飞入（只在第一次进入时） */
+.sched.anim .board { animation: boardIn .5s cubic-bezier(.2,1.2,.4,1) both; }
+@keyframes boardIn { from { transform: translateX(-500px) skewX(10deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.sched.anim .board-row { animation: rowIn .3s both; }
+.sched.anim .board-row:nth-child(1) { animation-delay: .35s; } .sched.anim .board-row:nth-child(2) { animation-delay: .42s; }
+.sched.anim .board-row:nth-child(3) { animation-delay: .49s; } .sched.anim .board-row:nth-child(4) { animation-delay: .56s; }
+.sched.anim .board-row:nth-child(5) { animation-delay: .63s; }
+@keyframes rowIn { from { transform: rotateX(90deg); } to { transform: none; } }
+.sched.anim .act { animation: flyIn .35s both; }
+.sched.anim .act:nth-child(2) { animation-delay: .3s; } .sched.anim .act:nth-child(3) { animation-delay: .36s; }
+.sched.anim .act:nth-child(4) { animation-delay: .42s; } .sched.anim .act:nth-child(5) { animation-delay: .48s; }
+.sched.anim .act:nth-child(6) { animation-delay: .54s; } .sched.anim .act:nth-child(7) { animation-delay: .6s; }
+.board { transform-origin: left center; }
+.board-row { transition: transform .12s; }
+.board-row:hover { transform: translateX(10px); }
+.act { transform: skewX(-6deg); transition: transform .12s, background .12s; }
+.act:hover { transform: skewX(-6deg) translateX(-10px); background: var(--orange); color: var(--paper); }
+.act-list .hint { font-size: 22px; font-weight: 800; color: var(--paper); background: var(--navy); padding: 6px 14px; display: inline-block; transform: skewX(-6deg); }
+
+/* 结算：一行一行打出来 */
+.result-list .line { animation: lineIn .3s both; }
+@keyframes lineIn { from { transform: translateX(-40px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* 数值飘字 */
+.float { position: absolute; z-index: 60; transform: translateX(-50%); font-size: 30px; font-weight: 900; padding: 2px 12px;
+  animation: floatUp 1.6s ease-out both; pointer-events: none; white-space: nowrap; }
+.float.up { color: var(--paper); background: #2f8a5b; }
+.float.down { color: var(--paper); background: #c8483b; }
+@keyframes floatUp { 0% { opacity: 0; transform: translate(-50%, 20px) scale(.6); } 15% { opacity: 1; transform: translate(-50%, 0) scale(1.1); }
+  70% { opacity: 1; transform: translate(-50%, 28px); } 100% { opacity: 0; transform: translate(-50%, 50px); } }
+
+/* 撕票转场：两片锯齿边的纸合上再拉开 */
+.tear { position: absolute; inset: 0; z-index: 90; pointer-events: none; }
+.tear-a, .tear-b { position: absolute; left: -2%; width: 104%; height: 56%; background: var(--paper);
+  transition: transform .38s cubic-bezier(.7,0,.3,1); }
+.tear-a { top: 0; transform: translateY(-105%); border-bottom: 10px solid var(--orange);
+  clip-path: polygon(0 0,100% 0,100% 92%,97% 100%,94% 92%,91% 100%,88% 92%,85% 100%,82% 92%,79% 100%,76% 92%,73% 100%,70% 92%,67% 100%,64% 92%,61% 100%,58% 92%,55% 100%,52% 92%,49% 100%,46% 92%,43% 100%,40% 92%,37% 100%,34% 92%,31% 100%,28% 92%,25% 100%,22% 92%,19% 100%,16% 92%,13% 100%,10% 92%,7% 100%,4% 92%,1% 100%,0 92%); }
+.tear-b { bottom: 0; transform: translateY(105%); background: var(--navy);
+  clip-path: polygon(0 8%,3% 0,6% 8%,9% 0,12% 8%,15% 0,18% 8%,21% 0,24% 8%,27% 0,30% 8%,33% 0,36% 8%,39% 0,42% 8%,45% 0,48% 8%,51% 0,54% 8%,57% 0,60% 8%,63% 0,66% 8%,69% 0,72% 8%,75% 0,78% 8%,81% 0,84% 8%,87% 0,90% 8%,93% 0,96% 8%,99% 0,100% 8%,100% 100%,0 100%); }
+.tear.close .tear-a, .tear.close .tear-b { transform: none; }
+.tear.open .tear-a { transform: translateY(-105%) rotate(-2deg); }
+.tear.open .tear-b { transform: translateY(105%) rotate(2deg); }
+
+/* 发车牌翻牌 */
+.flap { position: absolute; inset: 0; z-index: 85; background: rgba(58,71,102,.92); display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 18px; animation: fadeIn .2s both; }
+.flap.out { animation: fadeOut .3s both; }
+@keyframes fadeIn { from { opacity: 0; } } @keyframes fadeOut { to { opacity: 0; } }
+.flap-row { display: flex; gap: 10px; }
+.flap-cell { width: 130px; height: 150px; background: #2A3150; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 96px; font-weight: 900; color: var(--orange); position: relative; perspective: 400px; box-shadow: 0 6px 0 #1d2233; }
+.flap-cell::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 3px; background: #1d2233; }
+.flap-cell i { font-style: normal; display: inline-block; }
+.flap-cell.flip i { animation: flip .1s ease-out; }
+@keyframes flip { from { transform: rotateX(-90deg); } to { transform: none; } }
+.flap-row:first-child .flap-cell { width: 90px; height: 104px; font-size: 64px; color: var(--paper); }
+
+/* ================= 第二批素材接入 ================= */
+/* 标题：菜单直接压在背景自带的三条色带上（色带在1920画布上 x≈1470-1860） */
+.title-bars { position: absolute; inset: 0; }
+.title-bar { position: absolute; left: 1470px; width: 390px; height: 69px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; animation: flyIn .45s cubic-bezier(.2,1.3,.4,1) both; }
+.title-bar span { font-size: 38px; font-weight: 900; color: var(--paper); letter-spacing: 6px; text-shadow: 3px 3px 0 rgba(42,49,80,.35); transition: transform .12s; }
+.title-bar:hover span { transform: scale(1.12) rotate(-2deg); }
+.title-bar.off { cursor: default; }
+.title-bar.off span { opacity: .45; }
+
+/* 地图 */
+.map-layer { position: absolute; inset: 0; }
+.marker { position: absolute; width: 230px; height: 116px; margin: -58px 0 0 -40px; background: url(../assets/ui/marker.png) center/100% 100% no-repeat;
+  display: flex; align-items: center; justify-content: center; padding-left: 62px; cursor: pointer;
+  animation: tagIn .4s cubic-bezier(.2,1.5,.4,1) both; transform-origin: 12% 30%; transition: transform .15s; }
+.marker span { font-size: 26px; font-weight: 900; color: var(--navy); text-align: center; line-height: 1.15; }
+.marker small { display: block; font-size: 17px; font-weight: 700; opacity: .7; }
+.marker:hover { background-image: url(../assets/ui/marker_hl.png); transform: rotate(-6deg) scale(1.06); }
+.marker:hover span { color: var(--paper); }
+.marker.locked { background-image: url(../assets/ui/marker_locked.png); cursor: not-allowed; }
+.marker.locked span { opacity: 0; }
+.marker.train { width: 320px; height: 148px; margin: -74px 0 0 -160px; padding: 0 34px 0 168px; background-image: url(../assets/ui/marker_train.png); transform-origin: center; }
+.marker.train:hover { background-image: url(../assets/ui/marker_train.png); transform: rotate(-4deg) scale(1.1); }
+.marker.train:hover span { color: var(--orange); }
+@keyframes tagIn { from { transform: rotate(-40deg) scale(.3); opacity: 0; } to { transform: none; opacity: 1; } }
+.here { position: absolute; width: 96px; animation: pulse 1.6s ease-in-out infinite; pointer-events: none; }
+@keyframes pulse { 50% { transform: scale(1.12) rotate(-6deg); } }
+.ap-tag { position: absolute; left: 70px; bottom: 70px; transform: skewX(-10deg); background: var(--navy); padding: 10px 30px; box-shadow: 8px 8px 0 var(--orange); }
+.ap-tag span { display: inline-block; transform: skewX(10deg); font-size: 34px; font-weight: 900; color: var(--paper); }
+#panel.full .next-btn { right: 60px; bottom: 40px; }
+
+/* 日程活动卡带图标；选中的日子 */
+.act { display: flex; align-items: center; gap: 14px; padding: 8px 18px; }
+.act img { width: 60px; height: 60px; object-fit: contain; transform: skewX(6deg); }
+.board-row.sel { outline: 5px solid var(--navy); outline-offset: -2px; }
+
+/* HUD数值条带图标 */
+.bar { display: flex; align-items: center; gap: 6px; width: 170px; }
+.bar img { width: 44px; height: 44px; object-fit: contain; }
+.bar-body { flex: 1; }
+
+/* 手机：用手机外框素材，气泡九宫格 */
+.phone { width: 460px; height: 1000px; top: 40px !important; border: none; border-radius: 0; background: url(../assets/ui/phone_frame.png) center/100% 100% no-repeat; padding: 70px 26px 40px; }
+.phone-head { background: url(../assets/ui/phone_status.png) center/100% 100% no-repeat; color: var(--navy); padding: 10px 26px; font-size: 24px; }
+.msg { border-radius: 0 !important; padding: 2px 8px !important; background: none !important; }
+.msg.me { color: var(--paper) !important; border: solid transparent !important; border-width: 14px 30px 24px 14px !important;
+  border-image: url(../assets/ui/bubble_me.png) 30 60 50 30 fill stretch !important; }
+.msg.them { color: var(--navy) !important; border: solid transparent !important; border-width: 14px 14px 24px 30px !important;
+  border-image: url(../assets/ui/bubble_them.png) 30 30 50 60 fill stretch !important; }
+.phone-input { border-top: none; height: 74px; background: url(../assets/ui/phone_input.png) center/100% 100% no-repeat; padding: 0 80px 0 30px; position: relative; }
+.phone-input input { padding: 0 6px; }
+.phone-input button { position: absolute; right: 2%; top: 10%; width: 16%; height: 80%; background: transparent; }
+
+/* 结局明信片：文字放在明信片左侧图片框里，水平垂直居中 */
+.postcard { position: absolute; left: 50%; top: 50%; width: 1100px; height: 590px; margin: -295px 0 0 -550px;
+  background: url(../assets/ui/postcard.png) center/100% 100% no-repeat; animation: cardIn .7s cubic-bezier(.2,1.1,.4,1) both; }
+@keyframes cardIn { from { transform: rotateY(90deg) rotate(-8deg); } to { transform: rotate(-2deg); } }
+.pc-title { position: absolute; left: 4%; top: 9%; width: 50%; height: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 64px; font-weight: 900; color: var(--navy); text-align: center; }
+.pc-body { position: absolute; left: 58%; top: 42%; width: 36%; font-size: 24px; line-height: 1.9; color: var(--navy); font-weight: 700; }
+.pc-body small { font-size: 16px; opacity: .6; }

@@ -1,0 +1,458 @@
+{
+ "sprites": {
+  "chara/local/summer.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0191
+  },
+  "chara/local/base.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0009
+  },
+  "chara/local/coffee.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0
+  },
+  "chara/groupmate/summer.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0104
+  },
+  "chara/groupmate/base.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0252
+  },
+  "chara/groupmate/home.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0095
+  },
+  "chara/senior/summer.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.02
+  },
+  "chara/senior/base.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0035
+  },
+  "chara/otaku/summer.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0156
+  },
+  "chara/otaku/base.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0
+  },
+  "chara/otaku/club.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0148
+  },
+  "chara/otaku/figure.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0095
+  },
+  "chara/senior/expr_1.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0083
+  },
+  "chara/senior/expr_2.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.009
+  },
+  "chara/senior/expr_3.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0076
+  },
+  "chara/senior/expr_4.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0076
+  },
+  "chara/senior/expr_5.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0069
+  },
+  "chara/senior/expr_6.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0069
+  },
+  "chara/senior/expr_7.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0076
+  },
+  "chara/local/expr_1.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0007
+  },
+  "chara/local/expr_2.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0
+  },
+  "chara/local/expr_3.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0007
+  },
+  "chara/local/expr_4.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0
+  },
+  "chara/local/expr_5.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0
+  },
+  "chara/local/expr_6.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0
+  },
+  "chara/local/expr_7.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0
+  },
+  "chara/groupmate/expr_1.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0041
+  },
+  "chara/groupmate/expr_2.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0035
+  },
+  "chara/groupmate/expr_3.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0041
+  },
+  "chara/groupmate/expr_4.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0041
+  },
+  "chara/groupmate/expr_5.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0041
+  },
+  "chara/groupmate/expr_6.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0035
+  },
+  "chara/otaku/expr_1.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0
+  },
+  "chara/otaku/expr_2.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0
+  },
+  "chara/otaku/expr_3.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0
+  },
+  "chara/otaku/expr_4.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0
+  },
+  "chara/otaku/expr_5.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0
+  },
+  "chara/otaku/expr_6.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0
+  },
+  "chara/otaku/expr_7.png": {
+   "w": 1086,
+   "h": 1448,
+   "headTop": 0.0
+  },
+  "chara/npc/nikos.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0217
+  },
+  "chara/npc/pike.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0365
+  },
+  "chara/npc/ben.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0148
+  },
+  "chara/npc/dave.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0469
+  },
+  "chara/npc/chen_siqi.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0312
+  },
+  "chara/npc/giulia.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0243
+  },
+  "chara/npc/hannah.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.033
+  },
+  "chara/npc/jake.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0252
+  },
+  "chara/npc/linda.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0087
+  },
+  "chara/npc/mei.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0269
+  },
+  "chara/npc/sophie.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0243
+  },
+  "chara/npc/yu_xiao.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0373
+  },
+  "chara/npc/wu_tong.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0269
+  },
+  "chara/npc/zhou_kexin.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0234
+  },
+  "chara/npc/chen_jianguo.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0295
+  },
+  "chara/npc/zhao_zihao.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0
+  },
+  "chara/me/autumn.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0312
+  },
+  "chara/me/winter.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0304
+  },
+  "chara/me/home.png": {
+   "w": 864,
+   "h": 1152,
+   "headTop": 0.0165
+  }
+ },
+ "missing": [],
+ "warnings": [
+  "chara/npc/zhao_zihao.png：几乎没有透明区域，看起来还没抠图"
+ ],
+ "expr": {
+  "senior": {
+   "normal": {
+    "file": "chara/senior/expr_1.png",
+    "label": "常态"
+   },
+   "smile": {
+    "file": "chara/senior/expr_2.png",
+    "label": "笑"
+   },
+   "annoyed": {
+    "file": "chara/senior/expr_3.png",
+    "label": "不满"
+   },
+   "shy": {
+    "file": "chara/senior/expr_4.png",
+    "label": "害羞"
+   },
+   "surprised": {
+    "file": "chara/senior/expr_5.png",
+    "label": "惊讶"
+   },
+   "speechless": {
+    "file": "chara/senior/expr_6.png",
+    "label": "无语"
+   },
+   "bizsmile": {
+    "file": "chara/senior/expr_7.png",
+    "label": "营业笑"
+   }
+  },
+  "local": {
+   "normal": {
+    "file": "chara/local/expr_1.png",
+    "label": "常态"
+   },
+   "smile": {
+    "file": "chara/local/expr_2.png",
+    "label": "笑"
+   },
+   "annoyed": {
+    "file": "chara/local/expr_3.png",
+    "label": "不满"
+   },
+   "shy": {
+    "file": "chara/local/expr_4.png",
+    "label": "害羞"
+   },
+   "surprised": {
+    "file": "chara/local/expr_5.png",
+    "label": "惊讶"
+   },
+   "speechless": {
+    "file": "chara/local/expr_6.png",
+    "label": "无语"
+   },
+   "stunned": {
+    "file": "chara/local/expr_7.png",
+    "label": "愣住"
+   }
+  },
+  "groupmate": {
+   "normal": {
+    "file": "chara/groupmate/expr_1.png",
+    "label": "常态"
+   },
+   "smile": {
+    "file": "chara/groupmate/expr_2.png",
+    "label": "笑"
+   },
+   "annoyed": {
+    "file": "chara/groupmate/expr_3.png",
+    "label": "不满"
+   },
+   "shy": {
+    "file": "chara/groupmate/expr_4.png",
+    "label": "害羞"
+   },
+   "surprised": {
+    "file": "chara/groupmate/expr_5.png",
+    "label": "惊讶"
+   },
+   "speechless": {
+    "file": "chara/groupmate/expr_6.png",
+    "label": "无语"
+   }
+  },
+  "otaku": {
+   "normal": {
+    "file": "chara/otaku/expr_1.png",
+    "label": "常态"
+   },
+   "smile": {
+    "file": "chara/otaku/expr_2.png",
+    "label": "笑"
+   },
+   "annoyed": {
+    "file": "chara/otaku/expr_3.png",
+    "label": "不满"
+   },
+   "shy": {
+    "file": "chara/otaku/expr_4.png",
+    "label": "害羞"
+   },
+   "surprised": {
+    "file": "chara/otaku/expr_5.png",
+    "label": "惊讶"
+   },
+   "speechless": {
+    "file": "chara/otaku/expr_6.png",
+    "label": "无语"
+   },
+   "sparkle": {
+    "file": "chara/otaku/expr_7.png",
+    "label": "聊到番时眼睛发亮"
+   }
+  }
+ },
+ "cg": [
+  "first_night",
+  "fire_alarm",
+  "dark_at_four",
+  "spring_festival",
+  "first_snow",
+  "library_allnighter",
+  "graduation",
+  "fishpond",
+  "shop_work",
+  "hermit",
+  "travel_airport",
+  "travel_train",
+  "senior_past",
+  "groupmate_past",
+  "senior_fever",
+  "senior_packing",
+  "senior_he",
+  "local_rain",
+  "local_name",
+  "local_he",
+  "groupmate_chips",
+  "groupmate_tea",
+  "groupmate_he",
+  "otaku_screening",
+  "otaku_con",
+  "otaku_he",
+  "local_past",
+  "otaku_past"
+ ],
+ "fx": [
+  "sweat",
+  "anger",
+  "gloom",
+  "blush",
+  "sparkle",
+  "question",
+  "exclaim",
+  "dots",
+  "sigh",
+  "heart"
+ ]
+}

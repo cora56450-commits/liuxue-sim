@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>留学生活模拟器（暂名）</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/phase2.css">
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+    <img id="bg" alt="">
+    <div id="sprites"></div>
+    <img id="cg" class="hidden" alt="">
+    <div id="hud" class="hidden"></div>
+    <div id="panel" class="hidden"></div>
+    <div id="sysbar" class="hidden">
+      <button data-sys="log">记录</button><button data-sys="auto">自动</button><button data-sys="skip">快进</button>
+    </div>
+    <div id="dialog" class="hidden">
+      <div id="avatar" class="hidden"><img alt=""></div>
+      <div id="nameplate" class="hidden"><span></span></div>
+      <div id="dialog-body"><div id="dialog-text"></div><div id="dialog-tr"></div></div>
+      <div id="dialog-next">▼</div>
+    </div>
+    <div id="choices" class="hidden"></div>
+    <div id="toast" class="hidden"></div>
+    <div id="stamp" class="hidden"><span></span></div>
+  </div>
+</div>
+
+<!-- 数据（可直接编辑） -->
+<script src="data/setup.js"></script>
+<script src="data/hometowns.js"></script>
+<script src="data/characters.js"></script>
+<script src="data/world.js"></script>
+<script src="data/cg.js"></script>
+<script src="data/bgm.js"></script>
+<script src="data/notes.js"></script>
+<script src="data/events.js"></script>
+<!-- 剧情文本：按事件分文件放在 data/events/ 下，新文件加在这里，后加载的同名事件会覆盖先加载的 -->
+<script src="data/events/system.js"></script>
+<script src="data/events/fixed_y1.js"></script>
+<script src="data/events/later_years.js"></script>
+<script src="data/endings.js"></script>
+<!-- 程序 -->
+<script src="js/state.js"></script>
+<script src="js/sprites.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/script.js"></script>
+<script src="js/system.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/phone.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

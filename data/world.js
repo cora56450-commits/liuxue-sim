@@ -1,0 +1,190 @@
+// 世界数据：日程活动、周末地点、人物、日历
+window.DATA = window.DATA || {};
+
+// 工作日日程（每周5格）。数值照 docs/数值规划.md 第三部分，和 tools/balance_sim.py 的 ACT 表一致。
+// fx 是基础值；I/E、tag、英语、精力过低等修正写在 js/state.js 的 Rules.activityFx 里。
+DATA.activities = [
+  { id: "class",    name: "上课",   desc: "学业+（看英语），计入出勤",   fx: { energy: -8,  study: 1 } },
+  { id: "library",  name: "图书馆", desc: "学业++，精力--，有点孤独",    fx: { energy: -12, study: 2.5, loneliness: 1 } },
+  { id: "homework", name: "做作业", desc: "作业进度+20，有点孤独",       fx: { energy: -12, homework: 20, loneliness: 1 } },
+  { id: "social",   name: "社交",   desc: "孤独-，融入+，花£15",         fx: { energy: -6,  loneliness: -6, belonging: 1.5, money: -15 } },
+  { id: "home",     name: "宅家",   desc: "回精力，孤独可能上升",        fx: { energy: 15,  loneliness: 1 } },
+  { id: "work",     name: "打工",   desc: "中超5小时，现金£40",          fx: { energy: -14, loneliness: -2, money: 40 }, unlock: "work" },
+];
+
+// 周末地图（日常城市），cost=行动点。数值照 docs/数值规划.md 第四部分。
+// meet：可能偶遇的人。攻略对象第一次可以在这里认识；固定 NPC 要先在剧情里认识过才会偶遇（友情+3）。"roommates" = 同住的室友。
+// 固定 NPC 放在哪个地点是编程这边暂定的，见 docs/问题记录.md
+DATA.mapCity = [
+  // x,y：在城市大地图（1920x1080）上的位置
+  { id: "dorm_room",      name: "住处",     bg: "dorm_room",      x: 344,  y: 200, cost: 1, fx: { energy: 15 },                         text: "你决定什么都不干，躺平一下午。", meet: ["roommates"] },
+  { id: "campus",         name: "校园",     bg: "campus",         x: 827,  y: 175, cost: 1, fx: { belonging: 1, loneliness: -3 },       text: "周末的草坪上有人在晒太阳，难得出太阳。", meet: ["mei", "ben"] },
+  { id: "library",        name: "图书馆",   bg: "library",        x: 1263, y: 255, cost: 1, fx: { study: 2.5, energy: -6 },            text: "周末的图书馆空荡荡的，适合补作业。", meet: ["chen_siqi", "hannah"] },
+  { id: "gym",            name: "健身房",   bg: "gym",            x: 1665, y: 230, cost: 1, fx: { energy: -5, loneliness: -2 },        text: "跑步机上跑了二十分钟，你觉得自己又行了。", meet: ["otaku", "jake"] },
+  { id: "club_room",      name: "社团活动室", bg: "club_room",    x: 264,  y: 440, cost: 2, fx: { belonging: 2, loneliness: -6 },      text: "今晚放映会，屋里黑漆漆的，屏幕上的光照在每个人脸上。", meet: ["otaku"], needTag: "otaku" },
+  { id: "supermarket",    name: "超市",     bg: "supermarket_day", x: 1446, y: 415, cost: 1, fx: { money: -15, energy: 5 },            text: "又是meal deal。三明治、薯片、饮料，一个都不能少。", meet: ["giulia"] },
+  { id: "chinese_market", name: "中超",     bg: "chinese_market", x: 1693, y: 430, cost: 1, fx: { money: -25, loneliness: -6 },        text: "货架上摆着{food}的同款调料，你站在那里看了很久。", meet: ["senior", "chen_jianguo", "wu_tong"] },
+  { id: "indoor_market",  name: "室内市场", bg: "indoor_market",  x: 1475, y: 600, cost: 1, fx: { money: -8, belonging: 1 },          text: "水果摊老板叫你love，你愣了一下。", meet: ["zhou_kexin"] },
+  { id: "pub_street",     name: "酒吧街",   bg: "pub_street",     x: 1607, y: 800, cost: 2, fx: { money: -25, belonging: 3, loneliness: -6, energy: -8 }, text: "小组的人在pub门口招手。", meet: ["local", "groupmate", "jake", "zhao_zihao"] },
+  { id: "brunch",         name: "brunch店", bg: "brunch",         x: 1114, y: 815, cost: 2, fx: { money: -18, energy: 10, loneliness: -5 }, text: "炸鸡华夫饼还是那么好吃，至少今天有在好好生活。", meet: ["local", "groupmate", "sophie"] },
+  { id: "station",        name: "车站·出城", bg: "station",       x: 511,  y: 830, cost: 99, travel: true,                             text: "去哪儿？火车票不便宜。" },
+];
+
+// 旅游地（占掉整个周末）
+DATA.homeOnUK = { x: 970, y: 471 };  // 旅游地图上“我们的城市”星标
+DATA.mapTravel = [
+  { id: "london",        name: "伦敦",   bg: "london",        x: 1182, y: 830,        fx: { money: -90,  energy: -10, loneliness: -8, belonging: 3 }, text: "人好多，比你住的地方热闹十倍。" },
+  { id: "york",          name: "约克",   bg: "york",          x: 1205, y: 485,          fx: { money: -45,  energy: -6,  loneliness: -6 },              text: "城墙上的风很大，但古街很好看。" },
+  { id: "edinburgh",     name: "爱丁堡", bg: "edinburgh",     x: 872,  y: 205,     fx: { money: -120, energy: -14, loneliness: -10 },             text: "上坡、下坡、再上坡。苏格兰口音你只听懂一半。" },
+  { id: "lake_district", name: "湖区",   bg: "lake_district", x: 723,  y: 510, fx: { money: -70,  energy: 8,   loneliness: -8 },              text: "羊比人多。手机没信号，反而很安静。" },
+];
+
+// 角色数据搬到了 data/characters.js
+
+// ===== 大一日历：28 个可玩周 =====
+// term    学期名（HUD 和翻牌用）
+// fixed   这周开头要演的固定事件（data/events 里的 id），可以写多个
+// vacation 假期周：不排日程，演完 fixed 里的假期事件直接过完
+// deadline 这周周末交哪份作业（延期以后实际是哪周交，看 Rules.deadlineWeek）；exam 这周考试
+// tutor_meeting_* 是 personal tutor 见面（第2、14、25周）；第14周先演找房子
+// rain    下雨周（Ollie 心动事件的条件之一）
+DATA.calendar = [
+  { week: 1,  term: "大一·秋", label: "第1周",  fixed: ["freshers", "freshers_group", "fire_alarm"] },
+  { week: 2,  term: "大一·秋", label: "第2周",  fixed: ["first_lecture", "tutor_meeting_1"] },
+  { week: 3,  term: "大一·秋", label: "第3周",  fixed: ["group_project"], rain: true },
+  { week: 4,  term: "大一·秋", label: "第4周",  fixed: ["chinese_shop"] },
+  { week: 5,  term: "大一·秋", label: "第5周",  fixed: ["first_sick"], rain: true },
+  { week: 6,  term: "大一·秋", label: "第6周",  fixed: ["reading_week"] },
+  { week: 7,  term: "大一·秋", label: "第7周",  fixed: ["dark_at_four"] },
+  { week: 8,  term: "大一·秋", label: "第8周",  fixed: ["bonfire_night"], deadline: "a1", rain: true },
+  { week: 9,  term: "大一·秋", label: "第9周",  fixed: ["first_presentation"] },
+  { week: 10, term: "大一·秋", label: "第10周", fixed: ["xmas_market"], rain: true },
+  { week: 11, term: "大一·秋", label: "第11周", fixed: ["ddl_before_xmas"], deadline: "a2" },
+  { week: 12, term: "圣诞假",  label: "第12周", fixed: ["term_end"], vacation: true },
+  { week: 13, term: "大一·春", label: "第13周", fixed: ["results_day"], rain: true },
+  { week: 14, term: "大一·春", label: "第14周", fixed: ["house_hunting", "tutor_meeting_2"] },
+  { week: 15, term: "大一·春", label: "第15周", fixed: ["spring_festival"] },
+  { week: 16, term: "大一·春", label: "第16周", fixed: ["valentines"], rain: true },
+  { week: 17, term: "大一·春", label: "第17周", fixed: ["group_presentation"], deadline: "a3" },
+  { week: 18, term: "大一·春", label: "第18周", fixed: ["first_snow"] },
+  { week: 19, term: "大一·春", label: "第19周", rain: true },
+  { week: 20, term: "大一·春", label: "第20周" },
+  { week: 21, term: "大一·春", label: "第21周", rain: true },
+  { week: 22, term: "大一·春", label: "第22周", fixed: ["final_assignment"], deadline: "a4" },
+  { week: 23, term: "复活节假", label: "第23周", fixed: ["easter_break"], vacation: true },
+  { week: 24, term: "大一·夏", label: "第24周" },
+  { week: 25, term: "大一·夏", label: "第25周", fixed: ["tutor_meeting_3"], rain: true },
+  { week: 26, term: "大一·夏", label: "第26周" },
+  { week: 27, term: "大一·夏", label: "第27周", fixed: ["exam_week"], exam: true },
+  { week: 28, term: "大一·夏", label: "第28周", fixed: ["year1_end"] },
+];
+
+// 作业（docs/数值规划.md 第六部分）
+DATA.assignments = {
+  a1: { name: "作业1：essay／小作业" },
+  a2: { name: "作业2：期末大作业" },
+  a3: { name: "作业3：小组presentation" },
+  a4: { name: "作业4：期末大作业" },
+};
+
+// 三个学期各包含哪些周（出勤按学期统计）
+DATA.terms = [[1, 11], [13, 22], [24, 28]];
+
+// ===== 大二、大三：按关键周浓缩（docs/大二大三关键周.md）=====
+// 每个关键周：先演 event，再选“这段时间怎么过”，按所选的日程模板一次结算 span 周（span 0 = 只演事件）。
+// mark: true 这一段结束时交作业出分；exam: true 再考一次试（两个都写就出两个分）；final: true 最终提交（代写在这里判定被查）
+// trials：这一段的事件之后，演恋爱线考验（只有 confessed_{id} 的才演）。who 是攻略对象，if 是额外条件
+// confess：告白窗口（大一第24–28周之外的另一个窗口）
+// after：结算完再演的事件　spring：春节（自动换春节BGM；家教森严的“视频里被发现”在这里）
+// close：演这一段之前先算这一年的总分（不及格进补考）
+DATA.laterYears = [
+  { year: 2, name: "大二", weight: 0.3, periods: [
+    { id: "y2_move_in",     label: "搬家周",     event: "y2_move_in",     span: 4, bg: "shared_house", confess: true,
+      trials: [{ who: "senior", if: "flag('house_khan')" }] },
+    { id: "y2_internship",  label: "实习申请季", event: "y2_internship",  span: 4, confess: true },
+    { id: "y2_xmas_ddl",    label: "圣诞前ddl周", event: "y2_xmas_ddl",   span: 3, mark: true, after: "y2_xmas_break" },
+    { id: "y2_spring",      label: "春节",       event: "y2_spring",      span: 4, spring: true },
+    { id: "y2_house_again", label: "又找房",     event: "y2_house_again", span: 4,
+      trials: [{ who: "senior", if: "!flag('house_khan')" }, { who: "local" }] },
+    { id: "y2_exam",        label: "期末",       event: "y2_exam",        span: 6, mark: true, exam: true, trials: [{ who: "groupmate" }] },
+    { id: "y2_summer",      label: "暑假",       event: "y2_summer",      span: 0, close: true },
+  ] },
+  { year: 3, name: "大三", weight: 0.6, periods: [
+    { id: "y3_proposal",    label: "毕设开题",   event: "y3_proposal",    span: 4, bg: "studio_night" },
+    { id: "y3_stay_or_go",  label: "去留焦虑",   event: "y3_stay_or_go",  span: 5 },
+    { id: "y3_last_xmas",   label: "最后一个圣诞", event: "y3_last_xmas", span: 3, mark: true, trials: [{ who: "otaku" }] },
+    { id: "y3_final_push",  label: "毕设冲刺",   event: "y3_final_push",  span: 8 },
+    { id: "y3_final",       label: "最终提交＋考试季", event: "y3_final", span: 6, mark: true, exam: true, final: true },
+    { id: "y3_leaving",     label: "离场",       event: "y3_leaving",     span: 0, close: true },
+    { id: "y3_graduation",  label: "毕业典礼",   event: "y3_graduation",  span: 0, bg: "graduation" },
+    { id: "y3_after",       label: "典礼之后",   event: "y3_after",       span: 0 },   // Kieran 的 pub 公开事件；之后结局判定
+  ] },
+];
+DATA.year1Weight = 0.1;
+
+// 浓缩章节里“这段时间怎么过”的日程模板（和 balance_sim.py 里的玩法一致）
+DATA.focusPlans = [
+  { id: "grind",    name: "卷",       desc: "上课、图书馆、做作业", week: ["class", "class", "library", "homework", "library"], weekend: ["home", "home"] },
+  { id: "balanced", name: "均衡",     desc: "学习和社交都顾一点",   week: ["class", "class", "homework", "social", "library"],   weekend: ["home", "social"] },
+  { id: "social",   name: "出去玩",   desc: "社交为主，作业看缘分", week: ["class", "social", "home", "social", "home"],         weekend: ["social", "brunch"] },
+  { id: "work",     name: "打工攒钱", desc: "每周两次打工",         week: ["class", "homework", "work", "work", "home"],         weekend: ["home", "chinese"] },
+];
+
+// 手机里的群聊。unlock 是条件表达式（写法同剧情脚本的 if）
+DATA.groups = {
+  group:    { name: "小组群",           members: ["groupmate", "hannah", "ben"], unlock: "week >= 3 || year > 1",
+              brief: "大学小组作业的群。Ploy 很少回消息但一回就是语音和表情，Hannah 认真负责爱列清单，Ben 话少、回得慢、爱发 meme。全程英文。" },
+  hometown: { name: "{家乡}老乡群",     members: ["老乡A", "老乡B", "老乡C"],     unlock: "flag('hometown_group')",
+              brief: "同一个省来这座英国城市留学的中国学生群。聊的是拼车、转租、哪家中超到货了、想家。说中文，带家乡口头禅。" },
+  family:   { name: "相亲相爱一家人",   members: ["妈妈", "爸爸"],                unlock: "true",
+              brief: "玩家的家人群。妈妈爱发养生文章和语音转文字的长消息，爸爸话少，偶尔发一个大拇指表情。说中文。" },
+};
+
+DATA.tuning = {
+  exchangeRate: 9.3,           // 汇率脑显示用
+  exchangeBrainUntil: 60,      // adapt 低于此值时价格旁显示≈¥
+  weekendAP: 4,
+  energyMax: 100,              // 完美作息 +20
+  // —— 每周自然变化 ——
+  weeklyEnergy: 30,
+  weeklyLoneliness: 6, winterLoneliness: 9, winterWeeks: [7, 20], studioLoneliness: 2,
+  weeklyEnglish: 0.4, englishCap: 90,
+  weeklyAdapt: 2,
+  monthlyEvery: 4,             // 每 4 周到账一次（第1、5、9…周）
+  // —— 精力 ——
+  lowEnergy: 25, lowEnergyFactor: 0.6, sickEnergy: 30, sickLockSlots: 2,
+  // —— 作业 ——
+  hwMax: 120, hwDone: 100, rushBelow: 60, rushEnergy: -25, rushQuality: -15, tiredBelow: 20, tiredQuality: -10,
+  ghostCost: { poor: 150, middle: 250, rich: 400 }, ghostQuality: 75, ghostRisk: 30,
+  // —— 好感 ——
+  firstMeet: 5, firstMeetSilver: 3, prettyStart: 10, weekendMeet: 4, meetChance: 0.6,
+  affDecayAfterWeeks: 3, affDecayMin: 40, affDecay: -2,
+  pondLevel: 60, pondChance: 0.06, pondPenalty: -20,
+  // —— 钱 ——
+  livingFactor: { kitchen_killer: 1.3, saver: 0.85, chef: 0.8 },
+  askFamilyLoneliness: 8, askFamilyExtra: 100,   // 负债时跟家里要钱：补平欠款再多给 £100（金额是暂定的）
+  smallEventChance: 0.35,
+  // —— 第三阶段（问题记录·策划回复、docs/tag效果.md、docs/手机与友情.md）——
+  studyHalfAt: 80,                     // 学业到80以后每次增长减半
+  yearPenalty: { 2: 6, 3: 10 },        // 分数公式：大二 −6、大三 −10
+  heAff: 85, heAffStrictHidden: 90,    // HE 好感门槛；家教森严“隐瞒”后 90
+  // 友情
+  frStart: 10, frSilver: 3, frPretty: 3, frTiers: { acquaintance: 30, friend: 60 },
+  frWeekendMeet: 3, frChatMax: 2, roommateFr: 0.5, roommateFrChef: 1,
+  friendLoneliness: 1, friendLonelinessMax: 3, friendBelonging: 0.3,
+  // tag
+  homeEnergyChef: 20, homeEnergyKiller: 12, homeEnergyNeat: 3, homeEnergyPhone: 0.8,
+  ironSupermarketEnergy: 8, saverSupermarketMoney: -10,
+  glassLoneliness: 1, glassChineseShop: 1.5,
+  sickLockHealthy: 1, rushEnergyNightowl: -15,
+  weakColdChance: 0.05, weakColdEnergy: -15,
+  strictVideoEnergy: -3, strictVideoLoneliness: -2,
+  loveDistractAt: 8, loveDistract: 0.8,
+  neatShared: -3, otakuBelonging: 0.9,
+  lostEnergy: -5, lostAP: 1, lostMoney: -5,
+  // tutor
+  tutorCheckinLoneliness: 70, tutorCheckinGap: 4,
+};
+
+// 家教森严：每周日的家庭视频（固定文本，策划这边可以改）
+DATA.strictVideoText = "（占位）周日晚上，家里的视频准时打过来了。";

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>排排站 · 立绘校准</title>
+<style>
+  :root { --orange: #FF7A45; --navy: #3A4766; --paper: #F6F1E7; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; background: #1d2233; color: var(--paper); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+  header { padding: 10px 16px; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; background: #2A3150; font-size: 14px; }
+  header b { font-size: 18px; }
+  header label { display: flex; align-items: center; gap: 6px; }
+  button { font: inherit; font-weight: 700; padding: 6px 14px; border: 2px solid var(--paper); background: var(--orange); color: var(--paper); cursor: pointer; }
+  button.plain { background: transparent; }
+  #scroller { flex: 1; overflow-x: auto; overflow-y: hidden; position: relative; }
+  #row { position: relative; height: 1080px; transform-origin: 0 0; display: flex; background: #8891a8; }
+  .col { position: relative; width: 430px; height: 1080px; flex: none; border-right: 1px dashed rgba(255,255,255,.25); overflow: hidden; }
+  .col img { position: absolute; left: 50%; transform: translateX(-50%); pointer-events: none; }
+  .col .none { position: absolute; left: 0; right: 0; top: 400px; text-align: center; font-size: 30px; font-weight: 800; color: var(--navy); background: var(--paper); padding: 20px 0; }
+  .line { position: absolute; left: 0; right: 0; height: 0; border-top: 3px solid var(--orange); z-index: 3; }
+  .line.chin { border-top: 2px dashed #fff; }
+  .line span { position: absolute; left: 4px; top: -24px; font-size: 18px; font-weight: 800; background: var(--orange); color: #fff; padding: 0 6px; }
+  .base { position: absolute; left: 0; right: 0; border-top: 3px solid var(--navy); z-index: 2; }
+  .ctrl { position: absolute; left: 0; right: 0; bottom: 0; z-index: 5; background: rgba(42,49,80,.93); padding: 12px 14px; font-size: 22px; }
+  .ctrl h3 { font-size: 26px; display: flex; justify-content: space-between; }
+  .ctrl select { font: inherit; width: 100%; margin: 6px 0; }
+  .ctrl .r { display: flex; align-items: center; gap: 8px; }
+  .ctrl .r input[type=range] { flex: 1; height: 30px; }
+  .ctrl .r input[type=number] { width: 110px; font: inherit; }
+  .ctrl .r span { width: 70px; }
+  #row.all .ctrl { display: none; }
+  #out { position: fixed; inset: 60px; z-index: 20; background: var(--paper); color: #2A3150; padding: 20px; display: none; flex-direction: column; gap: 10px; border: 6px solid var(--orange); }
+  #out textarea { flex: 1; font: 14px/1.5 Menlo, monospace; padding: 10px; }
+</style>
+</head>
+<body>
+<header>
+  <b>排排站 · 立绘校准</b>
+  <span>橙线＝这个人的头顶应该在的位置；白虚线＝下巴参考线。先调“缩放”让头顶到下巴正好卡在两条线之间，再调“头顶”让头顶贴住橙线。</span>
+  <label>头的高度参考 <input type="range" id="headSize" min="150" max="360" value="250"> <span id="headSizeV"></span>px</label>
+  <label>背景 <select id="bgSel"><option value="#8891a8">灰蓝</option><option value="#F6F1E7">米白</option><option value="#2A3150">深蓝</option></select></label>
+  <label><input type="checkbox" id="overview"> 全部挤进一屏（只看整体，调的时候关掉）</label>
+  <button id="export">导出</button>
+  <button class="plain" id="reset">恢复成 characters.js 里的值</button>
+</header>
+<div id="scroller"><div id="row"></div></div>
+<div id="out"><b>把下面每一行里的 calib / calibBy 贴回 data/characters.js 对应的角色（或者整段发给 Claude Code 让它贴）</b><textarea readonly></textarea><div><button id="copy">复制</button> <button class="plain" id="closeOut" style="color:#2A3150;border-color:#2A3150">关闭</button></div></div>
+
+<script src="../data/characters.js"></script>
+<script src="../js/sprites.js"></script>
+<script>
+const KEY = "liuxue_lineup_wip";
+const R = DATA.spriteRule;
+const ids = Object.keys(DATA.characters).sort((a, b) => DATA.characters[b].height - DATA.characters[a].height);
+// 工作中的校准值：{ 角色: { 图的键: {scale, headTop} } }，表情图共用 "expr" 这一组
+let work = {};
+function fromData() {
+  const w = {};
+  for (const id of ids) {
+    const c = DATA.characters[id]; w[id] = {};
+    for (const k of Object.keys(c.sprites)) w[id][k] = { ...Sprites.calib(c, k, false) };
+    if (c.expr) w[id].expr = { ...Sprites.calib(c, "", true) };
+  }
+  return w;
+}
+try { work = JSON.parse(localStorage.getItem(KEY)) || fromData(); } catch (e) { work = fromData(); }
+for (const [id, v] of Object.entries(fromData())) { work[id] = Object.assign(v, work[id] || {}); }
+const shown = {};  // 每个人现在显示哪张图："pose:base" 或 "expr:smile"
+
+const row = document.getElementById("row");
+function fit() {
+  const box = document.getElementById("scroller");
+  const all = document.getElementById("overview").checked;
+  const sc = all ? box.clientWidth / (ids.length * 430) : box.clientHeight / 1080;
+  row.style.transform = `scale(${sc})`;
+  row.style.width = ids.length * 430 + "px";
+  row.classList.toggle("all", all);
+}
+window.addEventListener("resize", fit);
+
+function draw() {
+  const hs = +document.getElementById("headSize").value;
+  document.getElementById("headSizeV").textContent = hs;
+  row.innerHTML = "";
+  for (const id of ids) {
+    const c = DATA.characters[id];
+    const col = document.createElement("div"); col.className = "col";
+    const opts = [...Object.keys(c.sprites).map((k) => ["pose:" + k, "姿势 " + k]), ...Object.keys(c.expr || {}).map((k) => ["expr:" + k, "表情 " + (c.exprNames[k] || k)])];
+    if (!shown[id] && opts.length) shown[id] = opts[0][0];
+    const headY = R.baseline - (c.height - 160) * R.pxPerCm;
+    let html = `<div class="base" style="top:${R.baseline}px"></div><div class="line" style="top:${headY}px"><span>${c.height}cm</span></div><div class="line chin" style="top:${headY + hs}px"></div>`;
+    let ctrl = `<h3><span>${c.short}</span><small>${id}</small></h3>`;
+    if (!opts.length) html += `<div class="none">${c.name}<br><small>还没有立绘</small></div>`;
+    else {
+      const [type, k] = shown[id].split(":");
+      const calKey = type === "expr" ? "expr" : k;
+      const cal = work[id][calKey];
+      const src = type === "expr" ? c.expr[k] : c.sprites[k];
+      const lay = Sprites.layout(id, { key: k, isExpr: type === "expr" }, cal);
+      html += `<img src="../assets/${src}" style="height:${lay.height}px;top:${lay.top}px">`;
+      ctrl += `<select data-id="${id}">${opts.map(([v, t]) => `<option value="${v}" ${v === shown[id] ? "selected" : ""}>${t}</option>`).join("")}</select>
+        <div class="r"><span>缩放</span><input type="range" min="0.4" max="1.6" step="0.005" value="${cal.scale}" data-id="${id}" data-k="${calKey}" data-f="scale"><input type="number" step="0.005" value="${cal.scale}" data-id="${id}" data-k="${calKey}" data-f="scale"></div>
+        <div class="r"><span>头顶</span><input type="range" min="-0.15" max="0.25" step="0.001" value="${cal.headTop}" data-id="${id}" data-k="${calKey}" data-f="headTop"><input type="number" step="0.001" value="${cal.headTop}" data-id="${id}" data-k="${calKey}" data-f="headTop"></div>`;
+    }
+    col.innerHTML = html + `<div class="ctrl">${ctrl}</div>`;
+    row.appendChild(col);
+  }
+  row.querySelectorAll("select").forEach((s) => s.onchange = () => { shown[s.dataset.id] = s.value; draw(); });
+  row.querySelectorAll("input[data-f]").forEach((inp) => inp.oninput = () => {
+    const { id, k, f } = inp.dataset;
+    work[id][k][f] = +inp.value;
+    localStorage.setItem(KEY, JSON.stringify(work));
+    // 只更新这一列，拖滑杆时不会丢焦点
+    const col = inp.closest(".col"), img = col.querySelector("img");
+    const [type, key] = shown[id].split(":");
+    const lay = Sprites.layout(id, { key, isExpr: type === "expr" }, work[id][k]);
+    img.style.height = lay.height + "px"; img.style.top = lay.top + "px";
+    col.querySelectorAll(`input[data-f="${f}"]`).forEach((o) => { if (o !== inp) o.value = inp.value; });
+  });
+  fit();
+}
+
+const fmt = (c) => `{ scale: ${+(+c.scale).toFixed(3)}, headTop: ${+(+c.headTop).toFixed(3)} }`;
+document.getElementById("export").onclick = () => {
+  const lines = ids.filter((id) => Object.keys(work[id]).length).map((id) => {
+    const keys = Object.keys(work[id]);
+    const main = keys.includes("base") ? "base" : keys[0];
+    const by = keys.filter((k) => k !== main).map((k) => `${k}: ${fmt(work[id][k])}`);
+    return `${id}:  calib: ${fmt(work[id][main])},` + (by.length ? `\n    calibBy: { ${by.join(", ")} },` : "");
+  });
+  const out = document.getElementById("out");
+  out.querySelector("textarea").value = lines.join("\n");
+  out.style.display = "flex";
+};
+document.getElementById("copy").onclick = () => { const t = document.querySelector("#out textarea"); t.select(); document.execCommand("copy"); };
+document.getElementById("closeOut").onclick = () => document.getElementById("out").style.display = "none";
+document.getElementById("reset").onclick = () => { if (confirm("丢掉在这个页面上调过的值，恢复成 characters.js 里写的？")) { localStorage.removeItem(KEY); work = fromData(); draw(); } };
+document.getElementById("headSize").oninput = draw;
+document.getElementById("overview").onchange = fit;
+document.getElementById("bgSel").onchange = (e) => row.style.background = e.target.value;
+draw();
+</script>
+</body>
+</html>
