@@ -10,6 +10,7 @@ Object.assign(DATA.events, {
   senior_heart: [
     { bg: "dorm_room" },
     { say: "你烧到第二天，嗓子说不出话。手机上，老乡群里的消息一条条往上刷，你没力气看。" },
+    { sfx: "knock" },
     { say: "有人敲门。" },
     { show: "senior" },
     { say: "门口站着学长，一只手拎着一个塑料袋，另一只手拿着一个保温盒。南面羽绒服的拉链拉到了下巴。" },

@@ -141,6 +141,7 @@ const Phone = {
 
   // ===== 信箱：剧情里弹出过的邮件 =====
   mailbox(i) {
+    playSfx("page_turn");
     const list = S.mailbox || [];
     if (i !== undefined) {
       list[i].seenInBox = 1;
@@ -153,6 +154,7 @@ const Phone = {
 
   // ===== 便签本：看过的词条，按首字母排；集齐有个小成就 =====
   glossary() {
+    playSfx("page_turn");
     const all = DATA.glossary || [], seen = all.filter((g) => Gloss.seen(g.id));
     seen.sort((a, b) => a.title.localeCompare(b.title, "zh-Hans-CN"));
     let last = "", html = "";
@@ -240,6 +242,7 @@ const Phone = {
       <button class="hud-btn" id="mo-send">发布</button><small>通讯录里的人会来点赞、评论（有 API Key 时由 AI 生成）。</small></div>`, { title: "发动态", back: () => Phone.moments(), cls: "moments" });
     o.querySelector("#mo-send").onclick = async () => {
       const text = $("#mo-body").value.trim(); if (!text) return toast("写点什么");
+      playSfx("camera");
       const btn = $("#mo-send"); btn.disabled = true; btn.textContent = "发布中……";
       const post = { who: "me", text, likes: 0, comments: [], week: weekKey() };
       const people = Phone.contacts().filter((c) => c !== "essay_senior");
@@ -343,6 +346,7 @@ const Phone = {
     o.querySelector("#note-send").onclick = async () => {
       const title = $("#note-title").value.trim(), body = $("#note-body").value.trim();
       if (!title || !body) return toast("标题和正文都要写");
+      playSfx("camera");
       const btn = $("#note-send"); btn.disabled = true; btn.textContent = "发布中……";
       const post = { title, body, author: S.name, likes: 0, comments: [] };   // 玩家发的帖子没有配图：用文字封面
       const r = AI.hasKey() ? await AI.notesReact(post) : null;

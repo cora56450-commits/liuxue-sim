@@ -110,6 +110,7 @@ const Sys = {
 
   // ===== 对话记录 =====
   backlog() {
+    playSfx("page_turn");
     Flow.set("auto", false); Flow.set("skip", false);
     const esc = (t) => String(t).replace(/</g, "&lt;");
     const rows = Flow.log.map((l) => `<div class="log-row"><b>${esc(l.name || "")}</b><div>${esc(l.text)}${l.tr ? `<small>${esc(l.tr)}</small>` : ""}</div></div>`).join("");

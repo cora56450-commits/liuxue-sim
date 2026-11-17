@@ -211,6 +211,7 @@ const Scenes = {
     const c = DATA.loveIds.find((id) => S.aff[id] >= 80 && S.flags["advance_" + id] && !S.flags["confessed_" + id] && !S.flags["confess_done_" + id]);
     if (!c) return;
     S.flags["confess_done_" + c] = 1;
+    playSfx("heartbeat");
     await runEvent("confess_" + c);
   },
   // 恋爱线考验：只有交往中的才演，每人一次
@@ -339,6 +340,8 @@ const Scenes = {
     if (S.rushWeek && S.week !== 11) lines.push(`赶ddl周　${fxText(applyFx({ energy: Rules.rushEnergy() }))}`);   // 第11周剧情里已经扣过
     if (S.loveDistract) lines.push("恋爱脑：这周学业和作业进度 ×0.8");
     const hadLock = S.sickLock; S.sickLock = 0;
+    if (S.schedule.includes("work") && S.unlocked.work) playSfx("cash");   // 打工收钱
+    else if (S.rushWeek) playSfx("typing");
     let sick = false;
     const firstClass = S.schedule.indexOf("class");
     for (let i = 0; i < 5; i++) {
@@ -421,6 +424,7 @@ const Scenes = {
 
   async visit(loc, ap) {
     { const c = Rules.cal(); AMB.play(loc.id === "pub_street" ? "amb_pub" : c && c.rain ? "amb_rain" : null); }
+    playSfx({ pub_street: "glass_clink", chinese_market: "coin", indoor_market: "coin", supermarket: "cash", brunch: "cash" }[loc.id]);
     hideAll();
     S.resume = null;
     if (loc.travel) {
@@ -428,7 +432,7 @@ const Scenes = {
       if (!t) return FX.tear(() => Scenes.weekend(ap));
       await FX.tear(() => { hideAll(); hideHud(); setBg(t.bg); });
       BGM.play("travel");
-      playSfx("train_door");
+      playSfx("train_door"); AMB.play("amb_station");
       showCg("travel_train");
       await say("（占位）出发。");
       showCg(null);

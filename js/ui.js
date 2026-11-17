@@ -131,10 +131,13 @@ function showCg(id) {
 
 // ===== 音效（docs/音效试听清单.md）：assets/sfx/{id}.mp3 存在就播，不存在就跳过（找不到的记下来，不再反复请求） =====
 const _sfxMissing = {};
+// 截过的长音效和环境音是 .m4a（编程用 afconvert 截的段落，原文件在 点击音效/），其余是原样的 .mp3
+const SFX_M4A = ["flap", "fire_alarm", "heartbeat", "airport_chime", "ticket_punch", "paper_tear", "amb_pub", "amb_rain", "amb_station"];
+function sfxUrl(id) { return `assets/sfx/${id}.${SFX_M4A.includes(id) ? "m4a" : "mp3"}`; }
 function playSfx(id) {
   if (!id || _sfxMissing[id] || !Settings.v.volume) return;
   try {
-    const a = new Audio(`assets/sfx/${id}.mp3`);
+    const a = new Audio(sfxUrl(id));
     a.onerror = () => { _sfxMissing[id] = 1; };
     a.volume = Settings.v.volume / 100;
     a.play().catch(() => {});
@@ -148,7 +151,7 @@ const AMB = {
     if (AMB.id === id) return;
     AMB.stop();
     if (!id || _sfxMissing[id]) return;
-    const a = new Audio(`assets/sfx/${id}.mp3`);
+    const a = new Audio(sfxUrl(id));
     a.loop = true; a.volume = AMB.vol();
     a.onerror = () => { _sfxMissing[id] = 1; if (AMB.el === a) { AMB.el = null; AMB.id = null; } };
     a.play().catch(() => {});

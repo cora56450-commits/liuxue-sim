@@ -253,6 +253,7 @@ Object.assign(DATA.events, {
         { bg: "cn_restaurant" },
         { say: "他提前在中餐厅订了位，菜单拿反了也没发现。" },
         { say: "他问了你很多：你家里现在在做什么，你们家是谁做饭，你小时候怎么过年。他听得很认真，没有看一眼手机。" },
+        { sfx: "glass_clink" },
         { say: "碰杯的时候他说了一句“干杯”，声调全错了。你没纠正他。" },
       ] },
       { text: "和Ploy一起过", if: "好感('groupmate') >= 50", fx: { aff_groupmate: 6, loneliness: -10, flag_cny_with: "groupmate" }, then: [
@@ -404,6 +405,7 @@ Object.assign(DATA.events, {
     { bg: "dorm_night" },
     { say: "presentation前一天晚上十一点。" },
     { if: "(S.cgSeen || {}).groupmate_chips && 好感('groupmate') >= 50", then: [
+      { sfx: "knock" },
       { say: "有人敲门。" },
       { show: "groupmate" },
       { say: "Ploy站在门口，素颜，拎着两杯奶茶。" },
@@ -571,6 +573,7 @@ Object.assign(DATA.events, {
       ] },
     ] },
     { if: "住宿 == '学生公寓ensuite' && 数值('作业') < 40", then: [
+      { sfx: "knock" },
       { say: "那天晚上，陈思琪在厨房敲了敲你的门框：“图书馆四楼靠窗那排有插座，早上八点前去。我帮你占一个。”", fx: { fr_chen_siqi: 3 } },
     ] },
   ],

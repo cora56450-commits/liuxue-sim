@@ -222,7 +222,7 @@ const Rules = {
     S.loveDistract = S.tags.includes("lovebrain") && DATA.loveIds.some((c) => Math.abs(S.affWeek[c] || 0) >= T.loveDistractAt);
     S.affWeek = {};
     if (S.loveDistract) notes.push("满脑子都是那个人，这周学习效率打了折");
-    if (S.tags.includes("shopaholic") && Math.random() < 0.3) { S.stats.money -= 40; notes.push("又没忍住，剁手了 -£40"); }
+    if (S.tags.includes("shopaholic") && Math.random() < 0.3) { S.stats.money -= 40; playSfx("cash"); notes.push("又没忍住，剁手了 -£40"); }
     if (S.tags.includes("weak") && Rules.isWinter() && Math.random() < T.weakColdChance) {   // 弱不禁风：冬季小感冒
       S.stats.energy = clamp(S.stats.energy + T.weakColdEnergy, 0, energyMax()); notes.push(`又感冒了，精力${T.weakColdEnergy}`);
     }

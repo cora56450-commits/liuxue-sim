@@ -21,10 +21,9 @@ DATA.characters = {
   // ===== 攻略对象 =====
   senior: { name: "林子航", short: "学长", height: 178, color: "#3A4766", love: true,
     persona: "中国学长，在这座城市第三四年。热心带新生，同时在做租房中介和代购，帮人是真心，赚佣金也是真的。说话圆滑、笑眯眯，营业笑和真心笑不一样。",
-    // 2026-11-17 Cora：学长的立绘还没定稿，旧图先不用（文件还在 assets/chara/senior/），登场用名牌卡片占位。
-    // 新图到了以后，把下面 sprites／expr 换回 spritesOld／exprOld 的写法（路径照旧）就行。
-    sprites: {},
-    spritesOld: { base: "chara/senior/base.png", summer: "chara/senior/summer.png" },
+    // 2026-11-17 Cora：学长就用“可攻略对象初始立绘”里的两张（常规＝base、夏装＝summer），先不加表情差分。
+    // 旧的表情图还在 assets/chara/senior/expr_*.png，以后要用把 exprOld 改回 expr 就行。
+    sprites: { base: "chara/senior/base.png", summer: "chara/senior/summer.png" },
     exprOld: { normal: "chara/senior/expr_1.png", smile: "chara/senior/expr_2.png", annoyed: "chara/senior/expr_3.png", shy: "chara/senior/expr_4.png",
             surprised: "chara/senior/expr_5.png", speechless: "chara/senior/expr_6.png", bizsmile: "chara/senior/expr_7.png" },
     exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", bizsmile: "营业笑" },
@@ -43,7 +42,8 @@ DATA.characters = {
   groupmate: { name: "Ploy", short: "Ploy", height: 168, color: "#FF7A45", love: true,
     persona: "国际生女生，家里有钱、长得好看，魅力大，小组作业经常划水但presentation当天光彩照人。会拉你进她的圈子。用英文聊天。",
     sprites: { base: "chara/groupmate/base.png", summer: "chara/groupmate/summer.png", home: "chara/groupmate/home.png" },
-    expr: { normal: "chara/groupmate/expr_1.png", smile: "chara/groupmate/expr_2.png", annoyed: "chara/groupmate/expr_3.png", shy: "chara/groupmate/expr_4.png",
+    // 2026-11-17 Cora：Ploy 先不加表情差分（只有 Kieran 和 Ollie 用差分），用常规／夏装／素颜三张；以后要用把 exprOld 改回 expr
+    exprOld: { normal: "chara/groupmate/expr_1.png", smile: "chara/groupmate/expr_2.png", annoyed: "chara/groupmate/expr_3.png", shy: "chara/groupmate/expr_4.png",
             surprised: "chara/groupmate/expr_5.png", speechless: "chara/groupmate/expr_6.png" },
     exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语" },
     calib: { scale: 0.964, headTop: 0.04 },

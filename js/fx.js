@@ -94,7 +94,7 @@ const FX = {
   // 到站广播：换学期、放假时“下一站：大一·春 / NEXT STOP: SPRING TERM”从右边滑进来。
   // 点一下或按任意键马上划走；同一个存档里第二次看到同一条只停 1 秒
   announce(zh, en) {
-    playSfx("station_chime");
+    playSfx("whoosh"); setTimeout(() => playSfx("station_chime"), 250);
     return new Promise((resolve) => {
       const key = "ann_" + zh, seen = S && S.flags[key];
       if (S) S.flags[key] = 1;

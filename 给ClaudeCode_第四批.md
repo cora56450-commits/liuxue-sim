@@ -87,3 +87,4 @@ Cora 新出的图，在上一级文件夹：
 7. 专业差异、人物关系 ✓ — data/world.js assignmentsByMajor／majorFlavor；data/characters.js profiles（AI 用）；第14周后同住室友按找房结果。
 8. 英文翻译、词条、特殊偶遇 ✓ — 选项／邮件／消息带 tr；js/glossary.js＋data/glossary.js（便签本在手机里）；DATA.encounters 周末特殊偶遇。
 9. 认识谁、音效 ✓ — data/events/first_meet.js（吴桐／周可欣／Jake／Giulia／Mei／Sophie 周末第一次去对应地点必演，演完认识），传媒第3周认识周可欣、设计第11周工作室认识 Giulia；剧本里 I人／E人分支全部补进脚本（序章、火警、分组、春节、情人节、小组展示、毕业周、告别、同学聚会、新生群）；音效：js/ui.js playSfx（找不到文件自动跳过）＋AMB 环境音层（设置里“环境音音量”，默认 30），已接 ui_click、ui_popup、flap、ticket_punch、paper_tear、stamp、station_chime、phone_msg、phone_send、train_door、airport_chime、fireworks、fire_alarm、amb_pub、amb_rain。Cora 把文件按名字放进 assets/sfx/ 就生效（knock、kettle 等剧情音效等文件到了再按剧本位置加 sfx）。
+10. 补（晚上）✓ — 学长立绘换成初始立绘的常规／夏装，学长和 Ploy 去掉表情差分（data/characters.js，旧表情留在 exprOld）；Mr. Khan 不用立绘；26 个音效入库 assets/sfx/（长的截段转 .m4a，见 LICENSES.md），新接 whoosh、coin、cash、glass_clink、knock、microwave、typing、heartbeat、camera、page_turn、amb_station。
