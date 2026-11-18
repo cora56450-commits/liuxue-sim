@@ -33,8 +33,8 @@ function setBg(id) {
 // ===== 立绘：可以同时站几个人，说话的人高亮，其余变暗 =====
 const Stage = {
   cast: [],   // [{ id, expr, pose, at }]
-  SLOTS: { 1: [960], 2: [620, 1300], 3: [400, 960, 1520] },
-  AT: { left: 400, center: 960, right: 1520 },
+  SLOTS: { 1: [960], 2: [620, 1300], 3: [360, 960, 1560] },   // 三人时左右拉开（试玩报告 34）
+  AT: { left: 360, center: 960, right: 1560 },
 
   show(id, opt = {}) {
     if (!DATA.characters[id]) return console.warn("没有这个角色：", id);
@@ -61,19 +61,44 @@ const Stage = {
     });
   },
 
+  // 站位（试玩报告 34）：先用默认位置；如果按图片不透明部分的实际宽度（手、道具都算）会重叠，
+  // 就按每个人的实际宽度在画面里均匀排开。宽度数据 data/sprite_boxes.js（tools/sprite_boxes.py 生成）
+  GAP: 24,
+  extent(m) {   // 这个人在画面上占的左右范围（相对立绘中线）
+    const picked = Sprites.pick(m.id, { expr: m.expr, pose: m.pose, week: S && S.year === 1 ? S.week : 0, bg: currentBg });
+    if (!picked) return { l: -180, r: 180 };   // 名牌
+    const lay = Sprites.layout(m.id, picked), b = (DATA.spriteBoxes || {})[picked.src] || [0, 1, 0.75];
+    const w = lay.height * b[2];
+    return { l: (b[0] - 0.5) * w, r: (b[1] - 0.5) * w };
+  },
+  place(xs) {
+    const ms = Stage.cast, ex = ms.map(Stage.extent);
+    const want = ms.map((m, i) => (m.at ? Stage.AT[m.at] : (xs[i] !== undefined ? xs[i] : 960)));
+    const order = ms.map((m, i) => i).sort((a, b) => want[a] - want[b]);
+    const overlap = order.some((k, j) => j > 0 && want[order[j - 1]] + ex[order[j - 1]].r + Stage.GAP > want[k] + ex[k].l);
+    if (!overlap || ms.length < 2) return want;
+    // 均匀排开：剩下的空间平分成 n+1 份（空间不够时间距是负的，只能尽量少重叠）
+    const widths = order.map((k) => ex[k].r - ex[k].l), free = 1920 - widths.reduce((a, b) => a + b, 0);
+    const gap = free / (ms.length + 1), out = [];
+    let x = gap;
+    order.forEach((k, j) => { out[k] = x - ex[k].l; x += widths[j] + gap; });
+    return out;
+  },
+
   render(enterId) {
     const box = $("#sprites");
     const n = Stage.cast.length;
     const xs = Stage.SLOTS[Math.min(3, n)] || [];
     const keep = {};
     box.querySelectorAll(".spr").forEach((el) => keep[el.dataset.id] = el);
+    const X = Stage.place(xs);
     Stage.cast.forEach((m, i) => {
       const c = DATA.characters[m.id];
       const picked = Sprites.pick(m.id, { expr: m.expr, pose: m.pose, week: S && S.year === 1 ? S.week : 0, bg: currentBg });
       let el = keep[m.id];
       if (!el) { el = document.createElement("div"); el.className = "spr"; el.dataset.id = m.id; box.appendChild(el); }
       delete keep[m.id];
-      const x = m.at ? Stage.AT[m.at] : (xs[i] !== undefined ? xs[i] : 960);
+      const x = X[i];
       el.style.left = x + "px";
       if (picked) {
         const lay = Sprites.layout(m.id, picked);
@@ -214,6 +239,7 @@ function mailHtml(m) {
 
 function hideAll() {
   ["#panel", "#dialog", "#choices", "#sysbar"].forEach((s) => $(s).classList.add("hidden"));
+  $("#stage").classList.add("nodlg");
   $("#panel").innerHTML = "";
 }
 
@@ -253,7 +279,7 @@ function say(text, nameId, opt = {}) {
   return new Promise((resolve) => {
     const d = $("#dialog");
     const wasHidden = d.classList.contains("hidden");
-    d.classList.remove("hidden"); $("#sysbar").classList.remove("hidden");
+    d.classList.remove("hidden"); $("#sysbar").classList.remove("hidden"); $("#stage").classList.remove("nodlg");
     if (wasHidden) { d.classList.remove("pop"); void d.offsetWidth; d.classList.add("pop"); }
     const np = $("#nameplate");
     if (nameId) {
@@ -311,7 +337,7 @@ function say(text, nameId, opt = {}) {
     document.addEventListener("keydown", key);
   });
 }
-function hideDialog() { $("#dialog").classList.add("hidden"); $("#sysbar").classList.add("hidden"); lastSpeaker = null; }
+function hideDialog() { $("#dialog").classList.add("hidden"); $("#sysbar").classList.add("hidden"); $("#stage").classList.add("nodlg"); lastSpeaker = null; }
 
 document.addEventListener("click", (e) => {
   const b = e.target.closest("#sysbar button");

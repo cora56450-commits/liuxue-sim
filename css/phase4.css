@@ -86,7 +86,7 @@ body, button, input, textarea { font-family: var(--font); }
 
 /* ===== 选项：车票＋票根字母＋数字键；背景压 40% 墨蓝 ===== */
 /* 选项（试玩报告 4、13）：整体水平居中，贴在画面下部（对话框的位置）往上排，不压立绘的脸；选项多时往上展开 */
-#choices { background: rgba(58,71,102,.4); inset: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 0 0 96px; gap: 18px; }
+#choices { background: rgba(58,71,102,.4); top: 0; left: 0; right: 0; bottom: 312px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 0 0 18px; gap: 16px; }   /* 对话框保留（试玩报告 33）：选项摆在对话框（上沿 y=768）上方 */
 #choices > .ticket { margin: 0 auto; flex: none; }
 .ticket { position: relative; width: 780px; height: 150px; border: solid; border-width: 40px 54px; border-image: url(../assets/ui/choice.png) 30 40 30 40 fill stretch;
   background: none !important; border-radius: 0; box-shadow: none !important; display: flex; align-items: center; justify-content: flex-start; padding: 0; color: var(--navy);
@@ -347,3 +347,6 @@ input:focus, input:focus-visible, textarea:focus, textarea:focus-visible { outli
 .phone-log .log-empty { color: rgba(58,71,102,.5); font-size: 20px; text-align: center; margin-top: 30px; }
 .title-ver { position: absolute; left: 24px; bottom: 16px; font: 700 18px var(--en); color: var(--navy); opacity: .55; letter-spacing: 1px; }
 .set-ver { font: 700 22px var(--en); color: var(--navy); opacity: .7; }
+
+/* 下边缘到不了画面底的立绘（tools/check_sprites.py 报 short），只在有对话框的画面里出现：对话框挡住淡出的那截（试玩报告 33）。重新出图后这条就不起作用了 */
+#stage.nodlg .spr.short, #stage:has(#dialog.hidden) .spr.short { opacity: 0 !important; visibility: hidden; }

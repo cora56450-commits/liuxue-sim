@@ -6,6 +6,8 @@
 #   3. 下巴被对话框挡住（y>768）的报；立绘下边缘 < 1080（腿断在画面里）的报（试玩报告 3）；
 #   4. 没有自己校准值、在用别的图的值的报；
 #   5. 装了 OpenCV 时，再用动漫人脸检测比一次下巴，差超过脸高 10% 的报。
+# 报 short（下边缘 < 1080）的图，游戏里只在有对话框的画面出现（css/phase4.css #stage.nodlg .spr.short；试玩报告 33）。
+# 换了立绘以后还要重跑 python3 tools/sprite_boxes.py（同屏站位用的宽度）。
 # 然后输出同框图：docs/lineup_同框.jpg（每人一张常规图）、docs/lineup_全部.jpg（每张图都排）。
 # 运行（在 game/ 下）：python3 tools/check_sprites.py
 import json, os, subprocess, sys

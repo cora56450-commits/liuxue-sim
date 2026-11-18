@@ -32,7 +32,7 @@ async function runScript(steps) {
     }
     if (st.choice) {
       const opts = st.choice.filter((c) => c.if === undefined || evalCond(c.if));
-      hideDialog();
+      // 出选项时不隐藏对话框（试玩报告 33）：保留最后一句台词，选项摆在对话框上方
       const list = opts.map((c) => ({ text: c.text, sub: c.sub, tr: c.tr }));   // tr：选项的中文翻译
       const free = FreeInput.can(st);   // 有 Key 时多一张“✎ 自己说……”（js/freeinput.js）
       if (free) list.push({ text: FreeInput.LABEL });   // 车票上只写“✎ 自己说……”（试玩报告 5）
@@ -64,8 +64,7 @@ async function runScript(steps) {
         await pondNow();
         if (c.then) await runScript(c.then);
       }
-    } else if (st.free && !st.say && FreeInput.can(st)) {   // 没有固定选项、只让玩家说一句的地方
-      hideDialog();
+    } else if (st.free && !st.say && FreeInput.can(st)) {   // 没有固定选项、只让玩家说一句的地方（对话框保留）
       const i = await choose([{ text: "（不说话）" }, { text: FreeInput.LABEL }]);
       const said = i === 1 ? await FreeInput.ask() : null;
       if (said) await runScript(await FreeInput.apply(st, null, said, await FreeInput.judge(st, [], said)));
