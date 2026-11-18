@@ -27,17 +27,39 @@ async function runScript(steps) {
     await pondNow();
     if (st.say) {
       if (st.expr && st.name && !st.show) Stage.setExpr(st.name, st.expr);
-      await say(st.say, st.name, { tr: st.tr });
+      await say(st.say, st.name, { tr: st.tr, free: !!st.freeSaid });
       if (st.fx) showFx(applyFx(st.fx));
     }
     if (st.choice) {
       const opts = st.choice.filter((c) => c.if === undefined || evalCond(c.if));
       hideDialog();
-      const i = await choose(opts.map((c) => ({ text: c.text, sub: c.sub, tr: c.tr })));   // tr：选项的中文翻译
-      const c = opts[i];
-      showFx(applyFx(c.fx));
-      await pondNow();
-      if (c.then) await runScript(c.then);
+      const list = opts.map((c) => ({ text: c.text, sub: c.sub, tr: c.tr }));   // tr：选项的中文翻译
+      const free = FreeInput.can(st);   // 有 Key 时多一张“✎ 自己说……”（js/freeinput.js）
+      if (free) list.push({ text: FreeInput.LABEL, sub: "AI 接你这句话；数值和后面的剧情按最接近的选项走" });
+      let i = await choose(list), said = null;
+      while (free && i === opts.length) {
+        said = await FreeInput.ask();
+        if (said) break;
+        i = await choose(list);
+      }
+      if (said) {
+        const res = await FreeInput.judge(st, opts, said);
+        const c = opts[res.closest];
+        const then = await FreeInput.apply(st, c, said, res);
+        showFx(applyFx(c.fx));
+        await pondNow();
+        await runScript(then);
+      } else {
+        const c = opts[i];
+        showFx(applyFx(c.fx));
+        await pondNow();
+        if (c.then) await runScript(c.then);
+      }
+    } else if (st.free && !st.say && FreeInput.can(st)) {   // 没有固定选项、只让玩家说一句的地方
+      hideDialog();
+      const i = await choose([{ text: "（不说话）" }, { text: FreeInput.LABEL }]);
+      const said = i === 1 ? await FreeInput.ask() : null;
+      if (said) await runScript(await FreeInput.apply(st, null, said, await FreeInput.judge(st, [], said)));
     }
     if (st.if !== undefined) await runScript(evalCond(st.if) ? st.then : st.else);
     if (st.run) await runScript(DATA.events[st.run]);

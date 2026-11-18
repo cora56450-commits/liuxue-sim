@@ -36,7 +36,7 @@
 //   周数 week　学年 year　家境 wealth（'拮据'/'中产'/'富裕'；wealth 是 'poor'/'middle'/'rich'）
 //   住宿 housing　英语 english（0–100）　性格 ie（'I'/'E'）　家乡 hometown　专业 major　第一次出国 firstAbroad
 //   标签('二次元') tag('otaku')　标记('xxx') flag('xxx')　好感('senior') aff('senior')　数值('学业') stat('study')
-//   友情('吴桐') fr('wu_tong')　友情档('吴桐') == '熟人'（'认识'/'熟人'/'朋友'）　交往中('senior') dating('senior')
+//   友情('吴桐') fr('wu_tong')　友情档('吴桐') == '熟人'（'认识'/'熟人'/'朋友'/'挚友'）　交往中('senior') dating('senior')
 //   考验('senior') trial('senior')（1 过／−1 没过／0 还没考）　距截止() deadlineIn()（下一份作业还有几周交，这周交=0）
 //   例：{ if: "家境 == '拮据' && 好感('senior') >= 20", then: [...] }
 //   第一阶段的写法（S.stats.english < 40、S.tags.includes('otaku')）也还能用。

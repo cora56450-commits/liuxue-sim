@@ -27,7 +27,7 @@ Object.assign(DATA.events, {
       ] },
     ] },
     { say: "家庭群里，你妈发来：“出分了吗？多少分？”" },
-    { choice: [
+    { free: "第一学期出分，家庭群里妈妈问“出分了吗？多少分？”，你怎么回爸妈", freeWho: "妈妈", choice: [
       { text: "截图发群里", then: [
         { say: "三十秒后，你爸回：“满分多少？”" },
         { say: "你解释了一大段英国的分数制度，附了一张网上找的表格，说明70就是最高档。" },
@@ -196,7 +196,7 @@ Object.assign(DATA.events, {
     ] },
     { say: "Now. Not the grades. How are you actually doing?", name: "marcia", tr: "好了，不说成绩。你到底过得怎么样？" },
     { if: "数值('孤独感') >= 60", then: [
-      { choice: [
+      { free: "personal tutor 见面，Marcia 不问成绩，问你到底过得怎么样。她想听真话", freeWho: "marcia", choice: [
         { text: "说实话", fx: { loneliness: -10, flag_told_marcia: 1 }, then: [
           { say: "你说了四点天黑，说了第一晚，说了家庭群里那个大拇指。说着说着声音有点抖。" },
           { say: "她没打断你。纸巾盒被推到了你面前。" },
@@ -362,7 +362,7 @@ Object.assign(DATA.events, {
       { if: "性格 == 'E'", then: [{ say: "你们俩一人抱着一束玫瑰，在 Tesco 门口聊了四十分钟，聊到店员出来锁门。" }] },
       { if: "性格 == 'I'", then: [{ say: "你说了声谢谢，拿了一束，然后发现你们住同一个方向，又一起走了十分钟。谁都没说话，但不尴尬。" }] },
       { if: "住宿 != '学校宿舍'", then: [{ say: "（我们不认识。但她说得对，两束是更便宜。）" }] },
-      { choice: [
+      { free: "情人节晚上，Tesco 门口打折玫瑰，Giulia（还不太熟）说“拿一束吧，两束更便宜”。陌生人搭话，轻松好笑", freeWho: "giulia", choice: [
         { text: "买一束", fx: { money: -1.5, loneliness: -4 }, then: [
           { say: "回到房间你找不到花瓶，最后插进了一个洗干净的老干妈瓶子里。" },
           { say: "（挺好看的。）" },
@@ -383,7 +383,7 @@ Object.assign(DATA.events, {
     { show: "hannah" },
     { say: "So I've gone through everyone's slides and just… tidied them up a little.", name: "hannah", tr: "我把大家的PPT都过了一遍，就……稍微整理了一下。" },
     { say: "你点开。你那部分十张PPT，现在剩三张，标题也换了。" },
-    { choice: [
+    { free: "小组展示前，Hannah 把你那部分十张 PPT 删到三张、标题也换了，你怎么跟她说", freeWho: "hannah", choice: [
       { text: "据理力争", fx: { belonging: 2, energy: -5 }, then: [
         { if: "英语 < 55 && !标签('学霸底子') && !标签('巧舌如簧')", then: [
           { say: "你说到一半卡住了。Hannah很礼貌地等你说完，然后保留了你五张。", fx: { homework: 5 } },

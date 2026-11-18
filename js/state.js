@@ -69,7 +69,7 @@ function knowFriend(c) {
   S.fr[c] = T.frStart + (S.tags.includes("silver") ? T.frSilver : 0) + (S.tags.includes("pretty") ? T.frPretty : 0);
   S.lastMet[c] = absWeek();
 }
-function frTier(v) { const T = DATA.tuning.frTiers; return v >= T.friend ? "朋友" : v >= T.acquaintance ? "熟人" : "认识"; }
+function frTier(v) { const T = DATA.tuning.frTiers; return v >= T.bestie ? "挚友" : v >= T.friend ? "朋友" : v >= T.acquaintance ? "熟人" : "认识"; }
 // 改友情值（不经过“越到后面越难”的规则）。到 60 第一次：有朋友事件的排进 pending，没有的发一条手机消息
 function addFr(c, v) {
   if (!(c in S.fr)) knowFriend(c);
@@ -207,6 +207,8 @@ const Rules = {
     if (S.tags.includes("glassstomach")) lon += T.glassLoneliness;                  // 玻璃肠胃
     const friends = friendsNow();
     lon -= Math.min(T.friendLonelinessMax, friends.length * T.friendLoneliness);    // 每个“朋友”孤独增长 −1，最多 −3
+    const besties = friends.filter((c) => S.fr[c] >= T.frTiers.bestie).length;
+    lon -= Math.min(T.bestieLonelinessMax, besties * T.bestieLoneliness);          // 挚友再 −1／人，最多 −2（手机与友情.md 2026-11-18）
     S.stats.loneliness = clamp(S.stats.loneliness + lon, 0, 100);
     S.stats.adapt = clamp(S.stats.adapt + T.weeklyAdapt, 0, 100);
     const foreign = friends.filter((c) => DATA.characters[c].friend.from !== "cn").length;

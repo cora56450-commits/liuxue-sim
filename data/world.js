@@ -210,9 +210,9 @@ DATA.tuning = {
   yearPenalty: { 2: 6, 3: 10 },        // 分数公式：大二 −6、大三 −10
   heAff: 85, heAffStrictHidden: 90,    // HE 好感门槛；家教森严“隐瞒”后 90
   // 友情
-  frStart: 10, frSilver: 3, frPretty: 3, frTiers: { acquaintance: 30, friend: 60 },
+  frStart: 10, frSilver: 3, frPretty: 3, frTiers: { acquaintance: 30, friend: 60, bestie: 80 },
   frWeekendMeet: 3, frChatMax: 2, roommateFr: 0.5, roommateFrChef: 1,
-  friendLoneliness: 1, friendLonelinessMax: 3, friendBelonging: 0.3,
+  friendLoneliness: 1, friendLonelinessMax: 3, friendBelonging: 0.3, bestieLoneliness: 1, bestieLonelinessMax: 2,
   // tag
   homeEnergyChef: 20, homeEnergyKiller: 12, homeEnergyNeat: 3, homeEnergyPhone: 0.8,
   ironSupermarketEnergy: 8, saverSupermarketMoney: -10,

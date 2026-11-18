@@ -381,6 +381,7 @@ const Scenes = {
     { const dl = Scenes.dailyLine(); if (dl) lines.push(dl); }   // 一句话小事件
     await Scenes.report("这周过完了", lines, "周末出门");
     if (sick) await runEvent("got_sick");
+    await Scenes.stageEvents(1);   // 阶段第一次达到：下一个周末开头演一次（一个周末最多一段）
     FX.tear(() => Scenes.weekend(0));
   },
 
@@ -530,12 +531,14 @@ const Scenes = {
       Stage.show(c);
       if (!DATA.loveIds.includes(c)) {
         await runScript(DATA.events.weekend_meet);
+        await Scenes.stageGreet(c);
         showFx(applyFx({ ["fr_" + c]: DATA.tuning.frWeekendMeet }));
       } else if (firstTime) {
         await runScript(DATA.events.weekend_meet_first);
         showFx(meetChar(c));
       } else {
         await runScript(DATA.events.weekend_meet);
+        await Scenes.stageGreet(c);
         const i = await choose([{ text: "聊两句" }, { text: "假装没看见" }]);
         if (i === 0) {
           showFx(applyFx({ ["aff_" + c]: DATA.tuning.weekendMeet, loneliness: -2 }));
@@ -549,6 +552,36 @@ const Scenes = {
     FX.tear(() => Scenes.weekend(slot + cost));
   },
 
+  // 阶段事件（data/events/stages.js）：阶段第一次达到，演一次。max：这次最多演几段
+  async stageEvents(max = 1) {
+    let n = 0;
+    for (const e of DATA.stageEvents || []) {
+      if (n >= max) break;
+      if (S.flags["done_" + e.id] || !DATA.events[e.id]) continue;
+      const c = e.who, ch = DATA.characters[c], love = DATA.loveIds.includes(c);
+      if (love ? (!S.flags["met_" + c] || (ch.hidden && !S.tags.includes(ch.hidden))) : !(c in S.fr)) continue;
+      const ok = e.date ? !!S.flags["confessed_" + c] : (love ? S.aff[c] : S.fr[c]) >= e.min;
+      if (!ok || (e.cond && !evalCond(e.cond))) continue;
+      S.flags["done_" + e.id] = 1; n++;
+      await runEvent(e.id);
+    }
+  },
+  // 周末偶遇：按阶段说一句开场白
+  async stageGreet(c) {
+    const g = (DATA.stageGreet || {})[c];
+    if (!g) return;
+    const l = g[stageOf(c)];
+    if (!l) return;
+    if (l.narr) await say(l.text);
+    else await say(l.text, c, { tr: l.tr });
+    if (l.after) await say(l.after);
+  },
+  // 挚友：毕业离场单独送别（文本 farewell_{id}，策划写好以后放进 data/events，没写的先跳过）
+  async besties() {
+    for (const c of Object.keys(S.fr).filter((x) => S.fr[x] >= DATA.tuning.frTiers.bestie)) {
+      if (DATA.events["farewell_" + c] && !S.flags["done_farewell_" + c]) { S.flags["done_farewell_" + c] = 1; await runEvent("farewell_" + c); }
+    }
+  },
   // 固定剧情的铺垫：这一周结算时，给下一周的固定事件提前一句（DATA.foreshadow，按周）
   async foreshadow() {
     const list = (DATA.foreshadow || []).filter((f) => f.week === S.week && (!f.if || evalCond(f.if)));
@@ -755,6 +788,8 @@ const Scenes = {
     if (p.confess) await Scenes.confess();
     await Scenes.loveEvents();
     await Scenes.runPending();
+    await Scenes.stageEvents(2);   // 阶段事件：大二大三每段开头最多两段
+    if (p.id === "y3_graduation") await Scenes.besties();   // 挚友：毕业离场单独送别
     // 这一段的邀约汇总卡（邀约系统.md 第八部分）：选了“没空”的交往对象，这一段每周 −1
     const inv = p.span > 0 ? await Invites.periodSummary(p.span) : { busy: [] };
     if (p.span > 0) {
@@ -839,7 +874,7 @@ const Scenes = {
         ? `<div class="pc-stamp img" style="animation-delay:${900 + i * 350}ms;transform:rotate(${rot}deg)"><img src="assets/ui/postmarks/${img}.png?v=2" alt="${s.title}" title="${s.title}"></div>`
         : `<div class="pc-stamp" style="animation-delay:${900 + i * 350}ms;transform:rotate(${rot}deg)">${s.stamp.length > 8 ? `<b>${s.title}</b><small>${s.stamp}</small>` : `<b>${s.stamp}</b><small>${s.title}</small>`}</div>`;
     }).join("");
-    const friends = friendsNow().map((c) => DATA.characters[c].name);
+    const friends = friendsNow().map((c) => (S.fr[c] >= DATA.tuning.frTiers.bestie ? "★" : "") + DATA.characters[c].name);   // 挚友名字前加星
     const p = panel(`<div class="pc-terminus"><span class="bi"><span class="zh">终点站 · ‘${e.main.title}’</span><span class="en">Terminus</span></span></div>
       <div class="postcard"><div class="pc-front"><img class="pc-photo" src="assets/cg/${photo}.jpg" alt=""><div class="pc-title">‘${e.main.title}’</div>
       <div class="pc-lines">${Gloss.escape(e.main.card || e.main.desc)}</div>

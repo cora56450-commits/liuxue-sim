@@ -281,7 +281,7 @@ function say(text, nameId, opt = {}) {
 
     const full = fillText(text);
     const tr = opt.tr && Settings.v.showTr ? fillText(opt.tr) : "";
-    Flow.push(speakerName(nameId), full, opt.tr ? fillText(opt.tr) : "");
+    Flow.push(speakerName(nameId) + (opt.free ? " ✎" : ""), full, opt.tr ? fillText(opt.tr) : "");   // 自由输入的内容带 ✎
     const box = $("#dialog-text"), trBox = $("#dialog-tr"), next = $("#dialog-next");
     d.classList.toggle("has-tr", !!tr);
     trBox.textContent = tr; trBox.style.visibility = "hidden";

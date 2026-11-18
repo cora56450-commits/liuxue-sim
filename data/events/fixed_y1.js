@@ -26,7 +26,7 @@
     { say: "（他刚才对上一个女生也是这么说的。我听见了。）" },
     { say: "What's your name?", name: "local", tr: "你叫什么名字？" },
     { say: "你说了。他跟着念了一遍，念得很认真，念得完全不对。" },
-    { choice: [
+    { free: "迎新集市，Ollie 问你的名字，跟着念了一遍、念得完全不对。他想认真念对你的名字", freeWho: "local", choice: [
       { text: "“Close enough!”", tr: "差不多啦！", fx: { aff_local: 3 }, then: [
         { say: "No, no — say it again. I want to get it right.", name: "local", tr: "不行不行，再说一遍。我想念对。" },
         { say: "（他又念了三遍。一遍比一遍离谱。但他是认真的。）" },
@@ -50,7 +50,7 @@
         { say: "……Y'alreet? You here for t' anime society or you just lost?", name: "otaku", tr: "……你好。是来动漫社的，还是走错路了？" },
       ] },
       { say: "你的视线落在他手机屏幕上——是某个手游的抽卡界面，十连，全蓝。他立刻把手机扣在了桌上。" },
-      { choice: [
+      { free: "迎新集市动漫社摆位，Kieran 很警惕，怕被人知道自己是二次元；他刚问你是来动漫社的还是走错路了，又把抽卡的手机扣在桌上", freeWho: "otaku", choice: [
         { text: "“你也在玩这个？”（用英语）", fx: { aff_otaku: 5 }, then: [
           { show: "otaku", expr: "sparkle" },
           { say: "他的眼睛亮了一下，然后立刻又暗了。" },
@@ -93,7 +93,7 @@
         { say: "他带了一个暖水袋给你，是他代购剩下的样品。" },
         { say: "我第一年一个人来的，站在这个位置，烟花放了十五分钟，我给家里连线了十五分钟。家里那边已经是凌晨四点了。", name: "senior" },
         { say: "他说完就笑了，好像这是一件很好笑的事。" },
-        { choice: [
+        { free: "篝火节一起看烟花，学长说他第一年一个人来，烟花放了十五分钟，他给家里连线了十五分钟，家里那边是凌晨。你怎么接", freeWho: "senior", choice: [
           { text: "“今年不用连线了。”", fx: { aff_senior: 5 * k } },
           { text: "“你家里人一定很想你。”", fx: { aff_senior: 3 * k } },
         ] },
@@ -201,7 +201,7 @@
       { show: "senior", expr: "bizsmile" },
       { say: "房子找好没？", name: "senior" },
       { say: "（第一句话就问房子。这人是不是中介啊。）" },
-      { choice: [
+      { free: "第一次见面，学长半开玩笑地问“房子找好没”，其实也在推销自己的租房中介", freeWho: "senior", choice: [
         { text: "“找好了，谢谢学长。”", fx: { aff_senior: 2 }, then: [
           { say: "那就好。大二要找房的时候记得找我。", name: "senior" },
           { say: "（他递过来一张名片。一个留学生，有名片。）" },
@@ -265,7 +265,7 @@
       { say: "给我看看房间。", name: "妈妈" },
       { say: "你转着手机拍了一圈。" },
       { say: "这么小啊？……你那床上怎么什么都没有？", name: "妈妈" },
-      { choice: [
+      { free: "到英国第一晚，妈妈视频问“你那床上怎么什么都没有？”。妈妈担心，想知道你过得好不好", freeWho: "妈妈", choice: [
         { text: "“我还没铺，等会就铺。”（撒谎）", fx: { loneliness: 3 }, then: [
           { say: "哦哦，那你早点睡。", name: "妈妈" },
           { say: "挂了电话，房间又安静下来。你把羽绒服从箱子里抽出来，盖在身上。" },
@@ -430,7 +430,7 @@
       ] }] },
       { say: "And remember — there are no stupid questions here. Any questions?", name: "nikos", tr: "记住，这里没有蠢问题。有问题吗？" },
       { say: "全场沉默。前三排的中国人集体低头看笔记本，后三排的本地人集体看手机。" },
-      { choice: [
+      { free: "第一节全院必修课，Nikos 问“Any questions?”，全场沉默。玩家可以问课的问题，也可以开玩笑", freeWho: "nikos", choice: [
         { text: "举手提问", fx: { study: 2, belonging: 2, energy: -5 }, then: [
           { say: "你举手的那一秒，前三排所有人都回头看你。" },
           { say: "Brilliant question! Lovely.", name: "nikos", tr: "好问题！很棒。" },
@@ -574,7 +574,7 @@
       { say: "下课后，Ploy拉住了你的胳膊。" },
       { say: "Okay, real talk. I'm terrible at essays. Like, terrible. But I'm amazing at presenting. So… what if you do the writing part, and I make us look incredible on the day?", name: "groupmate", tr: "好，说实话。我写essay特别烂，烂到离谱。但我presentation超强。所以……要不你来写，上台那天我让我们马翻全场？" },
       { say: "（她说“我们”的时候，一点都不心虚。）" },
-      { choice: [
+      { free: "分组以后，Ploy 想让你替她写她那部分作业。这里只看你怎么回她", freeWho: "groupmate", choice: [
         // 〔替写次数+1〕→ flag_ploy_ghostwrite（计数）；〔本学期作业工作量×1.3〕→ flag_ploy_workload（新标记，要编程那边接）
         { text: "“行，我来写。”", fx: { aff_groupmate: 5, flag_ploy_ghostwrite: 1, flag_ploy_workload: 1 }, then: [
           { say: "You're an angel. I'm buying you bubble tea. Every week. Forever.", name: "groupmate", tr: "你是天使。我请你喝奶茶，每周。一辈子。" },
@@ -871,7 +871,7 @@
       ], else: [
         { say: "家里现在是晚上十二点。家里人应该已经睡了。" },
       ] }] },
-      { choice: [
+      { free: "英国下午四点天就黑了，你给家里发一句话（国内已经半夜）", freeWho: "爸爸", choice: [
         { text: "给家里发一条“睡了吗”", fx: { loneliness: -4 }, then: [
           { say: "已读。三分钟后，爸爸回了：“没。你那几点？”" },
           { say: "你说四点。他说：“哦，那还早。”" },

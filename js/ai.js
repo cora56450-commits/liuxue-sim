@@ -43,13 +43,20 @@ const AI = {
     return `玩家这周：${taken}。${b ? `你自己固定的忙：${JSON.stringify(b)}。` : ""}如果你想约玩家、或者答应玩家的提议，在回复最后单独一行写 [[INVITE day=MON|TUE|WED|THU|FRI|WEEKEND place=地点id]]（地点id：${places}，出城写 travel）。不约就不要写。`;
   },
 
-  // 关系阶段（试玩修改第 12 项）：只给数字 AI 不知道代表什么关系，所以按阶段写清楚语气和回复长度
-  STAGES: [
-    { min: 0,  love: "认识", fr: "认识", tone: "客气、简短，像刚加微信的同学；不主动找话题，不用昵称，不用表情；不问私事。", len: "一两句。" },
-    { min: 20, love: "熟人", fr: "熟人", tone: "友好但有分寸，会接话、偶尔开个小玩笑；只聊共同的事（课、小组、宿舍）。", len: "一到三句。" },
-    { min: 40, love: "心动", fr: "朋友", tone: "主动一点，会记得上次聊过的事，会关心一句。", loveExtra: "开始有一点试探。", len: "两到四句。" },
-    { min: 60, love: "暧昧", fr: "好朋友", tone: "明显亲近，会约玩家，会分享自己的私事。", loveExtra: "有暧昧感，但不挑明。", len: "可以长一点，三到五句。" },
-    { min: 80, love: "告白前后", fr: "挚友", tone: "很亲近。", loveExtra: "如果正在交往，可以说情话，但保持角色本身的性格。", len: "想说多少说多少，但仍然像发消息。" },
+  // 关系阶段（试玩修改第 12、13 项）：只给数字 AI 不知道代表什么关系，所以按阶段写清楚语气、回复长度，
+  // 再加上这个人这一阶段的态度（剧本_攻略线与友情线.md 第五部分的表，DATA.stageAttitude）
+  LOVE_TONE: [
+    { tone: "客气、简短，像刚加微信的同学；不主动找话题，不用昵称，不用表情；不问私事。", len: "一两句。" },
+    { tone: "友好但有分寸，会接话、偶尔开个小玩笑；只聊共同的事（课、小组、宿舍）。", len: "一到三句。" },
+    { tone: "主动一点，会记得上次聊过的事，会关心一句；开始有一点试探。", len: "两到四句。" },
+    { tone: "明显亲近，会约玩家，会分享自己的私事；有暧昧感，但不挑明。", len: "可以长一点，三到五句。" },
+    { tone: "很亲近。正在交往，可以说情话，但保持角色本身的性格。", len: "想说多少说多少，但仍然像发消息。" },
+  ],
+  FRIEND_TONE: [
+    { tone: "客气、简短，像刚加微信的同学；不主动找话题，不用昵称；不问私事。", len: "一两句。" },
+    { tone: "友好但有分寸，会接话、偶尔开个小玩笑；只聊共同的事（课、宿舍、吃的）。", len: "一到三句。" },
+    { tone: "主动一点，会记得上次聊过的事，会关心一句，会约玩家。", len: "两到四句。" },
+    { tone: "很亲近，什么都会说，包括自己家里的事和以后的打算。", len: "想说多少说多少，但仍然像发消息。" },
   ],
   // 每个角色的“底色”不变，低好感时也照这个来
   BASE: {
@@ -57,15 +64,18 @@ const AI = {
     otaku: "你话很少。好感低的时候几乎只回一个字或一个词（“yeah”“ok”“lol”）；聊到番才会多说。",
     senior: "好感低的时候你只聊房子、代购这些生意上的事；熟了以后也依然会提钱。",
   },
-  stageOf(v) { return [...AI.STAGES].reverse().find((x) => v >= x.min); },
   // 对这个人的关系怎么告诉 AI：攻略对象说好感（−3～+3，2026-11-17 起敷衍、冒犯会扣），固定 NPC 说友情（0～+2），Essay学姐 不算
   relation(charId) {
     const love = DATA.loveIds.includes(charId);
     if (!love && !(charId in S.fr)) return { line: "", tag: "", max: 0 };
-    const v = Math.round(love ? S.aff[charId] : S.fr[charId]), st = AI.stageOf(v);
+    const v = Math.round(love ? S.aff[charId] : S.fr[charId]);
+    const i = typeof stageOf === "function" ? stageOf(charId) : 0;
+    const name = love ? DATA.loveStageNames[i] : DATA.friendStageNames[i];
+    const st = (love ? AI.LOVE_TONE : AI.FRIEND_TONE)[i];
+    const att = ((DATA.stageAttitude || {})[charId] || [])[i];
     const dating = love && S.flags["confessed_" + charId];
     const head = love ? `你对玩家的好感是${v}（0-100）${dating ? "，你们正在交往" : ""}。` : `你和玩家的友情是${v}（0-100）。你们是朋友关系，不是恋爱对象。`;
-    const stage = `现在的关系阶段：${love ? st.love : st.fr}。语气：${st.tone}${love && st.loveExtra ? st.loveExtra : ""}回复长度：${st.len}`;
+    const stage = `现在的关系阶段：${name}。${att ? `你这个阶段对玩家的态度：${att}。` : ""}语气：${st.tone}回复长度：${st.len}`;
     const base = AI.BASE[charId] ? `你的底色：${AI.BASE[charId]}` : "";
     return { line: [head, stage, base].filter(Boolean).join("\n"), tag: love ? "好感" : "友情", max: love ? 3 : 2, min: love ? -3 : 0 };
   },

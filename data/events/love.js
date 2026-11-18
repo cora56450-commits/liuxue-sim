@@ -21,7 +21,7 @@ Object.assign(DATA.events, {
     { say: "（他特意强调了不要钱。）" },
     { say: "粥是我煮的。电饭煲煮的，别嫌弃。", name: "senior" },
     { say: "他没进门，就站在门口，等你把粥接过去。" },
-    { choice: [
+    { free: "心动：你发烧，学长拎着药和保温盒来敲门，站在门口", freeWho: "senior", choice: [
       { text: "“学长，进来坐一下吧。”", fx: { aff_senior: 5 }, then: [
         { say: "他犹豫了一下，进来了，坐在你的书桌椅上，一直看手机，偶尔抬头看你一眼，确认你在喝粥。" },
         { say: "走之前他说：“明天还烧的话，给我打电话。不是发微信，打电话。”" },
@@ -122,7 +122,7 @@ Object.assign(DATA.events, {
         { say: "是。", name: "senior" },
       ] },
     ] },
-    { choice: [
+    { free: "告白：学长说他什么都算得清楚，唯独这件事算不清，他喜欢你。你说出你自己的回答（答应或者还没想好）", freeWho: "senior", choice: [
       { text: "“我也是。”", fx: { flag_confessed_senior: 1, aff_senior: 5 }, then: [
         { say: "他点了点头，好像在心里记了一笔账。" },
         { cg: "senior_confess" },
@@ -196,7 +196,7 @@ Object.assign(DATA.events, {
     { say: "大衣很大，有一股很淡的木头香水味。他的半边肩膀全湿了。" },
     { say: "Your hair's fine though. That's what matters.", name: "local", tr: "你的头发没湿。这才是重点。" },
     { say: "（这个人，说情话跟说天气一样自然。我分不清他是对谁都这样，还是只对我。）" },
-    { choice: [
+    { free: "心动：从 pub 出来下大雨，Ollie 把大衣举过你们两个人头顶，他半边肩膀全湿了", freeWho: "local", choice: [
       { text: "“你肩膀湿了。”", fx: { aff_local: 4 }, then: [
         { say: "Worth it.", name: "local", tr: "值得。" },
       ] },
@@ -305,7 +305,7 @@ Object.assign(DATA.events, {
         { say: "You stole my line. I was literally about to say that.", name: "local", tr: "你抢了我的台词。我刚刚正要说。" },
       ] },
     ] },
-    { choice: [
+    { free: "告白：六月的草坪上，Ollie 说他真的很喜欢你。你说出你自己的回答", freeWho: "local", choice: [
       { text: "“我也是。那我们算在一起了吗？”", fx: { flag_confessed_local: 1, aff_local: 5 }, then: [
         { say: "Yeah. Yeah, of course.", name: "local", tr: "嗯，当然。" },
         { cg: "local_confess" },
@@ -330,7 +330,7 @@ Object.assign(DATA.events, {
     { say: "Live together? That's… big. Can we just keep things how they are? It's working, isn't it?", name: "local", tr: "一起住？这……挺大的一步。我们能保持现在这样吗？现在不是挺好的吗？" },
     { say: "你发现，在一起一年了，你没见过他爸妈。他的Instagram上，没有一张你的照片。" },
     { say: "（他对我很好。每次见面都很好。可每次一说到“以后”，他就笑着绕开。）" },
-    { choice: [
+    { free: "考验：在一起一年了，Ollie 不想一起住，你没见过他爸妈，他的 Instagram 没有你的照片。你怎么问他", freeWho: "local", freeOnly: [0], choice: [
       { text: "问出口：“我们到底算什么？”", fx: { flag_trial_local: 1, flag_local_asked: 1 }, then: [
         { say: "他沉默了很久。" },
         { say: "…I've never been asked that. Everyone before just — let it be.", name: "local", tr: "……从来没有人这么问过我。以前的人都只是……就这么算了。" },
@@ -362,7 +362,7 @@ Object.assign(DATA.events, {
     { say: "Everyone in there thinks I'm so fun. I am fun! But nobody texts me \"did you get home okay\".", name: "groupmate", tr: "club里所有人都觉得我很好玩。我是很好玩！可是没有人发消息问我“到家了吗”。" },
     { say: "You do. Every time. Even when I don't reply.", name: "groupmate", tr: "你会。每次都会，哪怕我没回。" },
     { say: "（我以为她没看到。）" },
-    { choice: [
+    { free: "心动：凌晨一点吃薯条，Ploy 说 club 里没人会问她到家没有，只有你每次都问", freeWho: "groupmate", choice: [
       { text: "“因为我想知道你到没到。”", fx: { aff_groupmate: 6 }, then: [
         { say: "她把头靠在你肩膀上，很久没说话。薯条凉了。" },
       ] },
@@ -431,7 +431,7 @@ Object.assign(DATA.events, {
         { say: "她愣了两秒，然后笑得倒在野餐布上。“…Yes. Obviously yes.「……好。当然好。」”" },
       ] },
     ] },
-    { choice: [
+    { free: "告白：野餐时 Ploy 说她不想只当闺蜜，问这样可不可以。你说出你自己的回答", freeWho: "groupmate", choice: [
       { text: "“可以。”", fx: { flag_confessed_groupmate: 1, aff_groupmate: 6 }, then: [
         { cg: "groupmate_confess" },
         { say: "她松了一大口气，手一抖，香槟喷了你一身。她一边笑一边抓着你的手不放。" },
@@ -490,7 +490,7 @@ Object.assign(DATA.events, {
     { say: "…Hay fever.", name: "otaku", tr: "……花粉过敏。" },
     { say: "（这个季节没有花粉。）" },
     { say: "It's a good ending, alright? She waited ten years for him. Ten years.", name: "otaku", tr: "这结局很好，行吗？她等了他十年。十年。" },
-    { choice: [
+    { free: "心动：放映会结束，Kieran 在最后一排擦眼睛，说是花粉过敏，又说这个结局很好，女主等了他十年", freeWho: "otaku", choice: [
       { text: "坐下来，陪他看完片尾", fx: { aff_otaku: 5 }, then: [
         { say: "片尾放完，他把投影关了。黑暗里他说：“don't tell anyone.「别告诉别人。」”" },
         { say: "你说：“告诉谁？说你看番哭了，还是说你花粉过敏？”" },
@@ -593,7 +593,7 @@ Object.assign(DATA.events, {
     { say: "I'm rubbish at this. So I'm just going to say it like a character would.", name: "otaku", tr: "我不擅长这个。所以我就像角色那样说吧。" },
     { say: "他深吸一口气，用日语说了一句。语法是错的，敬语用得一塌糊涂，但你听懂了。" },
     { say: "（“好きです”。后面还跟了一个完全没必要的“ござる”。）" },
-    { choice: [
+    { free: "告白：Kieran 用错得一塌糊涂的日语说了“好きです”。你说出你自己的回答", freeWho: "otaku", choice: [
       { text: "“我也是。”", fx: { flag_confessed_otaku: 1, aff_otaku: 6 }, then: [
         { cg: "otaku_confess" },
         { say: "Really? Like — really really?", name: "otaku", tr: "真的？真的真的？" },
