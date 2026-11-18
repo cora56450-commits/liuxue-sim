@@ -66,7 +66,7 @@ DATA.dailyLines = [
   { id: "d23", text: "你在超市找不到酱油，问店员，他带你去了“World Foods”货架。" },
   { id: "d24", text: "理发店剪一次 £25，剪完像换了个人，不是好的那种。", fx: { money: -25, loneliness: 2 } },
   { id: "d25", text: "室友给你剪了个刘海。剪得不齐，但很开心。", fx: { loneliness: -2 }, if: "住宿 != 'studio'" },
-  { id: "d26", text: "淘宝集运到了，运费比东西还贵。", fx: { money: -15, loneliness: -2 } },
+  { id: "d26", text: "淘宝集运到了，运费比东西还贵。", fx: { money: -15, loneliness: -2 }, if: "周数 >= 4" },   // 刚落地不可能到（试玩报告 8）
   { id: "d27", text: "你学会了一句约克郡话：“Ey up.”", fx: { belonging: 1 }, if: "周数 > 8" },
   { id: "d28", text: "Dave 帮你收了一个快递，交给你时说：“Heavy one, love. Bricks?「挺沉的，亲爱的。砖头？」”是火锅底料。", fx: { loneliness: -1 } },
   { id: "d29", text: "你在路上被问路。你也不知道，但你装作知道，指了一个方向。" },

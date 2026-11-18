@@ -1,6 +1,6 @@
 // 系统小文本（上一级 剧本_固定剧情_大一全年.md「# 系统小文本」）
 // 天生路痴：每个地点第一次去时的迷路文本，键是 DATA.mapCity 的地点 id（“住处”不算；出城迷路另外 −£5）
-// 这个文件要在 data/events/system.js 之后加载（覆盖那里的占位 DATA.lostText）
+// 这个文件要在 data/events/system.js 之后加载（覆盖那里的临时 DATA.lostText）
 window.DATA = window.DATA || {};
 DATA.lostText = {
   campus:         "校园地图上写着“Main Building”，你找到了三栋都叫 Main Building 的楼。",
@@ -13,5 +13,5 @@ DATA.lostText = {
   pub_street:     "每家 pub 都长得一样，每家门口都站着一样的人。",
   brunch:         "你坐公交坐过了两站，走回来的路上，brunch 已经变成了 lunch。",
   station:        "你在 3 号站台等了二十分钟，车在 3a 站台开走了。",
-  _default:       "（占位）你迷路了，多绕了一大圈才到。",
+  _default:       "你迷路了，多绕了一大圈才到。",
 };

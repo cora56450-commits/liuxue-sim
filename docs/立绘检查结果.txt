@@ -1,52 +1,75 @@
-检查了 46 张立绘（22 个人有立绘）。规则：头顶到下巴 150px，每厘米 6.5px，地面线 y=1280。
-人物　图　身高　应在y　实际y　差(cm)　下巴y
-Ollie　base　187　64　64　0.0　215
-Ollie　summer　187　64　64　0.0　214
-Ollie　coffee　187　64　64　0.0　214
-Ollie　expr_normal　187　64　64　0.0　214
-Ollie　expr_smile　187　64　64　0.0　215
-Ollie　expr_annoyed　187　64　64　0.0　214
-Ollie　expr_shy　187　64　64　0.0　215
-Ollie　expr_surprised　187　64　64　0.0　215
-Ollie　expr_speechless　187　64　64　0.0　214
-Ollie　expr_stunned　187　64　64　0.0　215
-Kieran　base　184　84　84　0.0　234
-Kieran　summer　184　84　84　0.0　234
-Kieran　club　184　84　84　0.0　234
-Kieran　figure　184　84　84　0.0　234
-Kieran　expr_normal　184　84　84　0.0　234
-Kieran　expr_smile　184　84　84　0.0　234
-Kieran　expr_annoyed　184　84　84　0.0　234
-Kieran　expr_shy　184　84　84　0.0　234
-Kieran　expr_surprised　184　84　84　0.0　234
-Kieran　expr_speechless　184　84　84　0.0　234
-Kieran　expr_sparkle　184　84　84　0.0　234
-Nikos　base　183　90　90　0.0　241
-Jake　base　180　110　110　0.0　260
-学长　base　178　123　123　0.0　273
-学长　summer　178　123　123　0.0　273
-Ben　base　178　123　123　0.0　273
-Pike　base　176　136　136　0.0　286
-赵子豪　base　176　136　136　0.0　286
-Dave　base　175　142　142　0.0　292
-陈老板　base　172　162　162　0.0　312
-Giulia　base　170　175　175　0.0　325
-Ploy　base　168　188　188　0.0　338
-Ploy　summer　168　188　188　0.0　338
-Ploy　home　168　188　188　0.0　338
-周可欣　base　167　194　194　0.0　344
-陈思琪　base　165　208　208　0.0　358
-Hannah　base　165　208　208　0.0　358
-于晓　base　163　220　220　0.0　370
-Marcia　base　163　220　220　0.0　370
-我　autumn　162　227　227　0.0　377
-我　winter　162　227　227　0.0　377
-我　home　162　227　227　0.0　377
-Linda　base　162　227　227　0.0　377
-Mei　base　160　240　240　0.0　390
-Sophie　base　158　253　253　0.0　403
-吴桐　base　155　272　272　0.0　422
+检查了 46 张立绘（22 个人有立绘）。规则：头顶到下巴 250px，每厘米 10.87px，地面线 y=2073。
+人物　图　身高　应在y　实际y　差(cm)　下巴y　下边缘y
+Ollie　base　187　40　40　0.0　315　963
+Ollie　summer　187　40　40　0.0　315　984
+Ollie　coffee　187　40　40　0.0　315　1008
+Ollie　expr_normal　187　40　40　0.0　315　934
+Ollie　expr_smile　187　40　40　0.0　315　933
+Ollie　expr_annoyed　187　40　40　0.0　315　934
+Ollie　expr_shy　187　40　40　0.0　315　933
+Ollie　expr_surprised　187　40　40　0.0　315　933
+Ollie　expr_speechless　187　40　40　0.0　315　934
+Ollie　expr_stunned　187　40　40　0.0　315　933
+Kieran　base　184　73　73　0.0　348　839
+Kieran　summer　184　73　73　0.0　348　934
+Kieran　club　184　73　73　0.0　348　1038
+Kieran　figure　184　73　73　0.0　348　1016
+Kieran　expr_normal　184　73　73　0.0　348　847
+Kieran　expr_smile　184　73　73　0.0　348　850
+Kieran　expr_annoyed　184　73　73　0.0　348　849
+Kieran　expr_shy　184　73　73　0.0　348　847
+Kieran　expr_surprised　184　73　73　0.0　348　849
+Kieran　expr_speechless　184　73　73　0.0　348　848
+Kieran　expr_sparkle　184　73　73　0.0　348　847
+Nikos　base　183　84　84　0.0　341　1080
+Jake　base　180　116　116　0.0　378　1080
+学长　base　178　138　138　0.0　388　1158
+学长　summer　178　138　138　0.0　408　1080
+Ben　base　178　138　138　0.0　395　1080
+Pike　base　176　160　160　0.0　417　1080
+赵子豪　base　176　160　160　0.0　410　1235
+Dave　base　175　171　171　0.0　421　1161
+陈老板　base　172　203　203　0.0　453　1187
+Giulia　base　170　225　225　0.0　500　1043
+Ploy　base　168　247　247　0.0　512　1080
+Ploy　summer　168　247　247　0.0　501　1080
+Ploy　home　168　247　247　0.0　522　1022
+周可欣　base　167　258　258　0.0　508　1249
+陈思琪　base　165　279　279　0.0　529　1164
+Hannah　base　165　279　279　0.0　551　1080
+于晓　base　163　301　301　0.0　551　1092
+Marcia　base　163　301　301　0.0　551　1129
+我　autumn　162　312　312　0.0　562　1080
+我　winter　162　312　312　0.0　562　1276
+我　home　162　312　312　0.0　581　1080
+Linda　base　162　312　312　0.0　562　1107
+Mei　base　160　334　334　0.0　584　1211
+Sophie　base　158　356　356　0.0　606　1114
+吴桐　base　155　388　388　0.0　638　1276
 
-没有问题。
+发现 23 个问题：
+！ Ollie base：立绘下边缘 y=963，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Ollie summer：立绘下边缘 y=984，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Ollie coffee：立绘下边缘 y=1008，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Ollie expr_normal：立绘下边缘 y=934，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Ollie expr_smile：立绘下边缘 y=933，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Ollie expr_annoyed：立绘下边缘 y=934，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Ollie expr_shy：立绘下边缘 y=933，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Ollie expr_surprised：立绘下边缘 y=933，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Ollie expr_speechless：立绘下边缘 y=934，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Ollie expr_stunned：立绘下边缘 y=933，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Kieran base：立绘下边缘 y=839，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Kieran summer：立绘下边缘 y=934，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Kieran club：立绘下边缘 y=1038，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Kieran figure：立绘下边缘 y=1016，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Kieran expr_normal：立绘下边缘 y=847，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Kieran expr_smile：立绘下边缘 y=850，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Kieran expr_annoyed：立绘下边缘 y=849，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Kieran expr_shy：立绘下边缘 y=847，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Kieran expr_surprised：立绘下边缘 y=849，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Kieran expr_speechless：立绘下边缘 y=848，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Kieran expr_sparkle：立绘下边缘 y=847，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Giulia base：立绘下边缘 y=1043，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
+！ Ploy home：立绘下边缘 y=1022，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长
 
 同框图：docs/lineup_同框.jpg（每人一张），docs/lineup_全部.jpg（所有姿势和表情）

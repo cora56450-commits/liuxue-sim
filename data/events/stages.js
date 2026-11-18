@@ -221,7 +221,7 @@ Object.assign(DATA.events, {
     { say: "Ploy 把你拉进了 Boots，说要教你“英国最好用的东西”。" },
     { say: "半小时后，你的篮子里多了七样东西：一管护手霜、三种你不知道用途的面膜、一支她说“你一定适合”的口红。" },
     { say: "Trust me. I have a PhD in this.", name: "groupmate", tr: "相信我。我在这方面是博士。" },
-    { say: "（她的专业作业从来没交全过。）" },
+    { say: "（她的包比她的笔记本贵。）" },   // 试玩报告 31：第3周主角还不知道她作业交不全
     { choice: [
       { text: "全买了", fx: { money: -28, aff_groupmate: 4 } },
       { text: "只买口红", fx: { money: -9, aff_groupmate: 2 } },

@@ -11,7 +11,7 @@ const Sprites = {
     return k[key] || k.base || Object.values(k)[0] || { top: 0, chin: 0.3 };
   },
 
-  // 选图：有表情用表情图，没有就用姿势图。返回 null 表示这个角色没有立绘（用名牌占位）
+  // 选图：有表情用表情图，没有就用姿势图。返回 null 表示这个角色没有立绘（显示名牌）
   pick(charId, opt = {}) {
     const c = DATA.characters[charId];
     if (!c) return null;
@@ -45,8 +45,10 @@ const Sprites = {
     const c = DATA.characters[charId];
     const r = DATA.spriteRule;
     const cal = calibOverride || Sprites.calib(c, picked.key);
-    const height = r.faceHeight / Math.max(0.02, cal.chin - cal.top);
+    let height = r.faceHeight / Math.max(0.02, cal.chin - cal.top);
     const headY = Sprites.headY(c);
-    return { height, top: headY - cal.top * height, headY, chinY: headY + r.faceHeight };
+    const bottom = headY + (1 - cal.top) * height;
+    if (bottom < 1080) height *= Math.min(r.maxBoost || 1, (1080 - headY) / (bottom - headY));   // 补到画面底，最多放大 maxBoost
+    return { height, top: headY - cal.top * height, headY, chinY: headY + (cal.chin - cal.top) * height };
   },
 };

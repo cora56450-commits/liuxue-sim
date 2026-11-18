@@ -35,7 +35,16 @@ async function runScript(steps) {
       hideDialog();
       const list = opts.map((c) => ({ text: c.text, sub: c.sub, tr: c.tr }));   // tr：选项的中文翻译
       const free = FreeInput.can(st);   // 有 Key 时多一张“✎ 自己说……”（js/freeinput.js）
-      if (free) list.push({ text: FreeInput.LABEL, sub: "AI 接你这句话；数值和后面的剧情按最接近的选项走" });
+      if (free) list.push({ text: FreeInput.LABEL });   // 车票上只写“✎ 自己说……”（试玩报告 5）
+      // 只有一个选项、又不能自己说：不做成选项，直接演（试玩报告 25）。“…”引号的当主角说的话，其余当旁白
+      if (opts.length === 1 && !free) {
+        const c = opts[0], t = fillText(c.text);
+        if (/^[“"]/.test(t)) await say(t.replace(/^[“"]|[”"]$/g, ""), "me", { tr: c.tr });
+        else await say(t);
+        showFx(applyFx(c.fx)); await pondNow();
+        if (c.then) await runScript(c.then);
+        continue;
+      }
       let i = await choose(list), said = null;
       while (free && i === opts.length) {
         said = await FreeInput.ask();
@@ -71,6 +80,7 @@ async function runScript(steps) {
 function meetChar(c) {
   if (S.flags["met_" + c]) return [];
   S.flags["met_" + c] = 1;
+  S.metWeek = S.metWeek || {}; S.metWeek[c] = absWeek();   // 认识的那一周（阶段事件要认识满 2 周）
   const T = DATA.tuning;
   return applyFx({ ["aff_" + c]: T.firstMeet + (S.tags.includes("silver") ? T.firstMeetSilver : 0) });
 }
@@ -89,7 +99,14 @@ async function pondNow() {
   await runScript(DATA.events.fishpond_blowup);
 }
 
-async function runEvent(id) {
+// 剧情锁（试玩报告 29）：同一时间只跑一段剧情。第二段在第一段演完以后才开始，不会一句一句交错
+const Story = { q: Promise.resolve(), running: null };
+function runEvent(id) {
+  const p = Story.q.then(() => { Story.running = id; return runEventNow(id); }).finally(() => { if (Story.running === id) Story.running = null; });
+  Story.q = p.catch(() => {});
+  return p;
+}
+async function runEventNow(id) {
   const ev = DATA.events[id];
   if (!ev) return console.warn("没有这个事件：", id);
   hideHud();

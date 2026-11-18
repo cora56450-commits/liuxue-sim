@@ -54,6 +54,7 @@ const Sys = {
       ${row("对话时显示主角头像", toggle("showAvatar", v.showAvatar))}
       ${row("英文台词显示中文翻译", toggle("showTr", v.showTr))}
       ${row("新手指引（INFO 问讯处）", toggle("guide", v.guide !== false))}
+      ${row("版本", `<span class="set-ver">v${GAME_VERSION}（${GAME_BUILD}）</span>`)}
       <div class="set-api"><h3>API（手机聊天、小红书用；Key 只存在本机）</h3>
         <label>接口地址（OpenAI兼容，例如 DeepSeek）</label><input id="api-base" value="${c.base}">
         <label>API Key</label><input id="api-key" type="password" value="${c.key}">

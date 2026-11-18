@@ -46,7 +46,7 @@
 
 /* 开局：名字输入 */
 .chip-input { font-family: var(--font); font-size: 26px; font-weight: 700; padding: 10px 20px; border: 3px solid var(--navy); background: var(--paper); color: var(--ink); width: 460px; }
-.chip-input:focus { outline: 4px solid var(--orange); }
+.chip-input:focus { outline: none; }
 
 /* 标题：第四条“回忆”（背景图上只有三条色带，这条是画出来的） */
 .title-bar.extra { background: #E8A98C; transform: skewX(-24deg); height: 62px; left: 1478px; width: 372px; opacity: .92; }
@@ -183,7 +183,7 @@
 .cal-row.past { opacity: .45; }
 .cal-row.now { background: var(--navy); color: var(--paper); }
 
-/* ===== 结局明信片：邮票占位 + 叠加盖章 ===== */
+/* ===== 结局明信片：邮票 + 叠加盖章 ===== */
 .pc-post { position: absolute; right: 5.5%; top: 9%; width: 10.5%; height: 21%; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 15px; font-weight: 800; color: var(--orange); line-height: 1.2; }
 /* 三行字分别坐在明信片右边的三条横线上面 */
 .pc-body { top: 41.5% !important; left: 57.5% !important; width: 37% !important; font-size: 21px !important; line-height: 73px !important; white-space: nowrap; }

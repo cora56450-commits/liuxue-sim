@@ -108,11 +108,14 @@ function applyFx(fx) {
   if (!fx) return changes;
   for (const [k, v0] of Object.entries(fx)) {
     let v = v0;
+    if (typeof v === "number" && !Number.isFinite(v)) { console.warn("数值变化不是数字，跳过：", k, v); continue; }   // 防 NaN 把数值弄坏
     if (k.startsWith("aff_")) {
       const c = k.slice(4);
       if (S.tags.includes("lovebrain") && v > 0) v = v * 1.5;
       const before = S.aff[c] || 0;
-      S.aff[c] = clamp(before + v, 0, 100);
+      // 序章到第1周结束前，好感最多到 earlyAffCap（试玩报告 6、19：开局就过 20，第一周就进了熟人阶段）
+      const cap = S.year === 1 && S.week <= 1 ? Math.max(before, DATA.tuning.earlyAffCap) : 100;
+      S.aff[c] = clamp(before + v, 0, cap);
       S.lastMet[c] = absWeek();
       if (S.aff[c] >= DATA.tuning.pondLevel) S.everHigh[c] = 1;
       S.affWeek[c] = (S.affWeek[c] || 0) + (S.aff[c] - before);
@@ -221,7 +224,7 @@ const Rules = {
       if (d) { const b = S.aff[c]; S.aff[c] = Math.max(0, S.aff[c] + d); S.affWeek[c] = (S.affWeek[c] || 0) + S.aff[c] - b; }
     }
     // 恋爱脑：上一周任何一个攻略对象好感净变化 ≥8，这周学业和作业进度 ×0.8
-    S.loveDistract = S.tags.includes("lovebrain") && DATA.loveIds.some((c) => Math.abs(S.affWeek[c] || 0) >= T.loveDistractAt);
+    S.loveDistract = S.tags.includes("lovebrain") && (S.year > 1 || S.week > 2) && DATA.loveIds.some((c) => Math.abs(S.affWeek[c] || 0) >= T.loveDistractAt);
     S.affWeek = {};
     if (S.loveDistract) notes.push("满脑子都是那个人，这周学习效率打了折");
     if (S.tags.includes("shopaholic") && Math.random() < 0.3) { S.stats.money -= 40; playSfx("cash"); notes.push("又没忍住，剁手了 -£40"); }
@@ -273,9 +276,9 @@ const Rules = {
     const a = Rules.act(id);
     const fx = { ...a.fx };
     const eff = S.stats.energy < T.lowEnergy ? T.lowEnergyFactor : 1;
-    if (id === "class") fx.study *= 0.6 + S.stats.english / 100;
+    if (id === "class" && fx.study) fx.study *= 0.6 + S.stats.english / 100;
     if (id === "library" && S.tags.includes("scholar")) fx.study *= 1.4;
-    if (opt.late) fx.study *= 0.5;   // 昼伏夜出：迟到，只听了半节
+    if (opt.late && fx.study) fx.study *= 0.5;   // 昼伏夜出：迟到，只听了半节（迎新周的“参加迎新活动”没有学业，不算）
     if (id === "social") {
       fx.energy = Rules.isIntrovert() ? -10 : -3;
       fx.belonging *= Rules.isIntrovert() ? 0.9 : 1.25;
@@ -289,6 +292,7 @@ const Rules = {
     const love = S.loveDistract ? DATA.tuning.loveDistract : 1;
     if (fx.study) fx.study *= eff * love;
     if (fx.homework) fx.homework *= eff * love;
+    if (a === DATA.previewActivity) fx.study = Math.max(1, fx.study || 0);   // 预习至少学业 +1（试玩报告 22）
     return fx;
   },
 
@@ -296,7 +300,7 @@ const Rules = {
   doActivity(id, opt) {
     const fx = Rules.activityFx(id, opt);
     const changes = applyFx(fx);
-    if (id === "class") S.att.classes++;
+    if (id === "class" && !Rules.act(id).freshers) S.att.classes++;
     let sick = false;
     if (S.stats.energy <= 0) {   // 精力排到0：生病，下周锁2格宅家
       sick = true; S.sickCount++; S.flags.been_sick = 1;
@@ -326,7 +330,10 @@ const Rules = {
   hasAssignment() { return !!Rules.currentAssignment(); },
   releasedThisWeek() { return S.year === 1 ? Object.keys(DATA.assignments).filter((id) => DATA.assignments[id].release === S.week) : []; },
   // 日程活动的定义：没有作业的周，“做作业”是“预习”
-  act(id) { return id === "homework" && !Rules.hasAssignment() ? DATA.previewActivity : DATA.activities.find((x) => x.id === id); },
+  act(id) {
+    if (id === "class" && S.year === 1 && S.week === 1) return DATA.freshersActivity;
+    return id === "homework" && !Rules.hasAssignment() ? DATA.previewActivity : DATA.activities.find((x) => x.id === id);
+  },
   deadlineThisWeek() {
     if (S.year !== 1) return null;
     const a = Object.keys(DATA.assignments).find((id) => Rules.deadlineWeek(id) === S.week);
@@ -500,6 +507,11 @@ const Rules = {
   },
 };
 
+// 纯文字版（选项、提示里用，不带 HTML 标签；试玩报告 24）
+function moneyText(v) {
+  const s = (v < 0 ? "-£" : "£") + Math.abs(Math.round(v));
+  return S && S.stats.adapt < DATA.tuning.exchangeBrainUntil ? `${s} ≈¥${Math.round(Math.abs(v) * DATA.tuning.exchangeRate)}` : s;
+}
 // 汇率脑：适应度低时，英镑旁边显示人民币
 function money(v) {
   const s = (v < 0 ? "-£" : "£") + Math.abs(Math.round(v));

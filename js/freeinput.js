@@ -1,14 +1,16 @@
 // 自由输入选项（docs/自由输入选项.md）：有 API Key 时，标了 free 的选项组最后多一张“✎ 自己说……”。
 // 玩家打字（≤60 字）→ AI 判断最接近哪个固定选项（closest），数值和后续剧情照那个选项走；
-// 只把角色的第一句回应换成针对玩家这句话的回应（reply），另外按语气加减 −2～+2 好感／友情（bonus）。
+// 只把角色的第一句回应换成针对玩家这句话的回应（reply）。数值只按映射到的选项算（AI 回的 bonus 现在不用，试玩报告 21）。
 // 脚本写法：{ choice: [...], free: "给 AI 的场景说明", freeWho: "senior", freeOnly: [0, 1] }
 //   freeWho：回应的人（角色 id，或“妈妈”这种名字）；freeOnly：closest 只能在这几个选项里选（不写＝全部）
 //   没有固定选项、只想让玩家说一句的地方：{ free: "…", freeWho: "groupmate" }（没 Key 时整步跳过）
 const FreeInput = {
-  MAX_IN: 60, MAX_OUT: 80, TIMEOUT: 8000,
+  MAX_IN: 60, MAX_IN_EN: 120, MAX_OUT: 80, TIMEOUT: 8000,   // 中文 60 字；纯英文按 120 个字符（试玩报告 20）
   LABEL: "✎ 自己说……",
   can(st) { return !!(st && st.free && typeof AI !== "undefined" && AI.hasKey()); },
-  clean(t) { return String(t || "").replace(/https?:\/\/\S+|www\.\S+/gi, "").replace(/[<>]/g, "").replace(/\s+/g, " ").trim().slice(0, FreeInput.MAX_IN); },
+  clean(t) { return String(t || "").replace(/https?:\/\/\S+|www\.\S+/gi, "").replace(/[<>]/g, "").replace(/\s+/g, " ").trim(); },
+  limit(t) { return /[\u4e00-\u9fff]/.test(t) ? FreeInput.MAX_IN : FreeInput.MAX_IN_EN; },
+  over(t) { return t.length > FreeInput.limit(t); },
   BAD: /(傻逼|操你|fuck|cunt|nigger|色情|做爱|性交|porn)/i,
 
   // 输入框（车票样式）：返回玩家打的字，点“算了”返回 null
@@ -16,13 +18,16 @@ const FreeInput = {
     return new Promise((resolve) => {
       const el = document.createElement("div");
       el.id = "freein";
-      el.innerHTML = `<div class="fi-card"><div class="fi-head"><b>✎</b><span>自己说</span><em>最多 ${FreeInput.MAX_IN} 个字，中英文都行</em></div>
-        <input maxlength="${FreeInput.MAX_IN}" placeholder="想说什么……"><div class="fi-btns"><button data-r="ok">说出口</button><button data-r="no" class="plain">算了</button></div></div>`;
+      el.innerHTML = `<div class="fi-card"><div class="fi-head"><b>✎</b><span>自己说</span><em>中文最多 ${FreeInput.MAX_IN} 个字，英文最多 ${FreeInput.MAX_IN_EN} 个字母</em></div>
+        <input maxlength="${FreeInput.MAX_IN_EN}" placeholder="想说什么……"><div class="fi-warn"></div><div class="fi-btns"><button data-r="ok">说出口</button><button data-r="no" class="plain">算了</button></div></div>`;
       $("#stage").appendChild(el);
       const inp = el.querySelector("input");
       setTimeout(() => inp.focus(), 50);
       const done = (v) => { el.remove(); resolve(v); };
-      el.querySelector('[data-r="ok"]').onclick = () => { const v = FreeInput.clean(inp.value); if (v) done(v); else inp.focus(); };
+      const warn = el.querySelector(".fi-warn");
+      const check = () => { const v = FreeInput.clean(inp.value), o = FreeInput.over(v); warn.textContent = o ? `太长了：${/[\u4e00-\u9fff]/.test(v) ? "中文" : "英文"}最多 ${FreeInput.limit(v)} 个字，现在 ${v.length} 个。` : ""; return o; };
+      inp.oninput = check;
+      el.querySelector('[data-r="ok"]').onclick = () => { const v = FreeInput.clean(inp.value); if (!v || check()) return inp.focus(); done(v); };   // 超了提示，不悄悄截掉
       el.querySelector('[data-r="no"]').onclick = () => done(null);
       inp.onkeydown = (e) => { e.stopPropagation(); if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); el.querySelector('[data-r="ok"]').click(); } if (e.key === "Escape") done(null); };
     });
@@ -41,7 +46,7 @@ const FreeInput = {
     const who = st.freeWho, c = DATA.characters[who];
     const rel = c ? AI.relation(who) : { line: "" };
     const list = allowed.map((i) => `${i}. 「${fillText(opts[i].text)}」 效果：${FreeInput.fxDesc(opts[i].fx)}${FreeInput.firstLine(opts[i].then, who) ? `；原本对方会说：“${fillText(FreeInput.firstLine(opts[i].then, who))}”` : ""}`).join("\n");
-    const en = c && c.persona && /用英文/.test(c.persona);
+    const en = c && c.lang === "en";
     const sys = [
       `你在一个留学生活模拟游戏里，替角色「${c ? c.name : who || "对方"}」接玩家说的一句话。`,
       c && c.persona ? `人设：${c.persona}` : "",
@@ -63,7 +68,8 @@ const FreeInput = {
     out.tone = ["sincere", "funny", "rude", "off"].includes(j.tone) ? j.tone : "off";
     out.bonus = Math.max(-2, Math.min(2, Math.round(+j.bonus || 0)));
     const reply = String(j.reply || "").trim().slice(0, FreeInput.MAX_OUT), tr = String(j.tr || "").trim().slice(0, FreeInput.MAX_OUT * 2);
-    if (reply && !FreeInput.BAD.test(reply + tr)) { out.reply = reply; out.tr = tr; }
+    const enBad = c && c.lang === "en" && (/[\u4e00-\u9fff]/.test(reply) || !tr);   // 英文角色说了中文或没给翻译：用固定回应（试玩报告 14）
+    if (reply && !enBad && !FreeInput.BAD.test(reply + tr)) { out.reply = reply; out.tr = tr; }
     return out;
   },
 
@@ -71,10 +77,7 @@ const FreeInput = {
   async apply(st, opt, text, res) {
     await say(text, "me", { free: true });
     const who = st.freeWho;
-    if (res.bonus && who) {
-      const key = DATA.loveIds.includes(who) ? "aff_" + who : (who in S.fr ? "fr_" + who : null);
-      if (key) showFx(applyFx({ [key]: res.bonus }));
-    }
+    // AI 判的 bonus 不再另外加（试玩报告 21：会和映射选项的数值重复）；数值只按映射到的那个选项算
     if (!res.reply) return [...((opt && opt.then) || [])];   // AI 没给能用的回应：照固定文本走
     const line = { say: res.reply, name: who, tr: res.tr || undefined, freeSaid: true };   // freeSaid：对话记录里标 ✎
     // 把每条分支里这个人的第一句换掉（分支在 if/then/else 里也找）；一句都没有就加在最前面

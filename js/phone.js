@@ -39,7 +39,7 @@ const Phone = {
   },
   // 联系人旁边的小字：攻略对象显示好感（交往中的加一个“交往中”），固定 NPC 显示友情和档位
   relLabel(c) {
-    if (DATA.loveIds.includes(c)) return `<em class="rel-love">${S.flags["confessed_" + c] ? `<b class="dating">交往中</b>` : ""}好感 ${Math.round(S.aff[c])}</em>`;
+    if (DATA.loveIds.includes(c)) return `<em class="rel-love">${S.flags["confessed_" + c] ? `<b class="dating">交往中</b>` : ""}好感 ${Math.round(S.aff[c])} · ${DATA.loveStageNames[loveStageOf(c)]}</em>`;
     if (c in S.fr) return `<em class="rel-fr">友情 ${Math.round(S.fr[c])} · ${frTier(S.fr[c])}</em>`;
     return "";
   },
@@ -68,7 +68,7 @@ const Phone = {
     const log = o.querySelector(".phone-log");
     let busy = false;
     const render = () => {
-      log.innerHTML = S.chats[cur].map((m) => `<div class="msg ${m.role === "user" ? "me" : "them"}">${Gloss.mark(fillText(m.content))}${m.tr && Settings.v.showTr ? `<em class="msg-tr">${Gloss.mark(fillText(m.tr))}</em>` : ""}</div>`).join("") + (busy ? `<div class="msg them typing">…</div>` : "");
+      log.innerHTML = (S.chats[cur].length || busy ? "" : `<div class="log-empty">还没聊过</div>`) + S.chats[cur].map((m) => `<div class="msg ${m.role === "user" ? "me" : "them"}">${Gloss.mark(fillText(m.content))}${m.tr && Settings.v.showTr ? `<em class="msg-tr">${Gloss.mark(fillText(m.tr))}</em>` : ""}</div>`).join("") + (busy ? `<div class="msg them typing">…</div>` : "");
       log.scrollTop = log.scrollHeight;
     };
     render();
@@ -81,7 +81,7 @@ const Phone = {
       busy = false;
       if (r.failed) { S.chats[cur].pop(); input.value = text; toast(r.text, 2600); return render(); }
       const iv = Invites.parseAI(r.text);   // AI 想约你：[[INVITE day=SAT place=brunch]]，由游戏校验后弹邀约卡
-      S.chats[cur].push({ role: "assistant", content: iv ? r.text.replace(iv.raw, "").trim() : r.text });
+      S.chats[cur].push({ role: "assistant", content: iv ? r.text.replace(iv.raw, "").trim() : r.text, tr: r.tr || "" });   // 英文角色：tr 是「」里的中文
       Phone.gain(cur, r.aff);
       if (iv && iv.place) { closeOverlay(); await Invites.offer({ who: cur, day: iv.day, place: iv.place, source: "ai" }); return Phone.chat(cur); }
       o.querySelector(".phone-head em").innerHTML = head();
@@ -204,9 +204,9 @@ const Phone = {
     }
     const name = (w) => (w === "me" ? S.name || "我" : charName(w));
     const post = (p, i, mine) => `<div class="mo-post">${p.who === "me" ? `<div class="c-ava me">${(S.name || "我")[0]}</div>` : Phone.ava(p.who)}
-      <div class="mo-main"><b>${Phone.esc(name(p.who))}</b><p>${Phone.esc(fillText(p.text))}</p>
+      <div class="mo-main"><b>${Phone.esc(name(p.who))}</b><p>${Phone.esc(fillText(p.text))}${p.tr && Settings.v.showTr ? `<em class="msg-tr">${Phone.esc(p.tr)}</em>` : ""}</p>
       <div class="mo-acts"><span class="mo-like ${p.liked ? "on" : ""}" data-like="${mine ? "m" : "f"}${i}">♥ ${p.likes + (p.liked ? 1 : 0)}</span>${mine ? "" : `<span class="mo-cmt" data-cmt="${i}">评论</span>`}</div>
-      ${p.comments.length ? `<div class="mo-cmts">${p.comments.map((c) => `<div><b>${Phone.esc(name(c.who))}</b>${Phone.esc(c.text)}</div>`).join("")}</div>` : ""}</div></div>`;
+      ${p.comments.length ? `<div class="mo-cmts">${p.comments.map((c) => `<div><b>${Phone.esc(name(c.who))}</b>${Phone.esc(c.text)}${c.tr && Settings.v.showTr ? `<em class="msg-tr">${Phone.esc(c.tr)}</em>` : ""}</div>`).join("")}</div>` : ""}</div></div>`;
     const o = draw(`<div class="mo-list">${S.moments.mine.map((p, i) => post(p, i, true)).join("")}${S.moments.feed.map((p, i) => post(p, i, false)).join("")}</div>`);
     o.querySelectorAll("[data-like]").forEach((el) => el.onclick = () => {
       const k = el.dataset.like, p = (k[0] === "m" ? S.moments.mine : S.moments.feed)[+k.slice(1)];
@@ -229,7 +229,7 @@ const Phone = {
       logLine(`〔评论了${charName(p.who)}的动态〕${text}`);
       if (AI.hasKey()) {
         const r = await AI.momentReply(p, text);
-        if (r) { p.comments.push({ who: p.who, text: r.text }); Phone.gain(p.who, r.gain); }
+        if (r) { p.comments.push({ who: p.who, text: r.text, tr: r.tr || "" }); Phone.gain(p.who, r.gain); }
         else S.lastMet[p.who] = absWeek();
       } else S.lastMet[p.who] = absWeek();
       Phone.moments();
@@ -268,7 +268,7 @@ const Phone = {
     const render = () => {
       log.innerHTML = msgs.map((m) => m.who === "me"
         ? `<div class="msg me">${Phone.esc(m.text)}</div>`
-        : `<div class="msg-who">${Phone.esc(m.who)}</div><div class="msg them">${Phone.esc(m.text)}</div>`).join("") + (busy ? `<div class="msg them typing">…</div>` : "");
+        : `<div class="msg-who">${Phone.esc(m.who)}</div><div class="msg them">${Phone.esc(m.text)}${m.tr && Settings.v.showTr ? `<em class="msg-tr">${Phone.esc(m.tr)}</em>` : ""}</div>`).join("") + (busy ? `<div class="msg them typing">…</div>` : "");
       log.scrollTop = log.scrollHeight;
     };
     render();

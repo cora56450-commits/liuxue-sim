@@ -457,7 +457,7 @@ DATA.friendMessage = {
   sophie: { text: "Getting closer x", tr: "越来越接近了", img: "一张咖啡杯的照片，杯子上写着你的名字。拼错了，但只错了一个字母。" },
   ben: { text: "sorry I'm always missing. it's not you lot. cheers for covering me", tr: "抱歉我老是失踪。不是因为你们。谢谢你们帮我顶着" },
   khan: { text: "Boiler's fixed. Told you it was just condensation. Have a lovely week.", tr: "锅炉修好了。我就说只是水汽。祝你一周愉快。" },
-  _default: "（占位）在吗？最近怎么样。",
+  _default: "在吗？最近怎么样。",
 };
 
 // 周末特殊偶遇：周末第一次去 place 时，按顺序取第一个 cond 成立、没演过的，代替这次的普通偶遇；一个周末最多一段

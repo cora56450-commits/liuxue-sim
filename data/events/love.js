@@ -1,6 +1,6 @@
 // 攻略线（剧本_攻略线与友情线.md 第一部分）：心动／推进／过去／情人节／告白／考验，雷点，跨线事件 1–3
 // 告白 confess_{id}、考验 trial_{id} 由引擎直接调用，不进 DATA.loveEvents。
-// 本文件要在 data/events/later_years.js 之后加载，才能覆盖那里的告白／考验占位。
+// 本文件要在 data/events/later_years.js 之后加载，才能覆盖那里的告白／考验临时文本。
 // 新造的标记：flag_heart_{id}（心动CG演过）、flag_valentine_{id}（第16周情人节答应了谁，由 valentines 事件设）、
 //   flag_local_doubt4／doubt5（Ollie疑点4／5）、flag_local_asked_once（问过Ollie一次）、flag_otaku_persona2（Kieran两套人设2）、
 //   flag_ploy_ghostwrite（替Ploy写作业次数，计数）、flag_ploy_cover（Ploy帮你圆场，只一次）

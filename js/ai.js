@@ -92,43 +92,94 @@ const AI = {
   },
 
   // 单聊。返回 { text, aff }：aff 是 AI 判断这轮聊天该加多少好感／友情
+  // ===== 语言（试玩报告 14、15）：lang=en 的人只说英文，每句后面跟「中文翻译」；lang=zh 说中文 =====
+  lang(c) { return (DATA.characters[c] || {}).lang || "zh"; },
+  langRule(c) {
+    return AI.lang(c) === "en"
+      ? "语言（必须遵守）：你只说英文，不说中文，哪怕玩家用中文跟你说话也只用英文回。每一句英文后面紧跟它的中文翻译，用「」括起来，格式严格是：英文原句「中文翻译」。例：Which part? The ending confused me too first time lol「哪段？我第一次看结局也懵了哈哈」"
+      : "语言：你说中文，可以夹少量英文词，不用加翻译。";
+  },
+  // 英文句子「中文」→ { text: 英文, tr: 中文 }
+  splitTr(t) {
+    t = String(t || "");
+    const tr = [...t.matchAll(/「([^」]*)」/g)].map((m) => m[1].trim()).filter(Boolean);
+    return { text: t.replace(/「[^」]*」/g, " ").replace(/\s+/g, " ").trim(), tr: tr.join(" ") };
+  },
+  // en 的人：「」外面不能有中文，而且要有「」翻译
+  langOk(c, t) {
+    if (AI.lang(c) !== "en") return true;
+    t = String(t || "");
+    return /「[^」]+」/.test(t) && !/[\u4e00-\u9fff]/.test(t.replace(/「[^」]*」/g, ""));
+  },
+  FALLBACK: {   // 重试一次还不对时用的固定兜底句（编程这边写的，见问题记录）
+    en: "Sorry — bit busy right now. Talk later?「抱歉——现在有点忙。晚点聊？」",
+    zh: "我这会儿有点忙，晚点回你。",
+  },
+  // 发请求；lang=en 的人回得不对（说了中文或没带「」）就带着提醒重试一次，再不对用兜底句
+  async requestLang(c, messages, temperature, getText) {
+    const pick = getText || ((r) => r);
+    let r = await this.request(messages, temperature);
+    if (r.error || AI.langOk(c, pick(r))) return r;
+    const again = [...messages, { role: "assistant", content: r }, { role: "user", content: "（系统提醒：你刚才的回复格式不对。你只能说英文，每句英文后面用「」写中文翻译。请按这个格式重新回复刚才那条。）" }];
+    const r2 = await this.request(again, temperature);
+    if (!r2.error && AI.langOk(c, pick(r2))) return r2;
+    return { fallback: true, text: AI.FALLBACK[AI.lang(c)] };
+  },
+
   async chat(charId, history) {
     const c = DATA.characters[charId], rel = this.relation(charId);
     const sys = [
       `你在扮演留学生活模拟游戏里的角色「${c.name}」，正在用手机和玩家聊天。`,
       `人设：${c.persona || "（还没有人设，按名字自然地聊）"}`,
       DATA.profiles && DATA.profiles[charId] ? `专业、年级和认识的人：${DATA.profiles[charId]}` : "",
-      this.playerBrief(), rel.line, this.inviteBrief(charId), this.RULES, this.scoreLine(rel),
+      this.playerBrief(), rel.line, this.langRule(charId), this.inviteBrief(charId), this.RULES, this.scoreLine(rel),
     ].filter(Boolean).join("\n");
-    const r = await this.request([{ role: "system", content: sys }, ...history.filter((m) => !m.sys).slice(-20).map(({ role, content }) => ({ role, content }))]);
+    const msgs = [{ role: "system", content: sys }, ...history.filter((m) => !m.sys).slice(-20).map(({ role, content, tr }) => ({ role, content: tr && role === "assistant" ? `${content}「${tr}」` : content }))];
+    const r = await this.requestLang(charId, msgs, 0.9, (x) => this.parseScore(x, rel).text.replace(/\[\[INVITE[^\]]*\]\]/g, ""));
     if (r.error) return { text: r.error, aff: 0, failed: true };
-    return this.parseScore(r, rel);
+    if (r.fallback) return { ...AI.splitTr(r.text), aff: 0 };
+    const x = this.parseScore(r, rel);
+    return AI.lang(charId) === "en" ? { ...x, ...AI.splitTrKeepInvite(x.text) } : x;
+  },
+  // 拆翻译时保留邀约标记 [[INVITE …]]（放在英文那一段里，phone.js 再拿掉）
+  splitTrKeepInvite(t) {
+    const iv = (String(t).match(/\[\[INVITE[^\]]*\]\]/) || [""])[0];
+    const s = AI.splitTr(String(t).replace(iv, ""));
+    return { text: (s.text + (iv ? " " + iv : "")).trim(), tr: s.tr };
   },
 
   // ===== 动态（Ins／朋友圈）=====
-  people(ids) { return ids.map((c) => `${c}｜${DATA.characters[c].name}：${(DATA.characters[c].persona || "").slice(0, 60)}`).join("\n"); },
+  people(ids) { return ids.map((c) => `${c}｜${DATA.characters[c].name}｜${AI.lang(c) === "en" ? "只说英文" : "说中文"}：${(DATA.characters[c].persona || "").slice(0, 60)}`).join("\n"); },
+  // 动态、评论这类 JSON 里的一条：en 的人检查格式，拆成 text／tr；不合格的丢掉
+  langItem(p) {
+    if (!p || !p.who || !p.text) return null;
+    if (AI.lang(p.who) !== "en") return p;
+    if (!AI.langOk(p.who, p.text)) return null;
+    return { ...p, ...AI.splitTr(p.text) };
+  },
   // 这一周通讯录里的人发的动态：返回 [{ who, text }]，失败返回 null
   async momentsFeed(ids) {
-    const sys = `你在给一个留学生活模拟游戏生成手机里“动态”栏（像朋友圈／Instagram）的内容。${this.playerBrief()}\n下面是玩家通讯录里的人（id｜名字：人设）：\n${this.people(ids)}\n挑其中 4 到 6 个人，每人发一条贴近现在时间点、符合人设的动态，一到两句话，英国人和国际生用英文，中国人用中文。只输出 JSON 数组，每项 {"who":"id","text":"内容"}，who 只能用上面的 id。`;
+    const sys = `你在给一个留学生活模拟游戏生成手机里“动态”栏（像朋友圈／Instagram）的内容。${this.playerBrief()}\n下面是玩家通讯录里的人（id｜名字：人设）：\n${this.people(ids)}\n挑其中 4 到 6 个人，每人发一条贴近现在时间点、符合人设的动态，一到两句话。标了“只说英文”的人只用英文，并且每句英文后面用「」写中文翻译（格式：英文原句「中文」）；说中文的人用中文。只输出 JSON 数组，每项 {"who":"id","text":"内容"}，who 只能用上面的 id。`;
     const j = this.parseJson(await this.request([{ role: "system", content: sys }, { role: "user", content: "生成" }], 1.0));
-    return Array.isArray(j) ? j.filter((p) => p && ids.includes(p.who) && p.text).slice(0, 8) : null;
+    return Array.isArray(j) ? j.filter((p) => p && ids.includes(p.who) && p.text).map(AI.langItem).filter(Boolean).slice(0, 8) : null;
   },
   // 玩家评论了某人的动态：对方回一句，并判断加多少好感／友情。返回 { text, gain }
   async momentReply(post, comment) {
     const c = DATA.characters[post.who], rel = this.relation(post.who);
     const sys = [`你在扮演「${c.name}」。人设：${c.persona || ""}`, this.playerBrief(), rel.line,
-      `你发了一条动态：“${post.text}”。玩家在下面评论了，请回复她的评论，一句话。`, this.RULES, this.scoreLine(rel)].filter(Boolean).join("\n");
-    const r = await this.request([{ role: "system", content: sys }, { role: "user", content: comment }]);
+      `你发了一条动态：“${post.text}”。玩家在下面评论了，请回复她的评论，一句话。`, this.langRule(post.who), this.RULES, this.scoreLine(rel)].filter(Boolean).join("\n");
+    const r = await this.requestLang(post.who, [{ role: "system", content: sys }, { role: "user", content: comment }], 0.9, (x) => this.parseScore(x, rel).text);
     if (r.error) return null;
+    if (r.fallback) return { ...AI.splitTr(r.text), gain: 0 };
     const x = this.parseScore(r, rel);
-    return { text: x.text, gain: x.aff };
+    return AI.lang(post.who) === "en" ? { ...AI.splitTr(x.text), gain: x.aff } : { text: x.text, gain: x.aff };
   },
   // 玩家发了动态：谁点赞、谁评论。返回 { likes, comments: [{ who, text }] }
   async momentsReact(post, ids) {
-    const sys = `你在给一个留学生活模拟游戏生成手机“动态”的点赞和评论。${this.playerBrief()}\n玩家的通讯录（id｜名字：人设）：\n${this.people(ids)}\n玩家发了一条动态，请判断有几个人点赞（0 到 ${ids.length}），再让 1 到 3 个人各写一条符合人设的评论（每条不超过25字）。只输出 JSON：{"likes":数字,"comments":[{"who":"id","text":"评论"}]}，who 只能用上面的 id。`;
+    const sys = `你在给一个留学生活模拟游戏生成手机“动态”的点赞和评论。${this.playerBrief()}\n玩家的通讯录（id｜名字：人设）：\n${this.people(ids)}\n玩家发了一条动态，请判断有几个人点赞（0 到 ${ids.length}），再让 1 到 3 个人各写一条符合人设的评论（每条不超过25字；标了“只说英文”的人用英文，后面用「」写中文翻译）。只输出 JSON：{"likes":数字,"comments":[{"who":"id","text":"评论"}]}，who 只能用上面的 id。`;
     const j = this.parseJson(await this.request([{ role: "system", content: sys }, { role: "user", content: post.text }], 1.0));
     if (!j || typeof j.likes !== "number") return null;
-    return { likes: clamp(Math.round(j.likes), 0, ids.length), comments: (j.comments || []).filter((c) => c && ids.includes(c.who) && c.text).slice(0, 3) };
+    return { likes: clamp(Math.round(j.likes), 0, ids.length), comments: (j.comments || []).filter((c) => c && ids.includes(c.who) && c.text).map(AI.langItem).filter(Boolean).slice(0, 3) };
   },
 
   // 群聊。返回 [{ who, text }]
@@ -139,7 +190,8 @@ const AI = {
     const sys = [
       `你在扮演留学生活模拟游戏里一个手机群聊「${fillText(g.name)}」里的其他成员：${names.join("、")}。`,
       `群的情况：${g.brief}`, personas, this.playerBrief(), this.RULES,
-      `每次回复由 1 到 3 个成员各说一句，一行一条，格式严格是「名字：内容」，名字只能用上面列出的成员名。不是每个人每次都要说话。`,
+      `每次回复由 1 到 3 个成员各说一句，一行一条，格式严格是“名字：内容”，名字只能用上面列出的成员名。不是每个人每次都要说话。`,
+      g.members.some((m) => AI.lang(m) === "en") ? `${g.members.filter((m) => AI.lang(m) === "en").map((m) => DATA.characters[m].short).join("、")} 只说英文，每句英文后面用「」写中文翻译（格式：名字：英文原句「中文」）；其他人说中文。` : "",
     ].filter(Boolean).join("\n");
     const transcript = log.slice(-24).map((m) => `${m.who === "me" ? (S.name || "玩家") : m.who}：${m.text}`).join("\n");
     const r = await this.request([{ role: "system", content: sys }, { role: "user", content: `群里到现在的消息：\n${transcript}\n\n请接着回复。` }]);
@@ -147,9 +199,12 @@ const AI = {
     const out = [];
     for (const line of r.split("\n")) {
       const m = line.match(/^\s*([^：:]{1,12})[：:]\s*(.+)$/);
-      if (m && names.includes(m[1].trim())) out.push({ who: m[1].trim(), text: m[2].trim() });
+      if (!m || !names.includes(m[1].trim())) continue;
+      const who = m[1].trim(), id = g.members[names.indexOf(who)], text = m[2].trim();
+      if (AI.lang(id) === "en") { if (AI.langOk(id, text)) out.push({ who, ...AI.splitTr(text) }); }   // 英文的人说了中文或没带翻译：这条丢掉
+      else out.push({ who, text });
     }
-    return out.length ? out : [{ who: names[0], text: r.split("\n")[0] }];
+    return out.length ? out : [{ who: names[0], text: AI.lang(g.members[0]) === "en" ? AI.splitTr(AI.FALLBACK.en).text : AI.FALLBACK.zh, tr: AI.lang(g.members[0]) === "en" ? AI.splitTr(AI.FALLBACK.en).tr : "" }];
   },
 
   parseJson(r) {

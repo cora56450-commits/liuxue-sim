@@ -29,9 +29,13 @@ const Guide = {
     return Guide._q;
   },
   _one(id, target) {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
       if (!Guide.on() || Guide.seen(id)) return resolve();
-      const el = typeof target === "string" ? document.querySelector(target) : target;
+      let el = typeof target === "string" ? document.querySelector(target) : target;
+      // 手机等弹层开着、要点的东西又不在弹层里：等弹层关了再出（试玩报告 18）
+      const ov = () => document.getElementById("overlay");
+      for (let n = 0; n < 600 && ov() && el && !ov().contains(el); n++) await new Promise((r) => setTimeout(r, 500));
+      if (typeof target === "string") el = document.querySelector(target);
       const stage = $("#stage");
       if (!el || !el.isConnected || !el.getClientRects().length) return resolve();
       const st = stage.getBoundingClientRect(), k = st.width / 1920, r = el.getBoundingClientRect();
@@ -48,7 +52,15 @@ const Guide = {
       const card = o.querySelector(".gd-card"), cw = 520, ch = card.offsetHeight || 170;
       let cy = y + h + 24; if (cy + ch > 1060) cy = Math.max(20, y - ch - 24);
       if (cy + ch > 1060) cy = 1060 - ch;
-      card.style.left = Math.max(20, Math.min(1920 - cw - 20, x + w / 2 - cw / 2)) + "px"; card.style.top = cy + "px";
+      let cx = Math.max(20, Math.min(1920 - cw - 20, x + w / 2 - cw / 2));
+      // 要点的东西在手机里：小卡放在手机旁边，不盖住手机（试玩报告 18）
+      const phone = el.closest && el.closest(".phone");
+      if (phone) {
+        const pr = phone.getBoundingClientRect(), px = (pr.right - st.left) / k, pl = (pr.left - st.left) / k;
+        cx = px + 30 + cw <= 1900 ? px + 30 : Math.max(20, pl - 30 - cw);
+        cy = Math.max(20, Math.min(1060 - ch, y));
+      }
+      card.style.left = cx + "px"; card.style.top = cy + "px";
       playSfx("ui_popup");
       const close = (e) => { if (e) { e.stopPropagation(); e.preventDefault(); } o.remove(); document.removeEventListener("keydown", key, true); resolve(); };
       const key = (e) => { if (e.key === " " || e.key === "Enter" || e.key === "Escape") close(e); };

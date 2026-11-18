@@ -48,7 +48,7 @@ const Invites = {
   line(c, kind) {
     const L = (DATA.inviteLines || {})[c];
     const arr = L && L[kind] ? L[kind].filter((x) => !x.cond || evalCond(x.cond)) : [];
-    if (!arr.length) return { text: { accept: "（占位）好啊。", decline: "（占位）这周有点忙。", busy: "（占位）那天不行。", cancel: "（占位）好，没事。", noshow: "（占位）你今天还来吗？" }[kind] || "" };
+    if (!arr.length) return { text: { accept: "好啊。", decline: "这周有点忙。", busy: "那天不行。", cancel: "好，没事。", noshow: "你今天还来吗？" }[kind] || "" };
     return arr[Math.floor(Math.random() * arr.length)];
   },
 
@@ -90,7 +90,25 @@ const Invites = {
   },
 
   // 处理一次邀约（卡 → 结果 → 写进日程或扣分）。inv: { who, day, place, text, tr, source, festival }
+  // 排队（试玩报告 27）：剧情正在演的时候，NPC／AI 的邀约先排队，回到日程或周末地图再弹；剧本里写的邀约照常在剧情里弹
+  q: [],
+  async flush() {
+    while (Invites.q.length) { const inv = Invites.q.shift(); await Invites.offer(inv); }
+  },
+  // 去重（试玩报告 28）：同一个人同一周只主动约一次；已经答应过的同一个约不再弹
+  dup(inv) {
+    const wk = absWeek(), day = Invites.normDay(inv.day);
+    if (Invites.list().some((a) => a.who === inv.who && a.week === wk && a.day === day && a.place === inv.place && a.status !== "declined")) return true;
+    if (inv.source === "npc" || inv.source === "ai") {
+      S.offered = S.offered || {};
+      if (S.offered[inv.who] === wk && inv.source === "npc") return true;
+    }
+    return false;
+  },
   async offer(inv) {
+    if (Invites.dup(inv)) return "dup";
+    if (inv.source !== "story" && typeof Story !== "undefined" && Story.running) { Invites.q.push(inv); return "queued"; }
+    if (inv.source === "npc" || inv.source === "ai") { S.offered = S.offered || {}; S.offered[inv.who] = absWeek(); }
     const r = await Invites.card(inv);
     if (r.startsWith("reschedule:")) inv = { ...inv, day: r.split(":")[1], slot: null };
     if (r === "accept" || r.startsWith("reschedule:")) {

@@ -145,18 +145,4 @@ DATA.events = {
   ],
 };
 
-// 工作日结算时随机弹出的一句话小事件
-DATA.smallEvents = [
-  { text: "小组群消息99+，翻上去发现在讨论周末去哪喝酒。", fx: { belonging: 1 } },
-  { text: "室友用了你的锅没洗。", fx: { loneliness: 1 } },
-  { text: "讲座迟到，只剩第一排。", fx: { energy: -2 } },
-  { text: "老师问“Any questions?”，全场沉默。", fx: {} },
-  { text: "下雨，伞被风吹翻了。", fx: { energy: -2 } },
-  { text: "妈妈发来一篇养生文章。", fx: { loneliness: -1 } },
-  { text: "国内朋友半夜问你“英国现在几点”。", fx: {} },
-  { text: "超市找不到想要的东西，问店员，没听懂回答。", fx: { adapt: 1 } },
-  { text: "收到学校“重要通知”，打开是问卷。", fx: {} },
-  { text: "楼上半夜开派对。", fx: { energy: -4 } },
-  { text: "快递通知“已送达”，门口什么都没有。", fx: { money: -10 } },
-  { text: "半夜狐狸叫，像小孩在哭，你吓醒了。", fx: { energy: -3 } },
-];
+// 原来的 DATA.smallEvents（工作日结算的随机小事件）停用了，改成 data/events/daily.js 的 DATA.dailyLines（2026-11-18，试玩报告 30）

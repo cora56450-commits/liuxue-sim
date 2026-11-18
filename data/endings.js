@@ -31,7 +31,7 @@ DATA.endings = {
 };
 
 // 明信片上的邮票（主线／特殊结局）和邮戳（First、攻略对象 HE／BE）图片，素材对照见 assets/ui/stamps/README.md
-// 现在按图上印的字对应（2026-11-17 Cora 确认「幽灵法则」那枚就是「猛毒」，字已换掉）；策划要换，改这张表就行。没写的用文字占位。
+// 现在按图上印的字对应（2026-11-17 Cora 确认「幽灵法则」那枚就是「猛毒」，字已换掉）；策划要换，改这张表就行。没写的直接显示文字。
 DATA.endingArt = {
   stamps: { home: "home", alien: "alien", creep: "creep", disco: "disco", lonely: "lonely",
             ghost_rule: "ghost_rule", brain_girl: "brain_girl" },   // love_trial.png 是邮票形状，恋爱裁判改成盖章后先不用（要一张邮戳形状的图）

@@ -83,19 +83,14 @@ const Stage = {
         if (img.getAttribute("src") !== src) img.src = src;
         img.style.height = lay.height + "px";
         el.style.top = lay.top + "px";
-        // 图片下边缘够不到画面底（个子高、缩放小的人）：把图最下面几行往下拉长补满，看起来像衣服一直延续到画面外
-        const gap = Math.ceil(1080 - (lay.top + lay.height));
-        let fill = el.querySelector(".spr-fill");
-        if (gap > 1) {
-          if (!fill) { fill = document.createElement("div"); fill.className = "spr-fill"; el.appendChild(fill); }
-          fill.style.top = lay.height - 1 + "px"; fill.style.height = gap + 2 + "px";
-          fill.style.backgroundImage = `url("${src}")`;
-        } else if (fill) fill.remove();
+        // 图片下边缘够不到画面底（取景只到腰的图）：下边缘淡出，不再拉长最下面一行（试玩报告 3：拉出来像黑柱子）。这些图 tools/check_sprites.py 会报出来，等重新出图
+        const old = el.querySelector(".spr-fill"); if (old) old.remove();
+        el.classList.toggle("short", lay.top + lay.height < 1079);
         el.classList.remove("float");
       } else {
-        // 还没有立绘的角色：名牌占位
+        // 没有立绘的角色（Mr. Khan、Essay学姐）：只显示名牌
         el.style.top = "330px";
-        el.innerHTML = `<div class="spr-card"><b>${c.name}</b><small>立绘还没做</small></div>`;
+        el.innerHTML = `<div class="spr-card"><b>${c.name}</b></div>`;
       }
       if (m.id === enterId) { el.classList.remove("enter"); void el.offsetWidth; el.classList.add("enter"); }
     });
@@ -389,8 +384,15 @@ function receipt(label, n, onclick) {
   el.className = "receipt btn primary";
   el.tabIndex = 0;
   el.innerHTML = `<span class="bi"><span class="zh">${label}</span><span class="en">${BTN_EN[label] || ""}</span></span><span class="arr">→</span>`;
-  el.onclick = onclick;
-  el.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onclick(); } };
+  // 防连点（试玩报告 29）：点一次就锁住，所有按钮 0.8 秒内不再响应；如果点了以后画面没换（比如日程没排满），解锁
+  const go = () => {
+    if (el._fired || receipt.locked) return;
+    el._fired = true; receipt.locked = true;
+    setTimeout(() => { receipt.locked = false; if (el.isConnected) el._fired = false; }, 800);
+    onclick();
+  };
+  el.onclick = go;
+  el.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } };
   return el;
 }
 

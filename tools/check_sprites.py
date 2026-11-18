@@ -3,7 +3,7 @@
 #   1. 每张图从像素里重新找一次头顶（tools/auto_calib.py 的同一个方法），算它在画面上的实际位置，
 #      和身高表应该在的位置比，差超过 1cm 就报；
 #   2. 头顶超出画面顶部的报；
-#   3. 下巴被对话框挡住（y>768）的报；
+#   3. 下巴被对话框挡住（y>768）的报；立绘下边缘 < 1080（腿断在画面里）的报（试玩报告 3）；
 #   4. 没有自己校准值、在用别的图的值的报；
 #   5. 装了 OpenCV 时，再用动漫人脸检测比一次下巴，差超过脸高 10% 的报。
 # 然后输出同框图：docs/lineup_同框.jpg（每人一张常规图）、docs/lineup_全部.jpg（每张图都排）。
@@ -18,9 +18,11 @@ d = json.loads(subprocess.run(["node", "-e", js], capture_output=True, text=True
 C, R = d["c"], d["r"]
 DIALOG_TOP = 768
 
-def layout(c, cal):
+def layout(c, cal):   # 和 js/sprites.js 的 Sprites.layout 一样
     h = R["faceHeight"] / max(0.02, cal["chin"] - cal["top"])
     headY = R["ground"] - c["height"] * R["pxPerCm"]
+    bottom = headY + (1 - cal["top"]) * h
+    if bottom < 1080: h *= min(R.get("maxBoost", 1), (1080 - headY) / (bottom - headY))
     return h, headY - cal["top"] * h, headY
 
 problems, rows = [], []
@@ -33,16 +35,18 @@ for cid, c in sorted(C.items(), key=lambda kv: -kv[1]["height"]):
         real_top = top + A.auto_top(A.alpha(path)) * h
         diff_cm = (real_top - headY) / R["pxPerCm"]
         chinY = top + cal["chin"] * h
-        rows.append((c["short"], key, c["height"], round(headY), round(real_top), round(diff_cm, 2), round(chinY)))
+        rows.append((c["short"], key, c["height"], round(headY), round(real_top), round(diff_cm, 2), round(chinY), round(top + h)))
         if abs(diff_cm) > 1: problems.append(f"{c['short']} {key}：头顶实际在 y={real_top:.0f}，身高 {c['height']}cm 应该在 y={headY:.0f}，差 {diff_cm:+.1f}cm")
         if real_top < 0: problems.append(f"{c['short']} {key}：头顶超出画面顶部（y={real_top:.0f}）")
         if chinY > DIALOG_TOP: problems.append(f"{c['short']} {key}：下巴 y={chinY:.0f}，被对话框挡住")
+        bottom = top + h
+        if bottom < 1079: problems.append(f"{c['short']} {key}：立绘下边缘 y={bottom:.0f}，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长")
         oc = A.auto_chin(path)
         if oc is not None and abs(oc - cal["chin"]) * h > 0.1 * R["faceHeight"]:
             problems.append(f"{c['short']} {key}：OpenCV 测的下巴（{oc:.3f}）和校准值（{cal['chin']:.3f}）差太多")
 
 print(f"检查了 {len(rows)} 张立绘（{len(set(r[0] for r in rows))} 个人有立绘）。规则：头顶到下巴 {R['faceHeight']}px，每厘米 {R['pxPerCm']}px，地面线 y={R['ground']}。")
-print("人物　图　身高　应在y　实际y　差(cm)　下巴y")
+print("人物　图　身高　应在y　实际y　差(cm)　下巴y　下边缘y")
 for r in rows: print("　".join(map(str, r)))
 print()
 print("没有问题。" if not problems else f"发现 {len(problems)} 个问题：")
@@ -69,7 +73,8 @@ def sheet(entries, out):
         im.alpha_composite(col, (X0 + SL * i, 0))
         x0 = X0 + SL * i
         dr.line([(x0, headY), (x0 + SL, headY)], fill=(255, 122, 69), width=3)
-        for x in range(x0, x0 + SL, 14): dr.line([(x, headY + R["faceHeight"]), (x + 7, headY + R["faceHeight"])], fill=(30, 140, 220), width=3)
+        cy = top + cal["chin"] * h
+        for x in range(x0, x0 + SL, 14): dr.line([(x, cy), (x + 7, cy)], fill=(30, 140, 220), width=3)
         dr.rectangle([x0 + 4, 4, x0 + SL - 4, 62], fill=(255, 255, 255))
         dr.text((x0 + 10, 6), f'{c["short"]} {c["height"]}', fill=(58, 71, 102), font=font)
         dr.text((x0 + 10, 38), key, fill=(140, 140, 150), font=small)

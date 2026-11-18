@@ -94,13 +94,15 @@ DATA.calendar = [
 
 // 作业（docs/数值规划.md 第六部分）
 // release：哪一周发布（截止前 4 周；试玩修改第 8 项）。发布前没有这份作业，“做作业”换成“预习”，HUD 作业条隐藏。
-// 大一空窗周按策划给的表：第1–3、12、18–19、23–25周（a4 从第20周发布）
+// 大一空窗周：第1–2、12、18–19、23–25周（a1 第3周发布，试玩报告 22；a4 从第20周发布）
 DATA.assignments = {
-  a1: { name: "作业1：essay／小作业", release: 4 },
+  a1: { name: "作业1：essay／小作业", release: 3 },   // 试玩报告 22：第3周分组时发布
   a2: { name: "作业2：期末大作业", release: 7 },
   a3: { name: "作业3：小组presentation", release: 13 },
   a4: { name: "作业4：期末大作业", release: 20 },
 };
+// 第1周是迎新周，没有课：日程里“上课”换成这个（试玩报告 12）
+DATA.freshersActivity = { id: "class", name: "参加迎新活动", desc: "融入+1", fx: { energy: -6, belonging: 1 }, freshers: true };
 // 没有作业的周，日程里“做作业”换成这个
 DATA.previewActivity = { id: "homework", name: "预习", desc: "学业+1，不推进作业", fx: { energy: -8, study: 1 } };
 
@@ -176,6 +178,8 @@ DATA.groups = {
 };
 
 DATA.tuning = {
+  earlyAffCap: 10,     // 序章＋第1周：好感上限 10（试玩报告 6、19）
+  stageMinWeek: 3,     // 攻略对象的阶段事件最早第3周，且认识满 2 周
   newYearStudy: 0.9,   // 每个学年开始时学业 ×0.9（新学年的课更难；试玩修改第 7 项）
   exchangeRate: 9.3,           // 汇率脑显示用
   exchangeBrainUntil: 60,      // adapt 低于此值时价格旁显示≈¥
@@ -204,7 +208,6 @@ DATA.tuning = {
   // —— 钱 ——
   livingFactor: { kitchen_killer: 1.3, saver: 0.85, chef: 0.8 },
   askFamilyLoneliness: 8, askFamilyExtra: 100,   // 负债时跟家里要钱：补平欠款再多给 £100（金额是暂定的）
-  smallEventChance: 0.35,
   // —— 第三阶段（问题记录·策划回复、docs/tag效果.md、docs/手机与友情.md）——
   studyHalfAt: 80,                     // 学业到80以后每次增长减半
   yearPenalty: { 2: 6, 3: 10 },        // 分数公式：大二 −6、大三 −10
@@ -232,4 +235,4 @@ DATA.tuning = {
 };
 
 // 家教森严：每周日的家庭视频（固定文本，策划这边可以改）
-DATA.strictVideoText = "（占位）周日晚上，家里的视频准时打过来了。";
+DATA.strictVideoText = "周日晚上，家里的视频准时打过来了。";

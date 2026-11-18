@@ -1,7 +1,7 @@
 // 大一固定事件（日历见 data/world.js 的 DATA.calendar）
 // 序章到第12周的正文：照上一级 剧本_固定剧情_大一全年.md 第1–1298行转写（2026-11-17）。只转格式，不改文字和数值。
-// prologue、first_night 在 data/events.js、data/events/system.js 里也有占位，这里后加载，会覆盖。
-// 第13周以后的事件在文件最后，还是占位，等那一段转写好了覆盖。
+// prologue、first_night 在 data/events.js、data/events/system.js 里也有旧版本，这里后加载，会覆盖。
+// 第13周以后的事件在 fixed_y1_spring.js。
 //
 // 这份里新用到、还要编程那边接的：
 //   { msg: { from, text, tr } }   手机消息（第7周四点天黑、第12周圣诞消息）
@@ -322,7 +322,7 @@
       // 铺垫（剧本「固定剧情的铺垫」：第1周·凌晨火警，迎新集市结尾的旁白）
       { say: "迎新集市那天晚上，厨房里有人在煎东西，烟雾报警器“滴”了一声，又停了。" },
     ],
-    // 原来的占位（扫码进老乡群）已经并进 freshers 的赵子豪段落，日历里可以删掉
+    // 原来的临时段落（扫码进老乡群）已经并进 freshers 的赵子豪段落，日历里可以删掉
     freshers_group: [],
 
     // ===================== 第1周·凌晨火警（★CG）=====================
@@ -1323,94 +1323,6 @@
       // 【过场：发车牌翻动 → “大一·第二学期”】
     ],
 
-    // =====================================================================
-    // 以下是第13周以后的占位（剧本第1299行以后另外转写）。新文本如果写在别的文件里，那个文件要在本文件之后加载才会覆盖。
-    // =====================================================================
-    results_day: [
-      { bg: "dorm_room" },
-      { say: "（占位）一月，上学期的成绩出来了。" },
-    ],
-    house_hunting: [
-      { bg: "shared_house" },
-      { say: "（占位）该找大二的房子了。看房、押金、担保人，每一样都是第一次。" },
-    ],
-    spring_festival: [
-      { bg: "flat_kitchen" },
-      { say: "（占位）今天是除夕。今年怎么过？" },
-      { choice: [
-        { text: "（占位）和室友一起过" },
-        { text: "（占位）和他／她一起过" },
-        { text: "（占位）自己过", then: [{ cg: "spring_festival" }, { say: "（占位）桌上有{家乡食物}。" }, { cg: null }] },
-        { text: "（占位）翻课回国", fx: { skip_week: 1 } },
-      ] },
-    ],
-    tutor_meeting_2: [
-      { bg: "campus" }, { show: "marcia" },
-      { say: "（占位）第二学期的 tutor 见面。", name: "marcia" },
-      { hide: true },
-    ],
-    tutor_meeting_3: [
-      { bg: "campus" }, { show: "marcia" },
-      { say: "（占位）第三学期的 tutor 见面。", name: "marcia" },
-      { hide: true },
-    ],
-    tutor_checkin: [
-      { bg: "dorm_room" },
-      { mail: { from: "Dr. Marcia Campbell", title: "Tea. Thursday. 2pm. Not optional.", body: "" } },
-      { say: "（占位）Marcia 约你喝茶。" },
-      { choice: [
-        { text: "去", then: [
-          { bg: "campus" }, { show: "marcia" },
-          { say: "（占位）", name: "marcia" },
-          { if: "数值('作业') < 40 && 距截止() <= 3", then: [{ say: "（占位）申请延期。", name: "marcia", fx: { extend: 2 } }] },
-          { hide: true },
-        ] },
-        { text: "不回邮件" },
-      ] },
-    ],
-    valentines: [
-      { bg: "pub_street" },
-      { say: "（占位）情人节。" },
-    ],
-    group_presentation: [
-      { bg: "crit_room" },
-      { say: "（占位）小组 presentation，这次计分。" },
-    ],
-    first_snow: [
-      { bg: "campus" },
-      { cg: "first_snow" },
-      { say: "（占位）下雪了。这是你在英国看到的第一场雪。" },
-      { cg: null },
-    ],
-    final_assignment: [
-      { bg: "library" },
-      { say: "（占位）大一最后一份作业这周交。" },
-    ],
-    easter_break: [
-      { bg: "station" },
-      { say: "（占位）复活节假。怎么过？" },
-      { choice: [
-        { text: "出去旅游", fx: { money: -200, loneliness: -8, belonging: 2 } },
-        { text: "留下复习", fx: { study: 5, energy: -10 } },
-        { text: "宅着", fx: { energy: 25, loneliness: 4 } },
-      ] },
-    ],
-    exam_week: [
-      { bg: "library" },
-      { say: "（占位）考试周。" },
-    ],
-    year1_end: [
-      { bg: "campus" },
-      { say: "（占位）六月，大一结束了。" },
-    ],
-    summer_break_1: [
-      { bg: "airport" },
-      { say: "（占位）暑假。怎么过？" },
-      { choice: [
-        { text: "回国", fx: { money: -600, loneliness: -20 } },
-        { text: "留在英国打工", fx: { money: 600, energy: -15 } },
-        { text: "到处旅游", fx: { money: -400, loneliness: -10, belonging: 3 } },
-      ] },
-    ],
+    // 第13周以后的事件在 fixed_y1_spring.js（2026-11-18 删掉了这里原来的临时文本）
   });
 })();
