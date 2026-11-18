@@ -1,7 +1,10 @@
 // 各个画面：标题 → 开局 → 大一周循环（固定事件 → 日程 → 结算 → 周末地图）→ 大二大三关键周 → 结局
 const DAYS = ["周一", "周二", "周三", "周四", "周五"];
 
+// 赶ddl的固定剧情（蒙太奇）：先选“赶／代写”再演（试玩报告 54）。tools/check_content.js 第 3 条按这张表检查
+const RUSH_FIRST = ["ddl_before_xmas", "final_assignment", "y2_xmas_ddl", "y2_final_assignment", "y3_last_xmas", "y3_final"];
 const Scenes = {
+  birthdayWeek() { return Birthday.week(); },
 
   title() {
     hideAll(); hideHud(); Stage.hide(true); showCg(null); closeOverlay(); setBg("title");
@@ -49,7 +52,12 @@ const Scenes = {
       }
       html += `<div class="opt-group"><h3>家乡</h3><div class="opt-row">`;
       DATA.hometowns.forEach((h, i) => { html += `<div class="chip ${S.hometown === i ? "on" : ""}" data-h="${i}">${h.name}</div>`; });
-      html += `</div></div></div><div class="next-btn"></div>`;
+      html += `</div></div>`;
+      // 生日（剧本_主角生日.md 第〇节）：月＋日。日只用来显示，游戏按月里的周算
+      const bd = S.birthday || {};
+      html += `<div class="opt-group"><h3>生日</h3><div class="opt-row bd-row"><select id="bd-m" class="chip-input"><option value="">月</option>${Array.from({ length: 12 }, (_, i) => `<option value="${i + 1}" ${bd.m === i + 1 ? "selected" : ""}>${i + 1}月</option>`).join("")}</select>
+        <select id="bd-d" class="chip-input"><option value="">日</option>${Array.from({ length: 31 }, (_, i) => `<option value="${i + 1}" ${bd.d === i + 1 ? "selected" : ""}>${i + 1}日</option>`).join("")}</select></div></div>`;
+      html += `</div><div class="next-btn"></div>`;
       const sc = $("#panel .scroll"), top = sc ? sc.scrollTop : 0;
       const p = panel(html);
       p.querySelector(".scroll").scrollTop = top;
@@ -63,10 +71,13 @@ const Scenes = {
         draw();
       });
       p.querySelectorAll("[data-h]").forEach((el) => el.onclick = () => { S.hometown = +el.dataset.h; draw(); });
+      const setBd = () => { const m = +p.querySelector("#bd-m").value, d = +p.querySelector("#bd-d").value; S.birthday = m && d ? { m, d } : null; };
+      p.querySelector("#bd-m").onchange = setBd; p.querySelector("#bd-d").onchange = setBd;
       p.querySelector(".next-btn").appendChild(receipt("下一步", 4, () => {
         if (!S.name) return toast("还没起名字");
         const missing = DATA.backgroundOptions.find((g) => !S.bg[g.id]);
         if (missing) return toast(`还没选：${missing.name}`);
+        if (!S.birthday) return toast("还没选：生日");
         FX.tear(() => Scenes.createTags());
       }));
     };
@@ -150,32 +161,44 @@ const Scenes = {
   async week() {
     hideAll(); Stage.hide(true); FX.alarm(false);
     Scenes._endingWeek = null;
-    if (S.year > 1) return Scenes.period();
+    if (S.year > 1 && !S.weekMode) Scenes.migratePeriod();   // 旧存档：大二大三还是“关键周”的进度，换算成周
     const cal = Rules.cal();
-    if (!cal) return Scenes.yearEnd();
+    if (!cal) return S.year === 1 ? Scenes.yearEnd() : Scenes.nextYear();
     S.resume = null;
     let notes = [];
     if (S.weekStarted !== S.week) { S.weekStarted = S.week; notes = Rules.weekStart(); S.scheduleLocked = false;
       if (S.hangover === "mon") { S.hangover = null; applyFx({ energy: DATA.tuning.hangoverEnergy }); notes.push("宿醉：周日晚上的 pub，周一上午还在头疼。精力 −10"); }
     }
     if (S.lastTerm !== cal.term) {   // 换学期、放假：到站广播
-      const EN = { "大一·秋": "Autumn Term", "大一·春": "Spring Term", "大一·夏": "Summer Term", "圣诞假": "Christmas Break", "复活节假": "Easter Break" };
-      if (S.lastTerm) await FX.announce(cal.term, EN[cal.term] || "");
+      const en = /秋/.test(cal.term) ? "Autumn Term" : /春/.test(cal.term) ? "Spring Term" : /夏/.test(cal.term) ? "Summer Term" : /圣诞/.test(cal.term) ? "Christmas Break" : /复活/.test(cal.term) ? "Easter Break" : "";
+      if (S.year > 1 && S.week === 1) await FX.announce(S.year === 2 ? "大二" : "大三", S.year === 2 ? "Year Two" : "Year Three");
+      else if (S.lastTerm) await FX.announce(cal.term, en);
       S.lastTerm = cal.term;
     }
     await FX.flap([cal.term, cal.label]);
     await stamp(`ENTRY<br>${cal.label}`);
     if (notes.length) toast(notes.join("<br>"), 2600);
-    BGM.auto(weekBgm("schedule"));
+    BGM.auto(cal.spring ? "spring" : weekBgm("schedule"));
+    Reply.tick();
+    // close：先算这一年的总分（大二第24周、大三第23周之前），不及格进补考
+    if (cal.close && S.yearMarks[S.year] === undefined && !(await Scenes.closeYear(S.year))) return Scenes.ending();
     for (const id of cal.fixed || []) {
       if (S.flags["done_" + id]) continue;
+      // 赶ddl的固定剧情（蒙太奇）：先选“赶／代写”，蒙太奇按选的演（试玩报告 54：结果不能比选择先出现）
+      if (RUSH_FIRST.includes(id)) await Scenes.decideRush();
       S.flags["done_" + id] = 1;
       if (id.startsWith("tutor_meeting")) S.lastTutor = S.week;
       await runEvent(id);
+      await Scenes.afterFixed(id, cal);
     }
+    await Scenes.trials(cal.trials);
+    if (cal.confess) await Scenes.confess();
+    if (cal.festival && DATA.events[cal.festival] && !S.flags["done_" + cal.festival]) { S.flags["done_" + cal.festival] = 1; await runEvent(cal.festival); }   // 年度大场面（正文策划后写）
+    await Scenes.birthdayWeek();
+    if (S.year > 1 && !Rules.calList().some((c) => c.week > S.week)) return Scenes.nextYear();   // 学年最后一周（暑假三选一／毕业典礼）演完就进下一年／结局
     for (const aid of Rules.releasedThisWeek()) {   // 作业发布：弹一封邮件（试玩修改第 8 项）
-      if (S.flags["released_" + aid]) continue;
-      S.flags["released_" + aid] = 1;
+      if (S.flags["released_" + S.year + "_" + aid] || (S.year === 1 && S.flags["released_" + aid])) continue;
+      S.flags["released_" + S.year + "_" + aid] = 1;
       const dl = Rules.deadlineWeek(aid);
       await showMail({ from: "Module Leader", title: "Assignment brief released", tr: "作业要求已发布",   // 正文是编程这边写的系统邮件模板（试玩报告 47），策划可以换
         body: `Dear students,\n\nThe brief for ${assignmentName(aid)} is now available on the module page. Please read it carefully, including the marking criteria.\n\nDeadline: Friday of Week ${dl}, 12:00 noon, via the online submission portal. Late submissions will be capped at 40 unless an extension has been approved.\n\nGood luck,\nModule Leader`,
@@ -208,16 +231,59 @@ const Scenes = {
       S.tutorCheckinTerm[term] = 1; S.lastTutor = S.week;
       await runEvent("tutor_checkin");
     }
-    // 告白窗口：大一第24–28周
+    // 告白窗口：大一第24–28周（大二大三在周历里写 confess: true）
     if (S.year === 1 && S.week >= 24 && S.week <= 28) await Scenes.confess();
+    await Neglect.weekly();   // 冷落看得见：太久没联系，对方发“最近很忙吗？”
+  },
+  // 固定事件演完以后跟着的系统判定（原来在 Scenes.period 里）
+  async afterFixed(id, cal) {
+    if (cal.spring && S.year > 1 && S.tags.includes("strict") && DATA.loveIds.some((c) => S.flags["confessed_" + c]) && !S.flags.strict_video_done) {
+      S.flags.strict_video_done = 1;   // 家教森严：交往中，大二春节固定“视频里被发现”
+      await runEvent("strict_video");
+    }
+    if (id === "y2_internship" && S.flags.intern_applied && !S.flags.intern_result) {   // 实习申请结果
+      const T = DATA.tuning, ok = S.stats.english >= T.internEnglish && S.stats.belonging >= (S.flags.uk_intern_y1 ? T.internBelongingUK : T.internBelonging);
+      S.flags.intern_result = 1; if (ok) S.flags.intern_offer = 1;
+      await runEvent(ok ? "intern_offer" : "intern_rejected");
+    }
+    if (id === "y3_graduation") await Scenes.besties();   // 挚友：毕业离场单独送别
+    // 春节亲戚盘问（小游戏 #11）：每年春节那周视频拜年时演一次；题库到了才有
+    if (cal.spring || (S.year === 1 && id === "spring_festival")) {
+      if (!S.flags["relatives_" + S.year] && (DATA.relativesQuestions || []).length >= 5) { S.flags["relatives_" + S.year] = 1; await Games.play("relatives"); }
+    }
+  },
+  // 学年结束（大二、大三）：算总分 → 暑假 → 下一年；大三之后是结局
+  async nextYear() {
+    if (S.yearMarks[S.year] === undefined && !(await Scenes.closeYear(S.year))) return Scenes.ending();
+    if (S.year >= 3) return Scenes.ending();
+    if (DATA.events["summer_break_" + S.year]) await runEvent("summer_break_" + S.year);
+    Scenes.startYear(S.year + 1);
+  },
+  startYear(y) {
+    S.stats.energy = energyMax();
+    S.year = y; S.week = 1; S.period = 0; S.weekMode = 1; S.resume = null; S.weekStarted = 0;
+    S.stats.study = r1(S.stats.study * DATA.tuning.newYearStudy);   // 新学年：学业 ×0.9
+    for (const c of Object.keys(S.lastMet)) S.lastMet[c] = absWeek();   // 暑假不算冷落
+    S.homework = 0;
+    Save.write("auto");
+    FX.tear(() => Scenes.week());
+  },
+  // 旧存档：period（关键周下标）→ 周历里那个事件所在的周
+  migratePeriod() {
+    const y = DATA.laterYears.find((x) => x.year === S.year), p = y && y.periods[S.period];
+    const c = p && Rules.calList().find((x) => (x.fixed || []).includes(p.event));
+    S.week = c ? c.week : 1; S.period = 0; S.weekMode = 1;
   },
   // 攻略线的心动／推进／过去／情人节／跨线事件（DATA.loveEvents，data/events/love.js）：条件满足、还没演过的取第一个，每周最多一段
   async loveEvents(place) {
-    const ev = (DATA.loveEvents || []).find((e) => !S.flags["seen_" + e.id] && DATA.events[e.id] && (place ? e.place === place : !e.place)
+    const at = (e) => (Array.isArray(e.place) ? e.place.includes(place) : e.place === place);
+    const ev = (DATA.loveEvents || []).find((e) => !S.flags["seen_" + e.id] && !e.after && DATA.events[e.id] && (place ? at(e) : !e.place)
       && (!e.who || !DATA.characters[e.who] || !DATA.characters[e.who].hidden || S.tags.includes(DATA.characters[e.who].hidden)) && evalCond(e.cond));
     if (!ev) return;
     S.flags["seen_" + ev.id] = 1;
     await runEvent(ev.id);
+    // 接在这段后面演的（after: 前一段的 id，比如 Kieran 家吃饭之后上阁楼）
+    for (const nx of (DATA.loveEvents || []).filter((e) => e.after === ev.id && !S.flags["seen_" + e.id] && DATA.events[e.id] && evalCond(e.cond))) { S.flags["seen_" + nx.id] = 1; await runEvent(nx.id); }
     return true;
   },
   async runPending() {
@@ -230,6 +296,8 @@ const Scenes = {
     S.flags["confess_done_" + c] = 1;
     playSfx("heartbeat");
     await runEvent("confess_" + c);
+    // Kieran 的 Q 版小人（flirt_otaku_4 里看过）：交往以后送到背包
+    if (c === "otaku" && S.flags.confessed_otaku && S.flags.kieran_figure && DATA.items.kieran_figure && !Bag.has("kieran_figure")) showFx(applyFx({ item_kieran_figure: 1 }));
   },
   // 恋爱线考验：只有交往中的才演，每人一次
   async trials(list) {
@@ -255,13 +323,15 @@ const Scenes = {
   async decideRush() {
     if (S.rushDecided === S.week || !Rules.needRush()) return;
     S.rushDecided = S.week;
-    const scripted = ["ddl_before_xmas", "final_assignment"].some((id) => ((Rules.cal() || {}).fixed || []).includes(id));
-    if (!scripted) await runEvent("rush_week");   // 第11、22周的固定剧情已经写了赶ddl，这里只给“赶／代写”的选择
+    const scripted = RUSH_FIRST.some((id) => ((Rules.cal() || {}).fixed || []).includes(id));
+    if (!scripted) await runEvent("rush_week");   // 第11、22周：在固定剧情（蒙太奇）之前选，蒙太奇按选项演
     const cost = Rules.ghostCost();
-    const i = await choose([
-      { text: "赶ddl", sub: `这周5格全部做作业，精力额外${Rules.rushEnergy()}，作业质量-15` },
-      { text: `找代写（${moneyText(cost)}）`, sub: "质量固定，但会留下风险", disabled: S.stats.money < cost },
+    sayStatic("作业还差一截。怎么办？");   // 没有台词的系统选项也显示对话框（试玩报告 52）
+    const i = await choose([   // 选项不显示数值（试玩报告 53）
+      { text: "这周什么都不干，只写作业（会很累）" },
+      { text: `找代写（£${cost}，有风险）`, disabled: S.stats.money < cost },
     ]);
+    hideDialog();
     if (i === 1) {
       S.ghostWeek = true; S.ghostCount++; S.ghostRisk += DATA.tuning.ghostRisk; S.flags.ghostwriter = 1;
       applyFx({ money: -cost });
@@ -286,11 +356,11 @@ const Scenes = {
     const apps = [0, 1, 2, 3, 4].map((i) => (S.rushWeek || locked[i] ? null : Invites.dayApp(i)));   // 邀约占掉的工作日
     apps.forEach((a, i) => { if (a) { S.schedule[i] = "social"; locked[i] = "app"; } });
     let first = true;
-    const acts = DATA.activities.filter((a) => !a.unlock || S.unlocked[a.unlock]).map((a) => Rules.act(a.id));
+    const acts = DATA.activities.filter((a) => (!a.unlock || S.unlocked[a.unlock]) && (!a.flag || S.flags[a.flag])).map((a) => Rules.act(a.id));
     const cal = Rules.cal();
     const due = Rules.deadlineThisWeek();
     const hint = S.rushWeek ? "赶ddl周：这周只能做作业" : (cal.exam ? "考试周：五天都在复习" : null) || (S.sickLock ? `生病了：前${S.sickLock}天只能躺着` : (due ? `这周周末交：${assignmentName(due)}` : (cal.exam ? "这周考试（只看学业和英语）" : "")));
-    const EN = { class: "LECTURE", library: "LIBRARY", homework: "ESSAY", social: "SOCIAL", home: "STAY IN", work: "SHIFT" };
+    const EN = { class: "LECTURE", library: "LIBRARY", homework: "ESSAY", social: "SOCIAL", home: "STAY IN", work: "SHIFT", kieran_online: "CO-OP" };
     const DAY_EN = ["MON", "TUE", "WED", "THU", "FRI"];
     // 本周预计：按这周的排法算周五晚上的精力（和结算用同一套规则，只算精力）
     const forecast = () => {
@@ -309,7 +379,7 @@ const Scenes = {
         rows += `<div class="board-row tt ${i === cur ? "cur" : ""} ${locked[i] ? "locked" : ""} ${ap ? "app" : ""}" tabindex="0" data-i="${i}" style="top:${20.5 + i * 15.2}%">
           <div class="day"><b>${DAY_EN[i]}</b><span>${d}</span></div><div class="dots"></div><div class="act-name">${label}</div></div>`;
       });
-      const list = acts.map((a) => `<div class="act" tabindex="0" data-a="${a.id}"><img src="assets/ui/act_${a.id}.png"><span class="bi"><span class="zh">${a.name}</span><span class="en">${a === DATA.previewActivity ? "PREVIEW" : a.freshers ? "FRESHERS" : EN[a.id] || ""}</span></span><small>${a.desc}</small></div>`).join("");
+      const list = acts.map((a) => `<div class="act" tabindex="0" data-a="${a.id}"><img src="assets/ui/act_${a.icon || a.id}.png"><span class="bi"><span class="zh">${a.name}</span><span class="en">${a === DATA.previewActivity ? "PREVIEW" : a.freshers ? "FRESHERS" : EN[a.id] || ""}</span></span><small>${a.desc}</small></div>`).join("");
       const e = forecast(), left = S.schedule.filter((x) => !x).length;
       const p = panel(`<div class="sched ${first ? "anim" : ""}"><div class="panel-title"><span>本周日程</span></div><div class="board">${rows}</div>
         <div class="forecast">本周预计：周五晚上精力约 <b>${e}</b>${e < DATA.tuning.lowEnergy ? `<span class="warn">▼偏低　效率会打折</span>` : ""}${left ? `　（还有 ${left} 天没排）` : ""}</div>
@@ -329,6 +399,8 @@ const Scenes = {
       p.querySelectorAll("[data-a]").forEach((el) => el.onclick = () => {
         const i = S.schedule.findIndex((x, k) => !x && !locked[k]);
         if (i < 0) return toast("这周排满了，点左边某一天可以清空重排");
+        const def = DATA.activities.find((x) => x.id === el.dataset.a);
+        if (def && def.max && S.schedule.filter((x) => x === def.id).length >= def.max) return toast(`${def.name}一周最多${def.max}次`);
         S.schedule[i] = el.dataset.a;
         draw();
         const again = document.querySelector(`#panel [data-a="${el.dataset.a}"]`); if (again) again.focus();
@@ -363,9 +435,19 @@ const Scenes = {
     else if (S.rushWeek) playSfx("typing");
     let sick = false;
     const firstClass = S.schedule.indexOf("class");
+    // 周中插播（docs/周中事件.md）：每周最多一个，停在那一天演；没有的话一半机会碰到一条“路上”的路人（和一句话小事件共用格子）
+    const mw = Story5.pickMidweek();
+    const mwDay = mw ? (DAY_IDX[mw.day] ?? 2) : -1;
+    const pb = !mw && Math.random() < 0.5 ? Story5.drawPasserby("road") : null;
+    const pbDay = pb ? Math.floor(Math.random() * 5) : -1;
+    S.restDays = 0;
     for (let i = 0; i < 5; i++) {
-      const a = Rules.act(S.schedule[i]);
-      const late = S.tags.includes("nightowl") && i === firstClass;   // 昼伏夜出：每周第一节课固定迟到
+      // 这周已经病倒了：剩下的格子自动改成“宅家（病）”（试玩报告 55）；周中事件里写了 rest_days 的同理
+      if (sick) { S.schedule[i] = "home"; }
+      const rest = !sick && S.restDays > 0;
+      if (rest) { S.restDays--; S.schedule[i] = "home"; }
+      const a = sick ? { ...Rules.act("home"), name: "宅家（病）" } : rest ? { ...Rules.act("home"), name: "宅家（休息）" } : Rules.act(S.schedule[i]);
+      const late = !sick && S.tags.includes("nightowl") && i === firstClass;   // 昼伏夜出：每周第一节课固定迟到
       const r = Rules.doActivity(a.id, { late });
       const ap = Invites.dayApp(i);
       if (ap && a.id === "social") lines.push(`${DAYS[i]} · 和${charName(ap.who)}去${Invites.placeName(ap.place)}　${fxText(r.changes.concat(Invites.attend(ap)))}`);
@@ -376,12 +458,14 @@ const Scenes = {
         lines.push(`　└ 没去成和${charName(ap.who)}的约　${fxText(applyFx({ [(love ? "aff_" : "fr_") + ap.who]: love ? Invites.T.noshowLove : Invites.T.noshowFriend }))}`);
       }
       if (r.sick) { sick = true; lines.push(`　└ <b>精力见底，病倒了。</b>下周前${S.sickLock === 1 ? "一" : "两"}天只能宅家。`); }
+      if (i === mwDay) { hideAll(); const l = await Story5.runMidweek(mw); lines.push(`<b class="midweek">${DAYS[i]}${l}</b>`); }
+      if (i === pbDay) { hideAll(); setBg("campus"); await Story5.playPasserby(pb); hideDialog(); lines.push(`<i class="daily">${DAYS[i]} · 路上碰到一个陌生人</i>`); }
       // 原来每天随机的小事件池（DATA.smallEvents）停用：改用策划的一句话小事件 DATA.dailyLines，每周一条、不重复（试玩报告 30）
     }
     const bud = Rules.libraryBuddy(S.schedule);
     if (bud) lines.push(`图书馆搭子：${charName(DATA.tuning.buddy)}也在　${fxText([[charName(DATA.tuning.buddy) + "友情", r1(bud)]])}`);
     renderHud();
-    { const dl = Scenes.dailyLine(); if (dl) lines.push(dl); }   // 一句话小事件
+    if (!pb) { const dl = Scenes.dailyLine(); if (dl) lines.push(dl); }   // 一句话小事件（这周碰到路人就不出）
     await Scenes.report("这周过完了", lines, "周末出门");
     if (sick) await runEvent("got_sick");
     await Scenes.stageEvents(1);   // 阶段第一次达到：下一个周末开头演一次（一个周末最多一段）
@@ -390,7 +474,7 @@ const Scenes = {
 
   // 周末地图：城市大地图上的行李牌标记。slot = 现在是第几个时段（0 周六上午 … 5 周日晚上，6 = 周末过完）
   weekend(slot) {
-    slot = slot || 0;
+    slot = slot || 0; S.slotNow = null; S.todNow = "";
     if (slot >= DATA.tuning.weekendSlots) return Scenes.endWeek();
     hideAll(); setBg("map_city"); Stage.hide(true); renderHud();
     BGM.auto(weekBgm("weekend"));
@@ -400,6 +484,7 @@ const Scenes = {
       showFx(applyFx({ energy: DATA.tuning.hangoverEnergy })); toast("宿醉：昨晚的 pub 还在脑袋里。", 2200);
     }
     S.resume = { scene: "weekend", slot };
+    Reply.tick();   // 忙／睡了的人，到点回消息
     if (Invites.q.length) setTimeout(() => Invites.flush().then(() => { if (S.resume && S.resume.scene === "weekend" && S.resume.slot === slot) Scenes.weekend(slot); }), 300);   // 排队的邀约（试玩报告 27）
     const sl = DATA.weekendSlots[slot];
     const dates = Invites.thisWeek().filter((a) => a.day === "WEEKEND");
@@ -420,7 +505,8 @@ const Scenes = {
     here.style.left = home.x - 150 + "px"; here.style.top = home.y - 40 + "px";
     layer.appendChild(here);
     DATA.mapCity.forEach((loc, i) => {
-      if (loc.needTag && !S.tags.includes(loc.needTag)) return;
+      // 社团活动室：二次元社团，或者认识了学生会（赵子豪）／时尚社（Ollie、Ploy）的人也能进（地点小剧情按社团分）
+      if (loc.needTag && !S.tags.includes(loc.needTag) && !(loc.id === "club_room" && (("zhao_zihao" in S.fr) || S.flags.met_local || S.flags.met_groupmate))) return;
       const can = slotOpen(loc, slot);
       const el = document.createElement("div");
       el.className = "marker" + (can ? "" : " locked");
@@ -462,6 +548,7 @@ const Scenes = {
   },
 
   async visit(loc, slot) {
+    S.slotNow = slot; S.todNow = DATA.todName[DATA.weekendSlots[slot].tod];   // 条件里的 周末日／时段
     { const c = Rules.cal(); AMB.play(loc.id === "pub_street" ? "amb_pub" : c && c.rain ? "amb_rain" : null); }
     playSfx({ pub_street: "glass_clink", chinese_market: "coin", indoor_market: "coin", supermarket: "cash", brunch: "cash" }[loc.id]);
     hideAll();
@@ -513,6 +600,10 @@ const Scenes = {
       hideDialog(); Stage.hide(true);
       return FX.tear(() => Scenes.weekend(slot + cost));
     }
+    // 主角生日那周：中超（陈建国）、brunch 店（Sophie）
+    if (await Birthday.atPlace(loc.id)) { hideDialog(); Stage.hide(true); return FX.tear(() => Scenes.weekend(slot + cost)); }
+    // Ollie 语言交换（brunch 店上午，解锁以后每周可选一次）
+    if (loc.id === "brunch" && await NewActs.brunchExchange(slot)) return FX.tear(() => Scenes.weekend(slot + cost));
     // 攻略线事件里标了 place 的：周末去那个地点时演（代替这次的偶遇）
     if (await Scenes.loveEvents(loc.id)) { hideDialog(); return FX.tear(() => Scenes.weekend(slot + cost)); }
     // 不是室友时的第一次见面（DATA.firstMeets）：还不认识、条件满足就一定演，演完算认识
@@ -523,15 +614,16 @@ const Scenes = {
       hideDialog(); Stage.hide(true);
       return FX.tear(() => Scenes.weekend(slot + cost));
     }
-    // 周末特殊偶遇（DATA.encounters）：满足条件、还没演过的，按顺序取第一个，代替这次的普通偶遇；一个周末最多一段
-    S.encountersSeen = S.encountersSeen || {};
-    const enc = S.encounterWeek === absWeek() ? null : (DATA.encounters || []).find((e) => e.place === loc.id && !S.encountersSeen[e.id] && evalCond(e.cond));
-    if (enc) {
-      S.encountersSeen[enc.id] = 1; S.encounterWeek = absWeek();
-      await runEvent(enc.event || enc.id);
-      hideDialog();
+    // 周末地点小剧情池（剧本_周末地点小剧情.md 第〇节）：随机抽一段（已有的 NPC×NPC 偶遇也在池子里，权重 ×2）；一个周末最多两段
+    S.placeWeek = S.placeWeek && S.placeWeek.wk === absWeek() ? S.placeWeek : { wk: absWeek(), n: 0 };
+    const pe = S.placeWeek.n < 2 ? Story5.drawPlace(loc.id) : null;
+    if (pe) {
+      S.placeWeek.n++;
+      await Story5.playPlace(pe);
+      hideDialog(); Stage.hide(true);
       return FX.tear(() => Scenes.weekend(slot + cost));
     }
+    if (loc.id !== "dorm_room") await Story5.placeFiller(loc.id);   // 池子抽空：一半机会路人，否则这个地点的一句话
     // 偶遇：攻略对象（第一次可以在这里认识）＋认识了的固定 NPC（友情+3）；一个地方一次只撞见一个人
     const meetList = (loc.meet || []).flatMap((c) => (c === "roommates" ? roommates() : [c]));
     const who = meetList.filter((c) => DATA.characters[c] && (DATA.loveIds.includes(c)
@@ -561,6 +653,7 @@ const Scenes = {
       Stage.hide(true);
     }
     hideDialog();
+    S.slotNow = null; S.todNow = "";
     FX.tear(() => Scenes.weekend(slot + cost));
   },
 
@@ -649,6 +742,12 @@ const Scenes = {
           r.ghost ? "（这份是代写的。）" : (r.rushed ? "（赶ddl赶出来的，质量打了折。）" : ""),
         ].filter(Boolean));
       } else if (r.type === "event") await runEvent(r.id);
+    }
+    // 最终提交（大三第20周）：代写风险值≥90必被查，≥60有一半概率
+    if (cal && cal.final && S.ghostCount && (S.ghostRisk >= 90 || (S.ghostRisk >= 60 && Math.random() < 0.5))) {
+      S.flags.ghost_caught = 1;
+      await runEvent("ghost_caught");
+      return Scenes.ending();
     }
     for (const id of (cal && cal.after) || []) {   // 出分以后演的固定事件（第8周篝火节要读作业1的分数）
       if (S.flags["done_" + id]) continue;
@@ -753,13 +852,7 @@ const Scenes = {
     Save.write("auto");
     FX.tear(() => Scenes.summerMonth());
   },
-  toYear2() {
-    S.stats.energy = energyMax();
-    S.year = 2; S.period = 0; S.week = 0; S.resume = null;
-    S.stats.study = r1(S.stats.study * DATA.tuning.newYearStudy);   // 新学年：学业 ×0.9
-    Save.write("auto");
-    FX.tear(() => Scenes.period());
-  },
+  toYear2() { Scenes.startYear(2); },
 
   // ===== 大二、大三：关键周 =====
   async period() {
@@ -825,10 +918,12 @@ const Scenes = {
         const shown = [p.label];
         if (p.mark && S.homework < DATA.tuning.rushBelow) {
           const cost = Rules.ghostCost();
+          sayStatic("作业还差一截。怎么办？");
           const j = await choose([
-            { text: "硬着头皮赶完", sub: "作业质量-15" },
-            { text: `找代写（${moneyText(cost)}）`, sub: "质量固定，但会留下风险", disabled: S.stats.money < cost },
+            { text: "硬着头皮赶完（会很累）" },
+            { text: `找代写（£${cost}，有风险）`, disabled: S.stats.money < cost },
           ]);
+          hideDialog();
           if (j === 1) { S.ghostWeek = true; S.ghostCount++; S.ghostRisk += DATA.tuning.ghostRisk; S.flags.ghostwriter = 1; applyFx({ money: -cost }); note = "（作业是代写的。）"; }
           else { S.rushWeek = true; S.rushed++; note = "（赶ddl赶出来的，质量打了折。）"; }
         }
@@ -866,7 +961,20 @@ const Scenes = {
   },
 
   // 结局明信片：主线结局一个（邮票）+ 叠加的盖章（邮戳）；点明信片翻到背面，背面列出“朋友”档的人
+  // 结局明信片背面“带回国的东西”（背包，最多 5 样，玩家选；决定记录第二节）
   ending() {
+    const items = Bag.list();
+    if (items.length <= 5 || S.takeHome) { S.takeHome = S.takeHome || items.map((x) => x.id); return Scenes.endingCard(); }
+    hideAll(); hideHud(); setBg("station_night");
+    const pick = new Set();
+    const draw = () => {
+      const p = panel(`<div class="panel-title"><span>带回国的东西（最多 5 样）</span></div><div class="bag-list take">${items.map((it) => `<div class="bag-row pick ${pick.has(it.id) ? "on" : ""}" data-id="${it.id}"><div class="bag-ico">${Gloss.escape(fillText(it.name))[0]}</div><div><b>${Gloss.escape(fillText(it.name))}</b><p>${Gloss.escape(fillText(it.desc || ""))}</p></div></div>`).join("")}</div><div class="next-btn"></div>`);
+      p.querySelectorAll(".bag-row").forEach((el) => el.onclick = () => { const id = el.dataset.id; if (pick.has(id)) pick.delete(id); else if (pick.size < 5) pick.add(id); else toast("最多 5 样"); draw(); });
+      p.querySelector(".next-btn").appendChild(receipt("装箱", 2, () => { S.takeHome = [...pick]; Scenes.endingCard(); }));
+    };
+    draw();
+  },
+  endingCard() {
     hideAll(); hideHud(); Stage.hide(true); showCg(null); setBg("station_night");
     BGM.auto("ending");
     const e = Rules.ending();
@@ -892,7 +1000,8 @@ const Scenes = {
       <div class="pc-post ${stampImg ? "img" : ""}">${stampImg ? `<img src="assets/ui/stamps/${stampImg}.png?v=2" alt="${e.main.title}">` : "<span>邮票<br>（待补）</span>"}</div>
       <div class="pc-body">${e.main.desc}<br>${e.degree ? `学位成绩 ${e.degree}（${e.band}）` : e.main.type}<br>学业 ${Math.round(S.stats.study)}　孤独感 ${Math.round(S.stats.loneliness)}　融入度 ${Math.round(S.stats.belonging)}</div>
       <div class="pc-stamps">${stamps}</div><div class="pc-flip-hint">点明信片翻到背面</div></div>
-      <div class="pc-back"><div class="pc-title">朋友们</div><div class="pc-friends">${friends.length ? friends.map((n) => `<span>${n}</span>`).join("") : "<em>（这三年没有交到“朋友”档的人）</em>"}</div></div></div>
+      <div class="pc-back"><div class="pc-title">朋友们</div><div class="pc-friends">${friends.length ? friends.map((n) => `<span>${n}</span>`).join("") : "<em>（这三年没有交到“朋友”档的人）</em>"}</div>
+      ${(S.takeHome || []).length ? `<div class="pc-title small">带回国的东西</div><div class="pc-friends">${S.takeHome.filter((id) => DATA.items[id]).map((id) => `<span>${Gloss.escape(fillText(DATA.items[id].name))}</span>`).join("")}</div>` : ""}</div></div>
       <div class="next-btn"></div>`, "full");
     p.querySelector(".postcard").onclick = () => p.querySelector(".postcard").classList.toggle("flipped");
     p.querySelector(".next-btn").appendChild(receipt("回到标题", 1, () => { Save.remove("auto"); FX.tear(() => Scenes.title()); }));

@@ -134,7 +134,14 @@ const AI = {
       DATA.profiles && DATA.profiles[charId] ? `专业、年级和认识的人：${DATA.profiles[charId]}` : "",
       this.playerBrief(), rel.line, this.langRule(charId), this.inviteBrief(charId), this.RULES, this.scoreLine(rel),
     ].filter(Boolean).join("\n");
-    const msgs = [{ role: "system", content: sys }, ...history.filter((m) => !m.sys).slice(-20).map(({ role, content, tr }) => ({ role, content: tr && role === "assistant" ? `${content}「${tr}」` : content }))];
+    // 剧情消息（scripted）照常传进去，前面加【已发生】；日期分隔线、[语音]这类系统行只当上下文（手机消息与剧情同步.md 第 6 条）
+    const hist = history.filter((m) => !m.sys && m.role !== "divider").slice(-20).map(({ role, content, tr, scripted }) => {
+      const t = tr && role === "assistant" ? `${content}「${tr}」` : content;
+      return { role: role === "system" ? "user" : role, content: scripted ? `【已发生】${t}` : t };
+    });
+    const sysAll = sys + "\n以上带【已发生】的是之前已经发生过的事，可以自然地提起，但不要改写它的结果，也不要假装它没发生。"
+      + "\n不要在回复里承诺具体的未来安排（“回头确认了发你”“周六我带你去”这类），除非同时用 [[INVITE …]] 发出邀约。";
+    const msgs = [{ role: "system", content: sysAll }, ...hist];
     const r = await this.requestLang(charId, msgs, 0.9, (x) => this.parseScore(x, rel).text.replace(/\[\[INVITE[^\]]*\]\]/g, ""));
     if (r.error) return { text: r.error, aff: 0, failed: true };
     if (r.fallback) return { ...AI.splitTr(r.text), aff: 0 };

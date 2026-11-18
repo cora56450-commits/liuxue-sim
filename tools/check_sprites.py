@@ -27,7 +27,7 @@ def layout(c, cal):   # 和 js/sprites.js 的 Sprites.layout 一样
     if bottom < 1080: h *= min(R.get("maxBoost", 1), (1080 - headY) / (bottom - headY))
     return h, headY - cal["top"] * h, headY
 
-problems, rows = [], []
+problems, rows, todo = [], [], []   # todo：取景太短、等重新出图的（游戏里只在有对话框时出现，不挡部署）
 for cid, c in sorted(C.items(), key=lambda kv: -kv[1]["height"]):
     for key, path in A.images(c):
         cal = (c.get("calib") or {}).get(key)
@@ -42,7 +42,7 @@ for cid, c in sorted(C.items(), key=lambda kv: -kv[1]["height"]):
         if real_top < 0: problems.append(f"{c['short']} {key}：头顶超出画面顶部（y={real_top:.0f}）")
         if chinY > DIALOG_TOP: problems.append(f"{c['short']} {key}：下巴 y={chinY:.0f}，被对话框挡住")
         bottom = top + h
-        if bottom < 1079: problems.append(f"{c['short']} {key}：立绘下边缘 y={bottom:.0f}，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长")
+        if bottom < 1079: todo.append(f"{c['short']} {key}：立绘下边缘 y={bottom:.0f}，没到画面底（1080），游戏里下边淡出；这张图取景太短，要重新出图或往下延长")
         oc = A.auto_chin(path)
         if oc is not None and abs(oc - cal["chin"]) * h > 0.1 * R["faceHeight"]:
             problems.append(f"{c['short']} {key}：OpenCV 测的下巴（{oc:.3f}）和校准值（{cal['chin']:.3f}）差太多")
@@ -53,6 +53,9 @@ for r in rows: print("　".join(map(str, r)))
 print()
 print("没有问题。" if not problems else f"发现 {len(problems)} 个问题：")
 for p in problems: print("！", p)
+if todo:
+    print(f"\n等重新出图（{len(todo)} 张，游戏里只在有对话框的画面出现，不挡部署）：")
+    for p in todo: print("·", p)
 
 # ===== 同框图 =====
 font = ImageFont.truetype("/System/Library/Fonts/Hiragino Sans GB.ttc", 26, index=2)

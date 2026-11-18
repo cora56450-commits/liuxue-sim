@@ -147,7 +147,7 @@ Object.assign(DATA.events, {
     { say: "视频里被家里发现了。" },
     { choice: [
       { text: "坦白", fx: { loneliness: 5, flag_strict_told: 1 } },
-      { text: "隐瞒", sub: "毕业时 HE 的好感门槛 85 → 90", fx: { flag_strict_hidden: 1 } },
+      { text: "隐瞒", fx: { flag_strict_hidden: 1 } },
     ] },
   ],
 });

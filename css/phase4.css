@@ -423,3 +423,15 @@ input:focus, input:focus-visible, textarea:focus, textarea:focus-visible { outli
 #overlay.ov-settings .set-list { width: 100% !important; }
 #overlay.ov-settings .set-row { padding-left: 230px !important; padding-right: 120px !important; }
 .toggle, .toggle.on { width: 146px !important; background-size: calc(100% - 4px) 100% !important; background-position: left center !important; }
+
+/* 选项的暗色遮罩铺满全屏（试玩报告 52：之前只盖到对话框上沿，两边和底下留一条亮带）；
+   选项还是排在对话框上方的那块区域里居中，对话框（连头像、名牌）和右上角按钮浮在遮罩上面、保持亮的 */
+#choices { bottom: 0 !important; padding-bottom: 336px !important; }
+#stage.nodlg #choices { padding-bottom: 24px !important; }
+#dialog { z-index: 21; }
+#sysbar { z-index: 22; }
+/* 51 存档槽：文字放在横线之间，“空”用正文字号 */
+.slot-info { top: 9% !important; }
+.slot-info > * { padding-bottom: 6px !important; }
+.slot-info .none { font-size: 24px !important; color: var(--navy) !important; opacity: .55 !important; padding-bottom: 6px !important; }
+.slot-info span { font-size: 22px !important; }

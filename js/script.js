@@ -1,6 +1,12 @@
 // 剧情脚本执行器：按 data/events.js 顶部说明的步骤格式逐条运行
 async function runScript(steps) {
-  for (const st of steps || []) {
+  for (const st0 of steps || []) {
+    const st = Story5.resolve(st0);   // 随机挑人 {A}{B}：说话人、fx 键里的 {A} 换成实际的人
+    // 第五批新步骤：手机段、朋友圈、限时选项、小游戏（js/story5.js）
+    if (st.moment) Story5.moment(st.moment);
+    if (st.phone) { await Story5.phone(st); continue; }
+    if (st.timed) { await Story5.timed(st.timed); continue; }
+    if (st.game) { const r = await Games.play(st.game); await runScript(r === "win" ? st.win : st.lose); continue; }
     if (st.bg !== undefined) setBg(st.bg);
     if (st.cg !== undefined) showCg(st.cg);
     if (st.sfx) playSfx(st.sfx);
@@ -27,11 +33,11 @@ async function runScript(steps) {
     await pondNow();
     if (st.say) {
       if (st.expr && st.name && !st.show) Stage.setExpr(st.name, st.expr);
-      await say(st.say, st.name, { tr: st.tr, free: !!st.freeSaid });
+      await say(st.say, st.name, { tr: st.tr, free: !!st.freeSaid, face: st.face });
       if (st.fx) showFx(applyFx(st.fx));
     }
     if (st.choice) {
-      const opts = st.choice.filter((c) => c.if === undefined || evalCond(c.if));
+      const opts = st.choice.filter((c) => c.if === undefined || evalCond(c.if)).map((c) => Story5.resolve(c));
       // 出选项时不隐藏对话框（试玩报告 33）：保留最后一句台词，选项摆在对话框上方
       const list = opts.map((c) => ({ text: c.text, sub: c.sub, tr: c.tr }));   // tr：选项的中文翻译
       const free = FreeInput.can(st);   // 有 Key 时多一张“✎ 自己说……”（js/freeinput.js）

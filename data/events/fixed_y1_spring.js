@@ -582,7 +582,7 @@ Object.assign(DATA.events, {
   // 进度<60 时系统照第11周规则进入赶ddl周（精力−25、作业质量−15 由系统算；完美作息精力只−15 也请系统算），这里只放文本。
   final_assignment: [
     { bg: "library" },
-    { if: "数值('作业') >= 60", then: [
+    { if: "S.ghostWeek", then: [], else: [{ if: "数值('作业') >= 60", then: [   // 选了代写：不演赶ddl蒙太奇（试玩报告 54）
       { say: "周五下午你点了提交。网页转了两秒。" },
       // 【提交成功】
       { say: "你走出图书馆的时候，天居然还亮着。" },
@@ -603,7 +603,7 @@ Object.assign(DATA.events, {
         { say: "走出图书馆，Ploy坐在门口的台阶上，高跟鞋拎在手里。“I knew you'd still be here.「我就知道你还在这。」”" },
         { run: "groupmate_chips" },   // Ploy线事件“凌晨路边薯条”（★CG），攻略线里写
       ] },
-    ] },
+    ] }] },
   ],
 
   // ===== 第23周·复活节假 =====

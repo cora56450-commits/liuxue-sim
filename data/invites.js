@@ -45,7 +45,7 @@ DATA.inviteLines = {
       { text: "library?? I'll actually study this time. probably", tr: "图书馆？？这次我真的会学习。大概", place: "library", day: "WEEKDAY" },
       { text: "skip the party this weekend. just us. I'll cook (badly)", tr: "这周末不去派对了。就我们俩。我做饭（做得很烂）", place: "dorm_room", day: "SAT", cond: "好感('groupmate') >= 60" },
     ],
-    accept: [ { text: "YES ❤️❤️❤️" }, { text: "omg finally. see you there babe", tr: "天啊终于。到时见宝" } ],
+    accept: [ { text: "YES ❤️❤️❤️", tr: "好！！❤️❤️❤️" }, { text: "omg finally. see you there babe", tr: "天啊终于。到时见宝" } ],
     decline: [ { text: "aww I've got a thing that day 😭 next time!!", tr: "啊那天我有事 😭 下次！！" } ],
     busy: [ { text: "before 10am?? babe I'm not a morning person", tr: "十点前？？宝我起不来", when: "工作日早上九点前" } ],
     busyNote: "Ploy 没有固定的忙，但约在工作日早上九点前她一定说没空。",

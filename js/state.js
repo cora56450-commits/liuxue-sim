@@ -54,7 +54,7 @@ const CLAMP = ["energy", "study", "loneliness", "belonging", "adapt", "english"]
 const r1 = (v) => Math.round(v * 10) / 10;
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
-function energyMax() { return DATA.tuning.energyMax + (S.tags.includes("routine") ? 20 : 0); }
+function energyMax() { return DATA.tuning.energyMax + (S.tags.includes("routine") ? 20 : 0) + (S.energyBonus || 0); }   // energyBonus：剧情加的精力上限（kieran_plan +2）
 function charName(c) { return DATA.characters[c] ? DATA.characters[c].short : c; }
 function weekKey() { return S.year * 100 + S.week + S.period * 1000; }
 // 跨学年的周序号（大二大三的 S.week 每年从 0 重新数）：好感自然下降按这个算
@@ -94,7 +94,7 @@ function roommates() {
   if (from === "studio" || S.flags.house_studio) return [];
   if (from === "ensuite") return ["wu_tong"];
   if (S.flags.house_khan) return ["mei"];
-  const jakeGone = S.year > 2 || (S.year === 2 && S.period >= 3);   // Jake 大二下学期去交换
+  const jakeGone = S.year === 2 && S.week >= 12;   // Jake 大二第12周去交换，大三回来（大二大三周表）
   return jakeGone ? ["giulia"] : ["jake", "giulia"];
 }
 function logLine(t) { if (typeof Flow !== "undefined") Flow.push("", t); }
@@ -114,7 +114,22 @@ function applyFx(fx) {
       if (S.tags.includes("lovebrain") && v > 0) v = v * 1.5;
       const before = S.aff[c] || 0;
       // 序章到第1周结束前，好感最多到 earlyAffCap（试玩报告 6、19：开局就过 20，第一周就进了熟人阶段）
-      const cap = S.year === 1 && S.week <= 1 ? Math.max(before, DATA.tuning.earlyAffCap) : 100;
+      let cap = S.year === 1 && S.week <= 1 ? Math.max(before, DATA.tuning.earlyAffCap) : 100;
+      // 好感来源控制（决定记录_1118 第十一节）：小事件 ×0.6、不能跨阶段；每人每周最多 +8（固定攻略线事件不算）
+      if (v > 0 && DATA.loveIds.includes(c)) {
+        const ctx = affCtx(), T = DATA.tuning;
+        if (ctx === "small") {
+          v *= T.smallEventAffMult;
+          const nextLine = DATA.loveStages.find((x) => x > before);
+          if (nextLine) cap = Math.min(cap, Math.max(before, nextLine - 1));
+        }
+        if (ctx !== "fixed") {
+          S.affGain = S.affGain && S.affGain.wk === absWeek() ? S.affGain : { wk: absWeek() };
+          const left = Math.max(0, T.affWeeklyCap - (S.affGain[c] || 0));
+          v = Math.min(v, left);
+          S.affGain[c] = (S.affGain[c] || 0) + v;
+        }
+      }
       S.aff[c] = clamp(before + v, 0, cap);
       S.lastMet[c] = absWeek();
       if (S.aff[c] >= DATA.tuning.pondLevel) S.everHigh[c] = 1;
@@ -147,6 +162,20 @@ function applyFx(fx) {
     } else if (k === "extend") {
       Rules.extendDeadline(v);              // 作业延期：最近一份没交的作业截止推后 v 周
       changes.push(["截止推后", v]);
+    } else if (k.startsWith("inc_")) {     // 计数：inc_ploy_ghostwrite: 1 → 标记 +1
+      S.flags[k.slice(4)] = (+S.flags[k.slice(4)] || 0) + v;
+    } else if (k.startsWith("item_")) {    // 背包：item_heater_key: 1 拿到／−1 用掉（同一样最多叠 9 个）
+      const id = k.slice(5), it = (DATA.items || {})[id];
+      S.items = S.items || {};
+      const before = S.items[id] || 0;
+      S.items[id] = clamp(before + v, 0, 9);
+      if (!S.items[id]) delete S.items[id];
+      if (S.items[id] && !before) { S.itemFrom = S.itemFrom || {}; S.itemFrom[id] = timeLabel().join(" "); }
+      if (S.items[id] !== before && it) changes.push([(S.items[id] > before ? "得到 " : "少了 ") + it.name, 0]);
+    } else if (k === "rest_days") {       // 剧情里病倒等：这周剩下的 n 天宅家（周中插播用）
+      S.restDays = Math.max(S.restDays || 0, v);
+    } else if (k === "energy_max") {      // 精力上限永久 +v（只加一次的写在剧情里）
+      S.energyBonus = (S.energyBonus || 0) + v;
     } else if (k.startsWith("flag_")) {
       S.flags[k.slice(5)] = v;
     } else if (k.startsWith("unlock_")) {
@@ -174,8 +203,33 @@ function applyFx(fx) {
 }
 
 const Rules = {
-  cal() { return DATA.calendar.find((c) => c.week === S.week); },
-  isWinter() { const [a, b] = DATA.tuning.winterWeeks; return S.week >= a && S.week <= b; },
+  // 这一学年的周历：大一 DATA.calendar（28 周），大二大三 DATA.calendarY2／Y3（各 24 周，docs/大二大三周表.md）
+  calList(y) { y = y || S.year; return y === 1 ? DATA.calendar : y === 2 ? (DATA.calendarY2 || []) : (DATA.calendarY3 || []); },
+  cal() { return Rules.calList().find((c) => c.week === S.week); },
+  // 这一周大概是几月（季节、生日用）。大一：第1周九月底；大二大三少了迎新周和半个第三学期
+  month(week, year) {
+    week = week || S.week; year = year || S.year;
+    const M1 = [0, 9, 10, 10, 10, 10, 11, 11, 11, 11, 12, 12, 12, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5, 5, 6];
+    const M2 = [0, 9, 10, 10, 10, 10, 11, 11, 11, 11, 12, 12, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5];
+    return ((year === 1 ? M1 : M2)[week]) || 9;
+  },
+  season() { const m = Rules.month(); return [12, 1, 2].includes(m) ? "冬" : [3, 4, 5].includes(m) ? "春" : [6, 7, 8].includes(m) ? "夏" : "秋"; },
+  isWinter() { if (S.year === 1) { const [a, b] = DATA.tuning.winterWeeks; return S.week >= a && S.week <= b; } return [11, 12, 1, 2].includes(Rules.month()); },
+  // 这一学年的作业表：大一 DATA.assignments；大二大三从周历里 deadline／mark 的周生成（截止前 4 周发布）
+  assignTable() {
+    if (S.year === 1) return DATA.assignments;
+    const key = "y" + S.year;
+    Rules._at = Rules._at || {};
+    if (Rules._at[key]) return Rules._at[key];
+    const t = {}; let prev = 0;
+    for (const c of Rules.calList()) {
+      if (!c.deadline && !c.mark) continue;
+      const id = c.deadline || `${key}_w${c.week}`;
+      t[id] = { name: `${S.year === 2 ? "大二" : "大三"}·${c.label}作业`, release: Math.max(prev + 1, c.week - 4), week: c.week };
+      prev = c.week;
+    }
+    return (Rules._at[key] = t);
+  },
   isIntrovert() { return S.bg.personality === "i"; },
 
   livingCost() {
@@ -217,7 +271,7 @@ const Rules = {
     const foreign = friends.filter((c) => DATA.characters[c].friend.from !== "cn").length;
     if (foreign) applyFx({ belonging: foreign * T.friendBelonging });              // 英国人／国际生朋友：融入 +0.3／人
     for (const c of roommates()) addFr(c, S.tags.includes("chef") ? T.roommateFrChef : T.roommateFr);   // 同住室友友情自然增长
-    for (const c of S.year === 1 ? DATA.loveIds : []) {   // 大二大三浓缩章节不按周算（见 Scenes.period 末尾）
+    for (const c of DATA.loveIds) {   // 大二大三也按周衰减（大二大三周表第五节：原来"压缩时段的衰减"作废）
       const gap = absWeek() - (S.lastMet[c] || 0), dating = S.flags["confessed_" + c];
       // 交往中：连续2周没互动每周 −3；不交往：好感≥40 且3周没互动每周 −2
       const d = dating ? (gap > T.datingDecayAfterWeeks ? T.datingDecay : 0) : (S.aff[c] >= T.affDecayMin && gap > T.affDecayAfterWeeks ? T.affDecay : 0);
@@ -233,6 +287,9 @@ const Rules = {
     }
     if (S.tags.includes("neat") && Rules.sharesFlat()) {                                   // 重度洁癖：合住每周精力 −3
       S.stats.energy = clamp(S.stats.energy + T.neatShared, 0, energyMax()); notes.push(`公共厨房又是一团糟，精力${T.neatShared}`);
+    }
+    if (typeof Perk !== "undefined" && Perk.on("wu_tong") && (S.week - 1) % 4 === 0 && !(S.summer && S.summer.active)) {   // 朋友专属好处：吴桐每月一次火锅
+      applyFx({ energy: 5, loneliness: -3 }); notes.push("吴桐喊你吃火锅");
     }
     S.weekendDates = [];
     return notes;
@@ -258,6 +315,12 @@ const Rules = {
     }
     if (loc.id === "chinese_market" && S.tags.includes("glassstomach")) fx.loneliness *= T.glassChineseShop;
     if (loc.id === "dorm_room") fx.energy = Rules.homeEnergy(fx.energy);
+    // 朋友专属好处（决定记录第三节）
+    if (typeof Perk !== "undefined") {
+      if (loc.id === "gym" && Perk.on("jake")) fx.energy = (fx.energy || 0) + 3;
+      if (loc.id === "chinese_market" && Perk.on("chen_jianguo") && fx.money < 0) fx.money = Math.round(fx.money * 0.95);
+      if (loc.id === "brunch" && Perk.on("sophie") && S.flags.sophie_coffee !== absWeek()) { S.flags.sophie_coffee = absWeek(); fx.money = (fx.money || 0) + 2; }
+    }
     return fx;
   },
 
@@ -278,6 +341,7 @@ const Rules = {
     const eff = S.stats.energy < T.lowEnergy ? T.lowEnergyFactor : 1;
     if (id === "class" && fx.study) fx.study *= 0.6 + S.stats.english / 100;
     if (id === "library" && S.tags.includes("scholar")) fx.study *= 1.4;
+    if (id === "library" && typeof Perk !== "undefined" && Perk.on("chen_siqi")) fx.study *= 1.1;   // 朋友专属好处：陈思琪
     if (opt.late && fx.study) fx.study *= 0.5;   // 昼伏夜出：迟到，只听了半节（迎新周的“参加迎新活动”没有学业，不算）
     if (id === "social") {
       fx.energy = Rules.isIntrovert() ? -10 : -3;
@@ -311,43 +375,42 @@ const Rules = {
   },
 
   // 这周是不是“赶ddl周”：截止那周作业进度还不到60
-  needRush() { return !!(S.year === 1 && Rules.deadlineThisWeek() && S.homework < DATA.tuning.rushBelow); },
+  needRush() { return !!(Rules.deadlineThisWeek() && S.homework < DATA.tuning.rushBelow); },
   rushEnergy() { return S.tags.includes("nightowl") ? DATA.tuning.rushEnergyNightowl : DATA.tuning.rushEnergy; },
 
   // 作业截止周（算上延期）。延期落到假期周的，顺延到假期后第一周
   deadlineWeek(aid) {
-    const c = DATA.calendar.find((x) => x.deadline === aid);
+    const list = Rules.calList(), t = Rules.assignTable()[aid];
+    const c = list.find((x) => x.deadline === aid) || (t && { week: t.week });
+    if (!c) return -1;
     let w = c.week + ((S.deadlineShift || {})[aid] || 0);
-    while (DATA.calendar.find((x) => x.week === w && x.vacation)) w++;
+    while (list.find((x) => x.week === w && x.vacation)) w++;
     return w;
   },
-  // 现在有没有发布了、还没交的作业（大二大三按关键周走，一直算有）
+  // 现在有没有发布了、还没交的作业
   currentAssignment() {
-    if (S.year !== 1) return "later";
-    return Object.keys(DATA.assignments).filter((id) => DATA.assignments[id].release <= S.week && Rules.deadlineWeek(id) >= S.week)
+    const A = Rules.assignTable();
+    return Object.keys(A).filter((id) => A[id].release <= S.week && Rules.deadlineWeek(id) >= S.week)
       .sort((a, b) => Rules.deadlineWeek(a) - Rules.deadlineWeek(b))[0] || null;
   },
   hasAssignment() { return !!Rules.currentAssignment(); },
-  releasedThisWeek() { return S.year === 1 ? Object.keys(DATA.assignments).filter((id) => DATA.assignments[id].release === S.week) : []; },
+  releasedThisWeek() { const A = Rules.assignTable(); return Object.keys(A).filter((id) => A[id].release === S.week); },
   // 日程活动的定义：没有作业的周，“做作业”是“预习”
   act(id) {
     if (id === "class" && S.year === 1 && S.week === 1) return DATA.freshersActivity;
     return id === "homework" && !Rules.hasAssignment() ? DATA.previewActivity : DATA.activities.find((x) => x.id === id);
   },
   deadlineThisWeek() {
-    if (S.year !== 1) return null;
-    const a = Object.keys(DATA.assignments).find((id) => Rules.deadlineWeek(id) === S.week);
+    const a = Object.keys(Rules.assignTable()).find((id) => Rules.deadlineWeek(id) === S.week);
     return a || null;
   },
   // 下一份还没交的作业还有几周截止（这周交 = 0）；没有了返回 99
   deadlineIn() {
-    if (S.year !== 1) return 99;
-    const ws = Object.keys(DATA.assignments).map(Rules.deadlineWeek).filter((w) => w >= S.week);
+    const ws = Object.keys(Rules.assignTable()).map(Rules.deadlineWeek).filter((w) => w >= S.week);
     return ws.length ? Math.min(...ws) - S.week : 99;
   },
   extendDeadline(n) {
-    if (S.year !== 1) return;
-    const next = Object.keys(DATA.assignments).filter((id) => Rules.deadlineWeek(id) >= S.week).sort((a, b) => Rules.deadlineWeek(a) - Rules.deadlineWeek(b))[0];
+    const next = Object.keys(Rules.assignTable()).filter((id) => Rules.deadlineWeek(id) >= S.week).sort((a, b) => Rules.deadlineWeek(a) - Rules.deadlineWeek(b))[0];
     if (next) S.deadlineShift[next] = (S.deadlineShift[next] || 0) + n;
   },
   ghostCost() { return DATA.tuning.ghostCost[S.bg.wealth] || 250; },
@@ -365,7 +428,8 @@ const Rules = {
       if (S.rushWeek) q += T.rushQuality;
       if (S.stats.energy < T.tiredBelow) q += T.tiredQuality;
     }
-    return clamp(18 + 0.32 * S.stats.study + 0.1 * S.stats.english + 0.2 * q + (Math.random() * 8 - 4) - Rules.yearPenalty(), 0, 100);
+    const hannah = typeof Perk !== "undefined" && Perk.on("hannah") && /小组|presentation/i.test(assignmentName(Rules.deadlineThisWeek() || "")) ? 2 : 0;   // 朋友专属好处：Hannah 小组作业分 +2
+    return clamp(18 + 0.32 * S.stats.study + 0.1 * S.stats.english + 0.2 * q + hannah + (Math.random() * 8 - 4) - Rules.yearPenalty(), 0, 100);
   },
   examMark() { return clamp(25 + 0.45 * S.stats.study + 0.1 * S.stats.english + (Math.random() * 10 - 5) - Rules.yearPenalty(), 0, 100); },
   yearPenalty() { return DATA.tuning.yearPenalty[S.year] || 0; },   // 分数公式：大二 −6、大三 −10
@@ -390,6 +454,7 @@ const Rules = {
   weekEnd(cal) {
     const T = DATA.tuning, out = [];
     S.stats.english = Math.min(Math.max(S.stats.english, T.englishCap), S.stats.english + T.weeklyEnglish);
+    if (typeof English !== "undefined") English.weekly();   // 和母语者交往的额外英语（每周最多 +0.6）
     if (cal && !cal.vacation) {
       S.att.weeks++;
       if (S.schedule.includes("class")) S.att.weeksWithClass++;
@@ -404,8 +469,9 @@ const Rules = {
     }
     if (cal && cal.exam) {
       const mark = r1(Rules.examMark());
-      S.marks.push({ year: S.year, id: "exam", name: assignmentName("exam"), mark });
-      out.push({ type: "mark", name: assignmentName("exam"), mark, band: Rules.band(mark) });
+      const en = S.year === 1 ? assignmentName("exam") : `${S.year === 2 ? "大二" : "大三"}期末考试`;
+      S.marks.push({ year: S.year, id: "exam_" + S.week, name: en, mark });
+      out.push({ type: "mark", name: en, mark, band: Rules.band(mark) });
     }
     S.rushWeek = false; S.ghostWeek = false;
     const sun = Rules.sunday();
@@ -413,6 +479,8 @@ const Rules = {
     // 学期最后一周统计出勤
     if (S.year === 1 && DATA.terms.some(([, b]) => b === S.week)) {
       const a = S.att;
+      if (typeof Perk !== "undefined" && Perk.on("zhou_kexin") && a.weeksWithClass < a.weeks) a.weeksWithClass++;   // 朋友专属好处：周可欣的笔记，每学期抵一次缺课
+      if (typeof Perk !== "undefined" && Perk.on("zhou_kexin") && a.classes < a.weeks) a.classes++;
       if (a.weeksWithClass < a.weeks / 2) { S.flags.att_meeting = (S.flags.att_meeting || 0) + 1; out.push({ type: "event", id: "attendance_meeting" }); }
       else if (a.classes < a.weeks) { S.flags.att_warning = (S.flags.att_warning || 0) + 1; out.push({ type: "event", id: "attendance_warning" }); }
       S.att = { classes: 0, weeks: 0, weeksWithClass: 0 };
@@ -535,7 +603,20 @@ function fillText(t) {
   const food = h.food.split("、")[0];
   const map = { "名字": S.name || "你", name: S.name || "你", "家乡": h.name, hometown: h.name, "家乡食物": food, food,
                 "老乡台词": h.meme, meme: h.meme, "专业": optName("major"), money: Math.round(S.stats.money),
-                "代写价格": "£" + Rules.ghostCost() };
+                "代写价格": "£" + Rules.ghostCost(), "今天": `${Rules.month()}月${7 + (S.week * 3) % 21}日` };
+  for (const [k, id] of Object.entries(S.pick || {})) map[k] = charName(id);
+  // 大二大三剧本里的人名变量
+  if (/\{(好感最高的攻略对象|友情最高的朋友|室友或朋友|朋友|秋季平均分)\}/.test(t)) {
+    const love = DATA.loveIds.filter((c) => S.flags["met_" + c]).sort((a, b) => (S.aff[b] || 0) - (S.aff[a] || 0))[0];
+    const fr = Object.keys(S.fr).sort((a, b) => S.fr[b] - S.fr[a])[0];
+    const rm = roommates()[0] || fr;
+    map["好感最高的攻略对象"] = love ? charName(love) : (fr ? charName(fr) : "朋友");
+    map["友情最高的朋友"] = fr ? charName(fr) : "室友";
+    map["室友或朋友"] = rm ? charName(rm) : "朋友";
+    map["朋友"] = fr ? charName(fr) : "朋友";
+    map["秋季平均分"] = String(Math.round(Rules.yearMark(S.year)) || "");
+  }
+  if (/\{名字错法\}/.test(t) && typeof Story5 !== "undefined") map["名字错法"] = Story5.nameTypo();   // 随机挑的人 {A} {B} {室友}
   return t.replace(/\{([^{}]+)\}/g, (m, k) => (k in map ? map[k] : m));
 }
 
@@ -561,10 +642,23 @@ function condCtx() {
     week: S.week, year: S.year, wealth: S.bg.wealth, housing: S.bg.accommodation, english: S.stats.english,
     ie: S.bg.personality === "i" ? "I" : "E", hometown: hometown().name, major: S.bg.major, firstAbroad: S.bg.abroad === "yes",
     tag, flag, aff, stat, fr, frTier: frTierOf, dating, trial, deadlineIn,
+    // 第五批：省份（家乡省份名，如 '广东'）、季节（秋/冬/春/夏）、下雨（这周下雨）、周末日（'六'/'日'）、时段（'上午'/'下午'/'晚上'）、物品('id')
+    province: (hometown().name || "").replace(/[省市]$/, ""), season: Rules.season(), rain: !!(Rules.cal() || {}).rain,
+    seen: (id) => !!(S.flags["seen_" + id] || S.flags["done_" + id] || (S.midSeen || {})[id] || (S.placeSeen || {})[id] || (S.encountersSeen || {})[id]),
+    term: (() => { const t = (Rules.cal() || {}).term || ""; return /秋/.test(t) ? "秋" : /春/.test(t) ? "春" : /夏/.test(t) ? "夏" : "假"; })(),
+    examWeek: !!(Rules.cal() || {}).exam,
+    snow: (S.year === 1 && S.week === 18) || (S.year > 1 && Rules.season() === "冬" && !!(Rules.cal() || {}).rain),
+    termEnd: !!(Rules.calList().find((x) => x.week === S.week + 1) || {}).vacation || !Rules.calList().find((x) => x.week === S.week + 1),
+    justSubmitted: !!Rules.deadlineThisWeek() || Object.keys(Rules.assignTable()).some((id) => Rules.deadlineWeek(id) === S.week - 1),
+    nameTypo: Story5.nameTypo(),
+    spring: !!(Rules.cal() || {}).spring || (S.year === 1 && S.week === 15),
+    wkday: S.slotNow != null ? (S.slotNow < 3 ? "六" : "日") : "", tod: S.todNow || "", has: (id) => !!(S.items || {})[id],
   };
   return Object.assign(c, { "周数": c.week, "学年": c.year, "家境": optName("wealth"), "住宿": optName("accommodation"), "英语": c.english,
     "性格": c.ie, "家乡": c.hometown, "专业": optName("major"), "第一次出国": c.firstAbroad, "标签": tag, "标记": flag, "好感": aff, "数值": stat,
-    "友情": fr, "友情档": frTierOf, "交往中": dating, "考验": trial, "距截止": deadlineIn });
+    "友情": fr, "友情档": frTierOf, "交往中": dating, "考验": trial, "距截止": deadlineIn,
+    "省份": c.province, "季节": c.season, "下雨": c.rain, "周末日": c.wkday, "时段": c.tod, "物品": c.has, "演过": c.seen, "春节": c.spring, "好处": (n) => typeof Perk !== "undefined" && Perk.on(charId(n)),
+    "学期": c.term, "考试周": c.examWeek, "下雪": c.snow, "学期末": c.termEnd, "假期前": c.termEnd, "刚交完作业": c.justSubmitted, "名字错法": c.nameTypo });
 }
 function evalCond(expr) {
   if (expr === true || expr === undefined) return true;
@@ -596,8 +690,7 @@ const Save = {
 // 现在是什么时候：["大一·秋", "第3周"]
 function timeLabel() {
   if (S.summer && S.summer.active) return ["大一暑假", ["", "", "", "", "", "", "六月", "七月", "八月", "九月"][S.summer.month] || ""];
-  if (S.year === 1) { const c = Rules.cal(); return c ? [c.term, c.label] : ["大一", "落地"]; }
-  const y = DATA.laterYears.find((x) => x.year === S.year);
-  const p = y && y.periods[S.period];
-  return [y ? y.name : "", p ? p.label : ""];
+  const c = Rules.cal();
+  if (c) return [c.term, c.label];
+  return S.year === 1 ? ["大一", "落地"] : [S.year === 2 ? "大二" : "大三", ""];
 }

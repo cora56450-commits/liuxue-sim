@@ -19,12 +19,12 @@ def cut(src, cols, rows, names, outdir):
             n = names[r*cols+c]
             im.crop(g).save(f"{outdir}/{n}.png", optimize=True)
             print(n, g, (g[2]-g[0], g[3]-g[1]), "贴边!" if touch else "")
-cut("../八枚复古主题邮票拼贴.png", 4, 2, ["home","alien","creep","disco","lonely","love_trial","ghost_rule","brain_girl"], "assets/ui/stamps")
+cut("../03_美术素材/UI/邮票邮戳/八枚复古主题邮票拼贴.png", 4, 2, ["home","alien","creep","disco","lonely","love_trial","ghost_rule","brain_girl"], "assets/ui/stamps")
 
 # ===== 邮戳 =====
 import numpy as np
 from PIL import Image
-src, outdir = "../九枚复古音乐邮戳.png", "assets/ui/postmarks"
+src, outdir = "../03_美术素材/UI/邮票邮戳/九枚复古音乐邮戳.png", "assets/ui/postmarks"
 names = ["senior_he","senior_be","local_he","local_be","groupmate_he","groupmate_be","otaku_he","otaku_be","first"]
 im = np.array(Image.open(src).convert("RGBA")); H, W = im.shape[:2]
 A = im[..., 3] > 24

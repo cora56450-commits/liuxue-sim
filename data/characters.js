@@ -19,6 +19,8 @@ DATA.characters = {
   me: { name: "我", short: "我", height: 162, color: "#FF7A45", lang: "zh", isPlayer: true,
     sprites: { autumn: "chara/me/autumn.png", winter: "chara/me/winter.png", home: "chara/me/home.png" },
     avatars: { autumn: "chara/me/autumn_avatar.png", winter: "chara/me/winter_avatar.png", home: "chara/me/home_avatar.png" },
+    // 头像表情（试玩报告 57）：{ 衣服: { happy, sad, sick, tired, speechless, surprised } }，图到了填进来；没有的表情不显示头像
+    avatarFaces: {},
     calib: { autumn: { top: 0.0365, chin: 0.35 }, winter: { top: 0.0321, chin: 0.283 }, home: { top: 0.0252, chin: 0.367 } } },
 
   // ===== 攻略对象 =====
@@ -38,7 +40,7 @@ DATA.characters = {
     expr: { normal: "chara/local/expr_1.png", smile: "chara/local/expr_2.png", annoyed: "chara/local/expr_3.png", shy: "chara/local/expr_4.png",
             surprised: "chara/local/expr_5.png", speechless: "chara/local/expr_6.png", stunned: "chara/local/expr_7.png" },
     exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", stunned: "愣住" },
-    calib: { base: { top: 0.0043, chin: 0.301 }, summer: { top: 0.0234, chin: 0.308 }, coffee: { top: 0.0165, chin: 0.296 }, expr_normal: { top: 0.0035, chin: 0.31 }, expr_smile: { top: 0.0028, chin: 0.31 }, expr_annoyed: { top: 0.0035, chin: 0.31 }, expr_shy: { top: 0.0028, chin: 0.31 }, expr_surprised: { top: 0.0028, chin: 0.31 }, expr_speechless: { top: 0.0035, chin: 0.31 }, expr_stunned: { top: 0.0028, chin: 0.31 } } },
+    calib: { base: { top: 0.0039, chin: 0.273 }, summer: { top: 0.0234, chin: 0.308 }, coffee: { top: 0.0165, chin: 0.296 }, expr_normal: { top: 0.0035, chin: 0.31 }, expr_smile: { top: 0.0028, chin: 0.31 }, expr_annoyed: { top: 0.0035, chin: 0.31 }, expr_shy: { top: 0.0028, chin: 0.31 }, expr_surprised: { top: 0.0028, chin: 0.31 }, expr_speechless: { top: 0.0035, chin: 0.31 }, expr_stunned: { top: 0.0028, chin: 0.31 } } },
 
   groupmate: { name: "Ploy", short: "Ploy", height: 168, color: "#FF7A45", lang: "en", love: true,
     persona: "国际生女生，家里有钱、长得好看，魅力大，小组作业经常划水但presentation当天光彩照人。会拉你进她的圈子。用英文聊天。",
@@ -55,7 +57,7 @@ DATA.characters = {
     expr: { normal: "chara/otaku/expr_1.png", smile: "chara/otaku/expr_2.png", annoyed: "chara/otaku/expr_3.png", shy: "chara/otaku/expr_4.png",
             surprised: "chara/otaku/expr_5.png", speechless: "chara/otaku/expr_6.png", sparkle: "chara/otaku/expr_7.png" },
     exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", sparkle: "聊到番时眼睛发亮" },
-    calib: { base: { top: 0.0078, chin: 0.364 }, summer: { top: 0.0304, chin: 0.34 }, club: { top: 0.0321, chin: 0.308 }, figure: { top: 0.0373, chin: 0.318 }, expr_normal: { top: 0.0055, chin: 0.359 }, expr_smile: { top: 0.0076, chin: 0.359 }, expr_annoyed: { top: 0.0069, chin: 0.359 }, expr_shy: { top: 0.0055, chin: 0.359 }, expr_surprised: { top: 0.0069, chin: 0.359 }, expr_speechless: { top: 0.0062, chin: 0.359 }, expr_sparkle: { top: 0.0055, chin: 0.359 } } },
+    calib: { base: { top: 0.0048, chin: 0.272 }, summer: { top: 0.0304, chin: 0.34 }, club: { top: 0.0321, chin: 0.308 }, figure: { top: 0.0373, chin: 0.318 }, expr_normal: { top: 0.0055, chin: 0.359 }, expr_smile: { top: 0.0076, chin: 0.359 }, expr_annoyed: { top: 0.0069, chin: 0.359 }, expr_shy: { top: 0.0055, chin: 0.359 }, expr_surprised: { top: 0.0069, chin: 0.359 }, expr_speechless: { top: 0.0062, chin: 0.359 }, expr_sparkle: { top: 0.0055, chin: 0.359 } } },
 
   // ===== 固定 NPC =====
   nikos:        { name: "Dr. Nikos Lambert", short: "Nikos", height: 183, color: "#3A4766", lang: "en", sprites: { base: "chara/npc/nikos.png" },        calib: { base: { top: 0.0252, chin: 0.277 } } },
@@ -105,6 +107,12 @@ DATA.friendIds = Object.keys(DATA.characters).filter((id) => DATA.characters[id]
 // 没有朋友事件的人，友情第一次到 60 时发来的手机消息（临时文本，策划这边按人写）
 DATA.friendMessage = {
   _default: "在吗？最近怎么样。",
+};
+
+// 事件 → 主角头像默认表情（剧本行写了 face 的以剧本为准；试玩报告 57）
+DATA.eventFaces = {
+  got_sick: "sick", first_sick: "sick", rush_week: "tired", ddl_before_xmas: "tired", final_assignment: "tired",
+  exam_week: "tired", ask_family: "sad", attendance_warning: "sad", attendance_meeting: "sad", resit_fail: "sad", date_noshow: "sick",
 };
 
 // 立绘显示规则（详见 js/sprites.js）

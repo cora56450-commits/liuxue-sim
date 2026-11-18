@@ -1,5 +1,5 @@
 {
- "_说明": "下巴位置（占图片高度的比例），2026-11-17 Claude Code 在带刻度的放大截图上人工量（没装 OpenCV 时 tools/auto_calib.py 用它）。同一套表情图取景一样（不透明区域重合 99% 以上），共用 expr_1 量的值。",
+ "_说明": "下巴位置（占图片高度的比例），2026-11-17 Claude Code 在带刻度的放大截图上人工量（没装 OpenCV 时 tools/auto_calib.py 用它）。同一套表情图取景一样（不透明区域重合 99% 以上），共用 expr_1 量的值。 2026-11-18 第五批：Kieran、Ollie 换成加长版 base（画到大腿），下巴重新量：otaku 0.272、local 0.273。",
  "me": {
   "autumn": 0.35,
   "winter": 0.283,
@@ -10,7 +10,7 @@
   "summer": 0.301
  },
  "local": {
-  "base": 0.301,
+  "base": 0.273,
   "summer": 0.308,
   "coffee": 0.296,
   "expr_normal": 0.31,
@@ -27,7 +27,7 @@
   "home": 0.362
  },
  "otaku": {
-  "base": 0.364,
+  "base": 0.272,
   "summer": 0.34,
   "club": 0.308,
   "figure": 0.318,

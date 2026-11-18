@@ -10,7 +10,7 @@ window.addEventListener("resize", fitStage);
 // ===== 设置（存在本机，不随存档） =====
 const Settings = {
   KEY: "liuxue_settings",
-  v: { textSpeed: 28, volume: 70, bgmVolume: 60, ambVolume: 30, showAvatar: true, showTr: true, guide: true },   // textSpeed：每个字的毫秒数；volume 是音效音量
+  v: { textSpeed: 28, volume: 70, bgmVolume: 60, ambVolume: 30, showAvatar: true, showTr: true, guide: true, noTimer: false, autoGames: false },   // noTimer：限时选项不限时；autoGames：小游戏全部自动通过   // textSpeed：每个字的毫秒数；volume 是音效音量
   load() { try { Object.assign(this.v, JSON.parse(localStorage.getItem(this.KEY) || "{}")); } catch (e) {} },
   set(k, val) { this.v[k] = val; localStorage.setItem(this.KEY, JSON.stringify(this.v)); },
 };
@@ -22,6 +22,8 @@ function setBg(id) {
   const bg = $("#bg");
   if (!id) { currentBg = null; return bg.classList.add("hidden"); }
   const src = `assets/bg/${id}.jpg`;
+  // 背景图还没有的，用替代图（DATA.bgFallback；例如圣诞市集先用室内市场）
+  bg.onerror = () => { const f = (DATA.bgFallback || {})[id]; if (f && !bg.src.endsWith(`/${f}.jpg`)) bg.src = `assets/bg/${f}.jpg`; };
   if (bg.getAttribute("src") !== src) {
     bg.src = src;
     bg.classList.remove("bg-in"); void bg.offsetWidth; bg.classList.add("bg-in");
@@ -293,9 +295,13 @@ function say(text, nameId, opt = {}) {
     // 主角小头像：旁白/内心吐槽和主角自己说话时显示
     const av = $("#avatar");
     const mine = !nameId || nameId === "me";
-    if (mine && Settings.v.showAvatar && S) {
-      const outfit = Sprites.playerOutfit(S.year === 1 ? S.week : 0, currentBg);
-      av.querySelector("img").src = "assets/" + DATA.characters.me.avatars[outfit];
+    // 主角头像的表情（试玩报告 57）：剧本行写 face（普通 normal／开心 happy／难过 sad／生病 sick／疲惫 tired／无语 speechless／惊讶 surprised），
+    // 没写的按事件类型自动选（DATA.eventFaces）。现在只有一张“普通”头像（在笑），其他表情的图还没有：这时不显示头像，免得生病时在笑
+    const face = opt.face || (typeof Story !== "undefined" && (DATA.eventFaces || {})[Story.running]) || "normal";
+    const me = DATA.characters.me, outfit = S ? Sprites.playerOutfit(S.year === 1 ? S.week : 0, currentBg) : "autumn";
+    const avSrc = face === "normal" ? me.avatars[outfit] : ((me.avatarFaces || {})[outfit] || {})[face];
+    if (mine && Settings.v.showAvatar && S && avSrc) {
+      av.querySelector("img").src = "assets/" + avSrc;
       av.classList.remove("hidden");
     } else av.classList.add("hidden");
     d.classList.toggle("with-avatar", !av.classList.contains("hidden"));
@@ -336,6 +342,26 @@ function say(text, nameId, opt = {}) {
     sayAdvance = () => { if (done && (Flow.auto || Flow.skip)) { clearTimeout(autoT); autoT = setTimeout(advance, Flow.skip ? 70 : 600); } };
     document.addEventListener("keydown", key);
   });
+}
+// 在对话框里显示一句提问（系统选项用，不等点击；试玩报告 52）
+function sayStatic(text) {
+  const d = $("#dialog");
+  d.classList.remove("hidden"); $("#sysbar").classList.add("hidden"); $("#stage").classList.remove("nodlg");
+  $("#nameplate").classList.add("hidden"); $("#avatar").classList.add("hidden"); d.classList.remove("with-avatar", "has-tr");
+  $("#dialog-text").innerHTML = Gloss.mark(fillText(text)); $("#dialog-tr").textContent = ""; $("#dialog-next").classList.add("hidden");
+  d.onclick = null;
+}
+// 显示一句台词但不等点击（限时选项倒计时期间对方继续说话用）
+function sayShow(text, nameId, tr) {
+  const d = $("#dialog"), np = $("#nameplate");
+  d.classList.remove("hidden"); $("#stage").classList.remove("nodlg");
+  if (nameId) { np.querySelector("span").textContent = speakerName(nameId); np.classList.remove("hidden"); } else np.classList.add("hidden");
+  Stage.focus(nameId); $("#avatar").classList.add("hidden"); d.classList.remove("with-avatar");
+  const t = tr && Settings.v.showTr ? fillText(tr) : "";
+  d.classList.toggle("has-tr", !!t);
+  $("#dialog-text").innerHTML = Gloss.mark(fillText(text)); $("#dialog-tr").innerHTML = t ? Gloss.mark(t) : ""; $("#dialog-tr").style.visibility = "visible";
+  $("#dialog-next").classList.add("hidden"); d.onclick = null;
+  Flow.push(speakerName(nameId), fillText(text), tr ? fillText(tr) : "");
 }
 function hideDialog() { $("#dialog").classList.add("hidden"); $("#sysbar").classList.add("hidden"); $("#stage").classList.add("nodlg"); lastSpeaker = null; }
 

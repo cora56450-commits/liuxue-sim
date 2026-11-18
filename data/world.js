@@ -9,6 +9,8 @@ DATA.activities = [
   { id: "homework", name: "做作业", desc: "作业进度+20，有点孤独",       fx: { energy: -12, homework: 20, loneliness: 1 } },
   { id: "social",   name: "社交",   desc: "孤独-，融入+，花£15",         fx: { energy: -6,  loneliness: -6, belonging: 1.5, money: -15 } },
   { id: "home",     name: "宅家",   desc: "回精力，孤独可能上升",        fx: { energy: 15,  loneliness: 1 } },
+  // 和 Kieran 联机（Kieran 扩写第八节）：联机过（flag_kieran_online）以后出现，一周最多两次；算宅家的一种
+  { id: "kieran_online", name: "和Kieran联机", desc: "宅家，戴着耳机打游戏", fx: { energy: -4, loneliness: -3, aff_otaku: 1 }, flag: "kieran_online", max: 2, icon: "home" },
   { id: "work",     name: "打工",   desc: "中超5小时，现金£40",          fx: { energy: -14, loneliness: -2, money: 40 }, unlock: "work" },
 ];
 
@@ -31,6 +33,9 @@ DATA.mapCity = [
   { id: "brunch",         name: "brunch店", bg: "brunch",         x: 1114, y: 815, cost: 1, open: ["am"], fx: { money: -18, energy: 10, loneliness: -5 }, text: "炸鸡华夫饼还是那么好吃，至少今天有在好好生活。", meet: ["local", "groupmate", "sophie"] },
   { id: "station",        name: "车站·出城", bg: "station",       x: 511,  y: 830, cost: 99, travel: true, open: ["am"],                             text: "去哪儿？火车票不便宜。" },
 ];
+
+// 还没出图的背景：先用哪张顶着（setBg 加载失败时自动换）
+DATA.bgFallback = { xmas_market: "indoor_market", pub: "pub_street" };
 
 // 周末的 6 个时段
 DATA.weekendSlots = [
@@ -122,7 +127,7 @@ DATA.majorFlavor = {
     business: "商科：中国学生最多的专业，大课两百人，作业是报告和案例分析，期末有闭卷考试；自嘲“水专业”，但并不轻松。",
   },
 };
-function assignmentName(id) { const m = DATA.assignmentsByMajor[(typeof S !== "undefined" && S && S.bg.major) || "design"]; return (m && m[id]) || (DATA.assignments[id] || {}).name || id; }
+function assignmentName(id) { if (typeof S !== "undefined" && S && S.year > 1) { const t = Rules.assignTable()[id]; if (t) return t.name; } const m = DATA.assignmentsByMajor[(typeof S !== "undefined" && S && S.bg.major) || "design"]; return (m && m[id]) || (DATA.assignments[id] || {}).name || id; }
 
 // 三个学期各包含哪些周（出勤按学期统计）
 DATA.terms = [[1, 11], [13, 22], [24, 28]];
@@ -173,12 +178,17 @@ DATA.groups = {
               brief: "大学小组作业的群。Ploy 很少回消息但一回就是语音和表情，Hannah 认真负责爱列清单，Ben 话少、回得慢、爱发 meme。全程英文。" },
   hometown: { name: "{家乡}老乡群",     members: ["老乡A", "老乡B", "老乡C"],     unlock: "flag('hometown_group')",
               brief: "同一个省来这座英国城市留学的中国学生群。聊的是拼车、转租、哪家中超到货了、想家。说中文，带家乡口头禅。" },
+  flat:     { name: "flat 群",          members: ["室友"],                       unlock: "S.bg.accommodation !== 'studio' || year > 1 || flag('flat_group')",
+              brief: "同住的室友群。聊垃圾谁倒、厨房谁弄脏了、谁的快递到了。室友里有外国人时英文为主。" },
   family:   { name: "相亲相爱一家人",   members: ["妈妈", "爸爸"],                unlock: "true",
               brief: "玩家的家人群。妈妈爱发养生文章和语音转文字的长消息，爸爸话少，偶尔发一个大拇指表情。说中文。" },
 };
 
 DATA.tuning = {
   earlyAffCap: 10,     // 序章＋第1周：好感上限 10（试玩报告 6、19）
+  smallEventAffMult: 0.4, affWeeklyCap: 8,   // 好感来源控制（决定记录_1118 第十一节）：小事件好感 ×0.4（决定记录写先设 0.6，跑 sim_check 后调成 0.4，见 docs/结局模拟报告.md）、不跨阶段；每人每周最多 +8（固定攻略线不算）
+  extraEnglishCap: 0.6, englishMax: 95,      // 和母语者交往的额外英语：每周最多 +0.6，英语上限 95（Ollie 扩写第六节）
+  midweekPoolGap: 2,                         // 周中事件池：连续两周有了，第三周不从池子里抽
   stageMinWeek: 3,     // 攻略对象的阶段事件最早第3周，且认识满 2 周
   newYearStudy: 0.9,   // 每个学年开始时学业 ×0.9（新学年的课更难；试玩修改第 7 项）
   exchangeRate: 9.3,           // 汇率脑显示用

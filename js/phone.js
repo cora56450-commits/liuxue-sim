@@ -10,8 +10,10 @@ const Phone = {
       ${opt.input ? `<div class="phone-input"><input placeholder="${opt.input}"><button aria-label="发送"></button></div>` : ""}
     </div>`, "ov-phone");
     BGM.enterPhone();
-    Sys.closeBtn(o);
-    o.addEventListener("click", (e) => { if (e.target === o) closeOverlay(); });   // 点手机外面的暗处也能关（试玩报告 43）
+    if (!opt.lock) {   // lock：剧情里的手机段，不能中途关掉
+      Sys.closeBtn(o);
+      o.addEventListener("click", (e) => { if (e.target === o) closeOverlay(); });   // 点手机外面的暗处也能关（试玩报告 43）
+    }
     if (opt.back) o.querySelector(".ph-back").onclick = opt.back;
     return o;
   },
@@ -23,9 +25,9 @@ const Phone = {
   home() {
     // 邮件、便签本还没有图标（要 app_mail.png、app_glossary.png），先用现有的图顶着
     const apps = [["chat", "聊天", () => Phone.chatList()], ["notes", "小红书", () => Phone.notes("feed")], ["calendar", "日历", () => Phone.calendar()],
-      ["mail", "邮件", () => Phone.mailbox(), "shipping_label"], ["glossary", "便签本", () => Phone.glossary(), "stamp_rect"], ["settings", "设置", () => Sys.settings()]];
+      ["mail", "邮件", () => Phone.mailbox(), "shipping_label"], ["glossary", "便签本", () => Phone.glossary(), "stamp_rect"], ["bag", "背包", () => Bag.open(), "stamp_rect"], ["settings", "设置", () => Sys.settings()]];
     const unread = (S.mailbox || []).filter((m) => !m.seenInBox).length;
-    const o = Phone.frame(`<div class="app-grid">${apps.map(([id, name, , ph], i) => `<div class="app" data-i="${i}">${ph ? `<span class="app-ph"><img src="assets/ui/${ph}.png" alt=""></span>` : `<img src="assets/ui/app_${id}.png" alt="">`}<span>${name}</span>${id === "mail" && unread ? `<i class="app-badge">${unread}</i>` : ""}</div>`).join("")}</div>
+    const o = Phone.frame(`<div class="app-grid">${apps.map(([id, name, , ph], i) => `<div class="app" data-i="${i}">${ph ? `<span class="app-ph"><img src="assets/ui/${ph}.png" alt=""></span>` : `<img src="assets/ui/app_${id}.png" alt="">`}<span>${name}</span>${id === "mail" && unread ? `<i class="app-badge">${unread}</i>` : ""}${id === "chat" && (S.unreadMoments || S.unreadChat) ? `<i class="app-badge">${(S.unreadMoments || 0) + (S.unreadChat || 0)}</i>` : ""}</div>`).join("")}</div>
       <div class="ph-wall">${timeLabel().join("<br>")}</div>`, { title: S.name || "手机", cls: "home" });
     o.querySelectorAll(".app").forEach((el) => el.onclick = apps[+el.dataset.i][2]);
     setTimeout(() => Guide.show("phone", o.querySelector(".app")), 400);
@@ -41,11 +43,11 @@ const Phone = {
   // 联系人旁边的小字：攻略对象显示好感（交往中的加一个“交往中”），固定 NPC 显示友情和档位
   relLabel(c) {
     if (DATA.loveIds.includes(c)) return `<em class="rel-love">${S.flags["confessed_" + c] ? `<b class="dating">交往中</b>` : ""}好感 ${Math.round(S.aff[c])} · ${DATA.loveStageNames[loveStageOf(c)]}</em>`;
-    if (c in S.fr) return `<em class="rel-fr">友情 ${Math.round(S.fr[c])} · ${frTier(S.fr[c])}</em>`;
+    if (c in S.fr) return `<em class="rel-fr">友情 ${Math.round(S.fr[c])} · ${frTier(S.fr[c])}${Perk.on(c) && Perk.text[c] ? `<i class="perk">${Perk.text[c]}</i>` : ""}</em>`;
     return "";
   },
   ava(c) { const ch = DATA.characters[c]; return `<div class="c-ava" style="background:${ch.color}">${ch.short[0]}</div>`; },
-  groups() { return Object.keys(DATA.groups).filter((g) => evalCond(DATA.groups[g].unlock)); },
+  groups() { return Object.keys(DATA.groups).filter((g) => S.flags["grp_" + g] || evalCond(DATA.groups[g].unlock)); },
 
   chatList() {
     const last = (arr, f) => (arr && arr.length ? Phone.esc(f(arr[arr.length - 1])).slice(0, 18) : "还没有消息");
@@ -64,12 +66,14 @@ const Phone = {
     const c = DATA.characters[cur];
     S.chats[cur] = S.chats[cur] || [];
     const head = () => Phone.relLabel(cur).replace(/<\/?em[^>]*>/g, "");
-    const o = Phone.frame(`<div class="phone-log"></div>${Phone.canAsk(cur) ? `<button class="hud-btn ask-btn">约</button>` : ""}`, { title: c.name, right: head(), back: () => Phone.chatList(), input: "说点什么……" });
+    S.unreadChat = 0; renderPhoneDot();
+    const o = Phone.frame(`<div class="phone-log"></div>${Phone.canAsk(cur) ? `<button class="hud-btn ask-btn">约</button>` : ""}${Gift.canGive(cur) && cur !== "essay_senior" ? `<button class="hud-btn gift-btn">送东西</button>` : ""}`, { title: c.name, right: head(), back: () => Phone.chatList(), input: "说点什么……" });
     if (Phone.canAsk(cur)) o.querySelector(".ask-btn").onclick = () => Phone.askFlow(cur);
+    if (o.querySelector(".gift-btn")) o.querySelector(".gift-btn").onclick = () => Gift.pick(cur, () => Phone.chat(cur));
     const log = o.querySelector(".phone-log");
     let busy = false;
     const render = () => {
-      log.innerHTML = (S.chats[cur].length || busy ? "" : `<div class="log-empty">还没聊过</div>`) + S.chats[cur].map((m) => `<div class="msg ${m.role === "user" ? "me" : "them"}">${Gloss.mark(fillText(m.content))}${m.tr && Settings.v.showTr ? `<em class="msg-tr">${Gloss.mark(fillText(m.tr))}</em>` : ""}</div>`).join("") + (busy ? `<div class="msg them typing">…</div>` : "");
+      log.innerHTML = (S.chats[cur].length || busy ? "" : `<div class="log-empty">还没聊过</div>`) + S.chats[cur].map((m) => Story5.bubble(m, false)).join("") + (busy ? `<div class="msg them typing">…</div>` : "");
       log.scrollTop = log.scrollHeight;
     };
     render();
@@ -77,7 +81,11 @@ const Phone = {
     const input = o.querySelector(".phone-input input");
     const send = async () => {
       const text = input.value.trim(); if (!text || busy) return; playSfx("phone_send");
-      input.value = ""; S.chats[cur].push({ role: "user", content: text }); busy = true; render();
+      input.value = ""; S.chats[cur].push({ role: "user", content: text }); Birthday.noteChat(cur, text);
+      // 消息不秒回（决定记录第五节）：对方忙或睡了，先显示“已送达”，之后再回
+      if (Reply.status(cur) !== "online" && !S.replyQueue?.some((q) => q.who === cur)) { S.chats[cur].push({ role: "divider", content: "已送达", kind: "divider" }); Reply.queue(cur); S.lastMet[cur] = absWeek(); return render(); }
+      if (S.replyQueue?.some((q) => q.who === cur)) return render();
+      busy = true; render();
       const r = await AI.chat(cur, S.chats[cur]);
       busy = false;
       if (r.failed) { S.chats[cur].pop(); input.value = text; toast(r.text, 2600); return render(); }
@@ -207,9 +215,12 @@ const Phone = {
       await Phone.loadMoments();
       if (!document.querySelector("#overlay.ov-phone")) return;
     }
+    // 剧情写的朋友圈（Story5.moment）：最近的排在最前面，看过就不算未读
+    for (const p of (S.moments.story || []).slice(0, 8).reverse()) if (!S.moments.feed.includes(p) && !S.moments.feed.some((f) => f.text === p.text && f.who === p.who)) S.moments.feed.unshift(p);
+    S.unreadMoments = 0; renderPhoneDot();
     const name = (w) => (w === "me" ? S.name || "我" : charName(w));
     const post = (p, i, mine) => `<div class="mo-post">${p.who === "me" ? `<div class="c-ava me">${(S.name || "我")[0]}</div>` : Phone.ava(p.who)}
-      <div class="mo-main"><b>${Phone.esc(name(p.who))}</b><p>${Phone.esc(fillText(p.text))}${p.tr && Settings.v.showTr ? `<em class="msg-tr">${Phone.esc(p.tr)}</em>` : ""}</p>
+      <div class="mo-main"><b>${Phone.esc(name(p.who))}</b><p>${Phone.esc(fillText(p.text))}${p.tr && Settings.v.showTr ? `<em class="msg-tr">${Phone.esc(p.tr)}</em>` : ""}</p>${p.img ? `<div class="mo-img">［${Phone.esc(fillText(p.img))}］</div>` : ""}
       <div class="mo-acts"><span class="mo-like ${p.liked ? "on" : ""}" data-like="${mine ? "m" : "f"}${i}">♥ ${p.likes + (p.liked ? 1 : 0)}</span>${mine ? "" : `<span class="mo-cmt" data-cmt="${i}">评论</span>`}</div>
       ${p.comments.length ? `<div class="mo-cmts">${p.comments.map((c) => `<div><b>${Phone.esc(name(c.who))}</b>${Phone.esc(c.text)}${c.tr && Settings.v.showTr ? `<em class="msg-tr">${Phone.esc(c.tr)}</em>` : ""}</div>`).join("")}</div>` : ""}</div></div>`;
     const o = draw(`<div class="mo-list">${S.moments.mine.map((p, i) => post(p, i, true)).join("")}${S.moments.feed.map((p, i) => post(p, i, false)).join("")}</div>`);
@@ -271,9 +282,7 @@ const Phone = {
     const log = o.querySelector(".phone-log");
     let busy = false;
     const render = () => {
-      log.innerHTML = msgs.map((m) => m.who === "me"
-        ? `<div class="msg me">${Phone.esc(m.text)}</div>`
-        : `<div class="msg-who">${Phone.esc(m.who)}</div><div class="msg them">${Phone.esc(m.text)}${m.tr && Settings.v.showTr ? `<em class="msg-tr">${Phone.esc(m.tr)}</em>` : ""}</div>`).join("") + (busy ? `<div class="msg them typing">…</div>` : "");
+      log.innerHTML = msgs.map((m) => Story5.bubble(m, true)).join("") + (busy ? `<div class="msg them typing">…</div>` : "");
       log.scrollTop = log.scrollHeight;
     };
     render();
@@ -376,14 +385,12 @@ const Phone = {
   // ===== 日历：这学年的安排 =====
   calendar() {
     let rows;
-    if (S.year === 1) {
-      rows = DATA.calendar.map((c) => {
-        const what = c.deadline ? "交：" + assignmentName(c.deadline) : c.exam ? "期末考试" : c.vacation ? "假期" : "";
+    {
+      rows = Rules.calList().map((c) => {
+        const aid = c.deadline || (c.mark ? `y${S.year}_w${c.week}` : null);
+        const what = aid ? "交：" + assignmentName(aid) : c.exam ? "期末考试" : c.vacation ? "假期" : "";
         return `<div class="cal-row ${c.week === S.week ? "now" : ""} ${c.week < S.week ? "past" : ""}"><b>${c.label}</b><span>${c.term}</span><em>${what}</em></div>`;
       }).join("");
-    } else {
-      const y = DATA.laterYears.find((x) => x.year === S.year);
-      rows = y.periods.map((p, i) => `<div class="cal-row ${i === S.period ? "now" : ""} ${i < S.period ? "past" : ""}"><b>${p.label}</b><span>${y.name}</span><em>${p.mark ? "出分" : p.exam ? "考试" : ""}</em></div>`).join("");
     }
     // 已经答应的邀约（这周和以后）
     const apps = Invites.list().filter((a) => a.status === "accepted" && a.week >= absWeek())

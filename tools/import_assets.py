@@ -6,7 +6,7 @@ from PIL import Image
 import numpy as np
 
 GAME = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SRC = os.path.dirname(GAME)
+SRC = os.path.join(os.path.dirname(GAME), "03_美术素材")
 A = os.path.join(GAME, "assets")
 manifest = {"sprites": {}, "missing": [], "warnings": []}
 
@@ -39,7 +39,7 @@ def copy_sprite(src, rel):
 
 # ---------- 1. 攻略对象立绘 ----------
 CHARA = {"学长": "senior", "local": "local", "国际生": "groupmate", "宅男": "otaku"}
-POSE = {"常规": "base", "夏装": "summer", "素颜": "home", "社团装": "club", "递咖啡": "coffee", "递手办": "figure"}
+POSE = {"常规": "base", "加长常规": "base", "夏装": "summer", "素颜": "home", "社团装": "club", "递咖啡": "coffee", "递手办": "figure"}
 d = os.path.join(SRC, "角色抠图", "可攻略对象初始立绘")
 for f in sorted(os.listdir(d)):
     m = re.match(r"(.+?) (.+)\.png$", f)
@@ -47,6 +47,8 @@ for f in sorted(os.listdir(d)):
         if f.endswith(".png"):
             manifest["warnings"].append(f"没认出来的立绘文件名：{f}")
         continue
+    if m.group(2) == "常规" and os.path.exists(os.path.join(d, f"{m.group(1)} 加长常规.png")):
+        continue   # 第五批：有“加长常规”（画到大腿）的用加长版当 base
     copy_sprite(os.path.join(d, f), f"chara/{CHARA[m.group(1)]}/{POSE[m.group(2)]}.png")
 
 # ---------- 2. 表情差分 ----------
@@ -83,8 +85,8 @@ for f in sorted(os.listdir(d)):
         manifest["warnings"].append(f"没认出来的NPC文件名：{f}")
         continue
     copy_sprite(os.path.join(d, f), f"chara/npc/{NPC[stem]}.png")
-copy_sprite(os.path.join(SRC, "角色抠图", "赵子豪.png"), "chara/npc/zhao_zihao.png")
-copy_sprite(os.path.join(SRC, "角色抠图", "Dr. Marcia Campbell.png"), "chara/npc/marcia.png")   # 2026-11-17 第四批
+copy_sprite(os.path.join(SRC, "角色抠图", "npc", "赵子豪.png"), "chara/npc/zhao_zihao.png")
+copy_sprite(os.path.join(SRC, "角色抠图", "npc", "Dr. Marcia Campbell.png"), "chara/npc/marcia.png")   # 2026-11-17 第四批
 
 # ---------- 4. 主角立绘 + 小头像（只裁切） ----------
 ME = {"常规": "autumn", "冬装": "winter", "居家": "home"}
@@ -119,6 +121,7 @@ CG = {
     "凌晨路边薯条": "groupmate_chips", "熬夜奶茶": "groupmate_tea", "曼谷泼水节": "groupmate_he",
     "放映室": "otaku_screening", "漫展": "otaku_con", "pub公开": "otaku_he",
     "gap year夜市": "local_past", "还没练肌肉的时候": "otaku_past",
+    "学长告白": "senior_confess", "Ollie告白": "local_confess", "Ploy告白": "groupmate_confess", "Kieran告白": "otaku_confess",   # 第五批
 }
 import unicodedata
 d = os.path.join(SRC, "cg")
