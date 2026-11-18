@@ -233,7 +233,7 @@ function showMsg(m) {
 function mailHtml(m) {
   const t = (x) => Gloss.mark(fillText(x || ""));
   const showTr = Settings.v.showTr;
-  return `<div class="mail-card"><div class="mail-head"><span class="mail-ico">✉</span><div><b>${t(m.title)}</b>${m.tr && showTr ? `<em class="mail-tr">${t(m.tr)}</em>` : ""}<small>From: ${t(m.from)}${m.when ? `　·　${m.when}` : ""}</small></div></div>
+  return `<div class="mail-card"><div class="mail-head"><span class="mail-ico">✉</span><div><b>${t(m.title)}</b>${m.tr && showTr ? `<em class="mail-tr">${t(m.tr)}</em>` : ""}<small>From: ${t(m.from)}${m.when ? `　·　<span class="mail-when">${m.when}</span>` : ""}</small></div></div>
     <div class="mail-body">${m.body ? t(m.body).replace(/\n/g, "<br>") : "<i>（没有正文）</i>"}${m.bodyTr && showTr ? `<em class="mail-tr">${t(m.bodyTr).replace(/\n/g, "<br>")}</em>` : ""}</div></div>`;
 }
 
@@ -458,7 +458,7 @@ function renderHud() {
     <div class="flapbox">${digits ? `<div class="flap-hud">${digits.map((d) => `<div class="fd"><i>${d}</i></div>`).join("")}</div>` : ""}
       <div><div class="bi term"><span class="zh">${term}</span><span class="en">${TERM_EN[term] || ""}</span></div><div class="wk">${digits ? `WEEK ${digits.join("")} / 28` : label}</div></div></div>
     <div class="hud-tag">${money(st.money)}</div>
-    <div class="hud-bars readouts">${bar("energy", "精力", "ENERGY", st.energy, energyMax(), st.energy < 25 ? "▼偏低" : "")}${bar("study", "学业", "STUDY", st.study, 100)}${bar("loneliness", "孤独", "LONELY", st.loneliness, 100, st.loneliness >= 70 ? "▲偏高" : "")}${bar("belonging", "融入", "BELONG", st.belonging, 100)}${Rules.hasAssignment() ? bar("homework", "作业", "ESSAY", S.homework, 100) : ""}</div>
+    <div class="hud-bars readouts">${bar("energy", "精力", "ENERGY", st.energy, energyMax(), st.energy < 25 ? "▼偏低" : "")}${bar("study", "学业", "STUDY", st.study, 100)}${bar("loneliness", "孤独", "LONELY", st.loneliness, 100, st.loneliness >= 70 ? "▲偏高" : "")}${bar("belonging", "融入", "BELONG", st.belonging, 100)}${Rules.hasAssignment() ? (S.homework >= 100 ? `<div class="bar ro done" data-k="homework"><div class="k"><span>作业</span><em>ESSAY</em></div><div class="v">已完成 ✓</div><div class="track"><div class="fill" style="width:100%"></div></div></div>` : bar("homework", "作业", "ESSAY", S.homework, 100)) : ""}</div>
     <div class="hud-btns"><button class="hud-btn" id="btn-phone"><span class="zh">手机</span><span class="en">PHONE</span></button><button class="hud-btn" id="btn-save"><span class="zh">存档</span><span class="en">SAVE</span></button><button class="hud-btn" id="btn-settings"><span class="zh">设置</span><span class="en">CONFIG</span></button></div>`;
   // 换周时周数一位一位翻过去（上一次显示的数字记在 h.dataset.wk）
   if (digits && h.dataset.wk && h.dataset.wk !== digits.join("")) flipHud(h.dataset.wk.split(""), digits);

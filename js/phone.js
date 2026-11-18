@@ -11,6 +11,7 @@ const Phone = {
     </div>`, "ov-phone");
     BGM.enterPhone();
     Sys.closeBtn(o);
+    o.addEventListener("click", (e) => { if (e.target === o) closeOverlay(); });   // 点手机外面的暗处也能关（试玩报告 43）
     if (opt.back) o.querySelector(".ph-back").onclick = opt.back;
     return o;
   },
@@ -148,7 +149,11 @@ const Phone = {
       list[i].seenInBox = 1;
       return Phone.frame(`<div class="mail-in-phone">${mailHtml(list[i])}</div>`, { title: "邮件", back: () => Phone.mailbox() });
     }
-    const rows = list.map((m, k) => `<div class="contact" data-m="${k}"><div class="c-ava">${m.seenInBox ? "✉" : "●"}</div><div><b>${Gloss.escape(fillText(m.from))}</b><small>${Gloss.escape(fillText(m.title))}</small>${m.tr && Settings.v.showTr ? `<small>${Gloss.escape(fillText(m.tr))}</small>` : ""}</div><em>${Gloss.escape(m.when || "")}</em></div>`).join("");
+    // 头像（试玩报告 46）：人名的发件人用首字母圆头像，学校系统邮件用信封；没读过的右上角一个小橙点
+    const ava = (m) => { const f = fillText(m.from || ""), person = /^(Dr\.|Prof|Professor|Mr\.|Ms\.|Mrs\.)\s/.test(f);
+      const letter = person ? f.replace(/^(Dr\.|Prof\.?|Professor|Mr\.|Ms\.|Mrs\.)\s+/, "")[0] : "";
+      return `<div class="c-ava mail-ava ${person ? "person" : "sys"}">${person ? letter : "✉"}${m.seenInBox ? "" : `<i class="unread"></i>`}</div>`; };
+    const rows = list.map((m, k) => `<div class="contact mail-row" data-m="${k}">${ava(m)}<div><b>${Gloss.escape(fillText(m.from))}</b><small>${Gloss.escape(fillText(m.title))}</small>${m.tr && Settings.v.showTr ? `<small>${Gloss.escape(fillText(m.tr))}</small>` : ""}</div><em>${Gloss.escape(m.when || "")}</em></div>`).join("");
     const o = Phone.frame(`<div class="contact-list">${rows || `<div class="note-empty">还没有邮件</div>`}</div>`, { title: "邮件", back: () => Phone.home() });
     o.querySelectorAll("[data-m]").forEach((el) => el.onclick = () => Phone.mailbox(+el.dataset.m));
   },
@@ -327,7 +332,13 @@ const Phone = {
       return draw(mine.length ? `<div class="note-grid">${mine.map(card).join("")}</div>` : `<div class="note-empty">还没发过帖子</div>`);
     }
     const stale = S.notes.feedWeek !== S.year * 100 + S.week + S.period * 1000 || !S.notes.feed.length;
-    if (stale) { draw(`<div class="note-empty">正在刷新……</div>`); await Phone.loadFeed(); if (!document.querySelector("#overlay.ov-phone")) return; }
+    // 刷新要等十几秒：先显示上次的内容，顶上一行小字“正在刷新”，好了再换（试玩报告 44）
+    if (stale) {
+      const old = S.notes.feed.length ? S.notes.feed : DATA.notesFallback;
+      const o = draw(`<div class="note-loading">正在刷新……</div><div class="note-grid">${old.map(card).join("")}</div>`);
+      await Phone.loadFeed();
+      if (document.getElementById("overlay") !== o) return;   // 已经关掉或者换页了
+    }
     draw(`<div class="note-grid">${S.notes.feed.map(card).join("")}</div>`);
   },
 

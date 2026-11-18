@@ -176,7 +176,10 @@ const Scenes = {
     for (const aid of Rules.releasedThisWeek()) {   // 作业发布：弹一封邮件（试玩修改第 8 项）
       if (S.flags["released_" + aid]) continue;
       S.flags["released_" + aid] = 1;
-      await showMail({ from: "Module Leader", title: "Assignment brief released", tr: "作业要求已发布", body: `${assignmentName(aid)} · Deadline: Week ${Rules.deadlineWeek(aid)}`, bodyTr: `截止：第${Rules.deadlineWeek(aid)}周` });
+      const dl = Rules.deadlineWeek(aid);
+      await showMail({ from: "Module Leader", title: "Assignment brief released", tr: "作业要求已发布",   // 正文是编程这边写的系统邮件模板（试玩报告 47），策划可以换
+        body: `Dear students,\n\nThe brief for ${assignmentName(aid)} is now available on the module page. Please read it carefully, including the marking criteria.\n\nDeadline: Friday of Week ${dl}, 12:00 noon, via the online submission portal. Late submissions will be capped at 40 unless an extension has been approved.\n\nGood luck,\nModule Leader`,
+        bodyTr: `各位同学：\n\n${assignmentName(aid)}的作业要求已经发到课程页面，请仔细阅读，包括评分标准。\n\n截止：第${dl}周周五中午12点，在线提交。逾期提交的作业最高只能得40分，除非申请到了延期。\n\n祝顺利，\n课程负责人` });
     }
     await Scenes.systemEvents();
     if (!cal.vacation) { await Scenes.loveEvents(); await Scenes.episode(); await Invites.weekly(); }   // 攻略线事件（每周最多一段）、NPC 主动邀约
@@ -401,8 +404,15 @@ const Scenes = {
     const sl = DATA.weekendSlots[slot];
     const dates = Invites.thisWeek().filter((a) => a.day === "WEEKEND");
     if (slot === 0 && dates.length) setTimeout(() => toast(dates.map((a) => `${Invites.slotName(a)} 和 ${charName(a.who)} 约了${Invites.placeName(a.place)}`).join("<br>"), 2600), 400);
-    const p = panel(`<div class="map-layer"></div>
-      <div class="ap-tag"><span>${sl.name}<small>　还剩 ${DATA.tuning.weekendSlots - slot} 个时段</small></span></div><div class="next-btn"></div>`, "full");
+    // 地图中间的“本周末”时刻板（试玩报告 40、41）：六个时段，现在的高亮，过去的变灰，约了人的写在格子里
+    const cell = (i) => {
+      const x = DATA.weekendSlots[i], d = dates.find((a) => a.slot === x.id);
+      return `<div class="wb-cell ${i < slot ? "past" : i === slot ? "now" : ""}"><b>${DATA.todName[x.tod]}</b>${d ? `<i>约·${charName(d.who)}</i>` : i === slot ? `<i>现在</i>` : ""}</div>`;
+    };
+    const board = `<div class="wk-board"><div class="wb-head"><b>本周末</b><span>WEEKEND</span><em>还剩 ${DATA.tuning.weekendSlots - slot} 个时段</em></div>
+      <div class="wb-row"><span class="wb-day">周六<small>SAT</small></span>${[0, 1, 2].map(cell).join("")}</div>
+      <div class="wb-row"><span class="wb-day">周日<small>SUN</small></span>${[3, 4, 5].map(cell).join("")}</div></div>`;
+    const p = panel(`<div class="map-layer"></div>${board}<div class="ap-tag"><span>${sl.name}</span></div><div class="next-btn wk-btns"></div>`, "full");
     const layer = p.querySelector(".map-layer");
     const here = document.createElement("img");
     here.src = "assets/ui/marker_here.png"; here.className = "here";
@@ -417,12 +427,14 @@ const Scenes = {
       el.style.left = loc.x + "px"; el.style.top = loc.y + "px";
       el.style.animationDelay = i * 50 + "ms";
       const date = dates.find((a) => a.place === loc.id || (loc.travel && a.place === "travel"));
-      const hours = loc.travel ? "上午出发" : (loc.open || []).map((t) => DATA.todName[t]).join("、") + ((loc.closed || []).includes("sun_pm") ? "（周日只上午）" : "");
-      el.innerHTML = `<span>${loc.name}<small>${can ? (loc.travel ? "一天／两天" : hours) : hours}</small></span>${date ? `<i class="mk-who">约·${charName(date.who)}·${Invites.slotName(date)}</i>` : ""}`;
+      // 时段短写（试玩报告 39）：早·午·晚；室内市场“早·午（日只早）”
+      const SHORT = { am: "早", pm: "午", eve: "晚" };
+      const hours = loc.travel ? "早上出发" : (loc.open || []).map((t) => SHORT[t]).join("·") + ((loc.closed || []).includes("sun_pm") ? "（日只早）" : "");
+      el.innerHTML = `<span>${loc.name}<small>${can && loc.travel ? "一天／两天" : hours}</small></span>${date ? `<i class="mk-who">约·${charName(date.who)}·${Invites.slotName(date)}</i>` : ""}`;
       if (can) el.onclick = () => { if (layer._go || receipt.locked) return; layer._go = 1; FX.tear(() => Scenes.visit(loc, slot)); };   // 防连点
       layer.appendChild(el);
     });
-    setTimeout(() => Guide.seq([["map", p.querySelector(".ap-tag")], ["map_people", p.querySelector(".marker:not(.locked)")]]), 1100);
+    setTimeout(() => Guide.seq([["map", p.querySelector(".wk-board")], ["map_people", p.querySelector(".marker:not(.locked)")]]), 1100);
     const nb = p.querySelector(".next-btn");
     nb.appendChild(receipt(slot % 3 === 2 ? "回家睡觉" : "待在家，等到" + DATA.todName[DATA.weekendSlots[slot + 1].tod], 3, () => FX.tear(() => Scenes.weekend(slot + 1))));
     nb.appendChild(receipt("结束这周", 4, () => FX.tear(() => Scenes.endWeek())));

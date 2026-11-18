@@ -9,14 +9,14 @@ const Sys = {
 
   // ===== 存档栏位：6 格手动 + 自动存档。mode: "save" | "load" =====
   slots(mode) {
-    const ids = mode === "load" ? ["auto", 1, 2, 3, 4, 5, 6] : [1, 2, 3, 4, 5, 6];
+    const ids = ["auto", 1, 2, 3, 4, 5, 6];   // 存档页也显示自动存档槽（试玩报告 49；只能读，不能手动存进去）
     const cell = (i) => {
       const d = Save.read(i);
       const ok = d && d.S && d.S.v === 2;
       const head = i === "auto" ? "自动存档" : "存档 " + i;
       return `<div class="slot ${ok ? "" : "empty"}" data-i="${i}">
         <div class="slot-thumb">${ok ? `<img src="assets/bg/${d.meta.bg}.jpg" alt="">` : ""}</div>
-        <div class="slot-info"><b>${head}</b>${ok ? `<span>${d.meta.name || ""}　${d.meta.label}</span><small>${d.meta.date}</small>` : `<span class="none">空</span>`}</div>
+        <div class="slot-info"><b>${head}</b>${ok ? `<span>${d.meta.name || ""}　${d.meta.label}</span><small>${d.meta.date}</small>` : `<span class="none">${i === "auto" ? "空 — 每周自动存" : mode === "save" ? "空 — 点这里存档" : "空"}</span>`}</div>
         ${ok && i !== "auto" ? `<button class="slot-del" data-del="${i}" title="删除">×</button>` : ""}
       </div>`;
     };
@@ -30,6 +30,7 @@ const Sys = {
         return;
       }
       if (mode === "save") {
+        if (i === "auto") return toast("自动存档每周会自己存，不能手动存进去");
         if (Save.read(i) && !confirm("覆盖这个存档？")) return;
         Save.write(i); toast("已存档"); Sys.slots(mode);
       } else if (!el.classList.contains("empty")) {

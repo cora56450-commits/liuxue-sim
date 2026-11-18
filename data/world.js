@@ -22,7 +22,7 @@ DATA.mapCity = [
   { id: "dorm_room",      name: "住处",     bg: "dorm_room",      x: 344,  y: 200, cost: 1, open: ["am", "pm", "eve"], fx: { energy: 15 },                         text: "你决定什么都不干，躺平一下午。", meet: ["roommates"] },
   { id: "campus",         name: "校园",     bg: "campus",         x: 827,  y: 175, cost: 1, open: ["am", "pm", "eve"], fx: { belonging: 1, loneliness: -3 },       text: "周末的草坪上有人在晒太阳，难得出太阳。", meet: ["mei", "ben"] },
   { id: "library",        name: "图书馆",   bg: "library",        x: 1263, y: 255, cost: 1, open: ["am", "pm"], fx: { study: 2.5, energy: -6 },            text: "周末的图书馆空荡荡的，适合补作业。", meet: ["chen_siqi", "hannah"] },
-  { id: "gym",            name: "健身房",   bg: "gym",            x: 1665, y: 230, cost: 1, open: ["am", "pm", "eve"], fx: { energy: -5, loneliness: -2 },        text: "跑步机上跑了二十分钟，你觉得自己又行了。", meet: ["otaku", "jake"] },
+  { id: "gym",            name: "健身房",   bg: "gym",            x: 1665, y: 290, cost: 1, open: ["am", "pm", "eve"], fx: { energy: -5, loneliness: -2 },        text: "跑步机上跑了二十分钟，你觉得自己又行了。", meet: ["otaku", "jake"] },
   { id: "club_room",      name: "社团活动室", bg: "club_room",    x: 264,  y: 440, cost: 1, open: ["eve"], fx: { belonging: 2, loneliness: -6 },      text: "今晚放映会，屋里黑漆漆的，屏幕上的光照在每个人脸上。", meet: ["otaku"], needTag: "otaku" },
   { id: "supermarket",    name: "超市",     bg: "supermarket_day", x: 1446, y: 415, cost: 1, open: ["am", "pm"], fx: { money: -15, energy: 5 },            text: "又是meal deal。三明治、薯片、饮料，一个都不能少。", meet: ["giulia"] },
   { id: "chinese_market", name: "中超",     bg: "chinese_market", x: 1693, y: 430, cost: 1, open: ["am", "pm"], fx: { money: -25, loneliness: -6 },        text: "货架上摆着{food}的同款调料，你站在那里看了很久。", meet: ["senior", "chen_jianguo", "wu_tong"] },
