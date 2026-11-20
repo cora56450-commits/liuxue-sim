@@ -103,16 +103,27 @@ DATA.episodes = [
     ep_pot: [
       { say: "你的锅在水槽里泡了三天。不是你泡的。" },
       { choice: [
-        { text: "洗了", fx: { energy: -3 }, then: [FLATMATES(1)] },
-        { text: "在群里问", fx: { loneliness: 1 } },
-        { text: "换个锅用", fx: { money: -8 } },
+        { text: "洗了", fx: { energy: -3 }, then: [
+          { say: "你洗了。第二天水槽里又出现了一个泡着的锅。不是你的，也不是之前那个人的。" },
+          FLATMATES(1),
+        ] },
+        { text: "在群里问", fx: { loneliness: 1 }, then: [
+          { say: "群里安静了十分钟。然后有人回：“mine, sorry!!「我的，对不起！！」”锅第二天洗好了，还多了一张便利贴：“sorry x”。" },
+        ] },
+        { text: "换个锅用", fx: { money: -8 }, then: [
+          { say: "你用了另一个锅。那个锅在水槽里又泡了两天。（我终于明白为什么英国人都有自己的锅。）" },
+        ] },
       ] },
     ],
     ep_haircut: [
       { say: "头发长到遮眼睛了。附近的理发店一次 £25；中超门口贴着一张手写广告：“中国师傅，£12。”" },
       { choice: [
-        { text: "去理发店", fx: { money: -25, belonging: 1 } },
-        { text: "找中国师傅", fx: { money: -12, loneliness: -2 } },
+        { text: "去理发店", fx: { money: -25, belonging: 1 }, then: [
+          { say: "理发师一直跟你聊天，你一半听不懂，只会说“yeah”。剪出来比你想的短。" },
+        ] },
+        { text: "找中国师傅", fx: { money: -12, loneliness: -2 }, then: [
+          { say: "师傅在自己家客厅给你剪的，一边剪一边问你哪里人。剪得很好，跟国内一样。" },
+        ] },
         { text: "自己剪", fx: { loneliness: 1 }, then: [{ say: "（剪得不太好。）" }] },
       ] },
     ],
@@ -121,13 +132,17 @@ DATA.episodes = [
       { choice: [
         { text: "问 Dave", fx: { loneliness: -2 }, then: [{ say: "它在 Dave 的办公室，他还帮你挡住了一只想咬箱子的狗。" }] },
         { text: "给快递公司打电话", fx: { energy: -5 }, then: [{ say: "等了四十分钟，挂了。" }] },
-        { text: "算了", fx: { loneliness: 2 } },
+        { text: "算了", fx: { loneliness: 2 }, then: [
+          { say: "一周以后，快递退回了国内。妈妈打电话来问：“你怎么没收？”" },
+        ] },
       ] },
     ],
     ep_vpn: [
       { say: "你想看一个国内的综艺，视频平台说“该内容仅限中国大陆地区”。" },
       { choice: [
-        { text: "开加速器，看完", fx: { energy: 5, loneliness: -3, money: -3 } },
+        { text: "开加速器，看完", fx: { energy: 5, loneliness: -3, money: -3 }, then: [
+          { say: "加速器时快时慢，你看了一集，卡了十一次。但你看完了。（三个小时的综艺，我看了五个小时。）" },
+        ] },
         { text: "放弃，看英国电视", fx: { belonging: 1 }, then: [{ say: "你看了一档烤蛋糕比赛，看到了凌晨一点。" }] },
       ] },
     ],
@@ -135,14 +150,18 @@ DATA.episodes = [
       { say: "窗外有小孩在哭，哭得很惨。你趴在窗边看了半天，是一只狐狸，在翻垃圾桶。" },
       { choice: [
         { text: "拍下来发小红书", fx: { loneliness: -1 }, then: [{ say: "评论：“英国特产”" }] },
-        { text: "关窗睡觉" },
+        { text: "关窗睡觉", then: [
+          { say: "狐狸叫了一整夜。你戴上耳塞，还是听到了。（英国的狐狸，叫起来像小孩哭。没人提前告诉过我。）" },
+        ] },
       ] },
     ],
     ep_linxiao: [
       { say: "国内的闺蜜林晓发来：“在吗？想你了。”你看了一眼时间，这边是下午，那边是凌晨一点。" },
       { choice: [
         { text: "打视频", fx: { loneliness: -4, energy: -3 }, then: [{ say: "她跟你讲了她们宿舍的八卦，你认识里面一半的人。" }] },
-        { text: "回一句“我也是”，然后去上课" },
+        { text: "回一句“我也是”，然后去上课", then: [
+          { say: "林晓回了一个抱抱的表情。下课以后你再看手机，她已经睡了。（时差就是这样的：我想她的时候，她在睡觉。）" },
+        ] },
       ] },
     ],
     ep_emails: [
@@ -158,7 +177,9 @@ DATA.episodes = [
         { text: "上去加入", fx: { belonging: 2, energy: -8, loneliness: -4 }, then: [
           { if: "性格 == 'I'", then: [{ say: "你待了二十分钟就回来了，但你去了。" }] },
         ] },
-        { text: "戴耳塞", fx: { energy: -2 } },
+        { text: "戴耳塞", fx: { energy: -2 }, then: [
+          { say: "耳塞挡住了音乐，挡不住低音。你在床上感受着地板的震动，像睡在一个巨大的音箱上。" },
+        ] },
         { text: "给 Dave 发消息", fx: { energy: 2 }, then: [{ say: "第二天音乐准时在十一点停了，没人知道是谁说的。" }] },
       ] },
     ],

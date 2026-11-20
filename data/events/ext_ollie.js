@@ -163,7 +163,7 @@ Object.assign(DATA.events, {
     // ※ ollie_corrected 和 doubt6 影响大二“我们算什么”的台词，见下面 local_trial_addon
   ],
 
-  // ===================== 五、交往后 · 阿姨好（大二春节，视频版）=====================
+  // ===================== 五、交往后 · 阿姨好（大三春节，视频版；第七批第二节 3 从大二挪来）=====================
   ollie_meet_mum: [
     { bg: "dorm_room" },
     { say: "晚上八点，家里那边凌晨四点。不对——你妈说她特意定了闹钟。" },
@@ -171,6 +171,7 @@ Object.assign(DATA.events, {
     { say: "Ollie 坐在你旁边，穿了一件你从没见过的衬衫，扣子扣到了最上面一颗。" },
     { say: "I've practised. I've practised so much. Don't help me.", name: "local", tr: "我练过了，练了好多遍。你别帮我。" },
     { say: "视频接通了。" },
+    { cg: "local_mum_call" },   // 选项走完以后收起
     { say: "他对着屏幕，一字一顿：“阿——姨——好。我——是——Ollie。”" },
     { say: "声调错了两个。你妈愣了一下，然后笑了。" },
     // 你妈接下来说什么：不是玩家选，按设定走——广东优先；家教森严（“传统”）走第三个；其余（“很宽松”）走第二个
@@ -190,18 +191,26 @@ Object.assign(DATA.events, {
         { say: "挂了以后，他问你：" },
         { say: "She didn't like me, did she?", name: "local", tr: "她不喜欢我，对吧？" },
         { choice: [
-          { text: "“她只是不知道该跟你说什么。”", fx: { aff_local: 2 } },   // 缺反应
-          { text: "“她需要时间。”", fx: { aff_local: 1 } },               // 缺反应
+          { text: "“她只是不知道该跟你说什么。”", fx: { aff_local: 2 }, then: [
+            { say: "…Yeah. Me neither, with my dad. Maybe it's a parents thing.", name: "local", tr: "……嗯。我跟我爸也是。可能是当爸妈的通病。" },
+            { say: "他好像轻松了一点。" },
+          ] },
+          { text: "“她需要时间。”", fx: { aff_local: 1 }, then: [
+            { say: "How much time?", name: "local", tr: "需要多久？" },
+            { say: "你说不知道。他点点头：" },
+            { say: "Okay. I've got time.", name: "local", tr: "好。我有时间。" },
+          ] },
         ] },
       ], else: [
         { say: "你妈用很慢的普通话说：“你好，你中文说得很好。”" },
         { say: "他听懂了“很好”。他整个人坐直了。", fx: { aff_local: 3 } },
       ] },
     ] },
+    { cg: null },
     { say: "挂了以后，他把衬衫最上面那颗扣子解开，长出一口气。" },
     { say: "I want to learn properly. Not just — words. I want to actually talk to her one day.", name: "local", tr: "我想好好学。不只是……单词。我想有一天真的能跟她聊天。" },
     { if: "标记('ollie_learn_cute') && !标记('ollie_learn_hard')", then: [
-      { say: "（他第一次说要好好学。我们认识一年多了。）" },
+      { say: "（他第一次说要好好学。我们认识两年多了。）" },   // 第七批第二节 3：挪到大三春节，“一年多”→“两年多”
     ] },
     { fx: { flag_ollie_meet_mum: 1 } },
     { hide: true },
@@ -217,14 +226,18 @@ Object.assign(DATA.events, {
   ],
 
   // ===================== 告白（覆盖 love.js 的 confess_local，引擎调用）=====================
-  // 决定记录第十节：“谁先说”改成限时选项（8 秒，唯一选项“先说出口”），删掉“等他开口”。
-  // 英语≥70 时“你先说”用英文版，他多一句反应（剧本第六节）。
+  // 剧本_攻略线与友情线.md 告白（11/19 版）：限时选项；大三第 1–6 周开头换一句；主角先说的，两个选项文字换掉、结果不变。
   confess_local: [
     { bg: "campus" },
     { show: "local", pose: "summer" },
-    { say: "六月，第一个大晴天。草坪上，他躺着，你坐着。" },
+    { if: "学年 == 3", then: [
+      { say: "九月，夏天最后一个大晴天，开学前的那个周末。草坪上铺着野餐布，他躺着，你坐着，旁边一杯快凉了的咖啡。" },
+    ], else: [
+      { say: "六月，第一个大晴天。草坪上铺着野餐布，他躺着，你坐着，旁边一杯快凉了的咖啡。" },
+    ] },
     { timed: { text: "先说出口", sec: 8,
       during: [
+        { say: "他撑起一点身子。" },
         { say: "Can I say something cheesy?", name: "local", tr: "我能说句很肉麻的话吗？" },
       ],
       then: [
@@ -244,21 +257,78 @@ Object.assign(DATA.events, {
         { fx: { flag_confess_them_first_local: 1 } },
         { say: "I really, really like you.", name: "local", tr: "我真的、真的很喜欢你。" },
       ] } },
-    { free: "告白：六月的草坪上，Ollie 说他真的很喜欢你。你说出你自己的回答", freeWho: "local", choice: [
-      { text: "“我也是。那我们算在一起了吗？”", fx: { flag_confessed_local: 1, aff_local: 5 }, then: [
-        { say: "Yeah. Yeah, of course.", name: "local", tr: "嗯，当然。" },
-        { cg: "local_confess" },
-        { say: "他说得很轻快。太轻快了，你没法确定他是认真的，还是只是顺着你说。" },
-        { cg: null },
+    { if: "标记('confess_me_first_local')", then: [
+      // 主角先说的：已经说过喜欢了，两个选项都不再说“我也是”
+      { free: "告白：你已经先跟 Ollie 说了喜欢他，他说你抢了他的台词。你已经说了喜欢他，接下来说点什么", freeWho: "local", choice: [
+        { text: "“那我们算在一起了吗？”", fx: { flag_confessed_local: 1, aff_local: 5 }, then: [ { run: "confess_local_ask" } ] },
+        { text: "（不问，靠着树坐过去一点）", fx: { flag_confessed_local: 1, aff_local: 5 }, then: [ { run: "confess_local_noask" } ] },
       ] },
-      { text: "“我也是。”（不问）", fx: { flag_confessed_local: 1, aff_local: 5 }, then: [
-        { cg: "local_confess" },
-        { say: "他撑起身子，亲了一下你的额头，然后又躺回草地上，看着天笑。" },
-        { cg: null },
+    ], else: [
+      { free: "告白：草坪上，Ollie 说他真的很喜欢你。你说出你自己的回答", freeWho: "local", choice: [
+        { text: "“我也是。那我们算在一起了吗？”", fx: { flag_confessed_local: 1, aff_local: 5 }, then: [ { run: "confess_local_ask" } ] },
+        { text: "“我也是。”（不问）", fx: { flag_confessed_local: 1, aff_local: 5 }, then: [ { run: "confess_local_noask" } ] },
       ] },
     ] },
     { hide: true },
-    // ※ 两个选项都进交往中。问题留给大二的“我们算什么”。
+    // ※ 两个选项都进交往中。问题留给大三的“我们算什么”。
+  ],
+  confess_local_ask: [
+    { say: "Yeah. Yeah, of course.", name: "local", tr: "嗯，当然。" },
+    { cg: "local_confess" },
+    { say: "他说得很轻快。太轻快了，你没法确定他是认真的，还是只是顺着你说。" },
+    { cg: null },
+  ],
+  confess_local_noask: [
+    { cg: "local_confess" },
+    { say: "他把头靠过来，挨着你的肩膀，看着天笑。过了一会儿，撑起身子亲了一下你的额头，又躺回草地上。" },
+    { cg: null },
+  ],
+
+  // ===================== BE 暗示（剧本_BE暗示.md 第三节）：考验选了“没事，就这样吧”（trial_local = -1）=====================
+  // 大三圣诞：他回萨里过圣诞，走之前
+  be_local_xmas: [
+    { show: "local" },
+    { say: "他回萨里过圣诞。走之前说：" },
+    { say: "I'll bring you something back.", name: "local", tr: "我给你带点东西回来。" },
+    { say: "他没说“你跟我一起回去”。" },
+    { hide: true },
+  ],
+  // 毕业前一周：Lottie 来城里，单独约你喝咖啡（Lottie 立绘同事在入库，id 定了以后可以加 show）
+  be_local_lottie: [
+    { bg: "brunch" },
+    { say: "Lottie 来城里，单独约你喝咖啡。" },
+    { say: "Is he still being an idiot about the labels thing?", name: "lottie", tr: "他还在‘定义关系’这件事上犯傻吗？" },
+    { choice: [
+      { text: "“嗯。”", then: [
+        { say: "她看着你，叹了口气：" },
+        { say: "Somebody has to ask him. He'll never do it himself.", name: "lottie", tr: "总得有人问他。他自己永远不会问。" },
+      ] },
+      { text: "“我没问过他。”", then: [
+        { say: "她看着你，叹了口气：" },
+        { say: "Somebody has to ask him. He'll never do it himself.", name: "lottie", tr: "总得有人问他。他自己永远不会问。" },
+      ] },
+    ] },
+    { fx: { flag_lottie_coffee: 1 } },
+  ],
+  // 最后机会（Cora 11/19 定：给）：trial_local = -1，看过 Lottie 那段。毕业典礼前一晚
+  be_local_lastchance: [
+    { show: "local" },
+    { say: "毕业典礼前一晚，Ollie 来找你，说明天他爸妈会来。" },
+    { say: "They'll take photos, you know what Mum's like.", name: "local", tr: "他们会拍照，你知道我妈什么样。" },
+    { choice: [
+      { text: "“那我站在哪？”", fx: { flag_local_asked: 1, flag_local_asked_late: 1 }, then: [
+        { say: "他愣住了。过了很久。" },
+        { say: "…Next to me. Obviously next to me. Why would you even —", name: "local", tr: "……我旁边。当然是我旁边。你怎么会——" },
+        { say: "他停下来，看着你。" },
+        { say: "Because I never said it. Right. Because I never said it.", name: "local", tr: "因为我从来没说过。对。因为我从来没说过。" },
+        { say: "You're my girlfriend. You've been my girlfriend for ages and I've been a coward about it. Stand next to me. Please.", name: "local", tr: "你是我女朋友。早就是了，是我一直不敢说。站我旁边。拜托。" },
+      ] },
+      { text: "“没事，你们拍吧。”", then: [
+        { say: "他松了一口气。" },
+        { say: "（第二天，那张合照里，我在画面最边上。）" },
+      ] },
+    ] },
+    { hide: true },
   ],
 });
 
@@ -266,19 +336,30 @@ Object.assign(DATA.events, {
 DATA.loveEvents = DATA.loveEvents || [];
 DATA.loveEvents.push(
   // 一、Ollie 好感≥20，第 5 周以后，周末第一次去 brunch 店时。只一次
-  { id: "ollie_exchange_first", who: "local", kind: "ext", place: "brunch", cond: "好感('local') >= 20 && (学年 > 1 || 周数 >= 5)", small: true },
+  // 第七批第二节 1：语言交换线是熟人→暧昧的内容，交往后停（ollie_exchange_first／hungry_msg／market_order／night_market）
+  { id: "ollie_exchange_first", who: "local", kind: "ext", place: "brunch", cond: "好感('local') >= 20 && (学年 > 1 || 周数 >= 5) && !交往中('local')", small: true },
   // 三、Ollie 好感≥45，ollie_exchange，认识陈建国，第 14 周以后，周末去中超时触发一次
-  { id: "ollie_market_order", who: "local", kind: "ext", place: "chinese_market", cond: "好感('local') >= 45 && 标记('ollie_exchange') && 友情('陈建国') > 0 && (学年 > 1 || 周数 >= 14)", small: true },
+  { id: "ollie_market_order", who: "local", kind: "ext", place: "chinese_market", cond: "好感('local') >= 45 && 标记('ollie_exchange') && 友情('陈建国') > 0 && (学年 > 1 || 周数 >= 14) && !交往中('local')", small: true },
   // 四、Ollie 好感≥50，看过心动·大衣挡雨；下一次和 Ollie 语言交换时插入（见“给引擎”），只一次
-  { id: "ollie_night_market", who: "local", kind: "ext", place: "brunch", cond: "好感('local') >= 50 && 标记('heart_local') && 标记('ollie_exchange')", small: true },
-  // 五、confessed_local，大二第一个春节期间（“春节”条件要引擎加，见“给引擎”）
-  { id: "ollie_meet_mum", who: "local", kind: "ext", cond: "交往中('local') && 学年 == 2 && 春节", small: true },
+  { id: "ollie_night_market", who: "local", kind: "ext", place: "brunch", cond: "好感('local') >= 50 && 标记('heart_local') && 标记('ollie_exchange') && !交往中('local')", small: true },
+  // 五、第七批第二节 3：交往中、大三春节（第 13 周）
+  { id: "ollie_meet_mum", who: "local", kind: "ext", cond: "交往中('local') && 学年 == 3 && 周数 == 13", small: true },
 );
 DATA.midweek = DATA.midweek || [];
 DATA.midweek.push(
   // 二、ollie_exchange 之后的下一个周三晚上
-  { id: "ollie_hungry_msg", day: "wed", time: "晚上", cond: "标记('ollie_exchange')", who: "local", prio: 2, small: true },
+  { id: "ollie_hungry_msg", day: "wed", time: "晚上", cond: "标记('ollie_exchange') && !交往中('local')", who: "local", prio: 2, small: true },
+  // BE暗示 第三节（trial_local = -1）。剧本只写了“大三圣诞”“毕业前一周”“毕业典礼前一晚”，具体周、哪天是转换时定的（见末尾给引擎）
+  { id: "be_local_xmas", day: "fri", time: "晚上", cond: "交往中('local') && 考验('local') == -1", week: 10, year: 3, who: "local", prio: 1 },
+  { id: "be_local_lottie", day: "thu", time: "下午", cond: "交往中('local') && 考验('local') == -1", week: 22, year: 3, who: "local", prio: 1 },
+  { id: "be_local_lastchance", day: "fri", time: "晚上", cond: "交往中('local') && 考验('local') == -1 && 标记('lottie_coffee')", week: 23, year: 3, who: "local", prio: 1 },
 );
+
+// ===================== BE 暗示：交往小事件结尾随机加的一句内心（剧本_BE暗示.md 第三节；引擎读，见末尾给引擎）=====================
+DATA.beHints = DATA.beHints || {};
+DATA.beHints.local = { cond: "交往中('local') && 考验('local') == -1 && !标记('local_asked_late')", perTerm: 2, lines: [
+  "（那口气，还是没咽下去。）",
+] };
 
 // 给引擎：
 // 1. Ollie 语言交换（周末活动）：解锁条件 flag_ollie_exchange（ollie_exchange_first 末尾同时设了 unlock_ollie_exchange）。
@@ -304,3 +385,14 @@ DATA.midweek.push(
 //
 // 真实地名：
 //   Yorkshire（约克郡，英格兰北部，Ollie 教的口音）；另有河内 Hanoi（越南，非英国）。没有出现真实楼名。
+// 给引擎（2026-11-19 第七批）：
+// - confess_local：大三第 1–6 周开头用 学年 == 3；主角先说时两个选项文字换掉（结果不变），自由输入场景说明分两版。
+// - ollie_meet_mum：挪到大三春节（第 13 周），上面原第 4 条“春节”条件不再用。CG local_mum_call 要在 cg.js 登记。
+// - 语言交换四段（ollie_exchange_first／hungry_msg／market_order／night_market）加了 !交往中('local')。
+// - BE 暗示（trial_local = -1）：be_local_xmas（大三第 10 周五）、be_local_lottie（第 22 周四，设 flag_lottie_coffee）、
+//   be_local_lastchance（第 23 周五，“毕业典礼前一晚”；毕业典礼在第 24 周开头，所以放在第 23 周最后）。剧本只写了“大三圣诞／毕业前一周／毕业典礼前一晚”，周和哪天是转换时定的。
+//   选“那我站在哪？”设 flag_local_asked、flag_local_asked_late：HE 好感要求 90；HE 周日烤肉里他妈妈第一句换成
+//   "So you're the one in the corner of all his graduation photos."「原来你就是他毕业照每张角落里的那个人。」（在 endings.js）
+//   Lottie 立绘同事在入库，id 定了以后 be_local_lottie 里可以加 show。
+// - DATA.beHints.local：交往小事件结尾随机加一句内心，一学期最多 2 次（perTerm），引擎读 cond／lines。
+// 缺反应：be_local_lottie 两个选项剧本只写了一个共用的反应（她叹气那句），两个选项里各放了一遍。

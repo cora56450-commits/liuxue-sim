@@ -1,6 +1,6 @@
 // 攻略线小事件·第一批（02_剧本/剧本_攻略线小事件_温情暧昧.md 第一～四节，含每段末尾的“分支补充”）
 // Ollie-小1～5 → small_local_1～5；Ploy-小1～5 → small_groupmate_1～5；Kieran-小1～5 → small_otaku_1～5；学长-小1～5 → small_senior_1～5
-// 每段只演一次，不出 CG。I人／E人分支用 性格；tag 分支各写一个 if（两个相关 tag 都有就两段都演）。
+// 每段只演一次。11/19 剧本加了 4 张 CG：local_sunday（Ollie-小5）、groupmate_harrods（Ploy-小1）、otaku_gym（Kieran-小2）、senior_ledger（学长-小1）。I人／E人分支用 性格；tag 分支各写一个 if（两个相关 tag 都有就两段都演）。
 // 新标记：flag_ollie_deodorant_talk、flag_ollie_asked_himself、flag_ollie_unstyled、flag_ploy_bus_lesson、flag_kieran_plan、flag_kieran_laoganma
 // 新物品：chanel_pouch 小香的化妆包、gold_notebook 烫金笔记本、saturn_necklace 西太后的土星项链、small_mirror 小镜子（Ploy-小2 的 I人分支）
 Object.assign(DATA.events, {
@@ -168,6 +168,7 @@ Object.assign(DATA.events, {
     { show: "local", expr: "stunned" },
     { say: "头发是乱的，没有吹，卷毛翘得到处都是。下巴上有一层浅浅的胡茬。穿着一件洗得发白、领口都松了的旧卫衣，上面印着他中学的校名。" },
     { say: "他看到你，第一反应是用手捂住了脸。" },
+    { cg: "local_sunday" },   // 【CG：Ollie·周日早上】，这一段结束前收起
     { say: "No. No no no. Give me ten minutes. I'm not — this isn't —", name: "local", tr: "不。不不不。给我十分钟。我还没——这不是——" },
     { if: "标签('昼伏夜出')", then: [
       { say: "你其实是一夜没睡，顺路过来的。他看到你的黑眼圈：" },
@@ -197,6 +198,7 @@ Object.assign(DATA.events, {
         { say: "他看起来很完美。你有一点点可惜。" },
       ] },
     ] },
+    { cg: null },
     { hide: true },
   ],
 
@@ -207,9 +209,21 @@ Object.assign(DATA.events, {
     { bg: "dept_store" },
     { show: "groupmate" },
     { say: "Ploy 带你进了骑士桥那家百货公司。她没去一楼的柜台，直接坐电梯上了五楼，一个你不知道存在的楼层。" },
+    // 家境分支第四节：富裕
+    { if: "家境 == '富裕'", then: [
+      { if: "演过('parents_visit')", then: [
+        { say: "你认得这层楼。你妈来英国的时候也来过，就是上个月。" },
+      ], else: [
+        { say: "你认得这层楼。你妈来英国的时候也来过。" },
+      ] },
+      { say: "Wait. You've been here?", name: "groupmate", tr: "等等。你来过？" },
+      { say: "她看着你，好像第一次重新认识你。" },
+      { say: "Okay. So I can't impress you with this. That's… actually kind of nice.", name: "groupmate", tr: "好吧。那这招对你没用。这……其实挺好的。" },
+    ] },
     { say: "门口的工作人员看到她，笑着说：“Miss Ploy! Welcome back. Your usual?”「Ploy 小姐！欢迎回来。还是老样子？」" },
     { say: "Two flat whites. And whatever pastries you've got. My friend's never been.", name: "groupmate", tr: "两杯平白咖啡。有什么点心都上一点。我朋友第一次来。" },
     { say: "你们坐进一个有沙发和落地镜的小房间。咖啡来了，装在瓷杯里，旁边是一小碟马卡龙。" },
+    { cg: "groupmate_harrods" },   // 【CG：Ploy·Harr○ds 私人购物间】，这一段结束前收起
     { say: "（……免费的？）" },
     { say: "It's free. Well. It's free if you spend enough. I spend enough.", name: "groupmate", tr: "免费的。嗯，消费够了就免费。我消费够了。" },
     { if: "性格 == 'I'", then: [
@@ -241,6 +255,7 @@ Object.assign(DATA.events, {
         { say: "（小票。她妈妈靠小票知道她还好。）" },
       ] },
     ] },
+    { cg: null },
     { hide: true },
   ],
 
@@ -252,6 +267,14 @@ Object.assign(DATA.events, {
     { say: "里面全是品牌送的东西：小香的化妆包、香水小样、老花的卡片夹、一本印着烫金字的笔记本、好几条丝带、一个小小的镜子。都还装在盒子里，没拆。" },
     { say: "They send me stuff every time I buy something. I don't need any of it. Pick whatever you want.", name: "groupmate", tr: "我每次买东西他们都会送。我一样都用不上。你随便挑。" },
     { say: "（“一样都用不上”的这一箱，够我在小红书上开一个开箱视频。）" },
+    // 家境分支第四节
+    { if: "家境 == '拮据'", then: [
+      { say: "（这一箱，我在小红书上见过有人卖，一个化妆包五十镑。）你挑了一个最小的镜子。她把整个化妆包塞进了你的包里。" },
+    ] },
+    { if: "家境 == '富裕'", then: [
+      { say: "你看了一眼，说“这个我有”。她愣住，然后笑出声：" },
+      { say: "finally someone who doesn't make that face", name: "groupmate", tr: "终于有人不做那个表情了" },
+    ] },
     { if: "标签('冲浪高手')", then: [
       { say: "（这一箱发到小红书上，能有十万的点赞。我忍住了。）" },
     ] },
@@ -297,6 +320,21 @@ Object.assign(DATA.events, {
     { if: "标签('省钱达人')", then: [
       { say: "你在心里算了一下这条项链的价钱，又算了一下她“没买的贵的那款”的价钱。（我决定不算了。）" },
     ] },
+    // 家境分支第四节：富裕——戴上很自然，选项换成富裕专属的两项
+    { if: "家境 == '富裕'", then: [
+      { say: "你戴上了，很自然。她看着你，有点失落：", fx: { item_saturn_necklace: 1 } },
+      { say: "You're not even a little bit surprised.", name: "groupmate", tr: "你一点都不惊讶。" },
+      { choice: [
+        { text: "“项链我有。但没人送过我。”", fx: { aff_groupmate: 3 }, then: [
+          { say: "她愣住了，然后把项链的扣子重新帮你扣了一遍，扣得很慢。" },
+          { say: "Now someone has.", name: "groupmate", tr: "现在有人送了。" },
+        ] },
+        { text: "“谢谢，很好看。”", fx: { aff_groupmate: 1 }, then: [
+          { say: "她看了你一会儿，嘴角弯了一下：" },
+          { say: "Okay. Good. I'll take 'very nice'.", name: "groupmate", tr: "好。行。‘很好看’我收下了。" },
+        ] },
+      ] },
+    ], else: [
     { free: "收下项链时说一句话", freeWho: "groupmate", choice: [
       { text: "马上戴上", fx: { aff_groupmate: 4, item_saturn_necklace: 1 }, then: [
         { say: "她帮你扣上了扣子，往后退了一步看了看。" },
@@ -307,6 +345,12 @@ Object.assign(DATA.events, {
         { say: "她想了一下，第一次没有马上回答。" },
         { say: "Because you never ask me for anything. Everyone asks me for something.", name: "groupmate", tr: "因为你从来不跟我要东西。别人都会跟我要。" },
       ] },
+    ] },
+    // 家境分支第四节：拮据
+    { if: "家境 == '拮据'", then: [
+      { say: "（这一条，是我两个月的生活费。）你没戴，放在盒子里。她发现了，没说什么，下周送了你一个 £5 的发夹：" },
+      { say: "This one you have to wear. It's cheap. You can't say no to cheap.", name: "groupmate", tr: "这个你必须戴。很便宜。便宜的你不能拒绝。" },
+    ] },
     ] },
     { if: "标签('家教森严')", then: [
       { say: "你妈后来在视频里看到了，问：“这个多少钱？谁送的？”你说“朋友送的”。她问：“什么朋友送这么贵的？”" },
@@ -329,7 +373,7 @@ Object.assign(DATA.events, {
         { say: "Devon. Okay. I can work with Devon.", name: "groupmate", tr: "德文郡派。好，我可以接受德文郡。" },
       ] },
       { text: "先果酱", fx: { aff_groupmate: 2 }, then: [
-        { say: "Cornwall! My girl! Mum's Cornwall too, she'll love you.", name: "groupmate", tr: "康沃尔派！自己人！我妈也是康沃尔派，她会喜欢你的。" },
+        { say: "Cornwall! My girl! I knew it. I'm Cornwall too.", name: "groupmate", tr: "康沃尔派！自己人！我就知道。我也是康沃尔派。" },
       ] },
       { text: "“我们中国人不分，抹一起。”", sub: "（把奶油和果酱拌在一起）", fx: { aff_groupmate: 3 }, then: [
         { say: "她看着你拌好的那一坨，沉默了三秒，然后笑到停不下来，笑到旁边桌的老太太都看过来了。" },
@@ -435,6 +479,7 @@ Object.assign(DATA.events, {
   small_otaku_2: [
     { bg: "gym" },
     { say: "你在做深蹲，动作有点歪。" },
+    { cg: "otaku_gym" },   // 【CG：Kieran·健身房】，剧本没写收起时机，段末收起
     { say: "一只手扶住了你的后背，另一只手在你的杠铃下面虚虚地托着。" },
     { show: "otaku" },
     { say: "Knees out. Chest up. You've got this. One more.", name: "otaku", tr: "膝盖往外。挺胸。你可以的。再来一个。" },
@@ -460,6 +505,7 @@ Object.assign(DATA.events, {
     { if: "标签('身强体壮')", then: [
       { say: "你又加了五公斤，做了一组。那边吹口哨的人不吹了，开始鼓掌。", fx: { aff_otaku: 1 } },
     ] },
+    { cg: null },
     { hide: true },
   ],
 
@@ -587,6 +633,7 @@ Object.assign(DATA.events, {
     { say: "学长的书桌上有一个很旧的硬皮本子，封面上用记号笔写着：2024–。" },
     { say: "你问他是什么。他犹豫了一下，递给你。" },
     { say: "是账本。手写的，从他来英国的第一天开始。每一页都分成三栏：日期、事项、金额。“接机 £30”“代购 奶粉 6 罐 佣金 £18”“泡面 £0.45”。" },
+    { cg: "senior_ledger" },   // 【CG：学长·账本】，剧本没写收起时机，段末收起
     { say: "翻到最近几页，有一栏的名字是你。" },
     { say: "10/14　{名字}　送药＋粥　£0" },
     { say: "11/02　{名字}　帮打包到两点　人工 £0（她不要）" },
@@ -615,6 +662,7 @@ Object.assign(DATA.events, {
         { say: "{今天}　{名字}　看到了这本账　£0" },
       ] },
     ] },
+    { cg: null },
     { hide: true },
   ],
 
@@ -730,7 +778,7 @@ Object.assign(DATA.events, {
     { say: "你拿起来，翻过来看了看底部。没有价签。" },
     { say: "小票我撕了。", name: "senior" },
     { say: "（他从来不撕小票。他连泡面的小票都留着。）" },
-    { say: "这次不是样品。", name: "senior" },
+    { say: "这次不是样品。", name: "senior", fx: { flag_senior_no_profit: 1 } },
     { say: "……这个也不记账。", name: "senior" },
     { if: "性格 == 'I'", then: [
       { say: "你拿着口红，一直没说话。过了很久，你把它涂上了，转过头给他看。他看了一眼，又看了一眼，然后转开了脸。", fx: { aff_senior: 2 } },
@@ -767,27 +815,27 @@ Object.assign(DATA.items = DATA.items || {}, {
 // ===== 登记表 =====
 (DATA.loveEvents = DATA.loveEvents || []).push(
   // Ollie
-  { id: "small_local_1", who: "local", kind: "small", place: "brunch", cond: "好感('local') >= 20 && 好感('local') < 40", small: true },   // 剧本：brunch 店或语言交换时
+  { id: "small_local_1", who: "local", kind: "small", place: "brunch", cond: "好感('local') >= 20 && 好感('local') < 40 && !交往中('local')", small: true },   // 剧本：brunch 店或语言交换时
   { id: "small_local_2", who: "local", kind: "small", place: ["campus", "brunch"], cond: "好感('local') >= 20 && 时段 == '上午'", small: true },
-  { id: "small_local_3", who: "local", kind: "small", place: "campus", cond: "好感('local') >= 40 && 好感('local') < 60 && (季节 == '春' || 季节 == '夏') && !下雨", small: true },
+  { id: "small_local_3", who: "local", kind: "small", place: "campus", cond: "好感('local') >= 40 && 好感('local') < 60 && (季节 == '春' || 季节 == '夏') && !下雨 && !交往中('local')", small: true },
   { id: "small_local_4", who: "local", kind: "small", place: ["brunch", "pub_street"], cond: "好感('local') >= 40", small: true },   // 要“去过 Ollie 家”，见给引擎
   { id: "small_local_5", who: "local", kind: "small", place: ["brunch", "dorm_room"], cond: "交往中('local') && 周末日 == '日' && 时段 == '上午'", small: true },
   // Ploy
-  { id: "small_groupmate_1", who: "groupmate", kind: "small", place: "london", cond: "好感('groupmate') >= 40 && 好感('groupmate') < 60", small: true },   // 走邀约系统，见给引擎
+  { id: "small_groupmate_1", who: "groupmate", kind: "small", place: "london", cond: "好感('groupmate') >= 40 && 好感('groupmate') < 60 && !交往中('groupmate')", small: true },   // 走邀约系统，见给引擎
   { id: "small_groupmate_2", who: "groupmate", kind: "small", place: ["brunch", "pub_street"], cond: "好感('groupmate') >= 40", small: true },   // 要在 Ploy-小1 之后
   { id: "small_groupmate_3", who: "groupmate", kind: "small", place: "brunch", cond: "好感('groupmate') >= 40 && (学年 >= 2 || 周数 >= 17)", small: true },   // 或主角生日那周，见给引擎
   { id: "small_groupmate_4", who: "groupmate", kind: "small", place: ["brunch", "london"], cond: "好感('groupmate') >= 40", small: true },   // Ploy 邀约的下午茶
   { id: "small_groupmate_5", who: "groupmate", kind: "small", place: "station", cond: "好感('groupmate') >= 40", small: true },
   // Kieran
-  { id: "small_otaku_1", who: "otaku", kind: "small", place: "gym", cond: "好感('otaku') >= 20", small: true },
-  { id: "small_otaku_2", who: "otaku", kind: "small", place: "gym", cond: "好感('otaku') >= 40 && 好感('otaku') < 60 && 标记('kieran_plan')", small: true },
+  { id: "small_otaku_1", who: "otaku", kind: "small", place: "gym", cond: "好感('otaku') >= 20 && !交往中('otaku')", small: true },
+  { id: "small_otaku_2", who: "otaku", kind: "small", place: "gym", cond: "好感('otaku') >= 40 && 好感('otaku') < 60 && 标记('kieran_plan') && !交往中('otaku')", small: true },
   { id: "small_otaku_3", who: "otaku", kind: "small", place: "club_room", cond: "好感('otaku') >= 20", small: true },   // 也可周中
   { id: "small_otaku_5", who: "otaku", kind: "small", place: "gym", cond: "交往中('otaku') && 标记('kieran_plan')", small: true },
   // 学长
   { id: "small_senior_1", who: "senior", kind: "small", place: "chinese_market", cond: "好感('senior') >= 20", small: true },   // 要“去过学长住处”，见给引擎
   { id: "small_senior_2", who: "senior", kind: "small", place: ["campus", "library", "chinese_market", "supermarket", "indoor_market", "brunch", "gym", "pub_street"], cond: "好感('senior') >= 20 && 下雨", small: true },   // 任意地点
-  { id: "small_senior_3", who: "senior", kind: "small", place: "chinese_market", cond: "好感('senior') >= 40 && 好感('senior') < 60", small: true },
-  { id: "small_senior_4", who: "senior", kind: "small", place: ["supermarket", "chinese_market"], cond: "好感('senior') >= 20", small: true },
+  { id: "small_senior_3", who: "senior", kind: "small", place: "chinese_market", cond: "好感('senior') >= 40 && 好感('senior') < 60 && !交往中('senior')", small: true },
+  { id: "small_senior_4", who: "senior", kind: "small", place: ["supermarket", "chinese_market"], cond: "好感('senior') >= 20 && !交往中('senior') && 学年 == 1", small: true },
   { id: "small_senior_5", who: "senior", kind: "small", place: ["campus", "library", "chinese_market", "supermarket", "indoor_market", "brunch", "gym", "pub_street"], cond: "交往中('senior')", small: true },   // 任意周末
 );
 // Kieran-小4 剧本只写“周中插播”，没有地点，进周中池
@@ -821,3 +869,12 @@ Object.assign(DATA.items = DATA.items || {}, {
 // - 德文郡（Devon）、康沃尔（Cornwall）
 // - 曼谷（Bangkok）
 // - 比斯特（Bicester，学长-小5 提到）
+
+// ===== 第七批（11/19）补充 =====
+// - 第二节第 1 小节：small_local_1、small_local_3、small_senior_3、small_otaku_1、small_otaku_2、small_groupmate_1 加 !交往中；small_senior_4 另加 学年 == 1。
+// - 新 CG：local_sunday、groupmate_harrods、otaku_gym、senior_ledger。data/cg.js 还没登记，校验会报“没有这个 CG”，入库后就好。
+//   otaku_gym、senior_ledger 剧本没写收起时机，先放在段末收起。
+// - 家境分支第四节（Ploy 送礼物）：small_groupmate_1 富裕、small_groupmate_2 拮据／富裕、small_groupmate_3 拮据／富裕。
+//   small_groupmate_3 富裕分支把原来的选项换成富裕专属两项，项链照样进背包。两个选项都缺反应。
+//   small_groupmate_3 拮据分支（“你没戴，放在盒子里……发夹”）放在选项之后；选了“马上戴上”的玩家会有点矛盾，问策划。
+// 给引擎：small_groupmate_1 富裕分支用了 演过('parents_visit')（剧本写“有 parents_visit 的话：就是上个月”）。

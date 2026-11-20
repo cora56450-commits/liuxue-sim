@@ -32,7 +32,16 @@ Object.assign(DATA.events, {
     { bg: "station" },
     { say: "大二的圣诞假怎么过？" },
     { choice: [
-      { text: "回国" }, { text: "出去旅游" }, { text: "留下打工" }, { text: "宅着" },
+      { text: "回国", then: [
+        { say: "你在家待了三周，胖了四斤。回来的时候在机场哭了一次，没让任何人看到。" },
+      ] },
+      { text: "出去旅游" },   // 剧本：【跳转：旅行系统】，没有过渡句（待策划）
+      { text: "留下打工", fx: { money: 120 }, then: [
+        { say: "圣诞节当天你也上班。店里的人给每个员工发了一顶圣诞帽。" },
+      ] },
+      { text: "宅着", then: [
+        { say: "你看完了四部剧。外面一直在下雨。（第二年的圣诞，我已经不会觉得一个人很奇怪了。）" },
+      ] },
     ] },
   ],
   y2_spring: [
@@ -99,8 +108,12 @@ Object.assign(DATA.events, {
     { if: "交往中('otaku') && !DATA.events.otaku_pub_public", then: [
       
       { choice: [
-        { text: "公开", fx: { flag_otaku_public: 1 } },
-        { text: "不公开", fx: { flag_otaku_private: 1 } },
+        { text: "公开", fx: { flag_otaku_public: 1 }, then: [
+          { say: "他深吸一口气，牵起你的手，推开了 pub 的门。" },
+        ] },
+        { text: "不公开", fx: { flag_otaku_private: 1 }, then: [
+          { say: "他说“okay”，声音很轻。那天晚上他在 pub 里笑得很大声。" },
+        ] },
       ] },
     ] },
   ],
@@ -146,8 +159,14 @@ Object.assign(DATA.events, {
   strict_video: [
     { say: "视频里被家里发现了。" },
     { choice: [
-      { text: "坦白", fx: { loneliness: 5, flag_strict_told: 1 } },
-      { text: "隐瞒", fx: { flag_strict_hidden: 1 } },
+      { text: "坦白", fx: { loneliness: 5, flag_strict_told: 1 }, then: [
+        { say: "视频那头安静了很久。爸爸先开口：“……那你自己有分寸。”妈妈没说话，但第二天给你发了一条：“他对你好吗？”" },
+      ] },
+      { text: "隐瞒", fx: { flag_strict_hidden: 1, loneliness: 3 }, then: [
+        { say: "“是同学。”妈妈看了你一眼，没再问。挂了视频以后，你很久没睡着。" },
+      ] },
     ] },
   ],
 });
+
+// 第十批 #2 缺反应补全（11/20）待策划：y2_xmas_break「出去旅游」剧本只写【跳转：旅行系统】，没有句子；选了也不会自动进旅行系统（引擎）。

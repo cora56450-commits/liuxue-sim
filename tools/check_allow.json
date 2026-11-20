@@ -29,11 +29,23 @@
     "kieran_jake_screen",
     "small_otaku_4",
     "ploy_mum_check",
-    "ploy_cantonese"
+    "ploy_cantonese",
+    "dating_local_4",
+    "dating_groupmate_3",
+    "dl_jollybea_first",
+    "trip_japan_3",
+    "enc10_gym_local_flirt",
+    "enc10_chinese_market_groupmate_flirt",
+    "enc10_chinese_market_otaku_dating",
+    "fmid_mei_a",
+    "place_campus_6"
   ],
   "_5的原因": "group_project：Ploy 外婆是广东人，故意说一句粤语；spring_festival：Ploy 用中文发“新年快乐”；stage_groupmate_date：剧本写了“（小声，用中文）”；stage_otaku_20：Kieran 在 Discord 发中文评价（剧本原文）；enc_ploy_mei：教你说“鱼蛋”。Mei 的那几个（dark_at_four、friend_mei、fire_alarm、term3_start、meet_mei、fstage_mei_80、inviteLines.mei、stageGreet.mei）：Mei 说不说中文还没定（问题记录 v0.5.0 第 1 条），定了以后从这里删掉。 第五批：Mei 的台词（y2_house_again、bd_roommate_open、bd_mei、place_dorm_room_5／8、place_gym_2、place_supermarket_7、place_indoor_market_7、place_brunch_7）同上，等定了再删；ollie_market_order 是 Ollie 在中超用中文点单（语言交换线）；kieran_messy_room、kieran_loft_fighter、kieran_jake_screen、small_otaku_4 里的中文是游戏名《胡闹客厅》《拳霸97》《怪物猎手》（剧本原文）；ploy_mum_check、ploy_cantonese 是 Ploy 学中文、说粤语的段落（剧本原文）。",
   "3": [
-    "y3_final"
+    "y3_final",
+    "ghost_first"
   ],
-  "_3的原因": "y3_final：毕设最终提交。不管自己写、赶出来还是代写，最后都是自己点提交，“网页转了一秒”对三种都成立；演之前已经让玩家先选了赶／代写（RUSH_FIRST）。"
+  "_3的原因": "y3_final：毕设最终提交。不管自己写、赶出来还是代写，最后都是自己点提交，“网页转了一秒”对三种都成立；演之前已经让玩家先选了赶／代写（RUSH_FIRST）。",
+  "_第七批": "dating_local_4 Ollie 问“我也是”什么意思、dating_groupmate_3 Ploy 跟妈妈说中文、trip_japan_3 Kieran 说日语：剧本有意的。dl_jollybea_first Mei 那句剧本只有中文（Mei 是马来西亚华人，能说中文），已记进问题记录。",
+  "_第十批": "5：enc10_gym_local_flirt/enc10_chinese_market_groupmate_flirt 括号里是动作提示（喘、泰语）不是台词；enc10_chinese_market_otaku_dating 是 Kieran 在练中文单词；fmid_mei_a 是 Mei 跟主角说中文（人设，第九批已定）；5：place_campus_6 打雪仗 Mei 说中文（人设）；3：ghost_first 本身就是“选了找代写”之后演的正文，提交那句不是先于选择的结果"
 }

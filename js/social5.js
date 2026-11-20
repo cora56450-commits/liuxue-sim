@@ -28,7 +28,16 @@ const Gift = {
     const love = DATA.loveIds.includes(c);
     S.chats[c] = S.chats[c] || [];
     S.chats[c].push({ role: "user", content: `[送了${fillText(it.name)}]`, kind: "voice", week: absWeek() });
-    const line = (pref.lines || {})[kind === "dislike" ? id : kind];   // 讨厌的有一句吐槽（按物品写）
+    // 第十批 data/daily10.js：喜欢时先找 lines.like_物品，没有用 lines.like；likeAfterAll＝“喜欢”的都送过以后只回这一句；讨厌的按物品吐槽
+    const L = pref.lines || {};
+    let line = kind === "dislike" ? L[id] : kind === "like" ? (L["like_" + id] || L.like) : L[kind];
+    if (kind === "like") {
+      S.giftLiked = S.giftLiked || {};
+      const got = S.giftLiked[c] = S.giftLiked[c] || [];
+      if (pref.likeAfterAll && (pref.like || []).every((x) => got.includes(x))) line = pref.likeAfterAll;
+      if (!got.includes(id)) got.push(id);
+    }
+    if (line && line.narr) S.chats[c].push({ role: "assistant", content: line.narr, kind: "voice" });   // （他拆开，愣了三秒）这类旁白：灰色一行
     if (line) S.chats[c].push({ role: "assistant", content: line.text || line, tr: line.tr || "" });
     S.lastMet[c] = absWeek();
     return applyFx({ [(love ? "aff_" : "fr_") + c]: d });
@@ -80,7 +89,26 @@ const Birthday = {
     const loveIn = DATA.loveIds.filter((c) => knows(c) && (S.aff[c] || 0) >= 40 && Birthday.known(c) && B.love[c]);
     for (const c of DATA.loveIds.filter((x) => knows(x) && Birthday.known(x) && (S.aff[x] || 0) >= 20 && (S.aff[x] || 0) < 40 && B.loveMsg[x])) {
       S.chats[c] = S.chats[c] || []; S.chats[c].push({ role: "assistant", content: B.loveMsg[c].text, tr: B.loveMsg[c].tr || "", scripted: true, week: absWeek() });
+      const n = S.year === 3 && ((B.laterYears || {}).y3NextYearLine || {})[c];
+      if (n) S.chats[c].push({ role: "assistant", content: n.text, tr: n.tr || "", scripted: true, week: absWeek() });
       toast(`${charName(c)} 发来一条消息`, 1800);
+    }
+    // 第十批（零碎第四节）：大二大三没交往、好感≥40 的攻略对象不约了，发“一条更长的消息”；朋友友情 30–59 一条消息；大三所有消息末尾加“明年……”
+    const LY = B.laterYears || {}, next = S.year === 3 ? LY.y3NextYearLine || {} : {};
+    const msg = (c, l) => {
+      if (!l) return;
+      S.chats[c] = S.chats[c] || []; S.chats[c].push({ role: "assistant", content: l.text, tr: l.tr || "", scripted: true, week: absWeek() });
+      if (l.after) S.chats[c].push({ role: "assistant", content: l.after, kind: "voice", scripted: true, week: absWeek() });
+      const n = S.flags["confessed_" + c] ? null : next[c];
+      if (n) S.chats[c].push({ role: "assistant", content: n.text, tr: n.tr || "", scripted: true, week: absWeek() });
+      toast(`${charName(c)} 发来一条消息`, 1800);
+    };
+    if (S.year > 1) for (const c of loveIn.filter((x) => !S.flags["confessed_" + x])) msg(c, (LY.notDatingLongMsg || {})[c]);
+    if (S.year > 1) loveIn.splice(0, loveIn.length, ...loveIn.filter((x) => S.flags["confessed_" + x]));
+    for (const [c, l] of Object.entries(B.friendMsg || {})) {
+      if (!(c in S.fr) || S.fr[c] < 30 || S.fr[c] >= 60 || !Birthday.known(c)) continue;
+      if (l.notYear3 && S.year >= 3) continue;   // 赵子豪大三起已经毕业（剧本：换成朋友圈点个赞，没做）
+      msg(c, l);
     }
     if (loveIn.length && !away) {
       for (const c of loveIn) if (DATA.events[B.love[c].invite]) await runEvent(B.love[c].invite);
@@ -174,6 +202,7 @@ const Reply = {
 DATA.neglectLines = DATA.neglectLines || {};   // { senior: [第一次, 第二次], … } 策划下一批按人写；没有的用通用一句
 const Neglect = {
   async weekly() {
+    Neglect.fade();
     for (const c of [...DATA.loveIds, ...Object.keys(S.fr)]) {
       if (!knows(c) || !DATA.characters[c] || !DATA.characters[c].contact && !DATA.loveIds.includes(c)) continue;
       const love = DATA.loveIds.includes(c), dating = !!S.flags["confessed_" + c];
@@ -182,6 +211,7 @@ const Neglect = {
       const first = love ? (dating ? 2 : 3) : 5;
       const key = "neglect_" + c, last = S.lastMet[c] || 0;
       if (S.flags[key] && S.flags[key] !== last) { S.flags[key] = 0; S.flags[key + "_read"] = 0; }   // 你找过他/她了：重新计
+      if (DATA.neglectLines[c] === false) continue;   // Mr. Khan 不发（他只催房租）
       if (gap >= first && !S.flags[key]) {
         S.flags[key] = last;
         const pool = DATA.neglectLines[c] || [];
@@ -197,6 +227,20 @@ const Neglect = {
       }
     }
   },
+};
+
+// BE 暗示（零碎第六节 1）：交往中、好感从 ≥85 掉到 85 以下的那周，对方主动发一句（DATA.fadeLines，没 Key 用；有 Key 也先用这句）
+// 每周跟着 Neglect.weekly 跑；S.fadeAff 记上周的好感
+Neglect.fade = function () {
+  S.fadeAff = S.fadeAff || {};
+  for (const c of DATA.loveIds) {
+    const now = S.aff[c] || 0, before = S.fadeAff[c];
+    S.fadeAff[c] = now;
+    const l = (DATA.fadeLines || {})[c];
+    if (!l || !S.flags["confessed_" + c] || before == null || before < 85 || now >= 85) continue;
+    S.chats[c] = S.chats[c] || []; S.chats[c].push({ role: "assistant", content: l.text, tr: l.tr || "", week: absWeek() });
+    S.unreadChat = (S.unreadChat || 0) + 1; renderPhoneDot();
+  }
 };
 
 // ===== 朋友专属好处（第三节）：到“朋友”档（60）才有；学长好感≥40 =====
@@ -243,12 +287,59 @@ const NewActs = {
     S.exchCount = S.exchCount && S.exchCount.term === term ? S.exchCount : { term, n: 0 };
     S.exchCount.n++;
     Stage.show("local");
-    const pool = (DATA.exchangePool || {})[loveStageOf("local") >= 4 ? "dating" : loveStageOf("local") >= 3 ? "flirt" : "acq"] || [];
-    const seen = S.exchSeen = S.exchSeen || {};
-    const grp = pool.find((g) => !seen[g.id]);
-    if (grp) { seen[grp.id] = 1; await runScript(grp.steps); }
-    showFx(applyFx({ money: -8, english: S.exchCount.n <= 6 ? 1 : 0, aff_local: 1 }));
+    await NewActs.exchangeScene();
+    showFx(applyFx({ money: -8, english: S.exchCount.n <= 6 ? 1 : 0, aff_local: 1, inc_ollie_exchange_n: 1 }));
     Stage.hide(true); hideDialog();
     return true;
+  },
+  // 第十批：语言交换文本池（data/events/misc10.js 的 DATA.exchangePool），周末 brunch 版和工作日 ollie_exchange 共用。
+  // 熟人（好感 20–39）acq／暧昧（40–79 没交往＝阶段 2、3）flirt／交往后 dating；演过的不重复，这一档抽完了从头再来；prefer 满足的优先。
+  pickExchange() {
+    const st = loveStageOf("local");
+    const pool = (DATA.exchangePool || {})[S.flags.confessed_local || st >= 4 ? "dating" : st >= 2 ? "flirt" : "acq"] || [];
+    if (!pool.length) return null;
+    const seen = S.exchSeen = S.exchSeen || {};
+    let left = pool.filter((g) => !seen[g.id]);
+    if (!left.length) { for (const g of pool) delete seen[g.id]; left = pool.slice(); }
+    const pref = left.filter((g) => g.prefer && evalCond(g.prefer));
+    const list = pref.length ? pref : left;
+    const grp = list[Math.floor(Math.random() * list.length)];
+    seen[grp.id] = 1;
+    return grp;
+  },
+  async exchangeScene() { const g = NewActs.pickExchange(); if (g) await runScript(g.steps); },
+  // 工作日 ollie_exchange（data/daily10.js）：这周排过的话，周结算后演一组（一周只演一次；效果在活动 fx 里，结算时已经算过）。
+  // 要 scenes.js 在 settle 里调：if (S.schedule.includes("ollie_exchange")) await NewActs.weekdayExchange();
+  async weekdayExchange() {
+    if (!S.flags.ollie_exchange || S.flags.exch_wd_week === absWeek()) return false;
+    S.flags.exch_wd_week = absWeek();
+    hideAll(); setBg("brunch"); Stage.show("local");
+    await NewActs.exchangeScene();
+    Stage.hide(true); hideDialog();
+    return true;
+  },
+};
+
+// ===== 商店货架（剧本_送礼商店与冷落台词.md 第一节；data/daily10.js 的 DATA.shopShelf）=====
+// 去这个地点结算完弹“顺便买点什么？”，可以不买；买了扣钱、进背包；一样东西一周最多买 1 个。
+// 要 scenes.js 在周末地点结算之后调：await Shop.offer(loc.id)
+const Shop = {
+  list(loc) {
+    S.shopWeek = S.shopWeek && S.shopWeek.wk === absWeek() ? S.shopWeek : { wk: absWeek() };
+    return ((DATA.shopShelf || {})[loc] || []).filter((x) => DATA.items[x.id] && !S.shopWeek[x.id] && (!x.if || evalCond(x.if)));
+  },
+  async offer(loc) {
+    let list = Shop.list(loc);
+    while (list.length) {
+      sayStatic("顺便买点什么？");
+      const opts = list.map((x) => ({ text: fillText(DATA.items[x.id].name), sub: `£${x.price}`, disabled: S.stats.money < x.price }));
+      const i = await choose([...opts, { text: "不买了" }]);
+      hideDialog();
+      if (i >= list.length) return;
+      const x = list[i];
+      S.shopWeek[x.id] = 1;
+      showFx(applyFx({ money: -x.price, ["item_" + x.id]: 1 }));
+      list = Shop.list(loc);
+    }
   },
 };

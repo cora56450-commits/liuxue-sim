@@ -17,52 +17,55 @@ window.DATA = window.DATA || {};
 DATA.characters = {
   // ===== 主角 =====
   me: { name: "我", short: "我", height: 162, color: "#FF7A45", lang: "zh", isPlayer: true,
-    sprites: { autumn: "chara/me/autumn.png", winter: "chara/me/winter.png", home: "chara/me/home.png" },
+    sprites: { autumn: "chara/me/autumn.png", winter: "chara/me/winter.png", home: "chara/me/home.png", summer: "chara/me/summer.png", gown: "chara/me/gown.png" },   // 第十批：夏装、学位服
     avatars: { autumn: "chara/me/autumn_avatar.png", winter: "chara/me/winter_avatar.png", home: "chara/me/home_avatar.png" },
     // 头像表情（试玩报告 57）：{ 衣服: { happy, sad, sick, tired, speechless, surprised } }，图到了填进来；没有的表情不显示头像
     avatarFaces: {},
-    calib: { autumn: { top: 0.0365, chin: 0.35 }, winter: { top: 0.0321, chin: 0.283 }, home: { top: 0.0252, chin: 0.367 } } },
+    calib: { autumn: { top: 0.0365, chin: 0.35 }, winter: { top: 0.0321, chin: 0.283 }, home: { top: 0.0252, chin: 0.367 }, summer: { top: 0.02, chin: 0.29 }, gown: { top: 0.10, chin: 0.352, hat: true } } },
 
   // ===== 攻略对象 =====
-  senior: { name: "林子航", short: "学长", height: 178, color: "#3A4766", lang: "zh", love: true,
+  senior: { name: "林子航", short: "学长", plate: "林子航", height: 178, color: "#3A4766", lang: "zh", love: true,
     persona: "中国学长，在这座城市第三四年。热心带新生，同时在做租房中介和代购，帮人是真心，赚佣金也是真的。说话圆滑、笑眯眯，营业笑和真心笑不一样。",
     // 2026-11-17 Cora：学长就用“可攻略对象初始立绘”里的两张（常规＝base、夏装＝summer），先不加表情差分。
     // 旧的表情图还在 assets/chara/senior/expr_*.png，以后要用把 exprOld 改回 expr 就行。
-    sprites: { base: "chara/senior/base.png", summer: "chara/senior/summer.png" },
+    sprites: { base: "chara/senior/base.png", summer: "chara/senior/summer.png", work: "chara/senior/work.png" },   // 第十批：工作装，大二起默认（yearPose）
+    yearPose: { 2: "work", 3: "work" },
+    expr: { smile: "chara/senior/n_smile.png", shy: "chara/senior/n_shy.png", sad: "chara/senior/n_sad.png", annoyed: "chara/senior/n_annoyed.png" },   // 第十批：四张新表情（透明底，画到大腿）   // 2026-11-19 第七批：害羞、伤心两张新表情（画到膝盖），别的表情还用 base
     exprOld: { normal: "chara/senior/expr_1.png", smile: "chara/senior/expr_2.png", annoyed: "chara/senior/expr_3.png", shy: "chara/senior/expr_4.png",
             surprised: "chara/senior/expr_5.png", speechless: "chara/senior/expr_6.png", bizsmile: "chara/senior/expr_7.png" },
-    exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", bizsmile: "营业笑" },
-    calib: { base: { top: 0.0304, chin: 0.268 }, summer: { top: 0.02, chin: 0.301 } } },
+    exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", bizsmile: "营业笑", sad: "伤心" },
+    calib: { base: { top: 0.0304, chin: 0.268 }, summer: { top: 0.02, chin: 0.301 }, work: { top: 0.0276, chin: 0.205 }, expr_smile: { top: 0.0297, chin: 0.2 }, expr_shy: { top: 0.0228, chin: 0.2 }, expr_sad: { top: 0.029, chin: 0.205 }, expr_annoyed: { top: 0.0193, chin: 0.215 } } },
 
   local: { name: "Ollie", short: "Ollie", height: 187, color: "#E07A9A", lang: "en", love: true,
     persona: "本地英国男生，帅，服美役，情绪价值很足，每次约会都夸你好看，会认真练你名字的发音。对中国的了解来自短视频和外卖。关系一直不愿意定义。用英文夹少量中文和对方聊天。",
     sprites: { base: "chara/local/base.png", summer: "chara/local/summer.png", coffee: "chara/local/coffee.png" },
-    expr: { normal: "chara/local/expr_1.png", smile: "chara/local/expr_2.png", annoyed: "chara/local/expr_3.png", shy: "chara/local/expr_4.png",
-            surprised: "chara/local/expr_5.png", speechless: "chara/local/expr_6.png", stunned: "chara/local/expr_7.png" },
-    exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", stunned: "愣住" },
-    calib: { base: { top: 0.0039, chin: 0.273 }, summer: { top: 0.0234, chin: 0.308 }, coffee: { top: 0.0165, chin: 0.296 }, expr_normal: { top: 0.0035, chin: 0.31 }, expr_smile: { top: 0.0028, chin: 0.31 }, expr_annoyed: { top: 0.0035, chin: 0.31 }, expr_shy: { top: 0.0028, chin: 0.31 }, expr_surprised: { top: 0.0028, chin: 0.31 }, expr_speechless: { top: 0.0035, chin: 0.31 }, expr_stunned: { top: 0.0028, chin: 0.31 } } },
+    expr: { normal: "chara/local/expr_1.png", smile: "chara/local/n_smile.png", annoyed: "chara/local/n_annoyed.png", shy: "chara/local/n_shy.png",
+            surprised: "chara/local/expr_5.png", speechless: "chara/local/expr_6.png", stunned: "chara/local/expr_7.png", sad: "chara/local/n_sad.png" },   // 第十批：笑／害羞／伤心／不满换成新图（透明底）   // 第七批：害羞换新图（旧的 expr_4 还在），伤心新加
+    exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", stunned: "愣住", sad: "伤心" },
+    calib: { base: { top: 0.0039, chin: 0.273 }, summer: { top: 0.0234, chin: 0.308 }, coffee: { top: 0.0165, chin: 0.296 }, expr_normal: { top: 0.0035, chin: 0.31 }, expr_smile: { top: 0.0407, chin: 0.225 }, expr_annoyed: { top: 0.0214, chin: 0.23 }, expr_shy: { top: 0.0325, chin: 0.215 }, expr_surprised: { top: 0.0028, chin: 0.31 }, expr_speechless: { top: 0.0035, chin: 0.31 }, expr_stunned: { top: 0.0028, chin: 0.31 }, expr_sad: { top: 0.0483, chin: 0.225 } } },
 
   groupmate: { name: "Ploy", short: "Ploy", height: 168, color: "#FF7A45", lang: "en", love: true,
     persona: "国际生女生，家里有钱、长得好看，魅力大，小组作业经常划水但presentation当天光彩照人。会拉你进她的圈子。用英文聊天。",
     sprites: { base: "chara/groupmate/base.png", summer: "chara/groupmate/summer.png", home: "chara/groupmate/home.png" },
+    expr: { smile: "chara/groupmate/n_smile.png", shy: "chara/groupmate/n_shy.png", sad: "chara/groupmate/n_sad.png", angry: "chara/groupmate/n_angry.png", annoyed: "chara/groupmate/n_angry.png" },   // 第十批：四张新表情；剧本写“不满”的用生气   // 2026-11-19 第七批：伤心（画到膝盖）；害羞还没到
     // 2026-11-17 Cora：Ploy 先不加表情差分（只有 Kieran 和 Ollie 用差分），用常规／夏装／素颜三张；以后要用把 exprOld 改回 expr
     exprOld: { normal: "chara/groupmate/expr_1.png", smile: "chara/groupmate/expr_2.png", annoyed: "chara/groupmate/expr_3.png", shy: "chara/groupmate/expr_4.png",
             surprised: "chara/groupmate/expr_5.png", speechless: "chara/groupmate/expr_6.png" },
-    exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语" },
-    calib: { base: { top: 0.0286, chin: 0.338 }, summer: { top: 0.0148, chin: 0.315 }, home: { top: 0.0113, chin: 0.362 } } },
+    exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", sad: "伤心", angry: "生气" },
+    calib: { base: { top: 0.0286, chin: 0.338 }, summer: { top: 0.0148, chin: 0.315 }, home: { top: 0.0113, chin: 0.362 }, expr_smile: { top: 0.0325, chin: 0.265 }, expr_shy: { top: 0.018, chin: 0.25 }, expr_sad: { top: 0.0283, chin: 0.255 }, expr_angry: { top: 0.0304, chin: 0.258 }, expr_annoyed: { top: 0.0304, chin: 0.258 } } },
 
   otaku: { name: "Kieran", short: "Kieran", height: 184, color: "#6DB3A6", lang: "en", love: true, hidden: "otaku",
     persona: "本地英国男生，资深二次元，练肌肉防止被当成nerd，姜红色鲻鱼头。嘴笨、护短，认定了就很认真，但不敢让朋友知道自己的爱好。用英文聊天，聊到番会突然话多。",
     sprites: { base: "chara/otaku/base.png", summer: "chara/otaku/summer.png", club: "chara/otaku/club.png", figure: "chara/otaku/figure.png" },
-    expr: { normal: "chara/otaku/expr_1.png", smile: "chara/otaku/expr_2.png", annoyed: "chara/otaku/expr_3.png", shy: "chara/otaku/expr_4.png",
-            surprised: "chara/otaku/expr_5.png", speechless: "chara/otaku/expr_6.png", sparkle: "chara/otaku/expr_7.png" },
-    exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", sparkle: "聊到番时眼睛发亮" },
-    calib: { base: { top: 0.0048, chin: 0.272 }, summer: { top: 0.0304, chin: 0.34 }, club: { top: 0.0321, chin: 0.308 }, figure: { top: 0.0373, chin: 0.318 }, expr_normal: { top: 0.0055, chin: 0.359 }, expr_smile: { top: 0.0076, chin: 0.359 }, expr_annoyed: { top: 0.0069, chin: 0.359 }, expr_shy: { top: 0.0055, chin: 0.359 }, expr_surprised: { top: 0.0069, chin: 0.359 }, expr_speechless: { top: 0.0062, chin: 0.359 }, expr_sparkle: { top: 0.0055, chin: 0.359 } } },
+    expr: { normal: "chara/otaku/expr_1.png", smile: "chara/otaku/expr_2.png", annoyed: "chara/otaku/n_annoyed.png", shy: "chara/otaku/n_shy.png",
+            surprised: "chara/otaku/expr_5.png", speechless: "chara/otaku/expr_6.png", sparkle: "chara/otaku/n_sparkle.png", sad: "chara/otaku/n_sad.png" },   // 第十批：害羞／伤心／不满／眼睛发亮换新图
+    exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", sparkle: "聊到番时眼睛发亮", sad: "伤心" },
+    calib: { base: { top: 0.0048, chin: 0.272 }, summer: { top: 0.0304, chin: 0.34 }, club: { top: 0.0321, chin: 0.308 }, figure: { top: 0.0373, chin: 0.318 }, expr_normal: { top: 0.0055, chin: 0.359 }, expr_smile: { top: 0.0076, chin: 0.359 }, expr_annoyed: { top: 0.029, chin: 0.25 }, expr_shy: { top: 0.0283, chin: 0.26 }, expr_surprised: { top: 0.0069, chin: 0.359 }, expr_speechless: { top: 0.0062, chin: 0.359 }, expr_sparkle: { top: 0.0249, chin: 0.285 }, expr_sad: { top: 0.0304, chin: 0.255 } } },
 
   // ===== 固定 NPC =====
   nikos:        { name: "Dr. Nikos Lambert", short: "Nikos", height: 183, color: "#3A4766", lang: "en", sprites: { base: "chara/npc/nikos.png" },        calib: { base: { top: 0.0252, chin: 0.277 } } },
-  khan:         { name: "Mr. Khan",          short: "Mr. Khan", height: 182, color: "#3A4766", lang: "en", sprites: {},                                   friend: { from: "uk" }, contact: true, persona: "社会房的中介兼房东，自己也是移民来的，第一套房子也被扣过押金。只聊房子的事：租约、账单、维修、押金，别的话题礼貌地绕回房子。用英文。",
-                calib: {} },  // 没有立绘，显示名牌
+  khan:         { name: "Mr. Khan",          short: "Mr. Khan", height: 175, color: "#3A4766", lang: "en", sprites: { base: "chara/npc/khan.png" },        friend: { from: "uk" }, contact: true, persona: "社会房的中介兼房东，自己也是移民来的，第一套房子也被扣过押金。只聊房子的事：租约、账单、维修、押金，别的话题礼貌地绕回房子。用英文。",
+                calib: { base: { top: 0.0221, chin: 0.26 } } },  // 2026-11-19 第七批：有立绘了
   jake:         { name: "Jake",              short: "Jake",  height: 180, color: "#8A8FA3", lang: "en", sprites: { base: "chara/npc/jake.png" },         friend: { from: "uk", roommate: "hall", event: true }, contact: true, persona: "英国大一新生，学校宿舍的室友。新生周天天凌晨三点回，厨房垃圾满了从来不倒；在家什么都是妈妈做的。想回老家当体育老师。人不坏，有点没心没肺。用英文。",
                 calib: { base: { top: 0.0347, chin: 0.297 } } },
   ben:          { name: "Ben",               short: "Ben",   height: 178, color: "#4E7A5A", lang: "en", sprites: { base: "chara/npc/ben.png" },          friend: { from: "uk" }, contact: true, persona: "小组组员，家里第一个上大学的人，其实同时打着两份工，所以ddl前总失踪。回消息很慢，经常只回一个表情或者 sorry。用英文。",
@@ -73,7 +76,7 @@ DATA.characters = {
   dave:         { name: "Dave",              short: "Dave",  height: 175, color: "#C9A227", lang: "en", sprites: { base: "chara/npc/dave.png" },         calib: { base: { top: 0.0556, chin: 0.294 } } },
   chen_jianguo: { name: "陈建国",            short: "陈老板", height: 172, color: "#4E7A5A", lang: "zh", sprites: { base: "chara/npc/chen_jianguo.png" }, friend: { from: "cn", event: true }, contact: true, persona: "中超老板，温州人，2000年代来英国，从后厨做到开店。女儿在读A-level，常向你打听英国大学；会给你留冻饺子、帮你兑硬币。说中文，带一点温州口音的普通话。",
                 calib: { base: { top: 0.0399, chin: 0.284 } } },
-  giulia:       { name: "Giulia",            short: "Giulia", height: 170, color: "#2A3150", lang: "en", sprites: { base: "chara/npc/giulia.png" },      friend: { from: "intl", roommate: "hall", event: true }, contact: true, persona: "意大利室友，在博洛尼亚长大，做意面是奶奶教的。看你用微波炉热意面会心碎，自己却往饺子上倒番茄酱，你们互相吐槽对方的吃法。想回意大利开小餐馆。用英文，偶尔蹦意大利语。",
+  giulia:       { name: "Giulia",            short: "Giulia", height: 166, color: "#2A3150", lang: "en", sprites: { base: "chara/npc/giulia.png" },      friend: { from: "intl", roommate: "hall", event: true }, contact: true, persona: "意大利室友，在博洛尼亚长大，做意面是奶奶教的。看你用微波炉热意面会心碎，自己却往饺子上倒番茄酱，你们互相吐槽对方的吃法。想回意大利开小餐馆。用英文，偶尔蹦意大利语。",
                 calib: { base: { top: 0.0252, chin: 0.353 } } },
   zhou_kexin:   { name: "周可欣",            short: "周可欣", height: 167, color: "#C9A27A", lang: "zh", sprites: { base: "chara/npc/zhou_kexin.png" },  friend: { from: "cn", roommate: "ensuite", event: true }, contact: true, persona: "上海人，传媒专业，ensuite室友。男朋友在伦敦，每周五坐火车去、周日晚上回；宿舍群里发言最多，但人一半时间不在。说中文，偶尔夹上海话。",
                 calib: { base: { top: 0.0278, chin: 0.273 } } },
@@ -82,6 +85,12 @@ DATA.characters = {
   hannah:       { name: "Hannah",            short: "Hannah", height: 165, color: "#3A4766", lang: "en", sprites: { base: "chara/npc/hannah.png" },      friend: { from: "uk", event: true }, contact: true, persona: "小组组员，拿奖学金上的大学，会把所有人负责的部分都重写一遍——其实是怕挂科丢掉奖学金。认真、爱列清单、说话快。用英文。",
                 calib: { base: { top: 0.0339, chin: 0.362 } } },
   yu_xiao:      { name: "于晓",              short: "于晓",  height: 163, color: "#B8A77A", lang: "zh", sprites: { base: "chara/npc/yu_xiao.png" },      calib: { base: { top: 0.0391, chin: 0.343 } } },
+  // 2026-11-19 第七批新立绘（身高策划先定，Cora 有意见再改；下巴是在带刻度的截图上人工量的）
+  pa_nok:       { name: "Pa Nok",            short: "Pa Nok", height: 155, color: "#C9A227", lang: "en", sprites: { base: "chara/npc/pa_nok.png" },     calib: { base: { top: 0.0242, chin: 0.30 } } },
+  siobhan:      { name: "Siobhan",           short: "Siobhan", height: 165, color: "#C2563E", lang: "en", sprites: { base: "chara/npc/siobhan.png" },   calib: { base: { top: 0.0352, chin: 0.33 } } },
+  lottie:       { name: "Lottie",            short: "Lottie", height: 168, color: "#E07A9A", lang: "en", sprites: { base: "chara/npc/lottie.png" },     calib: { base: { top: 0.0338, chin: 0.32 } } },
+  mum:          { name: "妈妈",              short: "妈妈",   height: 160, color: "#B8A77A", lang: "zh", sprites: { base: "chara/npc/mum.png" },        calib: { base: { top: 0.0249, chin: 0.27 } } },
+  dad:          { name: "爸爸",              short: "爸爸",   height: 172, color: "#3A4766", lang: "zh", sprites: { base: "chara/npc/dad.png" },        calib: { base: { top: 0.0345, chin: 0.255 } } },
   linda:        { name: "Linda",             short: "Linda", height: 162, color: "#B79AD0", lang: "en", sprites: { base: "chara/npc/linda.png" },        calib: { base: { top: 0.0243, chin: 0.331 } } },
   mei:          { name: "Mei",               short: "Mei",   height: 160, color: "#2A3150", lang: "en", sprites: { base: "chara/npc/mei.png" },          friend: { from: "intl", roommate: "hall", event: true }, contact: true, persona: "马来西亚华人室友，吉隆坡长大，家里说粤语。中文、英文、粤语混着说，是flat里唯一能听懂你打电话骂人的人。想去新加坡工作。",
                 calib: { base: { top: 0.0295, chin: 0.306 } } },

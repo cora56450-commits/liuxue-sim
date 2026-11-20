@@ -33,8 +33,9 @@ const run = vm.runInContext(`(function (cfg) {
   };
   // 这个人的小事件池：loveEvents 里 small 的、周中插播 small 的、地点小剧情里有他/她的
   const smallFor = (c) => [
-    ...DATA.loveEvents.filter((e) => e.small && e.who === c).map((e) => ({ id: e.id, cond: e.cond, place: e.place })),
-    ...DATA.midweek.filter((e) => e.small && e.who === c).map((e) => ({ id: e.id, cond: e.cond, mid: true })),
+    ...DATA.loveEvents.filter((e) => (e.small || e.bridge) && e.who === c).map((e) => ({ id: e.id, cond: e.cond, place: e.place, bridge: !!e.bridge })),
+    ...(DATA.loveEncounters || []).filter((e) => e.who === c).map((e) => ({ id: e.id, cond: e.cond, place: e.place, stage: e.stage })),
+    ...DATA.midweek.filter((e) => (e.small || e.bridge) && e.who === c).map((e) => ({ id: e.id, cond: e.cond, mid: true })),
     ...DATA.placePool.filter((e) => (e.people || []).includes(c)).map((e) => ({ id: e.id, cond: e.cond, place: e.place, pool: true })),
   ].map((e) => ({ ...e, aff: maxAff(DATA.events[e.id], c) })).filter((e) => e.aff > 0);
   const POOLS = {}; for (const c of DATA.loveIds) POOLS[c] = smallFor(c);
@@ -48,6 +49,8 @@ const run = vm.runInContext(`(function (cfg) {
   for (const c of roommates()) knowFriend(c);
   const targets = cfg.targets || [];
   for (const c of targets) { S.flags["met_" + c] = 1; S.aff[c] = 5; S.lastMet[c] = 1; }
+  S.eve = {}; S.confAt = {}; S.confAbs = {};
+  Object.assign(S.flags, cfg.flags || {});
   if (targets.includes("otaku") && !S.tags.includes("otaku")) S.tags.push("otaku");
   const loc = (id) => DATA.mapCity.find((l) => l.id === id);
   const W = { home: "dorm_room", social: "pub_street", brunch: "brunch", chinese: "chinese_market", lib: "library" };
@@ -55,34 +58,49 @@ const run = vm.runInContext(`(function (cfg) {
   const fixedGive = (c, v) => { S.affCtx = "fixed"; applyFx({ ["aff_" + c]: v }); S.affCtx = null; };
   const normalGive = (c, v) => { S.affCtx = "normal"; applyFx({ ["aff_" + c]: v }); S.affCtx = null; };
 
+  // 2026-11-19 第六批（恋爱节奏调整_1118）：每周上限 4、聊天每周最多 +2、阶段门 59／79；心动最早大一第 12 周、推进最早大二第 8 周
+  // （Kieran 大二第 13 周、Ploy 大二第 18／20 周或大三第 10 周）、告白窗口大二第 20–24 周／大三第 1–6 周，都要“当周见过面”，告白前一周先铺垫。
+  const chatGive = (c, v) => { S.affCtx = "chat"; applyFx({ ["aff_" + c]: v }); S.affCtx = null; };
+  const met = {};
+  const advOk = (c) => c === "otaku" ? S.year === 2 && S.week === 13 : c === "groupmate" ? (S.year === 2 && [18, 20].includes(S.week)) || (S.year === 3 && S.week === 10)
+    : S.year === 3 || (S.year === 2 && S.week >= 8);
+  const inWin = () => (S.year === 2 && S.week >= 20 && S.week <= 24) || (S.year === 3 && S.week >= 1 && S.week <= 6);
+  const inEve = () => (S.year === 2 && S.week >= 19 && S.week <= 23) || (S.year === 3 && S.week >= 1 && S.week <= 5);
   const weekLove = (cal) => {
+    const busy = cfg.laterBusy && S.year > 1;   // 大二大三一直卷：三周聊一次、不约会、不出门
     for (const c of targets) {
-      const st = loveStageOf(c), a = S.aff[c];
-      // 聊天：每周一次（AI 给 0–3，按 2 算）
-      const busy = cfg.laterBusy && S.year > 1;   // 大二大三一直卷：三周聊一次、不约会
-      if (cfg.chat && (!busy || absWeek() % 3 === 0)) { normalGive(c, 2); S.lastMet[c] = absWeek(); }
-      // 约会：好感够门槛（邀约系统：熟人以上）每两周一次
-      if (cfg.date && !busy && a >= 20 && absWeek() % 2 === 0 && !cal.vacation) { normalGive(c, Invites_T.goneLove); S.lastMet[c] = absWeek(); S.weekendDates.push(c); }
-      // 原攻略线固定事件
-      if (a >= 40 && !S.flags["heart_" + c] && Math.random() < 0.35) { S.flags["heart_" + c] = 1; fixedGive(c, 5); }
-      const advWin = S.year === 1 ? S.week >= 10 && S.week <= 22 : S.year === 2 && S.week <= 10;
-      if (a >= 65 && S.flags["heart_" + c] && !S.flags["advance_" + c] && advWin && Math.random() < 0.4) { S.flags["advance_" + c] = 1; fixedGive(c, 5); }
-      const confWin = (S.year === 1 && S.week >= 24) || !!cal.confess;
-      if (a >= 80 && S.flags["advance_" + c] && !S.flags["confessed_" + c] && !S.flags["confess_done_" + c] && confWin) { S.flags["confess_done_" + c] = 1; S.flags["confessed_" + c] = 1; fixedGive(c, 6); }
-      // 小事件：周末去两个地点、周中一次机会；条件满足、没演过的随机演一段
-      if (!cal.vacation) {
-        const can = POOLS[c].filter((e) => !S.flags["simseen_" + e.id] && evalCond(e.cond));
-        const tries = (cfg.small === false ? 0 : 2) + (can.some((e) => e.mid) ? 1 : 0);
-        for (let k = 0; k < tries && can.length; k++) {
-          if (Math.random() > 0.45) continue;
+      const a = S.aff[c];
+      met[c] = false;
+      // 聊天：每周一次（AI 给 0–3，按 2 算；刷聊天的人聊得再多，每周也只算 +2）
+      if (cfg.chat && (!busy || absWeek() % 3 === 0)) { chatGive(c, 2); S.lastMet[c] = absWeek(); }
+      // 约会：好感≥20 每三周一次
+      if (cfg.date && !busy && a >= 20 && absWeek() % 3 === 0 && !cal.vacation) { normalGive(c, Invites_T.goneLove); S.lastMet[c] = absWeek(); S.weekendDates.push(c); met[c] = true; }
+      // 周末去地点：一半机会碰到
+      if (cfg.outing && !busy && !cal.vacation && Math.random() < 0.5) met[c] = true;
+      S.metWk = S.metWk || {}; if (met[c]) S.metWk[c] = absWeek();
+      // 小事件：周末碰到时演一段、周中一次机会（相识、没资格吃醋、温情暧昧、交往后、地点偶遇……条件满足、没演过的随机一段）
+      if (!cal.vacation && cfg.small !== false) {
+        const can = POOLS[c].filter((e) => !S.flags["simseen_" + e.id] && (!e.stage || e.stage === (S.flags["confessed_" + c] ? "dating" : S.aff[c] >= 40 ? "flirt" : "acquaint")) && evalCond(e.cond) && (e.mid || met[c]));
+        for (let k = 0; k < 2 && can.length; k++) {
+          if (Math.random() > 0.5) continue;
           const e = can.splice(Math.floor(Math.random() * can.length), 1)[0];
           S.flags["simseen_" + e.id] = 1;
-          const b = S.aff[c]; S.affCtx = "small"; applyFx({ ["aff_" + c]: e.aff }); S.affCtx = null;
+          const b = S.aff[c]; S.affCtx = e.bridge ? "bridge" : "small"; applyFx({ ["aff_" + c]: e.aff }); S.affCtx = null;
+          if (e.bridge && S.aff[c] >= 35 && S.aff[c] < 40) S.aff[c] = 40;
           sm.small++; sm.smallAff += S.aff[c] - b; S.lastMet[c] = absWeek();
         }
       }
+      if (!met[c]) continue;
+      // 原攻略线固定事件（当周见过面才有）：心动、推进按一半机会（各自还有地点／前置条件）
+      if (S.aff[c] >= 40 && !S.flags["heart_" + c] && (S.year > 1 || S.week >= 12) && Math.random() < 0.5) { S.flags["heart_" + c] = 1; fixedGive(c, 5); continue; }
+      if (S.aff[c] >= 65 && S.flags["heart_" + c] && !S.flags["advance_" + c] && advOk(c) && Math.random() < (c === "otaku" || c === "groupmate" ? 1 : 0.5)) { S.flags["advance_" + c] = 1; fixedGive(c, 5); continue; }
+      // 告白：前一周铺垫，下一周起在窗口里、见过面就告白（想走 HE 的玩家：答应）
+      if (S.aff[c] >= 80 && S.flags["advance_" + c] && !S.flags["confessed_" + c]) {
+        if (S.eve[c] != null && S.eve[c] < absWeek() && inWin()) { S.flags["confessed_" + c] = 1; S.confessWk = S.confessWk || {}; S.confessWk[c] = absWeek(); S.confAt[c] = (S.year === 2 ? "大二" : "大三") + "第" + S.week + "周"; S.confAbs[c] = absWeek(); fixedGive(c, 6); }
+        else if (S.eve[c] == null && inEve()) S.eve[c] = absWeek();
+      }
     }
-    // 考验（大二大三周历上挂的周）：交往中、好感≥70 的 80% 过
+    // 考验（大三周历上挂的周，条件里有“告白后几周”）：交往中、好感≥70 的 80% 过
     for (const t of cal.trials || []) {
       if (!targets.includes(t.who) || !S.flags["confessed_" + t.who] || S.flags["trial_" + t.who]) continue;
       if (t.if && !evalCond(t.if)) continue;
@@ -94,6 +112,12 @@ const run = vm.runInContext(`(function (cfg) {
     if (cal.vacation) { S.stats.energy = energyMax(); applyFx({ loneliness: -5 }); S.schedule = []; weekLove(cal); Rules.weekEnd(cal); return; }
     let p = plan(S.stats.energy, S.year);
     if (Rules.needRush()) { S.rushWeek = true; p = Array(5).fill("homework"); S.stats.energy = Math.max(0, S.stats.energy + Rules.rushEnergy()); }
+    // 第十批固定课表：锁住的那几格是上课，其余几格按原来的比例放（原计划去掉“上课”后依次填）
+    const fixed = Rules.fixedDays();
+    if (fixed.length && !S.rushWeek) {
+      const rest = p.filter((x) => x !== "class"); let k = 0;
+      p = [0, 1, 2, 3, 4].map((i) => fixed.includes(i) ? "class" : (rest.length ? rest[k++ % rest.length] : "home"));
+    }
     S.schedule = p;
     p.forEach((a) => Rules.doActivity(a, {}));
     S.sickLock = 0;
@@ -114,10 +138,10 @@ const run = vm.runInContext(`(function (cfg) {
     if (year === 1) for (let k = 0; k < 13; k++) { S.week++; Rules.weekStart(); }   // 暑假
   }
   if (cfg.stay) S.flags.stay_uk = 1;
-  S.flags.local_asked = 1; S.flags.otaku_public = 1;   // 想走 HE 的玩家：Ollie 问出口、Kieran 公开
+  if (!cfg.noAsk) S.flags.local_asked = 1; S.flags.otaku_public = 1;   // 想走 HE 的玩家：Ollie 问出口、Kieran 公开
   const e = Rules.ending();
   return { main: e.main.id, he: Object.entries(e.love).filter(([, v]) => v === "he").map(([c]) => c), be: Object.entries(e.love).filter(([, v]) => v === "be").map(([c]) => c),
-    trial: e.stamps.some((s) => s.id === "love_trial"), pond: S.pond.count, degree: e.degree, aff: targets.map((c) => Math.round(S.aff[c])), dated: targets.filter((c) => S.flags["confessed_" + c]).length, ...sm,
+    trial: e.stamps.some((s) => s.id === "love_trial"), pond: S.pond.count, degree: e.degree, aff: targets.map((c) => Math.round(S.aff[c])), dated: targets.filter((c) => S.flags["confessed_" + c]).length, ...sm, confAbs: targets.map((c) => S.confAbs[c]).filter((x) => x != null), confAt: targets.map((c) => S.confAt[c]).filter(Boolean),
     y1aff: 0 };
 })`, ctx);
 vm.runInContext(`var Invites_T = { goneLove: 5 };`, ctx);
@@ -131,22 +155,31 @@ const P = {
 const pct = (rs, f) => Math.round((rs.filter(f).length / rs.length) * 100) + "%";
 const avg = (rs, f) => (rs.reduce((a, x) => a + f(x), 0) / rs.length).toFixed(1);
 const SC = [
-  ["每周聊天＋约会＋均衡（一个对象）", { targets: ["local"], chat: true, date: true, y1: P.balanced, weekend: ["home", "social"] }, "HE 70–85%"],
-  ["每周聊天＋约会＋均衡（学长）", { targets: ["senior"], chat: true, date: true, y1: P.balanced, weekend: ["home", "chinese"] }, "HE 70–85%"],
-  ["只聊天不约会", { targets: ["local"], chat: true, date: false, y1: P.balanced, weekend: ["home", "social"] }, "HE ≤15%"],
-  ["大二大三一直卷（大一正常谈）", { targets: ["local"], chat: true, date: true, y1: P.balanced, later: P.grind, weekend: ["home", "social"], laterBusy: true }, "HE ≤30%"],
-  ["同时对三个人都热情", { targets: ["senior", "local", "groupmate"], chat: true, date: true, y1: P.balanced, weekend: ["home", "social"] }, "鱼塘翻车 ≥50%"],
-  ["只走剧情（不聊天不约会）", { targets: ["local"], chat: false, date: false, y1: P.balanced, weekend: ["home", "social"] }, "—"],
+  ["认真玩：每周聊＋三周一约＋周末出门（Ollie）", { targets: ["local"], chat: true, date: true, outing: true, y1: P.balanced, weekend: ["home", "social"] }, "告白中位大二第18–24周，HE 70–85%"],
+  ["认真玩（学长）", { targets: ["senior"], chat: true, date: true, outing: true, y1: P.balanced, weekend: ["home", "chinese"] }, "同上"],
+  ["认真玩（Ploy）", { targets: ["groupmate"], chat: true, date: true, outing: true, y1: P.balanced, weekend: ["home", "social"] }, "同上"],
+  ["认真玩（Kieran）", { targets: ["otaku"], chat: true, date: true, outing: true, y1: P.balanced, weekend: ["home", "social"] }, "同上"],
+  ["一周聊一次＋周末偶遇（不约会）", { targets: ["local"], chat: true, date: false, outing: true, y1: P.balanced, weekend: ["home", "social"] }, "告白 ≥80%"],
+  ["刷聊天、不出门", { targets: ["local"], chat: true, date: false, outing: false, y1: P.balanced, weekend: ["home", "home"] }, "告白 ≤5%"],
+  ["大二大三一直卷（大一正常谈）", { targets: ["local"], chat: true, date: true, outing: true, y1: P.balanced, later: P.grind, weekend: ["home", "social"], laterBusy: true }, "HE ≤30%"],
+  ["同时对三个人都热情", { targets: ["senior", "local", "groupmate"], chat: true, date: true, outing: true, y1: P.balanced, weekend: ["home", "social"] }, "鱼塘翻车 ≥50%"],
+  ["BE 补救·Ploy：替写 2 次＋自己写过＋考验拒绝", { targets: ["groupmate"], chat: true, date: true, outing: true, y1: P.balanced, weekend: ["home", "social"], flags: { ploy_ghostwrite: 2, ploy_own_work: 1, ploy_redeemed: 1 } }, "走得通"],
+  ["BE 补救·Ollie：考验没问，最后机会问了（要 90）", { targets: ["local"], chat: true, date: true, outing: true, y1: P.balanced, weekend: ["home", "social"], noAsk: true, flags: { local_asked_late: 1 } }, "走得通"],
 ];
+const median = (xs) => { if (!xs.length) return null; const a = [...xs].sort((x, y) => x - y); return a[Math.floor(a.length / 2)]; };
 console.log(`每种跑 ${N} 次\n`);
 const out = [];
 for (const [name, cfg, goal] of SC) {
   const c2 = { ...cfg };
   const rs = []; for (let i = 0; i < N; i++) rs.push(run(c2));
-  const line = { name, goal, he: pct(rs, (r) => r.he.length > 0), be: pct(rs, (r) => r.be.length > 0), dated: pct(rs, (r) => r.dated > 0), trial: pct(rs, (r) => r.trial), pond1: pct(rs, (r) => r.pond >= 1),
+  const allConf = rs.flatMap((r) => r.confAt); const cnt = {}; for (const x of allConf) cnt[x] = (cnt[x] || 0) + 1;
+  const sortedConf = rs.flatMap((r) => r.confAbs).sort((x, y) => x - y);
+  const medAbs = sortedConf.length ? sortedConf[Math.floor(sortedConf.length / 2)] : null;
+  const medLabel = medAbs == null ? "—" : (rs.find((r) => r.confAbs.includes(medAbs)) || {}).confAt?.[0] || String(medAbs);
+  const line = { name, goal, confessRate: pct(rs, (r) => r.dated > 0), confessMedian: medLabel, he: pct(rs, (r) => r.he.length > 0), be: pct(rs, (r) => r.be.length > 0), dated: pct(rs, (r) => r.dated > 0), trial: pct(rs, (r) => r.trial), pond1: pct(rs, (r) => r.pond >= 1),
     aff: avg(rs, (r) => r.aff.reduce((a, b) => a + b, 0) / Math.max(1, r.aff.length)), small: avg(rs, (r) => r.small), smallAff: avg(rs, (r) => r.smallAff), degree: avg(rs, (r) => r.degree) };
   out.push(line);
-  console.log(`${name}（目标 ${goal}）：HE ${line.he}　BE ${line.be}　交往过 ${line.dated}　翻车≥1次 ${line.pond1}　恋爱裁判 ${line.trial}　毕业好感均值 ${line.aff}　小事件 ${line.small} 段／好感 +${line.smallAff}　学位 ${line.degree}`);
+  console.log(`${name}（目标 ${goal}）：告白 ${line.confessRate}（中位 ${line.confessMedian}）　HE ${line.he}　BE ${line.be}　交往过 ${line.dated}　翻车≥1次 ${line.pond1}　恋爱裁判 ${line.trial}　毕业好感均值 ${line.aff}　小事件 ${line.small} 段／好感 +${line.smallAff}　学位 ${line.degree}`);
 }
 // 非恋爱结局：小事件开／关对比（不追任何人，但周末照常去地点）
 console.log("\n非恋爱结局（主线）：小事件池开／关对比");

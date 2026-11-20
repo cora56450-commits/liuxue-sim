@@ -10,6 +10,20 @@ Object.assign(DATA.events, {
     { moment: { who: "senior", text: "本周六比斯特，早6点火车站发车，还剩3个座，车费AA £22。不跟车的可以接单，奶粉、面霜、包包、羊绒都行，代购费8%，周五晚12点截单。", tr: "" } },
     { say: "下面已经有二十几条评论。“+1”“学长那个围巾还有吗”“8%能不能便宜点”。" },
     { say: "（比斯特？）" },
+    // 剧本_家境分支.md 第三节 2
+    { if: "家境 == '富裕'", then: [
+      { phone: "senior", steps: [
+        { say: "你别在我这儿下单。", name: "senior" },
+        { say: "你问为什么。" },
+        { say: "你自己去买，比我便宜。我不赚你的钱。", name: "senior", fx: { aff_senior: 2, flag_senior_no_profit: 1 } },
+      ] },
+      { say: "（其他客户他都赚。只有我，他不赚。）" },
+    ] },
+    { if: "家境 == '拮据'", then: [
+      { phone: "senior", steps: [
+        { say: "你要什么？不收代购费。别跟别人说。", name: "senior" },
+      ] },
+    ] },
     { choice: [
       { text: "私聊问他：“学长，比斯特是什么？”", fx: { aff_senior: 1 }, then: [
         { phone: "senior", time: "周四 晚上", steps: [
@@ -29,7 +43,9 @@ Object.assign(DATA.events, {
         { say: "周日晚上，围巾到了。装在一个很干净的袋子里，里面有一张手写的小票：围巾 £41.6，代购费 £3.33，合计 £44.93，“抹零 £45”。" },
         { say: "（抹零是往上抹的。）" },
       ] },
-      { text: "不理，刷过去" },   // 缺反应（见文件末尾）
+      { text: "不理，刷过去", then: [
+        { say: "（那天晚上，他的朋友圈又多了一条：“比斯特，第 48 单，收工。”）" },
+      ] },
     ] },
   ],
 
@@ -55,7 +71,9 @@ Object.assign(DATA.events, {
     ] },
     { show: "senior" },
     { say: "中午，你们在长椅上吃自带的三明治。学长在平板上一单一单打勾，一边打一边算，嘴里念着数字。" },
+    { cg: "senior_bicester" },
     { say: "你看到他刚才在一家店的橱窗前站了很久。是一件深灰色的大衣，打完折 £189。他最后没进去。" },
+    { cg: null },
     { choice: [
       { text: "“学长，那件大衣挺适合你的。”", fx: { aff_senior: 2 }, then: [
         { say: "贵。我那件还能穿。", name: "senior" },
@@ -75,7 +93,10 @@ Object.assign(DATA.events, {
           ] },
         ] },
       ] },
-      { text: "什么都不说" },   // 缺反应（见文件末尾）
+      { text: "什么都不说", then: [
+        { say: "回去的火车上，他把那张车票存根放进了你的口袋。" },
+        { say: "留着。……我那张也留着。", name: "senior" },
+      ] },
     ] },
     { say: "傍晚回程的火车上，他靠着窗睡着了，平板还亮着。表格最后一行是他自己加的：" },
     { say: "“小林：围巾试戴，帮排队 40 分钟。代购费：0。”" },
@@ -221,6 +242,10 @@ Object.assign(DATA.events, {
     { bg: "bicester" },
     { show: "senior" },
     { say: "他真的没带平板。" },
+    // 剧本_家境分支.md 第三节※：senior_no_profit（位置剧本没定，先放在这里）
+    { if: "标记('senior_no_profit')", then: [
+      { say: "你记得吗，第一次我就不赚你的钱。那时候我还没想明白为什么。", name: "senior" },
+    ] },
     { say: "你们从第一家店逛到最后一家。他什么都没买，但每家都进去了，每样东西都拿起来看了看价签，然后放下。" },
     { say: "十一点，他的手机开始震。" },
     { say: "十一点半，震了十几次。" },
@@ -256,8 +281,14 @@ Object.assign(DATA.events, {
   confess_senior: [
     { bg: "campus" },
     { show: "senior" },
-    { say: "六月，晚上九点，天还亮着。他陪你从图书馆走回宿舍。" },
-    { say: "你暑假回国吗？我也回，帮人带货。", name: "senior" },
+    // 第七批第一节 4：大三第 1–6 周（九月）开头换一句
+    { if: "学年 == 3", then: [
+      { say: "九月，晚上七点半，太阳刚下去，天边还是粉的。他陪你从图书馆走回去，你帆布包里装着新学期借的书。" },
+      { say: "暑假我回了一趟，帮人带了三箱货。", name: "senior" },
+    ], else: [
+      { say: "六月，晚上九点，天还亮着。他陪你从图书馆走回宿舍。你帆布包里装着还没还的书。" },
+      { say: "你暑假回国吗？我也回，帮人带货。", name: "senior" },
+    ] },
     { say: "……我想说的不是这个。", name: "senior" },
     { timed: { text: "先说出口", sec: 8,
       during: [
@@ -273,19 +304,41 @@ Object.assign(DATA.events, {
         { fx: { flag_confess_them_first_senior: 1 } },
         { say: "我喜欢你。不是学长对学妹那种。", name: "senior" },
       ] } },
-    { free: "告白：学长说他什么都算得清楚，唯独这件事算不清，他喜欢你。你说出你自己的回答（答应或者还没想好）", freeWho: "senior", choice: [
-      { text: "“我也是。”", fx: { flag_confessed_senior: 1, aff_senior: 5 }, then: [
-        { say: "他点了点头，好像在心里记了一笔账。" },
-        { cg: "senior_confess" },
-        { say: "然后他牵起你的手，牵得很小心，像是怕弄坏样品。两个人都没看对方。天边是粉色的，九点了，还没黑。" },
-        { cg: null },
+    // 选项不变（主角问的是“你是不是喜欢我”，没说自己）；自由输入的场景说明按谁先说分两版
+    { if: "标记('confess_me_first_senior')", then: [
+      { free: "告白：你先问了学长“你是不是喜欢我”，他说“是”。你已经先开口了，接下来说点什么（答应或者还没想好）", freeWho: "senior", choice: [
+        { text: "“我也是。”", fx: { flag_confessed_senior: 1, aff_senior: 5 }, then: [ { run: "confess_senior_yes" } ] },
+        { text: "“我还没想好。”", fx: { aff_senior: -3 }, then: [ { run: "confess_senior_notyet" } ] },
       ] },
-      { text: "“我还没想好。”", fx: { aff_senior: -3 }, then: [
-        // 剧本：告白可以在大二前两段再触发一次（要引擎支持）
-        { say: "行。不急。", name: "senior" },
+    ], else: [
+      { free: "告白：学长说他什么都算得清楚，唯独这件事算不清，他喜欢你。你说出你自己的回答（答应或者还没想好）", freeWho: "senior", choice: [
+        { text: "“我也是。”", fx: { flag_confessed_senior: 1, aff_senior: 5 }, then: [ { run: "confess_senior_yes" } ] },
+        { text: "“我还没想好。”", fx: { aff_senior: -3 }, then: [ { run: "confess_senior_notyet" } ] },
       ] },
     ] },
     { hide: true },
+  ],
+  // ===================== BE 暗示（剧本_BE暗示.md 第二节 1）：去留焦虑（大三第 4 周）前一周，交往中 =====================
+  be_senior_stay_hint: [
+    { phone: "senior", steps: [
+      { say: "我跟家里说好了，明年回福建。店面在看了。", name: "senior" },
+      { say: "你呢？", name: "senior" },
+      { say: "不用现在回答。", name: "senior" },
+    ] },
+  ],
+
+  confess_senior_yes: [
+    { say: "他点了点头，好像在心里记了一笔账。" },
+    { cg: "senior_confess" },
+    { say: "然后他牵起你的手，牵得很小心，像是怕弄坏样品。两个人都低着头，谁都没看谁。天边是粉色的，九点了，还没黑。" },
+    { cg: null },
+  ],
+  confess_senior_notyet: [
+    { say: "行。不急。", name: "senior" },
+    { if: "标记('confess_me_first_senior')", then: [
+      { say: "……问的是你，没想好的也是你。行，我等。", name: "senior" },
+    ] },
+    // 大三第 1–6 周再来一次：引擎做
   ],
 });
 
@@ -311,12 +364,15 @@ DATA.momentsPool.senior = [
 DATA.midweek = DATA.midweek || [];
 DATA.midweek.push(
   // 二、熟人：好感≥20，第6周以后，周四晚上，只一次
-  { id: "senior_moment_bicester", day: "thu", time: "晚上", cond: "好感('senior') >= 20 && (学年 > 1 || 周数 >= 6)", who: "senior", prio: 2, small: true },
+  // 第七批第二节 1：拉你当客户，交往后停（交往后有 senior_bicester_date）
+  { id: "senior_moment_bicester", day: "thu", time: "晚上", cond: "好感('senior') >= 20 && (学年 > 1 || 周数 >= 6) && !交往中('senior')", who: "senior", prio: 2, small: true },
   // 五、黑五：第10周（十一月最后一个周五），好感≥25，周五晚上
   { id: "senior_black_friday", day: "fri", time: "晚上", cond: "好感('senior') >= 25", week: 10, year: 1, who: "senior", prio: 1, small: true },
   // 四、凌晨五点的阿姆斯特丹：第12周圣诞假，好感≥30，主角圣诞留在英国（条件要引擎补，见末尾）
   { id: "senior_transit", day: "wed", time: "凌晨", cond: "好感('senior') >= 30", week: 12, year: 1, who: "senior", prio: 1, small: true },
   { id: "senior_transit_y2", day: "wed", time: "凌晨", cond: "好感('senior') >= 30", week: 12, year: 2, who: "senior", prio: 1, small: true },
+  // BE暗示 二-1：大三第 3 周（去留焦虑前一周），交往中。剧本没写哪天，放周三晚上
+  { id: "be_senior_stay_hint", day: "wed", time: "晚上", cond: "交往中('senior')", week: 3, year: 3, who: "senior", prio: 1 },
 );
 DATA.loveEvents = DATA.loveEvents || [];
 DATA.loveEvents.push(
@@ -324,8 +380,8 @@ DATA.loveEvents.push(
   { id: "senior_bicester_day", who: "senior", kind: "ext", place: "bicester", cond: "标记('bicester_go') && !标记('bicester_done')", small: true },
   // 六、帮带一箱：好感≥45，标记 senior_transit，大一暑假回国前（第28周之后、暑假第一轮之前）
   { id: "senior_carry", who: "senior", kind: "ext", cond: "学年 == 1 && 周数 >= 28 && 好感('senior') >= 45 && 标记('senior_transit')", small: true },
-  // 七、这次不接单：交往中，大二秋季学期，周末，好感≥70
-  { id: "senior_bicester_date", who: "senior", kind: "ext", cond: "交往中('senior') && 学年 == 2 && 周数 <= 12 && 好感('senior') >= 70", small: true },
+  // 七、这次不接单：第七批第二节 3——告白挪到大二末以后，改成交往中、大三秋季学期（第 1–11 周）、好感≥70
+  { id: "senior_bicester_date", who: "senior", kind: "ext", cond: "交往中('senior') && 学年 == 3 && 周数 <= 11 && 好感('senior') >= 70", small: true },
 );
 
 // 给引擎：
@@ -361,3 +417,12 @@ DATA.loveEvents.push(
 // - 第六节"额度"分支接"好""不想带"时，只给了标记，没再加第一项/第二项的好感（已经 +3），要不要叠加请策划定。
 // - 大二转机变体：剧本只说"台词改成戴高乐那句"，没说替换哪句；现在"学长你在哪"那支在大二只说戴高乐这一句（阿姆斯特丹那三句不演）。
 // - 物品"面霜样品"本剧本里没有给的地方（样品出现在 love.js 的考验里），这里没登记。
+// 给引擎（2026-11-19 第七批）：
+// - confess_senior：大三第 1–6 周开头用 学年 == 3 判断；“还没想好”再来一次引擎做。自由输入场景说明按谁先说分两版（用 if 包两个 choice）。
+// - 新标记 flag_senior_no_profit（富裕，本周六比斯特私聊）；senior_bicester_date 里读它多一句（剧本没定位置，放在“他真的没带平板”后面）。
+// - be_senior_stay_hint：大三第 3 周周中，交往中（BE暗示二-1）。去留选“留英”以后学长说“……行。那就再算算。”在 y3_stay_or_go（不在本文件）；
+//   新结局变体“恋爱 ing”：学长交往中但留英，明信片写“他在泉州，你在英国，时差八小时”。
+// - senior_fallout 之后：他的朋友圈对你不可见，手机里他名字下面一行灰字“仅聊天”（系统做）。
+// - CG senior_bicester 要在 data/cg.js 登记（同事在入库）。
+
+// 第十批 #2 待策划：senior_moment_bicester「私聊问他比斯特」已有手机对话，剧本补的反应冲突，没加。

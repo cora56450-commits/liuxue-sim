@@ -103,7 +103,7 @@ Object.assign(DATA.events, {
     { say: "Giulia 抱着手臂站在旁边，Jake 刚起床，头发是乱的。" },
     { say: "Jake. Whose pizza box is this.", name: "giulia", tr: "Jake。这是谁的披萨盒。" },
     { say: "…Could be anyone's, to be fair.", name: "jake", tr: "……公平地说，可能是任何人的。" },
-    { say: "It has your name on it. Deliveroo wrote your name on it.", name: "giulia", tr: "上面有你的名字。外卖平台把你的名字写在上面了。" },
+    { say: "It has your name on it. Deliverooo wrote your name on it.", name: "giulia", tr: "上面有你的名字。外卖平台把你的名字写在上面了。" },
     { say: "他们两个同时看向你。" },
     { choice: [
       { text: "“Jake，倒了吧。”", fx: { fr_giulia: 2 }, then: [
@@ -496,7 +496,13 @@ Object.assign(DATA.events, {
     { say: "Babe! Come, be in it. Library aesthetic. Everyone's going to think we're so smart.", name: "groupmate", tr: "宝贝！快来，入镜。图书馆氛围感。大家会觉得我们好聪明。" },
     { choice: [
       { text: "入镜", fx: { aff_groupmate: 2 }, then: [
-        { say: "照片发出去十分钟，一百多个赞。配文：study date 📚✨「学习约会」" },
+        { if: "交往中('groupmate')", then: [
+          // 第七批第二节：交往中的配文和评论
+          { say: "照片发出去十分钟，一百多个赞。配文：my study date 🤍「我的学习约会」" },
+          { say: "评论区第一条是 Pa Nok 的 👀。" },
+        ], else: [
+          { say: "照片发出去十分钟，一百多个赞。配文：study date 📚✨「学习约会」" },
+        ] },
         { say: "拍完以后她合上电脑，说：“Okay. Now I've studied. Lunch?「好，我学过了。吃午饭？」”" },
       ] },
       { text: "“你那本书打开过吗？”", fx: { aff_groupmate: 1 }, then: [
@@ -666,8 +672,12 @@ Object.assign(DATA.events, {
       { text: "“是挺灵活的。”", fx: { aff_local: 3 }, then: [
         { say: "Thank you. Finally, someone appreciates my hips.", name: "local", tr: "谢谢。终于有人欣赏我的髋了。" },
       ] },
-      { text: "“你来瑜伽课是为了认识女生吧。”", fx: { aff_local: 1 }, then: [
+      { text: "“你来瑜伽课是为了认识女生吧。”", if: "!交往中('local')", fx: { aff_local: 1 }, then: [
         { say: "…Partly. But also the back thing. Mostly the back thing.", name: "local", tr: "……一部分是。但也是为了背。主要是为了背。" },
+      ] },
+      // 第七批第二节：交往中换成这一项（数值照原选项）
+      { text: "“那老师夸你髋的时候，我是不是该吃醋。”", if: "交往中('local')", fx: { aff_local: 1 }, then: [
+        { say: "…You're the only one allowed to appreciate them.", name: "local", tr: "……只有你能欣赏。" },
       ] },
     ] },
     { hide: true },
@@ -1047,7 +1057,9 @@ Object.assign(DATA.events, {
       ] },
     ] },
     { choice: [
-      { text: "“谢谢！”", fx: { "fr_{A}": 2 } },
+      { text: "“谢谢！”", fx: { "fr_{A}": 2 }, then: [
+        { say: "{A}冲你竖了个大拇指：“Anytime.「随时。」”" },
+      ] },
       { text: "“它刚才是不是骂我了？”", fx: { "fr_{A}": 1, english: 0.5 }, then: [
         { say: "{A}给你解释了这句话的意思，并说：“Everyone in Britain hates that sentence.「英国人都讨厌这句话。」”" },
       ] },
@@ -1177,7 +1189,7 @@ DATA.placeLines.supermarket = [
   { text: "收银员叫你 love。你愣住了。", if: "学年 == 1 && 季节 == '秋'" },   // 第一年秋季
 ];
 
-// 真实地名：伦敦唐人街（place_dorm_room_2）、伦敦（place_library_7）。另有真实品牌：Deliveroo（place_dorm_room_4）、Instagram（place_library_5）、Haribo（place_club_room_1）。
+// 真实地名：伦敦唐人街（place_dorm_room_2）、伦敦（place_library_7）。另有真实品牌：Deliveroo（place_dorm_room_4，已按改名表写成 Deliverooo）、Instagram（place_library_5）、Haribo（place_club_room_1）。
 // 缺反应：
 //   place_supermarket_7「“谢谢！”」剧本没写反应。
 //   place_campus_8「“你毕业以后去哪？”」Mei／Giulia／Jake 剧本只写了概要（新加坡／回意大利开小餐馆／回老家当体育老师），暂写成旁白“{A}说了自己的打算：…”，需要正式台词；Giulia、Mei 的开场句剧本只分“中国 NPC／英国 NPC”，暂用英国那句。
@@ -1190,3 +1202,8 @@ DATA.placeLines.supermarket = [
 //   5. place_supermarket_1（晚上七点五十的黄标）、place_supermarket_4（剧本写“晚上”）——超市现在只开上午、下午，晚上抽不到；要不要给超市开晚上。
 //   6. place_campus_6 需要雪景背景差分；place_campus_8 的〔回忆+1：校园合照〕写成 flag_memory_campus_photo，回忆系统要接。
 //   7. 新物品 heater_key（暖气钥匙）在本文件 DATA.items 登记。
+
+// ===== 第七批（11/19）补充 =====
+// - place_gym_5：交往中把第二个选项换成“那老师夸你髋的时候，我是不是该吃醋。”（数值照原选项 aff_local+1）。
+// - place_library_5：交往中配文换成 my study date 🤍，加 Pa Nok 的 👀 评论（tr「我的学习约会」是照原配文格式补的）。
+// 给引擎：这两段没写变体，三年只演一次，交往版只有交往以后第一次抽到才看得到。

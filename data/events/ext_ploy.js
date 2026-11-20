@@ -17,6 +17,10 @@ Object.assign(DATA.events, {
       { say: "[图片]", name: "groupmate" },
       { say: "是一张作业截图：用\"虽然……但是……\"造三个句子。她写了一个：\"虽然我很漂亮，但是。\"" },
       { say: "can u help 🥺 just this once", name: "groupmate", tr: "能帮我吗🥺 就这一次" },
+      // 剧本_BE暗示.md 一-2：第二次之前的最后一次预警
+      { if: "标记('ploy_ghostwrite') == 1", then: [
+        { say: "（她上次也说“就这一次”。）" },
+      ] },
       { choice: [
         { text: "“我教你，你自己写。”", fx: { aff_groupmate: 1, flag_ploy_taught: 1 }, then: [
           { say: "ugh. fine. ur so strict", name: "groupmate", tr: "烦。行吧。你好严格" },
@@ -25,7 +29,14 @@ Object.assign(DATA.events, {
           { say: "（对。而且是这节课里她唯一一个自己想出来的句子。）", fx: { english: 0.5 } },
         ] },
         // ※ 每次 Ploy 求你写作业都计一次 ploy_ghostwrite
-        { text: "“发过来，我帮你写。”", fx: { aff_groupmate: 3, flag_ploy_did_hw: 1, inc_ploy_ghostwrite: 1 }, then: [
+        { text: "“发过来，我帮你写。”", if: "标记('ploy_ghostwrite') < 1", fx: { aff_groupmate: 3, flag_ploy_did_hw: 1, inc_ploy_ghostwrite: 1 }, then: [
+          { say: "你花了五分钟，写了三个句子发过去。" },
+          { say: "UR AN ANGEL. 你是我的神", name: "groupmate", tr: "你是天使。你是我的神" },
+          { say: "周日晚上，她发来一张截图：妈妈在视频里给她点了个赞。" },
+          { say: "（这是第一次。）" },
+        ] },
+        // BE暗示 一-2：第二次（及以后）的入口，选项文字换成“再帮她一次”；存进聊天记录的还是原来那句
+        { text: "再帮她一次", store: "发过来，我帮你写。", if: "标记('ploy_ghostwrite') >= 1", fx: { aff_groupmate: 3, flag_ploy_did_hw: 1, inc_ploy_ghostwrite: 1 }, then: [
           { say: "你花了五分钟，写了三个句子发过去。" },
           { say: "UR AN ANGEL. 你是我的神", name: "groupmate", tr: "你是天使。你是我的神" },
           { say: "周日晚上，她发来一张截图：妈妈在视频里给她点了个赞。" },
@@ -39,7 +50,6 @@ Object.assign(DATA.events, {
       ] },
     ] },
   ],
-
   // ===================== 二、熟人→暧昧 · 别说 sorry（第9周之后的周末，室内市场或 brunch 店）=====================
   ploy_no_sorry: [
     { bg: "indoor_market" },
@@ -82,14 +92,14 @@ Object.assign(DATA.events, {
     { say: "这周学了什么？用\"因为……所以……\"说一句。", name: "Ploy的妈妈" },
     { say: "Ploy 的笑僵住了。她在桌子底下踢了你一下。" },
     { say: "（她在求救。）" },
+    // 剧本_BE暗示.md 一-2：第二次之前的最后一次预警
+    { if: "标记('ploy_ghostwrite') == 1", then: [
+      { say: "（她上次也说“就这一次”。）" },
+    ] },
     { choice: [
-      { text: "小声给她提词", fx: { aff_groupmate: 2, inc_ploy_ghostwrite: 1 }, then: [
-        { say: "你把句子写在餐巾纸上推过去。她照着念：“因为……英国的天气很冷，所以我很想家。”" },
-        { say: "她妈妈停了两秒：“念得还行。这句是你自己想的？”" },
-        { say: "……是。", name: "groupmate" },
-        { say: "挂了电话，她趴在桌上半天没起来。" },
-        { say: "She knows. She always knows.", name: "groupmate", tr: "她知道。她什么都知道。" },
-      ] },
+      { text: "小声给她提词", if: "标记('ploy_ghostwrite') < 1", fx: { aff_groupmate: 2, inc_ploy_ghostwrite: 1 }, then: [ { run: "ploy_mum_check_prompt" } ] },
+      // BE暗示 一-2：第二次（及以后）的入口，选项文字换成“再帮她一次”
+      { text: "再帮她一次", if: "标记('ploy_ghostwrite') >= 1", fx: { aff_groupmate: 2, inc_ploy_ghostwrite: 1 }, then: [ { run: "ploy_mum_check_prompt" } ] },
       { text: "不提词，在桌子底下握住她的手", fx: { aff_groupmate: 4, flag_ploy_own_words: 1 }, then: [
         { say: "她憋了很久，憋出一句：“因为……我有一个好朋友，所以……我在英国不孤单。”" },
         { say: "语法有一个地方错了。声调错了三个。" },
@@ -105,6 +115,14 @@ Object.assign(DATA.events, {
       ] },
     ] },
     { hide: true },
+  ],
+
+  ploy_mum_check_prompt: [
+    { say: "你把句子写在餐巾纸上推过去。她照着念：“因为……英国的天气很冷，所以我很想家。”" },
+    { say: "她妈妈停了两秒：“念得还行。这句是你自己想的？”" },
+    { say: "……是。", name: "groupmate" },
+    { say: "挂了电话，她趴在桌上半天没起来。" },
+    { say: "She knows. She always knows.", name: "groupmate", tr: "她知道。她什么都知道。" },
   ],
 
   // ===================== 四、暧昧 · 只有我们听得懂（周末 pub，Ollie 和他朋友也在）=====================
@@ -148,13 +166,13 @@ Object.assign(DATA.events, {
     { hide: true },
   ],
 
-  // ===================== 五、交往后 · 她写的第一封中文信（大二第8周，生日系统上线前先固定）=====================
+  // ===================== 五、交往后 · 她写的第一封中文信（第七批第二节 3：交往后第一个主角生日那周；没设生日先放大三第 8 周）=====================
   ploy_letter: [
     { bg: "dorm_room" },
     { say: "宿舍门缝下面塞进来一个信封，粉色的，很厚。" },
     { say: "里面是一张卡片，手写的中文。字写得很大，有几个字的笔画是反的，有一个字她放弃了，画了一个爱心代替。" },
     { say: "（她写的。不是打印的，不是复制的。）", fx: { item_ploy_letter: 1 } },
-    // 【CG：Ploy的信】可选新 CG，还没有，先不写 cg
+    { cg: "groupmate_letter" },   // 你在读，她从门缝里偷看
     { say: "亲爱的：" },
     { say: "生日快乐！！！" },
     { say: "我的中文不好，所以我写的很慢。我写了三个晚上。" },
@@ -172,6 +190,8 @@ Object.assign(DATA.events, {
     { if: "标记('ploy_grandma_congee')", then: [
       { say: "信封里还夹着一张便签：Make me congee on Sunday? Like grandma. I'll wash up. (I won't, but I'll try.)「周日给我煮粥好吗？像外婆那样。我来洗碗。（我不会洗，但我会试试。）」" },
     ] },
+    { say: "门缝里有一只金色的圈圈耳环。" },
+    { cg: null },
     { choice: [
       { text: "回她一张中文卡片", fx: { aff_groupmate: 4 }, then: [
         { say: "你写的字很正常。她拿着你的卡片看了很久，然后拍了一张照片，发到了小红书上。" },
@@ -188,12 +208,15 @@ Object.assign(DATA.events, {
   ],
 
   // ===================== 告白（引擎调用；限时选项版，覆盖 love.js）=====================
-  // 以 love.js 旧版为底：“谁先说”那组删掉“等她开口”，只留“先说出口”做限时选项（8 秒）。
-  // 倒计时期间她开始说原来“等她开口”的第一句；没点就接着说完（对方先说），点了就打断她（主角先说）。
+  // 剧本_攻略线与友情线.md 告白（11/19 版）。主角先说的：直接进交往中，不再出“可以／我需要想一想”的选项。
   confess_groupmate: [
     { bg: "campus" },
     { show: "groupmate", pose: "summer" },
-    { say: "考试周结束那天，她拉你去草坪上野餐。她带了一瓶香槟和两个塑料杯。" },
+    { if: "学年 == 3", then: [
+      { say: "开学第一个周末，树叶刚开始黄，她说要“趁夏天还没走完”去湖边野餐。粉格子野餐布、一篮草莓、一瓶香槟和两个塑料杯。" },
+    ], else: [
+      { say: "考试周结束那天，她拉你去湖边的草坪野餐。粉格子野餐布、一篮草莓、一瓶香槟和两个塑料杯。" },
+    ] },
     { timed: { text: "先说出口", sec: 8,
       during: [
         { say: "Okay. I'm going to say something and you're not allowed to make it weird.", name: "groupmate", tr: "好，我要说一件事，你不许把气氛弄奇怪。" },
@@ -201,29 +224,62 @@ Object.assign(DATA.events, {
       then: [
         { fx: { flag_confess_me_first_groupmate: 1, aff_groupmate: 3 } },
         { say: "Ploy，我不想只当你的闺蜜。", name: "me" },
+        { fx: { flag_confessed_groupmate: 1, aff_groupmate: 6 } },
         { say: "她瞪着你，手里的香槟瓶还没开。" },
         { say: "Wait — no — I had a whole speech! I practised in the mirror!", name: "groupmate", tr: "等等——不行——我准备了一整段话！我对着镜子练过的！" },
-        { say: "她愣了两秒，然后笑得倒在野餐布上。“…Yes. Obviously yes.「……好。当然好。」”" },
+        { say: "她愣了两秒，然后笑得倒在野餐布上。" },
+        { say: "…Yes. Obviously yes.", name: "groupmate", tr: "……好。当然好。" },
+        { say: "她爬起来去开香槟庆祝。" },
+        { cg: "groupmate_confess" },
+        { say: "手一抖，香槟喷了你一身。她一边笑一边抓着你的手不放。" },
+        { say: "I'm still doing the speech, by the way. Later. You owe me.", name: "groupmate", tr: "那段话我之后还是要讲的。你欠我的。" },
+        { cg: null },
       ],
       timeout: [
         { fx: { flag_confess_them_first_groupmate: 1 } },
         { say: "I don't want to be your best friend.", name: "groupmate", tr: "我不想当你的闺蜜。" },
         { say: "（……）" },
         { say: "I want to be more than that. Is that — is that okay?", name: "groupmate", tr: "我想比那更多一点。这样……可以吗？" },
+        { free: "告白：野餐时 Ploy 说她不想只当闺蜜，问这样可不可以。你说出你自己的回答", freeWho: "groupmate", choice: [
+          { text: "“可以。”", fx: { flag_confessed_groupmate: 1, aff_groupmate: 6 }, then: [
+            { say: "她松了一大口气，去开香槟。" },
+            { cg: "groupmate_confess" },
+            { say: "手一抖，香槟喷了你一身。她一边笑一边抓着你的手不放。" },
+            { cg: null },
+          ] },
+          { text: "“我需要想一想。”", fx: { aff_groupmate: -2 }, then: [
+            { say: "Okay. Take your time. I'll still text you when I get home.", name: "groupmate", tr: "好，慢慢想。到家了我还是会发消息给你。" },
+            // 大三第 1–6 周再来一次：引擎做
+          ] },
+        ] },
       ] } },
-    { free: "告白：野餐时 Ploy 说她不想只当闺蜜，问这样可不可以。你说出你自己的回答", freeWho: "groupmate", choice: [
-      { text: "“可以。”", fx: { flag_confessed_groupmate: 1, aff_groupmate: 6 }, then: [
-        { cg: "groupmate_confess" },
-        { say: "她松了一大口气，手一抖，香槟喷了你一身。她一边笑一边抓着你的手不放。" },
-        { cg: null },
-      ] },
-      { text: "“我需要想一想。”", fx: { aff_groupmate: -2 }, then: [
-        // 剧本：告白可以在大二前两段再触发一次（要引擎支持）
-        { say: "Okay. Take your time. I'll still text you when I get home.", name: "groupmate", tr: "好，慢慢想。到家了我还是会发消息给你。" },
-      ] },
-    ] },
     { hide: true },
     // ※ 百合线照异性线同样处理，不另加关卡；家教森严的“视频里被发现”同样适用，要不要单独写一个版本，Cora 定。
+  ],
+
+  // ===================== BE 暗示（剧本_BE暗示.md 第一节：Ploy 替写）=====================
+  // 1. 第一次替写之后（ploy_ghostwrite = 1）——预警，只一次
+  be_ploy_warn1: [
+    { phone: "group:study", steps: [
+      { say: "Ploy's bit was really good this time?? like suspiciously good 👀", name: "hannah", tr: "Ploy 这次那部分写得也太好了？？好得有点可疑👀" },
+    ] },
+    { say: "（……那是我写的。她回了一个爱心，没解释。我也没解释。）" },
+  ],
+  // 3. 锁死以后（ploy_ghostwrite ≥ 2）：ddl 周她的消息变了——已经不是在问了
+  be_ploy_ddl: [
+    { phone: "groupmate", steps: [
+      { say: "babe u got this right? 🙏", name: "groupmate", tr: "宝你搞得定的吧🙏" },
+    ] },
+  ],
+  be_ploy_ddl_y1_22: [ { run: "be_ploy_ddl" } ],
+  be_ploy_ddl_y2_10: [ { run: "be_ploy_ddl" } ],
+  be_ploy_ddl_y2_20: [ { run: "be_ploy_ddl" } ],
+  be_ploy_ddl_y3_10: [ { run: "be_ploy_ddl" } ],
+  // 3. 锁死以后：大二小组展示前，Hannah
+  be_ploy_hannah: [
+    { phone: "hannah", steps: [
+      { say: "Are you doing Ploy's part again? Just asking.", name: "hannah", tr: "你又在写 Ploy 那部分？只是问问。" },
+    ] },
   ],
 });
 
@@ -238,6 +294,15 @@ DATA.midweek = DATA.midweek || [];
 DATA.midweek.push(
   // 一、家人们谁懂啊：好感≥20，第5周以后，周二晚上，只一次
   { id: "ploy_jiaren", day: "tue", time: "晚上", cond: "好感('groupmate') >= 20 && (学年 > 1 || 周数 >= 5)", who: "groupmate", prio: 2, small: true },
+  // BE暗示 一-1：第一次替写之后，只一次（剧本写“下一次和 Ploy 见面开头插一句”，先做成周中插播，见末尾给引擎）
+  { id: "be_ploy_warn1", day: "wed", time: "晚上", cond: "标记('ploy_ghostwrite') == 1 && 友情('hannah') > 0", who: "groupmate", prio: 2 },
+  // BE暗示 一-3：锁死以后每个 ddl 周（大一第22周、大二第10/20周、大三第10周；大三第20周是考验本身）
+  { id: "be_ploy_ddl_y1_22", day: "tue", time: "晚上", cond: "标记('ploy_ghostwrite') >= 2", week: 22, year: 1, who: "groupmate", prio: 1 },
+  { id: "be_ploy_ddl_y2_10", day: "tue", time: "晚上", cond: "标记('ploy_ghostwrite') >= 2", week: 10, year: 2, who: "groupmate", prio: 1 },
+  { id: "be_ploy_ddl_y2_20", day: "tue", time: "晚上", cond: "标记('ploy_ghostwrite') >= 2", week: 20, year: 2, who: "groupmate", prio: 1 },
+  { id: "be_ploy_ddl_y3_10", day: "tue", time: "晚上", cond: "标记('ploy_ghostwrite') >= 2", week: 10, year: 3, who: "groupmate", prio: 1 },
+  // BE暗示 一-3：大二小组展示（第18周）前，Hannah
+  { id: "be_ploy_hannah", day: "wed", time: "晚上", cond: "标记('ploy_ghostwrite') >= 2 && 友情('hannah') > 0", week: 17, year: 2, who: "hannah", prio: 1 },
 );
 DATA.loveEvents = DATA.loveEvents || [];
 DATA.loveEvents.push(
@@ -247,9 +312,16 @@ DATA.loveEvents.push(
   { id: "ploy_mum_check", who: "groupmate", kind: "ext", place: ["dorm_room", "brunch"], cond: "学年 == 1 && 周数 >= 13 && 周末日 == '日' && 好感('groupmate') >= 45 && 标记('heart_groupmate')", small: true },
   // 四、只有我们听得懂：好感≥50，认识 Ollie，周末去 pub
   { id: "ploy_cantonese", who: "groupmate", kind: "ext", place: "pub_street", cond: "好感('groupmate') >= 50 && 标记('met_local')", small: true },
-  // 五、中文信：交往中，大二第8周（生日那周，生日系统上线前先固定）
-  { id: "ploy_letter", who: "groupmate", kind: "ext", cond: "交往中('groupmate') && 学年 == 2 && 周数 == 8", small: true },
+  // 五、中文信：第七批第二节 3——交往后第一个主角生日那周；没设生日（S.birthday）的先放大三第 8 周
+  { id: "ploy_letter", who: "groupmate", kind: "ext", cond: "交往中('groupmate') && (S.birthday && typeof Birthday !== 'undefined' ? (Birthday.mine() || {}).week == 周数 : 学年 == 3 && 周数 == 8)", small: true },
 );
+
+// ===================== BE 暗示：交往／暧昧小事件结尾随机加的一句内心（剧本_BE暗示.md 一-3；引擎读，见末尾给引擎）=====================
+DATA.beHints = DATA.beHints || {};
+DATA.beHints.groupmate = { cond: "标记('ploy_ghostwrite') >= 2 && !标记('ploy_redeemed')", perTerm: 2, lines: [
+  "（她今天很开心。我在想，她开心是因为我，还是因为我帮她写完了。）",
+  "（她叫我 babe 的时候，和叫 Pa Nok 的语气一样。）",
+] };
 
 // 给引擎：
 // - 新周中插播：ploy_jiaren（周二晚，prio 2）。
@@ -276,3 +348,14 @@ DATA.loveEvents.push(
 // - 决定记录第十节"Ploy（主角先说）：她的中文信里多一句'你先说的，所以这次我先写'"——剧本没说放哪，现在放在"不是为了我妈妈。"后面。
 // - 第二节触发写"第9周之后的那个周末"，现在是第9周起、好感≥30 就可能触发（只一次），没限定"紧接着那个周末"。
 // - 第三节"看过心动"用的是 标记('heart_groupmate')（love.js 心动CG演过的标记）。
+// 给引擎（2026-11-19 第七批）：
+// - confess_groupmate：主角先说的直接进交往中（confessed_groupmate、好感+6、CG），不出第二组选项；对方先说的选项放在 timed.timeout 里。
+// - ploy_letter：条件用了 S.birthday／Birthday.mine()（交往后第一个主角生日那周）；没设生日的放大三第 8 周。最好加一个条件变量“生日周”。
+//   CG groupmate_letter 要在 cg.js 登记。
+// - BE 暗示（剧本_BE暗示.md 第一节）：
+//   · “再帮她一次”：ploy_jiaren、ploy_mum_check 已改（替写≥1 时显示）；fixed_y1.js／fixed_y1_spring.js 的入口由同事改。
+//   · be_ploy_warn1：剧本写“下一次和 Ploy 见面开头插一句”，现在做成周中插播（替写＝1 时、认识 Hannah），想改成见面时插请引擎接。
+//   · be_ploy_ddl_*：锁死后的 ddl 周消息，四个 ddl 周各登记一条（周中插播一个 id 只演一次）。
+//   · be_ploy_hannah：大二第 17 周（第 18 周展示前）。
+//   · DATA.beHints.groupmate：暧昧／交往小事件结尾随机内心，一学期最多 2 次，引擎读。
+//   · Ins（"thank god for good friends 🙏"＋内心“（好朋友。）”）在 ins_pool.js；生日卡“to my lifesaver 💕”在 birthday.js：都不在本文件。

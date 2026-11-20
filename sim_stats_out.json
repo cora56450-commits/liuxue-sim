@@ -1,0 +1,650 @@
+{
+ "均衡·E": {
+  "main": {
+   "home": 100
+  },
+  "first": 15,
+  "degree": 69.1,
+  "y1": {
+   "lone": 18,
+   "bel": 73,
+   "study": 64,
+   "money": 1790
+  },
+  "y3": {
+   "lone": 22,
+   "bel": 97,
+   "study": 85,
+   "money": 5085
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 4,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 14.3,
+  "eng": 92
+ },
+ "均衡·I": {
+  "main": {
+   "home": 100
+  },
+  "first": 0,
+  "degree": 68.1,
+  "y1": {
+   "lone": 18,
+   "bel": 70,
+   "study": 61,
+   "money": 1790
+  },
+  "y3": {
+   "lone": 20,
+   "bel": 95,
+   "study": 83,
+   "money": 5085
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 4,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 4.3,
+  "eng": 92
+ },
+ "均衡·留英·E": {
+  "main": {
+   "alien": 100
+  },
+  "first": 14,
+  "degree": 69,
+  "y1": {
+   "lone": 18,
+   "bel": 73,
+   "study": 64,
+   "money": 1790
+  },
+  "y3": {
+   "lone": 22,
+   "bel": 97,
+   "study": 85,
+   "money": 5085
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 4,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 14.3,
+  "eng": 92
+ },
+ "均衡·留英·I": {
+  "main": {
+   "alien": 100
+  },
+  "first": 2,
+  "degree": 68.2,
+  "y1": {
+   "lone": 18,
+   "bel": 70,
+   "study": 61,
+   "money": 1790
+  },
+  "y3": {
+   "lone": 20,
+   "bel": 95,
+   "study": 83,
+   "money": 5085
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 4,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 4.3,
+  "eng": 92
+ },
+ "卷王·E": {
+  "main": {
+   "lonely": 100
+  },
+  "first": 100,
+  "degree": 71.9,
+  "y1": {
+   "lone": 100,
+   "bel": 7,
+   "study": 86,
+   "money": 2800
+  },
+  "y3": {
+   "lone": 100,
+   "bel": 7,
+   "study": 93,
+   "money": 7825
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 4,
+  "broke": 0,
+  "hiLone": 87.1,
+  "loLone": 0,
+  "hiBel": 0,
+  "eng": 92
+ },
+ "卷王·I": {
+  "main": {
+   "lonely": 100
+  },
+  "first": 100,
+  "degree": 72,
+  "y1": {
+   "lone": 100,
+   "bel": 7,
+   "study": 86,
+   "money": 2800
+  },
+  "y3": {
+   "lone": 100,
+   "bel": 7,
+   "study": 93,
+   "money": 7825
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 4,
+  "broke": 0,
+  "hiLone": 88.6,
+  "loLone": 0,
+  "hiBel": 0,
+  "eng": 92
+ },
+ "摆烂·E": {
+  "main": {
+   "home": 100
+  },
+  "first": 0,
+  "degree": 44,
+  "y1": {
+   "lone": 10,
+   "bel": 81,
+   "study": 16,
+   "money": 1022
+  },
+  "y3": {
+   "lone": 12,
+   "bel": 99,
+   "study": 22,
+   "money": 3015
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 10,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 34.3,
+  "eng": 90
+ },
+ "摆烂·I": {
+  "main": {
+   "home": 100
+  },
+  "first": 0,
+  "degree": 44,
+  "y1": {
+   "lone": 7,
+   "bel": 77,
+   "study": 16,
+   "money": 1022
+  },
+  "y3": {
+   "lone": 10,
+   "bel": 98,
+   "study": 22,
+   "money": 3015
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 10,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 22.9,
+  "eng": 90
+ },
+ "老鼠·E": {
+  "main": {
+   "lonely": 100
+  },
+  "first": 2,
+  "degree": 68.3,
+  "y1": {
+   "lone": 100,
+   "bel": 6,
+   "study": 62,
+   "money": 2800
+  },
+  "y3": {
+   "lone": 100,
+   "bel": 6,
+   "study": 84,
+   "money": 7825
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 4,
+  "broke": 0,
+  "hiLone": 88.6,
+  "loLone": 0,
+  "hiBel": 0,
+  "eng": 90
+ },
+ "老鼠·I": {
+  "main": {
+   "lonely": 100
+  },
+  "first": 1,
+  "degree": 68.4,
+  "y1": {
+   "lone": 100,
+   "bel": 6,
+   "study": 62,
+   "money": 2800
+  },
+  "y3": {
+   "lone": 100,
+   "bel": 6,
+   "study": 84,
+   "money": 7825
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 4,
+  "broke": 0,
+  "hiLone": 84.3,
+  "loLone": 0,
+  "hiBel": 0,
+  "eng": 90
+ },
+ "打工人·E": {
+  "main": {
+   "home": 100
+  },
+  "first": 0,
+  "degree": 55.4,
+  "y1": {
+   "lone": 20,
+   "bel": 27,
+   "study": 29,
+   "money": 4070
+  },
+  "y3": {
+   "lone": 23,
+   "bel": 52,
+   "study": 51,
+   "money": 11355
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 4,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 0,
+  "eng": 92
+ },
+ "打工人·I": {
+  "main": {
+   "home": 100
+  },
+  "first": 0,
+  "degree": 55.5,
+  "y1": {
+   "lone": 20,
+   "bel": 27,
+   "study": 29,
+   "money": 4070
+  },
+  "y3": {
+   "lone": 23,
+   "bel": 52,
+   "study": 51,
+   "money": 11355
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 4,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 0,
+  "eng": 92
+ },
+ "社牛·E": {
+  "main": {
+   "home": 100
+  },
+  "first": 0,
+  "degree": 52.6,
+  "y1": {
+   "lone": 6,
+   "bel": 92,
+   "study": 24,
+   "money": 1070
+  },
+  "y3": {
+   "lone": 8,
+   "bel": 100,
+   "study": 43,
+   "money": 3105
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 4,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 55.7,
+  "eng": 90
+ },
+ "社牛·I": {
+  "main": {
+   "home": 100
+  },
+  "first": 0,
+  "degree": 49.9,
+  "y1": {
+   "lone": 6,
+   "bel": 87,
+   "study": 24,
+   "money": 1130
+  },
+  "y3": {
+   "lone": 8,
+   "bel": 100,
+   "study": 42,
+   "money": 3225
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 4,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 47.1,
+  "eng": 90
+ },
+ "社牛·留英·E": {
+  "main": {
+   "creep": 100
+  },
+  "first": 0,
+  "degree": 52.6,
+  "y1": {
+   "lone": 6,
+   "bel": 92,
+   "study": 24,
+   "money": 1070
+  },
+  "y3": {
+   "lone": 8,
+   "bel": 100,
+   "study": 43,
+   "money": 3105
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 4,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 55.7,
+  "eng": 90
+ },
+ "社牛·留英·I": {
+  "main": {
+   "creep": 100
+  },
+  "first": 0,
+  "degree": 49.8,
+  "y1": {
+   "lone": 6,
+   "bel": 87,
+   "study": 24,
+   "money": 1130
+  },
+  "y3": {
+   "lone": 8,
+   "bel": 100,
+   "study": 42,
+   "money": 3225
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 4,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 47.1,
+  "eng": 90
+ },
+ "随机·E": {
+  "main": {
+   "home": 100
+  },
+  "first": 1,
+  "degree": 67,
+  "y1": {
+   "lone": 22.1,
+   "bel": 52.8,
+   "study": 59.3,
+   "money": 2692.8
+  },
+  "y3": {
+   "lone": 27.1,
+   "bel": 85.3,
+   "study": 83.1,
+   "money": 7501.8
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 3.6,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 0,
+  "eng": 90.6
+ },
+ "随机·I": {
+  "main": {
+   "home": 100
+  },
+  "first": 0,
+  "degree": 66.9,
+  "y1": {
+   "lone": 21,
+   "bel": 49,
+   "study": 59.6,
+   "money": 2704.6
+  },
+  "y3": {
+   "lone": 25.1,
+   "bel": 81.6,
+   "study": 82.8,
+   "money": 7560.9
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 3.7,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 0,
+  "eng": 90.6
+ },
+ "随机·留英·E": {
+  "main": {
+   "alien": 100
+  },
+  "first": 0,
+  "degree": 67.2,
+  "y1": {
+   "lone": 22.5,
+   "bel": 53.6,
+   "study": 60,
+   "money": 2683.8
+  },
+  "y3": {
+   "lone": 26.5,
+   "bel": 85.7,
+   "study": 83.2,
+   "money": 7503.3
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 3.5,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 0,
+  "eng": 90.6
+ },
+ "随机·留英·I": {
+  "main": {
+   "alien": 100
+  },
+  "first": 2,
+  "degree": 67.1,
+  "y1": {
+   "lone": 20.6,
+   "bel": 49.3,
+   "study": 59.8,
+   "money": 2685.6
+  },
+  "y3": {
+   "lone": 25.1,
+   "bel": 82,
+   "study": 82.9,
+   "money": 7523.1
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 3.7,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 0,
+  "eng": 90.5
+ },
+ "看状态·E": {
+  "main": {
+   "home": 100
+  },
+  "first": 73,
+  "degree": 70.5,
+  "y1": {
+   "lone": 31,
+   "bel": 46,
+   "study": 71,
+   "money": 2420
+  },
+  "y3": {
+   "lone": 39,
+   "bel": 77,
+   "study": 86,
+   "money": 6775
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 3,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 0,
+  "eng": 92
+ },
+ "看状态·I": {
+  "main": {
+   "home": 100
+  },
+  "first": 68,
+  "degree": 70.4,
+  "y1": {
+   "lone": 33,
+   "bel": 40,
+   "study": 72,
+   "money": 2445
+  },
+  "y3": {
+   "lone": 39,
+   "bel": 68,
+   "study": 86,
+   "money": 6800
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 3,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 0,
+  "eng": 92
+ },
+ "看状态·留英·E": {
+  "main": {
+   "alien": 100
+  },
+  "first": 70,
+  "degree": 70.4,
+  "y1": {
+   "lone": 31,
+   "bel": 46,
+   "study": 71,
+   "money": 2420
+  },
+  "y3": {
+   "lone": 39,
+   "bel": 77,
+   "study": 86,
+   "money": 6775
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 3,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 0,
+  "eng": 92
+ },
+ "看状态·留英·I": {
+  "main": {
+   "alien": 100
+  },
+  "first": 64,
+  "degree": 70.2,
+  "y1": {
+   "lone": 33,
+   "bel": 40,
+   "study": 72,
+   "money": 2445
+  },
+  "y3": {
+   "lone": 39,
+   "bel": 68,
+   "study": 86,
+   "money": 6800
+  },
+  "friends": 0,
+  "sick": 0,
+  "rush": 3,
+  "broke": 0,
+  "hiLone": 0,
+  "loLone": 0,
+  "hiBel": 0,
+  "eng": 92
+ }
+}

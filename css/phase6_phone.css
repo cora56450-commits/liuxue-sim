@@ -1,0 +1,80 @@
+/* 第六批·手机：WeChap（淡绿）／Instagran（淡粉紫）。淡糖果色，不要大块深色，按钮要大 */
+:root { --wc-soft: #E3F6DA; --wc-mid: #B5E3A8; --wc-deep: #4E9A5A; --ig-soft: #FBE7F3; --ig-mid: #E9C6F5; --ig-deep: #B05FC9; }
+
+/* 首页角标、应用图标 */
+.app[data-app] img { width: 96px; height: 106px; object-fit: contain; }
+
+/* 消息／动态两个标签：不用深色块，按 App 换颜色 */
+.p6-tabs { border-color: rgba(58,71,102,.25) !important; }
+.p6-tabs b { font-size: 21px !important; padding: 12px 0 !important; }
+.p6-tabs.wc b.on { background: var(--wc-mid) !important; color: var(--navy) !important; }
+.p6-tabs.ig b.on { background: var(--ig-mid) !important; color: var(--navy) !important; }
+
+/* 聊天列表的未读数 */
+.contact { position: relative; }
+.c-unread { position: absolute; right: 8px; top: 8px; min-width: 26px; height: 26px; padding: 0 7px; border-radius: 13px; background: #FF9AA8; color: #fff; font-style: normal; font-size: 16px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+.phone-body.app-wc .contact-list { background: linear-gradient(var(--wc-soft), transparent 240px); }
+.phone-body.app-ig .contact-list { background: linear-gradient(var(--ig-soft), transparent 240px); }
+
+/* 动态页顶栏：大按钮 */
+.p6-bar { gap: 12px !important; }
+.p6-bar b { font-size: 20px !important; padding: 10px 18px; border-radius: 22px; background: #FFF3C4; color: var(--navy) !important; }
+.phone-body.app-ig .p6-bar b[data-mo=new] { background: var(--ig-mid); }
+.phone-body.app-wc .p6-bar b[data-mo=new] { background: var(--wc-mid); }
+
+/* 平台角标 */
+.p6-name { display: flex; align-items: center; gap: 6px; }
+.plat-badge { width: 24px; height: 24px; object-fit: contain; flex: none; }
+.plat-badge.wc { border-radius: 6px; background: var(--wc-mid); padding: 2px; }
+
+/* 朋友圈 */
+.p6-acts { gap: 12px !important; margin-top: 4px; }
+.p6-btn { font: inherit; font-size: 18px; font-weight: 800; padding: 8px 16px; min-height: 44px; border-radius: 22px; border: 2px solid var(--wc-mid); background: #fff; color: var(--navy); cursor: pointer; opacity: 1 !important; }
+.p6-btn.on { background: #FFD9E0; border-color: #FF9AA8; color: #D9546A; }
+.mo-note { font-size: 15px; color: #8A8FA3; margin-top: 6px; }
+.mo-repost { font-size: 17px; background: var(--ig-soft); border-radius: 10px; padding: 8px 10px; margin: 6px 0; color: var(--navy); }
+
+/* Ins 帖子：CSS 画的卡片 */
+.ig-post { background: #FFF9F4; border: 3px solid rgba(58,71,102,.18); border-radius: 18px; margin: 10px 4px; padding: 12px; color: var(--navy); }
+.ig-top { display: flex; align-items: center; gap: 10px; font-size: 19px; }
+.ig-top .c-ava { width: 44px; height: 44px; font-size: 20px; }
+.ig-photo { margin: 10px 0 6px; aspect-ratio: 1 / 1; border-radius: 12px; background: linear-gradient(135deg, #FFE3EC, #E9C6F5 60%, #FFE9D6); display: flex; align-items: center; justify-content: center; padding: 22px; text-align: center; }
+.ig-photo span { font-size: 18px; line-height: 1.5; color: #6B5A80; }
+.ig-acts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ig-ic { width: 56px; height: 52px; border: none; background: transparent; cursor: pointer; padding: 4px; }
+.ig-ic img { width: 100%; height: 100%; object-fit: contain; }
+.ig-rp { margin-left: auto; display: flex; align-items: center; gap: 6px; font: inherit; font-size: 17px; font-weight: 800; padding: 8px 14px; min-height: 48px; border-radius: 24px; border: 2px solid var(--ig-deep); background: var(--ig-soft); color: var(--ig-deep); cursor: pointer; }
+.ig-rp img { width: 28px; height: 26px; }
+.ig-rp.done { border: none; background: transparent; cursor: default; font-size: 16px; opacity: .7; }
+.ig-likes { font-size: 17px; font-weight: 800; margin: 2px 0; }
+.ig-cap { font-size: 19px; line-height: 1.5; margin: 4px 0; white-space: pre-wrap; word-break: break-word; }
+.ig-cap b { margin-right: 6px; }
+.c-ava.p6-moon { background: #CFC6F0; border-color: #CFC6F0; color: var(--navy); }
+
+/* story 一排 */
+.ig-rings { display: flex; gap: 12px; overflow-x: auto; padding: 10px 8px 4px; flex: none; }
+.ig-ring { border: none; background: transparent; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 84px; flex: none; font: inherit; }
+.ig-ring .ring { width: 80px; height: 82px; background: center/100% 100% no-repeat; display: flex; align-items: center; justify-content: center; }
+.ig-ring .ring .c-ava { width: 60px; height: 60px; font-size: 24px; }
+.ig-ring small { font-size: 14px; color: var(--navy); max-width: 84px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* story 全屏 */
+.ig-story-body { padding: 0 !important; }
+.ig-story { position: relative; flex: 1; min-height: 760px; background: url(../assets/ui/ig_story_frame.png) center/100% 100% no-repeat; cursor: pointer; color: var(--navy); }
+.sty-bars { display: none; }
+.sty-ava { position: absolute; left: 6%; top: 6.6%; width: 12.5%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
+.sty-ava .c-ava { width: 100%; height: 100%; font-size: 22px; }
+.sty-name { position: absolute; left: 23%; top: 8.4%; font-size: 20px; font-weight: 800; background: #FFF6EE; padding: 0 6px; }
+.sty-main { position: absolute; left: 6%; right: 6%; top: 18%; bottom: 14%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 18px; text-align: center; }
+.sty-main p { font-size: 24px; font-weight: 800; line-height: 1.5; margin: 0; }
+.sty-img { font-size: 19px; line-height: 1.5; color: #6B5A80; background: linear-gradient(135deg, #FFE3EC, #E9C6F5); border-radius: 14px; padding: 24px 18px; }
+.sty-bottom { position: absolute; left: 10%; right: 10%; bottom: 3.6%; height: 6%; display: flex; align-items: center; justify-content: center; font-size: 17px; color: #8A8FA3; }
+.sty-reply { width: 100%; height: 100%; min-height: 50px; font: inherit; font-size: 21px; font-weight: 900; border-radius: 26px; border: none; background: var(--ig-mid); color: var(--navy); cursor: pointer; }
+
+/* 发动态：先选平台（两个大按钮） */
+.plat-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.plat-pick button { display: flex; flex-direction: column; align-items: center; gap: 4px; font: inherit; font-size: 20px; font-weight: 800; padding: 12px 6px; border-radius: 18px; border: 3px solid rgba(58,71,102,.2); background: #fff; color: var(--navy); cursor: pointer; }
+.plat-pick button img { width: 64px; height: 64px; object-fit: contain; }
+.plat-pick button[data-pl=wc].on { background: var(--wc-soft); border-color: var(--wc-deep); }
+.plat-pick button[data-pl=ig].on { background: var(--ig-soft); border-color: var(--ig-deep); }
+.plat-hint { font-size: 17px !important; color: var(--navy) !important; }

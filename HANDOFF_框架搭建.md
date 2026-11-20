@@ -158,3 +158,15 @@ CG id（文件改名用）：
 - **等 Cora**：在 `tools/lineup.html` 里调立绘校准值，导出后发给 Claude Code 贴回 `data/characters.js`；赵子豪抠图后覆盖原文件并重跑 `python3 tools/import_assets.py`；填 API Key 后试手机单聊、群聊、小红书。
 - **等策划**：`docs/问题记录.md` 里的各项（暂定的周数和金额、大二大三关键周表、HE 结局名）；正式剧情文本放进 `data/events/`。
 - **编程这边下一步可以做**：心动／推进CG／告白事件的触发池；邮票和小戳素材到了以后接进结局明信片；音效文件到了以后放 `assets/sfx/`。
+
+---
+
+## 完成记录（2026-11-19 晚，Claude Code）：第八批修 bug（v0.6.1，没部署）
+
+第 1–10 条做完，第 11 条等图。三条路线都从新游戏走到大一第 5 周排日程，没有卡住。改动和复测结果、要策划定的 5 件事写在 `docs/问题记录.md` 最后一节。新的测试脚本 `tools/test_bot.js`（在页面里加载，`Bot.start({...})` 按路线配置自动点）。
+
+---
+
+## 完成记录（2026-11-20，Claude Code）：第九批＋第十批（v0.7.0，已部署）
+
+第九批和第十批一起做完（第九批之前没做）。剧本文本 6 个 agent 并行转成数据，引擎和整合测试在主线。新文件：`data/events/{enc10_a,enc10_b,midweek10,friends10,endings10,duals10,valentine10,gala10,intimacy10,love10,misc10}.js`、`data/{relatives,daily10,gallery}.js`、`js/{gallery10,love10}.js`、`tools/{import_batch10.py,build_gallery.js}`。结果、sim、待策划和没接的流程都在 `docs/问题记录.md` 最后一节。

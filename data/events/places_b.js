@@ -544,6 +544,20 @@ Object.assign(DATA.events, {
   place_brunch_1: [
     { bg: "brunch" },
     { show: "sophie" },
+    // 英文名规则第四节第 2 条：有英文名才出，第一次问一次（flag_sophie_asked 只用来防重复问）
+    // 缺台词：Sophie 第一次问“杯子上写哪个名字”的那句，英文名规则里没写正文，这里只放了选项
+    { if: "英文名 != '' && !标记('sophie_asked')", then: [
+      { fx: { flag_sophie_asked: 1 } },
+      { choice: [
+        { text: "“{英文名}。”", if: "英文名 != ''", fx: { flag_sophie_en: 1 }, then: [
+          { say: "杯子上写的是“{英文名}”——拼对了，但多了一个字母。Sophie 冲你眨眼：" },
+          { say: "I added a flourish.", name: "sophie", tr: "我加了点花样。" },
+        ] },   // 杯子上写英文名，照样写错。缺反应：剧本没写这个选项后面的话
+        { text: "“{名字}。”", then: [
+          { say: "杯子上写着“{离谱念法}”。你看着它，决定不纠正了。（第一个版本。之后还会有很多版本。）" },
+        ] },   // 写中文名的错法（现有）。缺反应：同上
+      ] },
+    ] },
     { say: "Sophie 把你的咖啡放在桌上，杯子上写着你的名字。" },
     { if: "名字错法 == '终于写对了'", then: [
       // ※ 第 8 种只在大三出
@@ -641,7 +655,15 @@ Object.assign(DATA.events, {
         { fx: { aff_senior: 2 } },
       ] },
       { text: "过去打招呼", fx: { aff_senior: 1 }, then: [
-        { say: "叔叔阿姨，这是我学妹，今年刚来的。", name: "senior" },
+        { if: "交往中('senior')", then: [
+          // 第七批第二节：交往中
+          { say: "叔叔阿姨，这是我学妹——", name: "senior" },
+          { say: "他停了一下。" },
+          { say: "……女朋友。", name: "senior", expr: "shy" },
+          { say: "（他自己耳朵先红了。）" },
+        ], else: [
+          { say: "叔叔阿姨，这是我学妹，今年刚来的。", name: "senior" },
+        ] },
         { say: "那个阿姨拉着你问了二十分钟这边的情况。你说的每一句，学长都在旁边点头。" },
       ] },
     ] },
@@ -785,9 +807,24 @@ Object.assign(DATA.events, {
     { show: "local" },
     { say: "Ollie 拉着一个小行李箱，站在去伦敦的站台上。" },
     { say: "Going home. Mum's birthday. She'd kill me if I missed it.", name: "local", tr: "回家。我妈生日。我要是错过了她会杀了我。" },
+    // 第七批第二节：三种状态——没交往（原样）／交往中没过考验（内心换）／过了考验 local_asked（台词和选项换，占周末）
+    { if: "交往中('local') && 标记('local_asked')", then: [
+      { say: "Train's at six. Mum's making roast. You're coming.", name: "local", tr: "六点的车。我妈做烤肉。你一起来。" },
+      { choice: [
+        { text: "一起去", fx: { flag_ollie_surrey_trip: 1 }, then: [
+          { say: "火车上他一直在说他妈妈会问什么问题，让你提前准备。他列了十二个。" },
+          // 缺反应：车站-4 交往版“一起去”之后剧本没写反应
+          // 给引擎：这个选项要占掉这个周末（去萨里），见文件末尾
+        ] },
+      ] },
+    ], else: [
     { say: "他看了看你，犹豫了一下。" },
     { say: "You could come, you know. Next time. Mum's always asking who I hang out with up here.", name: "local", tr: "你知道吗，你可以来的。下次。我妈总问我在这边跟谁玩。" },
-    { say: "（下次。他说的是下次。）" },
+    { if: "交往中('local')", then: [
+      { say: "（下次。在一起了，还是下次。）" },
+    ], else: [
+      { say: "（下次。他说的是下次。）" },
+    ] },
     { choice: [
       { text: "“好啊，下次。”", fx: { aff_local: 2, flag_ollie_next_time: 1 }, then: [
         { say: "他笑了，火车进站了。他上车之前冲你挥了挥手。" },
@@ -796,6 +833,7 @@ Object.assign(DATA.events, {
         { say: "他想了一下。" },
         { say: "She knows there's a \"you\". Just not… the details.", name: "local", tr: "她知道有一个‘你’。只是不知道……细节。" },
       ] },
+    ] },
     ] },
     // ※ ollie_next_time：大二考验“我们算什么”时，主角心里多一句：“（他说过'下次'。一年了，下次一直没来。）”
     { hide: true },
@@ -921,8 +959,14 @@ Object.assign(DATA.events, {
     { say: "一对拿着地图的老夫妇拦住你，问火车站怎么走。你指了路，说得很流利。他们说：" },
     { say: "Your English is lovely! Where are you from?", name: "游客", tr: "你英语说得真好！你是哪里人？" },
     { choice: [
-      { text: "“China.”", tr: "中国。", fx: { english: 0.5 } },
-      { text: "“Here, kind of.”", tr: "算是这里吧。", fx: { belonging: 2 } },
+      { text: "“China.”", tr: "中国。", fx: { english: 0.5 }, then: [
+        { say: "Oh, lovely! I've always wanted to go.", name: "游客", tr: "哦，太好了！我一直想去。" },
+        { say: "他们走了。（我刚才指的路，是对的吗？）" },
+      ] },
+      { text: "“Here, kind of.”", tr: "算是这里吧。", fx: { belonging: 2 }, then: [
+        { say: "老太太笑了：" },
+        { say: "Well, you're doing a very good job of it, dear.", name: "游客", tr: "那你做得很好，亲爱的。" },
+      ] },
     ] },
     { say: "（三年前我在这座城市迷路，现在有人问我路。）" },
   ],
@@ -931,7 +975,11 @@ Object.assign(DATA.events, {
   pb_04: [
     { say: "一个穿着短袖的醉汉在路边唱歌，看到你，大声说了一句什么。你没听懂。" },
     { choice: [
-      { text: "快步走开", fx: { energy: -2 } },
+      { text: "快步走开", fx: { energy: -2 }, then: [
+        { say: "他在后面又喊了一句。这次你听懂了：" },
+        { say: "Have a lovely evening!", name: "醉汉", tr: "祝你晚上愉快！" },
+        { say: "（……原来是这句。）" },
+      ] },
       { text: "点头笑一下", then: [
         { say: "MERRY CHRISTMAS!", name: "醉汉", tr: "圣诞快乐！" },
         { say: "现在是十月。", fx: { loneliness: -1 } },
@@ -967,7 +1015,11 @@ Object.assign(DATA.events, {
     { say: "校门口一个拿着平板的年轻人拦住你：" },
     { say: "Got a minute to talk about saving the planet?", name: "推销员", tr: "有空聊聊拯救地球吗？" },
     { choice: [
-      { text: "“Sorry, I'm late for class.”", tr: "抱歉，我上课要迟到了。" },
+      { text: "“Sorry, I'm late for class.”", tr: "抱歉，我上课要迟到了。", then: [
+        { say: "他马上让开：" },
+        { say: "No worries! Save the planet later!", name: "推销员", tr: "没事！晚点再拯救地球！" },
+        { say: "你走过去以后才想起来今天没课。" },
+      ] },
       { text: "停下来听", fx: { english: 0.5, energy: -3 }, then: [
         { say: "他讲了十分钟，最后让你每月捐 £10。你说你要考虑一下。他说：" },
         { say: "I'll bear that in mind.", name: "推销员", tr: "我会记着的。" },
@@ -987,8 +1039,12 @@ Object.assign(DATA.events, {
   pb_09: [
     { say: "市中心有一个人在弹吉他唱歌，唱的是一首你在国内也听过的老歌。你站在旁边听完了。" },
     { choice: [
-      { text: "扔一镑", fx: { money: -1, loneliness: -3 } },
-      { text: "听完就走", fx: { loneliness: -1 } },
+      { text: "扔一镑", fx: { money: -1, loneliness: -3 }, then: [
+        { say: "他冲你点点头，下一首换成了另一首中文歌，唱得很不标准。（他是专门为我唱的吗？）" },
+      ] },
+      { text: "听完就走", fx: { loneliness: -1 }, then: [
+        { say: "你走出很远，那首歌还在脑子里。" },
+      ] },
     ] },
   ],
 
@@ -1009,7 +1065,9 @@ Object.assign(DATA.events, {
   pb_12: [
     { say: "太阳出来了。所有人都在草坪上躺着，有人只穿了一件背心，温度是 14 度。" },
     { choice: [
-      { text: "也去躺着", fx: { energy: 5, belonging: 1 } },
+      { text: "也去躺着", fx: { energy: 5, belonging: 1 }, then: [
+        { say: "草坪是湿的。你躺下去才发现。你没起来。（14 度，太阳，湿草地。这就是英国人的夏天。）" },
+      ] },
       { text: "继续穿着外套走", then: [
         { say: "（14 度。是冬天的温度。我不理解。）" },
       ] },
@@ -1035,7 +1093,10 @@ Object.assign(DATA.events, {
   pb_15: [
     { say: "你走进一家店，没看到队伍，直接走到柜台。身后有人清了一下嗓子。你回头，看到一条安静的、整整齐齐的队。" },
     { choice: [
-      { text: "道歉，去排队", fx: { belonging: 1 } },
+      { text: "道歉，去排队", fx: { belonging: 1 }, then: [
+        { say: "排在你前面的老太太回头冲你笑了一下，小声说：" },
+        { say: "It took me forty years to get used to it, love.", name: "老太太", tr: "我花了四十年才习惯，亲爱的。" },
+      ] },
       { text: "假装在看货架，慢慢挪到队尾", then: [
         { say: "（所有人都看见了。所有人都假装没看见。）" },
       ] },
@@ -1079,7 +1140,9 @@ Object.assign(DATA.events, {
       { text: "冲小孩说 “Ni hao”", fx: { belonging: 1 }, then: [
         { say: "小孩眼睛亮了，跟着说了一遍。他妈妈松了一口气。" },
       ] },
-      { text: "笑一下" },
+      { text: "笑一下", then: [
+        { say: "小孩也冲你笑了一下，然后躲到妈妈身后去了。" },
+      ] },
     ] },
   ],
 
@@ -1092,7 +1155,9 @@ Object.assign(DATA.events, {
       { text: "“这个牌子好吃，那个更好。”", fx: { loneliness: -3, belonging: 1 }, then: [
         { say: "她说谢谢，声音有点哑。（一年前，我也站在这里。）" },
       ] },
-      { text: "不打扰她" },
+      { text: "不打扰她", then: [
+        { say: "你走过去的时候，听到她在跟家里打电话，说“这边什么都有，你们别担心”。（她手里拿的是一包不对的牌子。）" },
+      ] },
     ] },
   ],
 
@@ -1120,7 +1185,9 @@ Object.assign(DATA.events, {
       { text: "买", fx: { money: -5, energy: 3 }, then: [
         { say: "你不知道怎么做鳕鱼。你上网查了，最后做成了水煮鱼。" },
       ] },
-      { text: "不买" },
+      { text: "不买", then: [
+        { say: "你买了一份 meal deal。（鳕鱼可以下次再学。下次也是这么说的。）" },
+      ] },
     ] },
   ],
 
@@ -1134,8 +1201,12 @@ Object.assign(DATA.events, {
   pb_24: [
     { say: "一个二手书摊上，你看到一本中文书，是《围城》。不知道是哪个留学生留下的。扉页上写着：“2009 年，第一次来英国。”" },
     { choice: [
-      { text: "买下来", fx: { money: -2, item_old_weicheng: 1 } },
-      { text: "放回去，留给下一个人" },
+      { text: "买下来", fx: { money: -2, item_old_weicheng: 1 }, then: [
+        { say: "你在扉页那行字下面写了一行：“2026 年，第一次来英国。”" },
+      ] },
+      { text: "放回去，留给下一个人", then: [
+        { say: "你把它放回去的时候，把它摆正了一点，让书脊朝外。" },
+      ] },
     ] },
   ],
 
@@ -1146,7 +1217,9 @@ Object.assign(DATA.events, {
     { say: "吧台边一个老头一直在跟你讲他年轻时候去过香港。你听懂了一半。最后他说：" },
     { say: "Lovely place. Lovely people. Is it still there?", name: "吧台边的老头", tr: "好地方，好人。它还在吗？" },
     { choice: [
-      { text: "“Yes, still there.”", tr: "嗯，还在。", fx: { english: 0.5 } },
+      { text: "“Yes, still there.”", tr: "嗯，还在。", fx: { english: 0.5 }, then: [
+        { say: "他很高兴，给你讲了一个小时他在香港吃的叉烧。最后他请了你一杯。" },
+      ] },
       { text: "认真给他讲现在的香港", fx: { money: 4, loneliness: -2 }, then: [
         { say: "他听得很认真，最后请你喝了一杯。" },
       ] },
@@ -1161,7 +1234,9 @@ Object.assign(DATA.events, {
       { text: "用中文唱一遍", fx: { belonging: 2, loneliness: -3 }, then: [
         { say: "全桌鼓掌，有人给你买了一杯酒。" },
       ] },
-      { text: "笑着摇头" },
+      { text: "笑着摇头", then: [
+        { say: "他们没勉强你。有人说：“Next time, then!「那下次！」”（下次你唱了。）" },
+      ] },
     ] },
   ],
 
@@ -1186,8 +1261,13 @@ Object.assign(DATA.events, {
     { say: "邻桌的狗趴在你脚边，用头蹭你的腿。它的主人说：" },
     { say: "Sorry! He likes you.", name: "狗主人", tr: "抱歉！它喜欢你。" },
     { choice: [
-      { text: "摸它", fx: { loneliness: -4 } },
-      { text: "把腿收回来" },
+      { text: "摸它", fx: { loneliness: -4 }, then: [
+        { say: "它翻了个身，把肚子露出来。你摸了十分钟。" },
+      ] },
+      { text: "把腿收回来", then: [
+        { say: "狗又凑过来，把头放在你的鞋上，叹了一口气。主人笑了：" },
+        { say: "He's decided. Sorry.", name: "狗主人", tr: "它已经决定了。抱歉。" },
+      ] },
     ] },
   ],
 
@@ -1204,7 +1284,9 @@ Object.assign(DATA.events, {
       { text: "让她们帮你拍", fx: { loneliness: -2 }, then: [
         { say: "拍得比你自己拍的好看。" },
       ] },
-      { text: "“No worries.”", tr: "没事。" },
+      { text: "“No worries.”", tr: "没事。", then: [
+        { say: "她们笑着走了。你学会了这句话最常用的场合：明明有 worries 的时候。" },
+      ] },
     ] },
   ],
 
@@ -1219,7 +1301,9 @@ Object.assign(DATA.events, {
         { say: "他一路在讲他女儿也在国外读书。下车的时候，他说：" },
         { say: "Text your mum you're home.", name: "中年男人", tr: "给你妈发消息说你到家了。" },
       ] },
-      { text: "在站里等第一班车", fx: { energy: -15 } },
+      { text: "在站里等第一班车", fx: { energy: -15 }, then: [
+        { say: "你在站里等了两个小时。五点二十，第一班车来了。你上车以后给妈妈发了一条：“到家了。”（那边是中午。她秒回：“这么早出门？”）" },
+      ] },
     ] },
   ],
 
@@ -1242,7 +1326,10 @@ Object.assign(DATA.events, {
     { say: "查票员看了你的票，又看了你的 Railcard「火车优惠卡」，说：" },
     { say: "This expired last week, love.", name: "查票员", tr: "这张上周过期了，亲。" },
     { choice: [
-      { text: "道歉，补票", fx: { money: -15 } },
+      { text: "道歉，补票", fx: { money: -15 }, then: [
+        { say: "他给你补了票，最后说：" },
+        { say: "Renew it online tonight, yeah? Saves you a fortune.", name: "查票员", tr: "今晚在网上续一下，好吗？能省一大笔。" },
+      ] },
       { text: "“Could you let me off this once?”", tr: "这次能放过我吗？", fx: { english: 0.5 }, then: [
         { say: "他看了你两秒，说：" },
         { say: "Renew it tonight. I didn't see this.", name: "查票员", tr: "今晚就续。我没看见。" },
@@ -1255,7 +1342,7 @@ Object.assign(DATA.events, {
   // 路人-36 · 迷路的新生（大二大三，九月）
   pb_36: [
     { say: "一个拿着地图的新生问你：" },
-    { say: "Excuse me, do you know where the Roger Stevens building is?", name: "新生", tr: "请问 Roger Stevens 楼在哪？" },
+    { say: "Excuse me, do you know where the Henderson building is?", name: "新生", tr: "请问 Henderson 楼在哪？" },
     { if: "标签('天生路痴')", then: [
       { say: "你自信地指了方向。十分钟后你意识到你指反了。你追过去找她，她已经不见了。（愿上帝保佑她。）" },
     ], else: [
@@ -1270,7 +1357,9 @@ Object.assign(DATA.events, {
       { text: "去看看", fx: { loneliness: -2 }, then: [
         { say: "你织了一个小时，织出了一个看不出是什么的东西。社长说它很有个性。" },
       ] },
-      { text: "收下，走了" },
+      { text: "收下，走了", then: [
+        { say: "传单上写着“Knit & Natter「编织和闲聊」，每周四”。你把它贴在了冰箱上，一直没去。" },
+      ] },
     ] },
   ],
 
@@ -1436,7 +1525,7 @@ DATA.passersby.push(
   { id: "pb_40", where: "campus" },
 );
 
-// 真实地名：Roger Stevens 楼（路人-36，利兹大学真实楼名）；Delay Repay（英国铁路真实的延误退款名称，车站-3）；Railcard（真实的火车优惠卡，路人-35）
+// 真实地名：（Roger Stevens 楼已按第六七批规矩改成虚构的 Henderson 楼，路人-36）；Delay Repay（英国铁路真实的延误退款名称，车站-3）；Railcard（真实的火车优惠卡，路人-35）
 //   城市名保留：伦敦、曼城、萨里、博洛尼亚、新加坡、成都、香港、约克郡（未列入）
 
 // 缺反应：
@@ -1466,3 +1555,13 @@ DATA.passersby.push(
 //   9. 鱼塘：brunch-8 “鱼塘翻车判定 +1”只写了 flag_fishpond_brunch，要不要同时加 pond_count 由引擎定
 //  10. 中超-7 “秋季学期”暂写 季节 == '秋'（秋季学期的冬天几周要不要算，引擎按学期定）；pub-8、车站-8 没有 show 立绘（{A} 不定人），要的话引擎按 {A} 补
 //  11. 车站-1 学长拿牌子的“九月”= 大二大三第 1 周；车站-2/车站-4 的“周五”不在周末时段里，只按周六上午
+
+// ===== 第七批（11/19）补充 =====
+// 给引擎：
+// - place_station_4 交往版（交往中 && 标记('local_asked')）选“一起去”设了新标记 flag_ollie_surrey_trip，这个选项要占掉这个周末（跟 Ollie 回萨里）。
+//   现有 fx 里没有“占周末”，date_promise 是写进本周末约会日程，这里已经在车站了，怕重复触发 date_local，所以没用。
+// - place_station_4／place_brunch_5 没写变体，三年只演一次；交往版只有交往以后第一次抽到才看得到，要不要允许交往后再演一次由引擎定。
+// - place_brunch_1：第一次（有英文名时）问写哪个名字，选英文名设 flag_sophie_en，之后 {名字错法} 要按英文名生成错法；flag_sophie_asked 只防重复问。
+// 缺反应／缺台词：
+// - place_brunch_1 Sophie 问名字的那句台词，两个选项后的反应（英文名规则第四节第 2 条只写了效果）。
+// - place_station_4 交往版“一起去”之后的反应。

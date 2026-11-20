@@ -121,7 +121,9 @@ Object.assign(DATA.events, {
     { say: "…Okay. Okay. I'm not going to say anything.", name: "giulia", tr: "……好。好。我什么都不说。" },
     { say: "她什么都没说。她自己也撒了一点。" },
     { choice: [
-      { text: "“明天我们去中超，我教你挑饺子皮。”", fx: { fr_giulia: 4 } },
+      { text: "“明天我们去中超，我教你挑饺子皮。”", fx: { fr_giulia: 4 }, then: [
+        { say: "Deal. And you never tell anyone I put ketchup on dumplings.", name: "giulia", tr: "成交。还有，你永远别告诉别人我在饺子上放番茄酱。" },
+      ] },
       { text: "给她奶奶拍一张她包的饺子", fx: { fr_giulia: 5 }, then: [
         { say: "她奶奶发来一段很长的意大利语语音。Giulia翻译：“她说褶子太少，但很漂亮。她说让你下次来博洛尼亚。”" },
       ] },
@@ -238,8 +240,13 @@ Object.assign(DATA.events, {
     { say: "来得正好。帮叔把这箱搬进去，他请你吃饺子。", name: "senior" },
     { say: "我什么时候说了？……行，请。", name: "chen_jianguo" },
     { choice: [
-      { text: "搬", fx: { energy: -5, aff_senior: 2, fr_chen_jianguo: 3 } },
-      { text: "“我就是来买老干妈的。”" },
+      { text: "搬", fx: { energy: -5, aff_senior: 2, fr_chen_jianguo: 3 }, then: [
+        { say: "箱子很重。学长一个人搬了两箱，你搬了一箱。搬完他递给你一瓶水，什么都没说。" },
+      ] },
+      { text: "“我就是来买老干妈的。”", then: [
+        { say: "陈叔笑了：" },
+        { say: "那正好，老干妈也在那箱里。搬完你拿一瓶走。", name: "chen_jianguo" },
+      ] },
     ] },
     { hide: true },
   ],
@@ -301,8 +308,15 @@ Object.assign(DATA.events, {
     { say: "Oh! Sorry, love. Next time.", name: "sophie", tr: "哦！抱歉，亲爱的。下次一定。" },
     { say: "（现在有两个人在用两种方式念错我的名字。）" },
     { choice: [
-      { text: "“没事，我喜欢这个新名字。”", fx: { aff_local: 3, fr_sophie: 3 } },
-      { text: "自己拿笔把杯子上的名字改对", fx: { belonging: 2 } },
+      { text: "“没事，我喜欢这个新名字。”", fx: { aff_local: 3, fr_sophie: 3 }, then: [
+        { say: "Sophie 笑了：" },
+        { say: "Then I'll keep making new ones. Every week, a new you.", name: "sophie", tr: "那我每周给你起一个新名字。每周一个新的你。" },
+      ] },
+      { text: "自己拿笔把杯子上的名字改对", fx: { belonging: 2 }, then: [
+        { say: "Sophie 看着你改，认真地点点头：" },
+        { say: "Got it. {名字}. …I'll still get it wrong.", name: "sophie", tr: "记住了。{名字}。……我还是会写错的。" },
+        { say: "（下周她写对了两个字。）" },
+      ] },
     ] },
     { hide: true },
     // ※ 毕业那天 Sophie 第一次写对你的名字，这里是第一次铺垫。
@@ -323,7 +337,9 @@ Object.assign(DATA.events, {
       { text: "给四个人拍一张合照", fx: { loneliness: -5, fr_giulia: 2, fr_mei: 2, fr_jake: 2 }, then: [
         { say: "照片里 Giulia 在皱眉，Mei 在比耶，Jake 的帽子歪了。你把它设成了 flat 群的头像。" },
       ] },
-      { text: "跟 Mei 学怎么砍价", fx: { money: 5, fr_mei: 3 } },
+      { text: "跟 Mei 学怎么砍价", fx: { money: 5, fr_mei: 3 }, then: [
+        { say: "Mei 用粤语跟摊主说了两句，价格从 £10 变成了 £6。你学了一句“平啲啦”，回去练了一晚上。" },
+      ] },
     ] },
     { hide: true },
   ],
@@ -391,7 +407,11 @@ Object.assign(DATA.events, {
       { text: "坐下", fx: { loneliness: -6, energy: 5 }, then: [
         { say: "你们三个人在长椅上吃完了那一大盒饭。Nikos 讲了一个笑话，你这次听懂了，而且觉得好笑。" },
       ] },
-      { text: "“我刚吃过。”" },
+      { text: "“我刚吃过。”", then: [
+        { say: "Marcia 看了一眼你的肚子——它刚好叫了一声。" },
+        { say: "…Sit down.", name: "marcia", tr: "……坐。" },
+        { say: "你们三个人在长椅上吃完了那一大盒饭。Nikos 讲了一个笑话，你这次听懂了，而且觉得好笑。", fx: { loneliness: -6, energy: 5 } },
+      ] },
     ] },
     { hide: true },
   ],
@@ -408,7 +428,11 @@ Object.assign(DATA.events, {
     { say: "在这边待久了你就知道，有些钱省不得。", name: "yu_xiao" },
     { say: "（她就是“选择留在英国的我”，十年以后的样子吗。）" },
     { choice: [
-      { text: "蹲下来跟小女孩说话", fx: { loneliness: -4 } },
+      { text: "蹲下来跟小女孩说话", fx: { loneliness: -4 }, then: [
+        { say: "小女孩用英语跟你说话，夹着两个中文词。她妈妈在旁边说：" },
+        { say: "她中文不好。我们在家也说英语了。", name: "yu_xiao" },
+        { say: "（她说得很平静。）" },
+      ] },
       { text: "“于老师，周末也挺辛苦的。”", then: [
         { say: "辛苦啥，过日子呗。", name: "yu_xiao" },
       ] },
@@ -430,7 +454,11 @@ Object.assign(DATA.events, {
       { text: "“不会说的。”", fx: { fr_ben: 5, flag_know_ben_job: 1 }, then: [
         { say: "后来小组群里 Ben 消失的时候，你替他回了一句“他这周有事，我来补”。" },
       ] },
-      { text: "“小组作业你那部分……”", fx: { fr_ben: -2 } },
+      { text: "“小组作业你那部分……”", fx: { fr_ben: -2 }, then: [
+        { say: "Ben 的脸一下子僵了：" },
+        { say: "…Yeah. I'll do it. Tonight. Sorry.", name: "ben", tr: "……嗯。我今晚写。抱歉。" },
+        { say: "他转身去登记下一张会员卡了。（我好像说错了什么。）" },
+      ] },
     ] },
     { hide: true },
     // ※ 策划文档定的是“大二才发现他打两份工”。这里只是一个大一的小伏笔，他说是帮朋友顶班。

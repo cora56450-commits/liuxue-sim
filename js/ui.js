@@ -10,7 +10,7 @@ window.addEventListener("resize", fitStage);
 // ===== 设置（存在本机，不随存档） =====
 const Settings = {
   KEY: "liuxue_settings",
-  v: { textSpeed: 28, volume: 70, bgmVolume: 60, ambVolume: 30, showAvatar: true, showTr: true, guide: true, noTimer: false, autoGames: false },   // noTimer：限时选项不限时；autoGames：小游戏全部自动通过   // textSpeed：每个字的毫秒数；volume 是音效音量
+  v: { textSpeed: 28, volume: 70, bgmVolume: 60, ambVolume: 30, showAvatar: true, showTr: true, guide: true, noTimer: false, autoGames: false, showPov: true },   // noTimer：限时选项不限时；autoGames：小游戏全部自动通过   // textSpeed：每个字的毫秒数；volume 是音效音量
   load() { try { Object.assign(this.v, JSON.parse(localStorage.getItem(this.KEY) || "{}")); } catch (e) {} },
   set(k, val) { this.v[k] = val; localStorage.setItem(this.KEY, JSON.stringify(this.v)); },
 };
@@ -19,6 +19,7 @@ Settings.load();
 // ===== 背景 =====
 let currentBg = null;
 function setBg(id) {
+  if (id && typeof homeBg === "function" && S) id = homeBg(id);   // 大三同居：住处换同居背景
   const bg = $("#bg");
   if (!id) { currentBg = null; return bg.classList.add("hidden"); }
   const src = `assets/bg/${id}.jpg`;
@@ -30,6 +31,7 @@ function setBg(id) {
   }
   currentBg = id;
   bg.classList.remove("hidden");
+  if (typeof BGM !== "undefined" && BGM.onBg) BGM.onBg(id);   // 剧情里按背景自动选歌（第八批）
 }
 
 // ===== 立绘：可以同时站几个人，说话的人高亮，其余变暗 =====
@@ -271,12 +273,12 @@ function speakerName(nameId) {
   if (!nameId) return "";
   if (nameId === "me") return (S && S.name) || "我";
   const c = DATA.characters[nameId];
-  return c ? c.short : nameId;
+  return c ? (c.plate || c.short) : nameId;   // plate：对话名牌（第十批：学长的名牌写名字，正文里大家照样叫他学长）
 }
 
 // 对话：逐字打出；打字中点击=显示全文，再点击=下一句；空格/回车同样有效
 // opt.tr = 英文台词的中文翻译（显示在下面的小字）
-let lastSpeaker = null, sayAdvance = null;
+let lastSpeaker = null, sayAdvance = null, sayCancel = null;
 function say(text, nameId, opt = {}) {
   return new Promise((resolve) => {
     const d = $("#dialog");
@@ -299,13 +301,14 @@ function say(text, nameId, opt = {}) {
     // 没写的按事件类型自动选（DATA.eventFaces）。现在只有一张“普通”头像（在笑），其他表情的图还没有：这时不显示头像，免得生病时在笑
     const face = opt.face || (typeof Story !== "undefined" && (DATA.eventFaces || {})[Story.running]) || "normal";
     const me = DATA.characters.me, outfit = S ? Sprites.playerOutfit(S.year === 1 ? S.week : 0, currentBg) : "autumn";
-    const avSrc = face === "normal" ? me.avatars[outfit] : ((me.avatarFaces || {})[outfit] || {})[face];
-    if (mine && Settings.v.showAvatar && S && avSrc) {
+    const avSrc = face === "normal" ? (me.avatars[outfit] || me.avatars.autumn) : ((me.avatarFaces || {})[outfit] || {})[face];   // 夏装、学位服还没有头像图：先用秋装头像
+    if (mine && Settings.v.showAvatar && S && avSrc && !$("#stage").classList.contains("pov")) {   // 视角段里的旁白是对方在想，不显示主角头像
       av.querySelector("img").src = "assets/" + avSrc;
       av.classList.remove("hidden");
     } else av.classList.add("hidden");
     d.classList.toggle("with-avatar", !av.classList.contains("hidden"));
 
+    fillText.speaker = nameId;   // {叫我}：按说话的人换
     const full = fillText(text);
     const tr = opt.tr && Settings.v.showTr ? fillText(opt.tr) : "";
     Flow.push(speakerName(nameId) + (opt.free ? " ✎" : ""), full, opt.tr ? fillText(opt.tr) : "");   // 自由输入的内容带 ✎
@@ -329,17 +332,19 @@ function say(text, nameId, opt = {}) {
     function advance() {
       if (!done) return finish();
       clearTimeout(autoT);
-      d.onclick = null; document.removeEventListener("keydown", key); sayAdvance = null;
+      d.onclick = null; document.removeEventListener("keydown", key); sayAdvance = null; sayCancel = null;
       resolve();
     }
     function key(e) {
-      if (document.getElementById("overlay") || document.getElementById("guide")) return;
+      if (document.getElementById("overlay") || document.getElementById("guide") || document.getElementById("story-menu")) return;
       if (e.key === " " || e.key === "Enter") { e.preventDefault(); advance(); }
     }
     if (Flow.skip || Settings.v.textSpeed <= 0) finish();
     else timer = setInterval(() => { i++; box.textContent = full.slice(0, i); if (i >= full.length) finish(); }, Settings.v.textSpeed);
-    d.onclick = () => { if (!document.getElementById("guide")) advance(); };
+    d.onclick = () => { if (!document.getElementById("guide") && !document.getElementById("story-menu")) advance(); };
     sayAdvance = () => { if (done && (Flow.auto || Flow.skip)) { clearTimeout(autoT); autoT = setTimeout(advance, Flow.skip ? 70 : 600); } };
+    // 剧情中途回标题／读档（第八批菜单）：把这一句的监听全部拆掉，这个 Promise 永远不会再往下走
+    sayCancel = () => { clearInterval(timer); clearTimeout(autoT); d.onclick = null; document.removeEventListener("keydown", key); sayAdvance = null; sayCancel = null; };
     document.addEventListener("keydown", key);
   });
 }
@@ -370,6 +375,7 @@ document.addEventListener("click", (e) => {
   if (!b) return;
   const k = b.dataset.sys;
   if (k === "log") return Sys.backlog();
+  if (k === "menu") return Sys.storyMenu(b);
   Flow.set(k, !Flow[k]);
   if (sayAdvance) sayAdvance();
 });
@@ -385,7 +391,7 @@ function choose(options) {
     let done = false;
     const pick = async (el, i) => {
       if (done || options[i].disabled) return; done = true;
-      document.removeEventListener("keydown", key);
+      document.removeEventListener("keydown", key); chooseCancel = null;
       box.querySelectorAll(".ticket").forEach((t) => t.classList.add(t === el ? "punched" : "gone"));
       await FX.wait(300);
       box.classList.add("hidden");
@@ -404,7 +410,7 @@ function choose(options) {
     });
     const tks = [...box.querySelectorAll(".ticket")];
     const key = (e) => {
-      if (document.getElementById("overlay") || document.getElementById("gnote")) return;
+      if (document.getElementById("overlay") || document.getElementById("gnote") || document.getElementById("story-menu")) return;
       const n = +e.key;
       if (n >= 1 && n <= tks.length) { e.preventDefault(); return pick(tks[n - 1], n - 1); }
       const i = tks.indexOf(document.activeElement);
@@ -412,9 +418,11 @@ function choose(options) {
       if ((e.key === "Enter" || e.key === " ") && i >= 0) { e.preventDefault(); pick(tks[i], i); }
     };
     document.addEventListener("keydown", key);
+    chooseCancel = () => { done = true; document.removeEventListener("keydown", key); box.classList.add("hidden"); box.innerHTML = ""; chooseCancel = null; };
     box.classList.remove("hidden");
   });
 }
+let chooseCancel = null;
 
 // 标题牌：墨蓝站牌＋箭头＋下面一行小英文（按中文标题自动补）
 const TITLE_EN = { "本周日程": "This Week · Departures", "这周过完了": "Week Report", "出分了": "Results", "设置": "Config", "存档": "Save", "读档": "Load", "对话记录": "Log",

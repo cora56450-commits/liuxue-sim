@@ -7,7 +7,7 @@ echo "== 1/4 JS 语法 =="
 for f in js/*.js data/*.js data/events/*.js; do node --check "$f" || { echo "✗ $f"; fail=1; }; done
 [ $fail = 0 ] && echo "✓ 全部通过"
 echo; echo "== 2/4 画面上不能有的字：占位 / TODO / TBD =="
-hits=$(grep -rn "占位\|TODO\|TBD" js data css index.html)
+hits=$(grep -rn "占位\|TODO\|TBD" js data css index.html | grep -v "早点来占位")   # 剧本正文里“占位（占座）”是正常用法（acquaint.js Kieran-识）
 if [ -n "$hits" ]; then echo "$hits"; echo "✗ 有 $(echo "$hits" | wc -l | tr -d ' ') 处"; fail=1; else echo "✓ 0 处"; fi
 echo; echo "== 3/4 内容检查（tools/check_content.js）=="
 node tools/check_content.js || fail=1

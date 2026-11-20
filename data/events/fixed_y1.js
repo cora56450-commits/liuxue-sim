@@ -19,9 +19,34 @@
   const A1 = "((S.marks.find((m) => m.id === 'a1') || {}).mark || 0)";
 
   // ===== 第1周·迎新集市的三个摆位（选了先去哪个，另外两个顺路经过）=====
-  const FRESHERS_OLLIE = [
+  // 第八批（剧本 11/19 改）：选的那个演完整版（好感／友情多 +2），没选的演路过版；第二、三段开头加过渡句。
+  // pre：这一段第一句前面接的过渡（第三段是半句“快到出口的时候，”）
+  const T2 = "你从人堆里挤出来，手里的传单又多了两张。", T3 = "快到出口的时候，";
+  const lead = (pre, text) => pre === T3 ? [{ say: T3 + text }] : pre ? [{ say: pre }, { say: text }] : [{ say: text }];
+  // Instagran 头像三选一（第十批缺反应补全 77、79）
+  const INS_AVATAR = [
+    { text: "认真选一张好看的头像", fx: { flag_ins_serious: 1 }, then: [
+      { say: "你挑了十五分钟，最后用了高中毕业旅行在海边拍的那张。（那时候我还不知道我会在这里。）" },
+    ] },
+    { text: "就用机场那张", then: [
+      { say: "照片里你很累，头发有点乱。（后来三年，很多人第一次认识你都是看到这张。）" },
+    ] },
+  ];
+  // 第九批第一节 3：Instagran 注册（所有人，迎新集市最后）。Ollie 演完整版的在 FRESHERS_OLLIE 里注册；其他人回宿舍路上自己注册
+  const INS_HOME = [
+    { say: "回宿舍的路上，你翻了翻手里的传单：时尚社、动漫社、登山社、辩论社、学生会。每一张最下面都印着同一行字：“Follow us on Insta!”「在 Ins 上关注我们！」" },
+    { say: "（……没有一张写着“扫码加微信”。）" },
+    { say: "你注册了一个 Instagran。" },
+    { choice: [
+      ...INS_AVATAR,
+      { text: "头像用一张{家乡食物}", fx: { flag_ins_food: 1 } },   // 待策划：完整版这个选项的反应是 Ollie 的台词，这里没人在旁边，剧本没写反应
+    ] },
+  ];
+  const FRESHERS_OLLIE = (pre) => [
+    ...lead(pre, "你走到时尚社的摆位前面。一个金发卷毛的男生在给一群女生发传单。"),
     { show: "local", expr: "normal" },
-    { say: "他在给一群女生发传单，发完一抬头，正好看到你。" },
+    { fx: { aff_local: 2 } },
+    { say: "他发完一抬头，正好看到你。" },
     { say: "Hey! You look like you've got good taste. Fashion society? We do vintage swaps, and the socials are actually fun, I promise.", name: "local", tr: "嘿！你看起来品味很好。来时尚社吗？我们有二手交换，聚会也真的很好玩，我保证。" },
     { say: "（他刚才对上一个女生也是这么说的。我听见了。）" },
     { say: "What's your name?", name: "local", tr: "你叫什么名字？" },
@@ -31,17 +56,35 @@
         { say: "No, no — say it again. I want to get it right.", name: "local", tr: "不行不行，再说一遍。我想念对。" },
         { say: "（他又念了三遍。一遍比一遍离谱。但他是认真的。）" },
       ] },
-      { text: "给他一个英文名", fx: { aff_local: 1 }, then: [
+      // 英文名规则第五节：有英文名时选项文字换；没起时是临时编的，S.enName 不变。他的回答不变
+      { text: "说你的英文名 {英文名}", if: "英文名 != ''", fx: { aff_local: 1 }, then: [
+        { say: "Oh, okay! …But what's your real name, though?", name: "local", tr: "哦，好的！……但你的真名叫什么？" },
+      ] },
+      { text: "临时编一个英文名", if: "英文名 == ''", fx: { aff_local: 1 }, then: [
         { say: "Oh, okay! …But what's your real name, though?", name: "local", tr: "哦，好的！……但你的真名叫什么？" },
       ] },
     ] },
     { say: "他在报名表上写你的名字，拼错了一个字母。你没有纠正。" },   // 〔标记：认识Ollie〕＝第一次 show 时系统记的 met_local
+    // ===== 注册 Instagran（docs/手机App和动态.md 第四节）=====
+    { say: "What's your Insta? I'll add you.", name: "local", tr: "你 Ins 是什么？我加你。" },
+    { say: "你掏出手机，打开 WeChap，给他看二维码。" },
+    { say: "…What's that? Is that a — is that a barcode?", name: "local", tr: "……这是什么？这是——条形码？" },
+    { say: "（……好的。我现在有两个社交账号了。）" },
+    { say: "你注册了一个 Instagran。头像用的是落地那天拍的机场。" },
+    { choice: [
+      ...INS_AVATAR,
+      { text: "头像用一张{家乡食物}", fx: { flag_ins_food: 1 }, then: [
+        { say: "Is that… food? Is that your face?", name: "local", tr: "这是……吃的？这是你的脸？" },
+      ] },
+    ] },
     { hide: true },
   ];
-  const FRESHERS_KIERAN = [
+  const FRESHERS_KIERAN = (pre) => [
     { if: "标签('二次元')", then: [
+      ...lead(pre, "你绕过两个举着披萨的人，走到最角落。"),
       { show: "otaku", expr: "normal" },
-      { say: "动漫社的摆位在最角落。桌上摆着几个手办，桌子后面坐着一个姜色头发、胳膊很粗的男生，正在低头看手机，表情像是在给对手发挑战书。" },
+      { fx: { aff_otaku: 2 } },
+      { say: "动漫社的摆位在那里。桌上摆着几个手办，桌子后面坐着一个姜色头发、胳膊很粗的男生，正在低头看手机，表情像是在给对手发挑战书。" },
       { say: "（这是动漫社还是拳击社？）" },
       { say: "你在桌前停了一下。他抬起头。" },
       { if: "英语 < 45", then: [
@@ -65,23 +108,56 @@
       { hide: true },
     ], else: [
       // 没选二次元tag：不出这段，留个彩蛋
-      { say: "路过健身社摆位时，只看到一个姜色头发的背影在帮忙搬哑铃。" },
+      ...lead(pre, "路过健身社摆位时，只看到一个姜色头发的背影在帮忙搬哑铃。"),
     ] },
   ];
-  const FRESHERS_ZHAO = [
+  const FRESHERS_ZHAO = (pre) => [
+    ...lead(pre, "背后有人用中文喊你。"),
     { show: "zhao_zihao" },
+    { fx: { fr_zhao_zihao: 2 } },
     { say: "同学中国人吧？华人学生会，扫个码，新生群五百人了。", name: "zhao_zihao" },
     { say: "他的传单是彩色的，正面写着“中秋晚会·新生联谊·快闪局”，反面印着一行小字：“留学辅导，论文润色，100%通过率，详询Essay学姐”。" },
     { say: "（100%通过率。这个“润色”是哪种润色。）" },
     { choice: [
       { text: "扫码进群", fx: { loneliness: -4, flag_hometown_group: 1 }, then: [
-        { say: "群里的第一条消息是“有没有{家乡}的朋友”。下面已经有三个人回了。" },
-        { say: "{老乡台词}" },
+        { say: "群里刚有人发了一条：{老乡台词}" },
+        { say: "下面已经有三个人回了。" },
       ] },
-      { text: "把传单对折放进包里，笑着走开", fx: { belonging: 1 } },
+      { text: "把传单对折放进包里，笑着走开", fx: { belonging: 1 }, then: [
+        { say: "传单在你包里待了一学期。期末你翻包的时候发现它，背面那行小字你看了很久。" },
+      ] },
     ] },
     // 【埋线】传单背面的“Essay学姐”会在第一个ddl前主动加你微信（第10周 essay_senior_offer）
     { hide: true },
+  ];
+  // ===== 路过版（新）=====
+  const PASS_OLLIE = (pre) => [
+    ...lead(pre, "时尚社的摆位前，一个金发卷毛的男生正给一群女生发传单。他越过人群冲你挥了挥手里那一沓：“Fashion society! Vintage swaps!”「时尚社！二手交换！」"),
+    { say: "你接过一张。他已经转向下一个人了。" },
+    { meet: "local" },
+    { say: "（……他对每个人都笑成那样吗。）", fx: { aff_local: 1 } },
+  ];
+  const PASS_KIERAN = (pre) => [
+    { if: "标签('二次元')", then: [
+      ...lead(pre, "最角落有个摆位铺着黑色桌布，桌上几个手办。桌子后面坐着一个姜色头发、胳膊很粗的男生，在低头看手机。你多看了一眼手办，他抬头，你们对视了一秒。他又低下头去了。"),
+      { meet: "otaku" },
+      { say: "（动漫社……为什么是一个看起来能把我举起来的人在看摊。）", fx: { aff_otaku: 1 } },
+    ], else: [
+      ...lead(pre, "路过健身社摆位时，只看到一个姜色头发的背影在帮忙搬哑铃。"),
+    ] },
+  ];
+  const PASS_ZHAO = (pre) => [
+    ...lead(pre, "“同学中国人吧？”一张彩色传单塞进了你手里，正面是“中秋晚会·新生联谊”，反面一行小字：“论文润色，100%通过率，详询Essay学姐”。递传单的人已经在喊下一个了。"),
+    { fx: { fr_zhao_zihao: 0 } },   // 也算认识（进通讯录，友情起始值）
+    { choice: [
+      { text: "扫码进群", fx: { loneliness: -4, flag_hometown_group: 1 }, then: [
+        { say: "手机震了一下，群里正好有人在发：{老乡台词}" },
+        { say: "（……五百个人。我认识零个。但他们都说我家那边的话。）" },
+      ] },
+      { text: "把传单塞进包里", fx: { belonging: 1 }, then: [
+        { say: "你走出去十几步，回头看了一眼，他已经在跟下一个人说“同学中国人吧”了。" },
+      ] },
+    ] },
   ];
 
   // ===== 第8周·篝火节各人的段落（half = 都答应、没翻车时，每段加的好感减半）=====
@@ -163,11 +239,12 @@
     ] },
   ] });
   // 第12周：好感≥40的每个人；认真回〔好感+3〕／“圣诞快乐！”
-  const XMAS_MSG = (c, steps, extra) => ({ if: `好感('${c}') >= 40`, then: [
+  // rx：两个选项后面的反应 { serious: [...], merry: [...] }（第十批缺反应补全只写了学长的）
+  const XMAS_MSG = (c, steps, extra, rx) => ({ if: `好感('${c}') >= (标签('天生丽质') ? 30 : 40)`, then: [   // 第七批 #17：天生丽质 30 就会发
     ...steps,
     { choice: [
-      { text: "认真回", fx: { ["aff_" + c]: 3, ["flag_xmas_reply_" + c]: 1 } },
-      { text: "“圣诞快乐！”" },
+      { text: "认真回", fx: { ["aff_" + c]: 3, ["flag_xmas_reply_" + c]: 1 }, ...(rx && rx.serious ? { then: rx.serious } : {}) },
+      { text: "“圣诞快乐！”", ...(rx && rx.merry ? { then: rx.merry } : {}) },
       ...(extra || []),
     ] },
   ] });
@@ -176,19 +253,77 @@
   const TOP = (c) => `好感('${c}') >= 35 && 好感('${c}') == Math.max(好感('senior'), 好感('local'), 好感('groupmate'), 好感('otaku'))`;
 
   Object.assign(DATA.events, {
+    // ===================== 序章·出发前（第八批：剧本 2026-11-19 新加）=====================
+    prologue_depart: [
+      { bg: "home_china" },
+      { bgm: "sad" },
+      { if: "家境 == '拮据'", then: [
+        { say: "你家客厅的灯有一根管子坏了半年了，一直没换。录取通知书的邮件，你是在那半边亮的灯下面打开的。" },
+        { say: "学费那一栏，你没敢念出来。你爸看了一眼，说：“能去就去。”他没说钱从哪来。后来你知道了：你家那套老房子的租客，下个月换成了你爸的朋友，房租先付了三年。" },
+        { say: "（我不能白去。）" },
+      ] },
+      { if: "家境 == '中产'", then: [
+        { say: "你爸妈为出国这件事开了四次家庭会议。第一次说“太贵了”，第二次说“别人家孩子都去了”，第三次你没参加，第四次的结论是：“去吧，回来考个公务员也不亏。”" },
+        { say: "（他们算了很久。我知道他们算了很久。）" },
+      ] },
+      { if: "家境 == '富裕'", then: [
+        { say: "出国是早就定好的事。你妈说“出去见见世面”，你爸说“家里不指望你挣钱”。你表哥前年去了美国，表姐去了澳洲，到你，家里说：“那就英国吧，近一点。”" },
+        { say: "（“近一点”。差七个小时时差。）" },
+      ] },
+      { say: "那你自己呢？为什么是英国？" },
+      { free: "出国前，主角自己想：为什么选了英国", choice: [
+        { text: "“本科三年就毕业，比别的地方快一年。”", fx: { flag_why_uk_fast: 1 }, then: [
+          { if: "家境 == '拮据'", then: [{ say: "（快一年，就少让家里扛一年。）" }], else: [{ say: "（快一年，就省一年的钱。这句话我没跟别人说过。）" }] },
+        ] },
+        { text: "“我从小就想看看英剧里的那种红砖房子。”", fx: { flag_why_uk_dream: 1, loneliness: -2 }, then: [
+          { say: "（英剧里的英国，永远是秋天，永远有人递给你一杯茶。）" },
+        ] },
+        { text: "“其实是爸妈选的。我只是没反对。”", fx: { flag_why_uk_parents: 1 }, then: [
+          { if: "标签('家教森严')", then: [{ say: "（我从小到大，没反对过什么。）", fx: { loneliness: 2 } }], else: [{ say: "（没反对，就算是同意了吧。）" }] },
+        ] },
+      ] },
+      { bg: "airport" },
+      { bgm: "travel" },
+      { cg: "travel_airport" },
+      { say: "出发那天，你家来了五个人送机。值机柜台的阿姨看了一眼你的箱子，按了一下秤。" },
+      { say: "超重七公斤。", name: "值机阿姨" },
+      { say: "一个箱子里是衣服，另一个是你妈塞的：电饭煲、三包火锅底料、一整盒布洛芬、十个转换插头，还有一整套真空压缩的床单被套。" },
+      { say: "拿出来哪样？" },
+      { choice: [
+        { text: "交超重费，什么都不拿出来", fx: { money: -60, flag_bedding_brought: 1 }, then: [
+          { if: "家境 == '拮据'", then: [{ say: "你爸已经把钱包掏出来了。你按住了他的手，自己扫的码。", fx: { loneliness: 1 } }],
+            else: [{ say: "你妈说：“带着！英国的被子不知道干不干净。”" }] },
+        ] },
+        { text: "把床品掏出来，塞给送机的爸爸", fx: { flag_bedding_left: 1 }, then: [
+          { say: "你爸抱着一团压缩袋站在安检口外面，像抱着一个很大的、扁扁的你。" },
+        ] },
+        { text: "把电饭煲拿出来", fx: { flag_bedding_brought: 1, flag_no_rice_cooker: 1 }, then: [
+          { say: "你妈的表情，像你把她拿出来了。" },
+          { say: "（……电饭煲在英国是买得到的。我希望。）" },
+        ] },
+      ] },
+      { say: "安检口，你回头看了一眼。你妈在哭，你爸在拍她的背，另外三个亲戚在拍照。" },
+      { say: "（我会好好的。）" },
+      { cg: null },
+    ],
+
     // ===================== 序章·落地 =====================
     prologue: [
       { bg: "airport" },
+      { sfx: "airplane_landing" },   // 第八批：落地音效挪到这里（序章前面加了出发前）
       { sfx: "airport_chime" },
       { say: "飞机落地的时候，窗外是灰的。不是阴天，就是灰。" },
       { say: "排队过关花了四十分钟。前面的人在答“What's the purpose of your visit?「来英国做什么？」”，你在心里排练了三遍，轮到你的时候，工作人员只看了一眼护照就让你走了。" },
       { say: "（白练了。）" },
       { say: "两个28寸的箱子，一个装着一年的衣服，另一个装着妈妈觉得“英国肯定买不到”的东西：电饭煲、三包红油火锅底料、一整盒布洛芬、十双转换插头。" },
+      { if: "标记('no_rice_cooker')", then: [{ say: "（除了电饭煲。电饭煲留在了机场，在我妈怀里。）" }] },
       { if: "['广东', '福建', '浙江'].includes(家乡)", then: [{ say: "还有一包茶叶，爸爸特意塞的。" }] },
       { if: "['湖南', '四川', '重庆', '江西', '贵州'].includes(家乡)", then: [{ say: "还有三瓶辣椒酱，用衣服裹了三层。" }] },
       { say: "手机连上机场wifi，家里的消息一下子弹出十几条。最后一条是妈妈发的：“到了吗到了吗到了吗”。" },
       { choice: [
-        { text: "“到了，放心。”", fx: { loneliness: -2 } },
+        { text: "“到了，放心。”", fx: { loneliness: -2 }, then: [
+          { say: "妈妈回了一个大哭的表情，然后：“好。吃饭了吗？”（我在机场。她问我吃饭了吗。）" },
+        ] },
         { text: "发一张机场的自拍，配一个大拇指", fx: { loneliness: -2 }, then: [
           { say: "妈妈秒回：“怎么瘦了。”（飞了十二个小时，确实瘦了。）" },
         ] },
@@ -232,23 +367,30 @@
 
     // ===================== 序章·第一晚（★CG）=====================
     first_night: [
+      // 第八批 #8：宿舍夜晚背景的床上有被子。没带床品的玩家从“床垫上什么都没有”起就用 CG 第一晚（空床垫）顶着
       { bg: "dorm_night" },
       { say: "房间比照片上小。照片是广角镜头拍的。" },
       { say: "一张床，一张桌子，一个暗红色的衣柜，窗户下面一个将会在未来一年里决定你生死的暖气片。" },
+      { if: "!标记('bedding_brought')", then: [{ cg: "first_night" }] },
       { say: "床垫上什么都没有。" },
-      { say: "床品呢？" },
-      { choice: [
-        { text: "订了学校的床品包", fx: { flag_bedding_desk: 1 }, then: [
-          { say: "邮件说床品包放在前台。前台的玻璃门上贴着：Reception hours 9am–5pm「前台开放时间9点到5点」。现在是晚上九点。" },
-          { say: "（我订了。我付了£45。它就在楼下，隔着一扇玻璃门。）" },
-        ] },
-        { text: "到了再买，便宜一半", fx: { flag_bedding_buy: 1 }, then: [
-          { say: "你查过，学校旁边的超市卖£20一套。你也查过它周日四点关门。" },
-          { say: "你只是没算到飞机会晚点五个小时。" },
-        ] },
-        { text: "从国内带了一套", fx: { flag_bedding_left: 1 }, then: [
-          { say: "托运的时候超重了七公斤。你在值机柜台前把床品掏出来，塞给了送机的爸爸。" },
-          { say: "（现在它应该已经回到家了。）" },
+      { if: "标记('bedding_brought')", then: [
+        { say: "你拉开箱子，把那袋真空压缩的床品拆开。它“呼”地一下膨胀起来，像松了一口气。" },
+        { say: "床单上还有家里洗衣液的味道。" },
+        { say: "（这是这个房间里，唯一一样认识我的东西。）", fx: { loneliness: -3 } },
+      ], else: [
+        { say: "床品呢？" },
+        { choice: [
+          { text: "订了学校的床品包", fx: { flag_bedding_desk: 1 }, then: [
+            { say: "邮件说床品包放在前台。前台的玻璃门上贴着：Reception hours 9am–5pm「前台开放时间9点到5点」。现在是晚上九点。" },
+            { say: "（我订了。我付了£45。它就在楼下，隔着一扇玻璃门。）" },
+          ] },
+          { text: "到了再买，便宜一半", fx: { flag_bedding_buy: 1 }, then: [
+            { say: "你查过，学校旁边的超市卖£20一套。你也查过它周日四点关门。" },
+            { say: "你只是没算到飞机会晚点五个小时。" },
+          ] },
+          { text: "床品在我爸怀里", if: "标记('bedding_left')", then: [
+            { say: "（现在它应该已经回到家了。）" },
+          ] },
         ] },
       ] },
       { if: "住宿 == '学校宿舍' || 住宿 == '学生公寓ensuite'", then: [
@@ -258,24 +400,29 @@
       { say: "窗外开始下雨了。学长说过，这里的雨不用打伞，因为它每天都下。" },
       { say: "你从箱子里翻出一桶泡面。是在国内机场便利店临时买的，当时觉得自己很有先见之明。" },
       { say: "热水壶是学校配的，里面有一层白色的水垢。你盯着它看了很久，最后还是用了。" },
-      { cg: "first_night" },
       { say: "你坐在地上，靠着床。泡面是这一整天里第一个有味道的东西。" },
       { say: "手机响了。是视频电话。" },
       { if: "标签('家教森严')", then: [{ say: "不用看也知道是谁。今天你已经报过三次平安了。" }] },
       { say: "给我看看房间。", name: "妈妈" },
       { say: "你转着手机拍了一圈。" },
-      { say: "这么小啊？……你那床上怎么什么都没有？", name: "妈妈" },
-      { free: "到英国第一晚，妈妈视频问“你那床上怎么什么都没有？”。妈妈担心，想知道你过得好不好", freeWho: "妈妈", choice: [
-        { text: "“我还没铺，等会就铺。”（撒谎）", fx: { loneliness: 3 }, then: [
-          { say: "哦哦，那你早点睡。", name: "妈妈" },
-          { say: "挂了电话，房间又安静下来。你把羽绒服从箱子里抽出来，盖在身上。" },
-        ] },
-        { text: "说实话", fx: { loneliness: -3 }, then: [
-          { if: "标记('bedding_desk')", then: [{ say: "那你下去敲门啊！——敲了？没人？这什么学校！", name: "妈妈" }] },
-          { if: "标记('bedding_buy')", then: [{ say: "我就说让你带一套你不听——", name: "妈妈" }] },
-          { if: "标记('bedding_left')", then: [{ say: "就在家里！你爸拎回来的！我现在给你寄——寄过去要多久？", name: "妈妈" }] },
-          { say: "她说了五分钟。爸爸在旁边插了一句“钱够不够”。" },
-          { say: "挂电话的时候你发现自己在笑。" },
+      { if: "标记('bedding_brought')", then: [
+        { say: "这么小啊？……被子铺好了？铺好了就好。", name: "妈妈" },
+      ], else: [
+        { say: "这么小啊？……你那床上怎么什么都没有？", name: "妈妈" },
+        { free: "到英国第一晚，妈妈视频问“你那床上怎么什么都没有？”。妈妈担心，想知道你过得好不好", freeWho: "妈妈", choice: [
+          { text: "“我还没铺，等会就铺。”（撒谎）", fx: { loneliness: 3 }, then: [
+            { say: "哦哦，那你早点睡。", name: "妈妈" },
+            { say: "挂了电话，房间又安静下来。你把羽绒服从箱子里抽出来，盖在身上。" },
+          ] },
+          { text: "说实话", fx: { loneliness: -3 }, then: [
+            { if: "标记('bedding_desk')", then: [{ say: "那你下去敲门啊！——敲了？没人？这什么学校！", name: "妈妈" }] },
+            { if: "标记('bedding_buy')", then: [{ say: "我就说让你带一套你不听——", name: "妈妈" }] },
+            { if: "标记('bedding_left')", then: [{ say: "就在家里！你爸拎回来的！我现在给你寄——寄过去要多久？", name: "妈妈" }] },
+            { say: "她说了五分钟。爸爸在旁边插了一句“钱够不够”。" },
+            { if: "家境 == '拮据'", then: [{ say: "你说够。（够的。这个月够。）你妈说：“不够就说，别不好意思。”你又说了一遍够。" }] },
+            { if: "家境 == '富裕'", then: [{ say: "你爸凑到镜头前：“那边房子贵不贵？要不要直接买一套，毕业了还能租出去。”你妈在旁边说：“你别吓着孩子。”" }] },
+            { say: "挂电话的时候你发现自己在笑。" },
+          ] },
         ] },
       ] },
       { say: "妈妈最后说：“回来给你做{家乡食物}。”你说好。你在心里算了一下，距离圣诞假还有十一周。" },
@@ -313,9 +460,9 @@
       ] },
       { say: "先去哪？" },
       { choice: [
-        { text: "时尚社的摆位（摆位前面有一个金发卷毛）", then: [...FRESHERS_OLLIE, ...FRESHERS_KIERAN, ...FRESHERS_ZHAO] },
-        { text: "一张黑色桌布的摆位，桌上摆着几个手办", if: "标签('二次元')", then: [...FRESHERS_KIERAN, ...FRESHERS_OLLIE, ...FRESHERS_ZHAO] },
-        { text: "有人在用中文喊“新生群扫码拉你”", then: [...FRESHERS_ZHAO, ...FRESHERS_OLLIE, ...FRESHERS_KIERAN] },
+        { text: "时尚社的摆位（摆位前面有一个金发卷毛）", then: [...FRESHERS_OLLIE(""), ...PASS_KIERAN(T2), ...PASS_ZHAO(T3)] },
+        { text: "一张黑色桌布的摆位，桌上摆着几个手办", if: "标签('二次元')", then: [...FRESHERS_KIERAN(""), ...PASS_OLLIE(T2), ...PASS_ZHAO(T3), ...INS_HOME] },
+        { text: "有人在用中文喊“新生群扫码拉你”", then: [...FRESHERS_ZHAO(""), ...PASS_OLLIE(T2), ...PASS_KIERAN(T3), ...INS_HOME] },
       ] },
       { say: "回宿舍的路上，你数了一下：三个帆布包、五支笔、一张健身房体验卡，和一颗草莓。" },
       { say: "草莓已经吃了。" },
@@ -334,7 +481,9 @@
       { say: "（护照在哪。护照在哪。护照在——我为什么要拿护照？）" },
       { say: "出门前抓起了什么？" },
       { choice: [
-        { text: "羽绒服", fx: { energy: -5 } },   // ※（聪明，但不好笑）
+        { text: "羽绒服", fx: { energy: -5 }, then: [
+          { say: "你是楼下唯一一个不冷的人。旁边穿短袖的英国男生看着你：“Smart.「聪明。」”" },
+        ] },   // ※（聪明，但不好笑）
         { text: "护照和BRP", fx: { energy: -10 }, then: [
           { say: "你在楼下冻得发抖，但你是全楼唯一一个带了身份证件的人。" },
         ] },
@@ -384,7 +533,9 @@
           { text: "“……你也是新生？”", fx: { loneliness: -4, belonging: 1 }, then: [
             { say: "你们聊了二十分钟，加了微信。之后一年里你们在电梯里碰到过九次，每次都点头微笑，再也没说过话。" },
           ] },
-          { text: "假装看手机", fx: { loneliness: 2 } },
+          { text: "假装看手机", fx: { loneliness: 2 }, then: [
+            { say: "手机只有 3% 的电。你看着锁屏看了十五分钟。（我认真地看了十五分钟我自己的锁屏壁纸。）" },
+          ] },
         ] },
       ] }] },
       { hide: true },
@@ -428,6 +579,20 @@
       ], else: [
         { say: "你全听懂了。你发现他讲的第一个笑话其实没那么好笑。", fx: { study: 3 } },
       ] }] },
+      // 英文名规则第四节第 1 条：Nikos 点名（有英文名才出）。剧本没写插在第一节课的哪一句，放在听力判定之后
+      { if: "英文名 != ''", then: [
+        { say: "…Is there a name you'd prefer?", name: "nikos", tr: "……你有更喜欢的叫法吗？" },
+        { choice: [
+          { text: "“{英文名}。”", fx: { flag_teachers_en: 1 }, then: [
+            { say: "Nikos 点点头，在名单上写了一笔：" },
+            { say: "{英文名}. Welcome.", name: "nikos", tr: "{英文名}。欢迎。" },
+            { say: "（他写的是你的英文名。旁边还留着你的中文名，没划掉。）" },
+          ] },
+          { text: "“{名字}，就叫我中文名。”", fx: { belonging: 1 }, then: [
+            { say: "Nikos 念了两遍，第二遍对了。" },
+          ] },
+        ] },
+      ] },
       { say: "And remember — there are no stupid questions here. Any questions?", name: "nikos", tr: "记住，这里没有蠢问题。有问题吗？" },
       { say: "全场沉默。前三排的中国人集体低头看笔记本，后三排的本地人集体看手机。" },
       { free: "第一节全院必修课，Nikos 问“Any questions?”，全场沉默。玩家可以问课的问题，也可以开玩笑", freeWho: "nikos", choice: [
@@ -501,7 +666,7 @@
         { say: "旁边的英国同学已经在讨论带黑胶唱片还是带祖母的手织毛衣了。" },
         { say: "你打算带什么？" },
         { choice: [
-          { text: "一瓶老干妈", fx: { belonging: 1 }, then: [{ say: "（它跟着我飞了一万公里，它比我更有身份。）" }] },
+          { text: "一瓶老干妈", fx: { belonging: 1, flag_identity_laoganma: 1 }, then: [{ say: "（它跟着我飞了一万公里，它比我更有身份。）" }] },
           { text: "一张家乡的照片", fx: { loneliness: -2 }, then: [{ say: "照片上是{家乡}的街，你拍的时候没觉得有什么特别。" }] },
           { text: "电饭煲", if: "标记('rice_cooker')", fx: { belonging: 2 }, then: [{ say: "（火警那晚它就已经证明过自己了。）" }] },
         ] },
@@ -552,10 +717,10 @@
       { say: "你的名字；一个叫Ben的；一个叫Hannah的；还有一个长到屏幕显示不全、后面变成了省略号的名字。" },
       { say: "老师念到那个名字的时候停了三秒。“Pim… Pimcha…”" },
       { show: "groupmate", expr: "normal" },
-      { say: "It's Ploy! Just Ploy. Nobody can say the rest, it's fine, my own grandma can't say it.", name: "groupmate", tr: "叫Ploy就行！后面的没人念得出来，没关系，我外婆都念不出来。" },
+      { say: "It's Ploy! Just Ploy. Nobody can say the rest, it's fine, my own grandma couldn't say it.", name: "groupmate", tr: "叫 Ploy 就行！后面的没人念得出来，没关系，我外婆以前都念不出来。" },
       { say: "她走过来坐在你旁边。一种很贵的香水味。金色的大圈耳环。一个粉色的菱格小包，金链子。" },
       { say: "（这个包。……我一年的生活费。）" },
-      { say: "Oh my god, wait — 你是中国人？我外婆是广东的！我会说一点点——「食咗饭未」？", name: "groupmate" },
+      { say: "Oh my god, wait — you're Chinese? My grandma was from Guangdong! I know a tiny bit — \"sik zo faan mei\"?", name: "groupmate", tr: "天哪，等等——你是中国人？我外婆是广东人！我会一点点——'食咗饭未'？" },
       { if: "家乡 == '广东'", then: [
         { say: "你用粤语回了一句。她的眼睛一下子亮了，当场抱住了你。", fx: { aff_groupmate: 5 } },
       ], else: [
@@ -623,7 +788,10 @@
       { say: "（这是我妈会说的话。）" },
       // 〔标记：认识陈建国〕＝ show 时系统记 met_chen_jianguo
       { choice: [
-        { text: "“谢谢叔叔。”" },
+        { text: "“谢谢叔叔。”", fx: { fr_chen_jianguo: 1 }, then: [
+          { say: "陈叔摆摆手：" },
+          { say: "叫什么叔叔，叫陈老板。……算了，叫叔叔也行。", name: "chen_jianguo" },
+        ] },
         { text: "“老板，你们这招人吗？”", fx: { unlock_work: 1, flag_shop_job: 1, flag_asked_shop_job: 1 }, then: [
           { say: "他上下打量了你一下。" },
           { say: "下午补货，一次五个钟头，一小时八磅，现金。你学生签证吧？一礼拜最多来两次，不要多做。", name: "chen_jianguo" },
@@ -751,7 +919,10 @@
         { if: "住宿 == '学校宿舍'", then: [{ say: "厨房的垃圾桶满到盖子合不上，最上面是一个披萨盒。" }] },
         { if: "住宿 == '学生公寓ensuite'", then: [{ say: "浴室的下水道堵了。里面的头发，够做一顶假发。" }] },
         { choice: [
-          { text: "自己收拾", fx: { energy: -5 }, then: [ROOMMATE_FR(2)] },
+          { text: "自己收拾", fx: { energy: -5 }, then: [
+            { say: "你戴着口罩收拾了二十分钟，回到床上的时候烧得更厉害了。（我在发烧的时候清理了别人的垃圾。）" },
+            ROOMMATE_FR(2),
+          ] },
           { text: "在室友群里说", fx: { loneliness: 1 }, then: [
             ROOMMATE_FR(-2),
             { say: "群里有人回了一个“sorry!!”。第二天它还在那里。" },
@@ -977,14 +1148,21 @@
           { say: "凌晨一点，她回了：“babe… can u send me ur notes「宝……能把你的笔记发我吗」”" },
           { choice: [
             { text: "发给她", fx: { aff_groupmate: 3, flag_sent_ploy_notes: 1 }, then: [
+              { say: "她回：“you're a lifesaver 🥺”然后在她的部分里，有三段和你的笔记一字不差。" },
               // 〔替写次数+1〕
               { if: "标记('ploy_ghostwrite') >= 1", then: [{ fx: { flag_ploy_ghostwrite: 2 } }], else: [{ fx: { flag_ploy_ghostwrite: 1 } }] },
             ] },
             // 〔精力−10，等到两点〕
-            { text: "“你自己写，我等你。”", fx: { aff_groupmate: -2, flag_refused_ploy: 1, energy: -10 } },
+            { text: "“你自己写，我等你。”", fx: { aff_groupmate: -2, flag_refused_ploy: 1, energy: -10 }, then: [
+              { say: "她沉默了很久：" },
+              { say: "…fine. but stay on call.", name: "groupmate", tr: "……行。但你别挂电话。" },
+              { say: "你们开着语音，她写，你听着键盘声，凌晨三点她写完了。" },
+            ] },
           ] },
         ] },
-        { text: "不管她，睡觉" },
+        { text: "不管她，睡觉", then: [
+          { say: "第二天早上，她的部分写好了，写得很乱，但写了。她见到你的时候没说话。" },
+        ] },
       ] },
       { bg: "crit_room" },
       { say: "早上八点五十九分，Ploy还没到。Hannah已经看了第六次表。" },
@@ -1062,8 +1240,13 @@
         { choice: [
           { text: "全买了", fx: { money: -90, loneliness: -3 }, then: [
             { say: "下一周，快递盒在门口堆成了一面墙。Dave路过：“Christmas come early, love?「圣诞提前来了，亲爱的？」”" },
+            { if: "家境 == '拮据'", then: [
+              { say: "接下来一周你吃了七顿泡面。第七顿的时候你看着门口那面快递墙，想不起来里面都是什么。", fx: { energy: -5 } },
+            ] },
           ] },
-          { text: "只买一件", fx: { money: -25 } },
+          { text: "只买一件", fx: { money: -25 }, then: [
+            { say: "你只买了一件毛衣。它陪你过了三个冬天。（最划算的一次黑五。）" },
+          ] },
           { text: "卸载App", fx: { loneliness: 2 }, then: [{ say: "第二天又装回来了。" }] },
         ] },
       ] },
@@ -1102,7 +1285,10 @@
                   { say: "你转账的时候手在抖。她回了一个“收到啦亲～～”，配了一个比心的兔子表情。" },
                   { say: "（不会被发现的。大家都这样。……大家都这样吗？）", fx: { loneliness: 4 } },
                 ] },
-                { text: "“我再想想。”" },
+                { text: "“我再想想。”", then: [
+                  { say: "没关系的亲～名额有限哦～", name: "essay_senior" },
+                  { say: "后面跟了一个倒计时的表情。" },
+                ] },
               ] },
             ] },
             { text: "“不用了，谢谢。”", then: [
@@ -1120,7 +1306,9 @@
           ] },
         ] },
         // 忽略：结束这段，代写线在第二学期开头再来一次
-        { text: "忽略", fx: { flag_essay_senior_ignored: 1 } },
+        { text: "忽略", fx: { flag_essay_senior_ignored: 1 }, then: [
+          { say: "（你把她设成了免打扰。头像上的小红点没了。但她还在那里。）" },
+        ] },
       ] },
     ],
 
@@ -1212,8 +1400,14 @@
         { say: "两分钟后你收到他的消息：", fx: { flag_kieran_two_faces_1: 1 } },   // 〔好感·Kieran±0〕
         { msg: { from: "otaku", text: "sorry", tr: "对不起" } },
         { choice: [
-          { text: "回“没事”", fx: { aff_otaku: 2 } },
-          { text: "回“……‘没谁’？”", fx: { aff_otaku: -1, flag_told_kieran_hurt: 1 } },
+          { text: "回“没事”", fx: { aff_otaku: 2 }, then: [
+            { say: "他回了一个“…”，然后又一条：" },
+            { msg: { from: "otaku", text: "It's not fine. But thanks for saying it.", tr: "不是没事。但谢谢你这么说。" } },
+          ] },
+          { text: "回“……‘没谁’？”", fx: { aff_otaku: -1, flag_told_kieran_hurt: 1 }, then: [
+            { say: "三分钟没回。然后：" },
+            { msg: { from: "otaku", text: "I panicked. They don't know about — any of it. I'm sorry. It's not about you. It's about me being a coward.", tr: "我慌了。他们不知道——这些。对不起。不是因为你。是因为我胆小。" } },
+          ] },
         ] },
       ] }] }] }] },
     ],
@@ -1232,7 +1426,10 @@
       { if: "标签('重度洁癖') && 住宿 != 'studio'", then: [
         { say: "走之前你打开冰箱，最里面有一盒过期三周的牛奶，已经不是液体了。" },
         { choice: [
-          { text: "自己扔了", fx: { energy: -5 }, then: [ROOMMATE_FR(2)] },
+          { text: "自己扔了", fx: { energy: -5 }, then: [
+            { say: "你屏住呼吸把它扔进了垃圾桶。（这是我在这个房间里做的最后一件事。……也是第一个学期最勇敢的一件事。）" },
+            ROOMMATE_FR(2),
+          ] },
           { text: "拍照发室友群", fx: { loneliness: 1 }, then: [
             ROOMMATE_FR(-2),
             { if: "住宿 == '学校宿舍'", then: [
@@ -1249,7 +1446,7 @@
       { choice: [
         // 〔钱：家里出机票，但本月生活费减半〕→ flag_half_allowance（新标记，要编程那边接）
         // 〔孤独归0了再+10〕〔精力加满〕
-        { text: "回国", fx: { flag_xmas_home: 1, flag_half_allowance: 1, energy: 999, loneliness: -999 }, then: [
+        { text: "回国", fx: { flag_xmas_home: 1, flag_half_allowance: 1, energy: 999, loneliness: -30, flag_back_home_next: 1 }, then: [
           { fx: { loneliness: 10 } },
           { bg: "home_china" },
           { say: "第一顿饭是{家乡食物}。你吃了三碗。" },
@@ -1303,8 +1500,20 @@
         { say: "一张照片。他一个人坐在房间里，桌上是一碗方便面和一个笔记本电脑，屏幕上是代购的账单。" },
         { msg: { from: "senior", text: "圣诞节也要搬砖。圣诞快乐。" } },
       ], [
-        { text: "要不要一起吃饭", if: "!标记('xmas_home')", fx: { aff_senior: 6, flag_xmas_reply_senior: 1 } },
-      ]),
+        { text: "要不要一起吃饭", if: "!标记('xmas_home')", fx: { aff_senior: 6, flag_xmas_reply_senior: 1 }, then: [
+          { say: "他过了二十分钟才回：" },
+          { msg: { from: "senior", text: "……好。我带吃的。你别做。" } },
+        ] },
+      ], {
+        serious: [
+          { msg: { from: "senior", text: "你也是。" } },
+          { say: "然后发来一张照片：他桌上的泡面旁边多了一个小橘子。" },
+        ],
+        merry: [
+          { msg: { from: "senior", text: "圣诞快乐。" } },
+          { msg: { from: "senior", text: "一个人别吃泡面。" } },
+        ],
+      }),
       XMAS_MSG("local", [
         { msg: { from: "local", text: "Merry Christmas!! Mum's made way too much food lol 🎄 x", tr: "圣诞快乐！！我妈做了太多吃的哈哈" } },
         { say: "配了一张照片，桌上很多菜，但拍不到任何人。" },
@@ -1337,3 +1546,21 @@
     // 第13周以后的事件在 fixed_y1_spring.js（2026-11-18 删掉了这里原来的临时文本）
   });
 })();
+
+// 2026-11-19 第七批同步（剧本 11/19 版）：
+//   序章第一晚：家里视频“钱够不够”后加拮据／富裕各一句（家境分支第〇节 8）；黑五“全买了”加拮据吃七顿泡面（第〇节 14）
+//   第1周：老乡群“群里刚有人发了一条：{老乡台词}”；Ollie“给他一个英文名”按有没有英文名换文字；Ollie 那段后面加注册 Instagran
+//   第2周：Nikos 问 preferred name（有英文名才出）
+// 缺反应：
+//   freshers Instagran 头像“认真选一张好看的头像”“就用机场那张”：剧本没写反应
+//   first_lecture Nikos 点名选“{英文名}”：剧本只写〔老师们叫英文名〕，没有反应句
+// 给引擎：
+//   flag_ins_serious／flag_ins_food：主角 Ins 初始风格（只影响几句后续台词，后续台词还没写）
+//   flag_teachers_en：老师们（Pike、Nikos、Marcia）叫英文名；没设＝叫中文名
+
+// 第十批 #2 缺反应补全（11/20）：已按 02_剧本/剧本_缺反应补全.md 加反应。待策划：
+//   · dark_at_four「认真回／简单回」（DARK_MSG，四个攻略对象都有）：剧本给的反应是“妈妈回……”，但这两个选项是回攻略对象的消息，对不上，没加。
+//   · bonfire_night「“今年不用连线了。”／“你家里人一定很想你。”」（学长篝火段）：剧本反应是“妈妈在视频里笑了”和对方用英文回答，跟学长这段对不上，没加。
+//   · term_end XMAS_MSG：剧本只写了学长的「认真回／“圣诞快乐！”」反应，Ollie、Ploy、Kieran 三条还缺。
+//   · freshers 回宿舍注册 Instagran（INS_HOME）的「头像用一张{家乡食物}」：完整版的反应是 Ollie 的台词，这里没人在旁边，剧本没写反应（check_content 第 1 条会报错，更新 baseline 前要策划补）。
+//   · 缺反应补全里的〔〕数值：原来选项上已经有数值的没再加（first_presentation、first_sick 等）。

@@ -32,10 +32,12 @@ const Sys = {
       if (mode === "save") {
         if (i === "auto") return toast("自动存档每周会自己存，不能手动存进去");
         if (Save.read(i) && !confirm("覆盖这个存档？")) return;
-        Save.write(i); toast("已存档"); Sys.slots(mode);
+        // 剧情进行中：存的是这段剧情开始前的进度（读档从这段剧情开头重演）
+        const mid = Sys.midStory();
+        Save.write(i, mid ? Scenes._seg : undefined); toast(mid ? "已存档（读档会从这段剧情的开头开始）" : "已存档"); Sys.slots(mode);
       } else if (!el.classList.contains("empty")) {
         closeOverlay();
-        FX.tear(() => { Save.load(i); Scenes.resume(); });
+        FX.tear(() => { Story.abort(); Save.load(i); Scenes.resume(); });
       }
     });
   },
@@ -56,7 +58,9 @@ const Sys = {
       ${row("英文台词显示中文翻译", toggle("showTr", v.showTr))}
       ${row("新手指引（INFO 问讯处）", toggle("guide", v.guide !== false))}
       ${row("限时选项不限时", toggle("noTimer", !!v.noTimer))}
+      ${row("显示攻略对象视角", toggle("showPov", v.showPov !== false))}
       ${row("小游戏全部自动通过", toggle("autoGames", !!v.autoGames))}
+      ${row("全开（测试用）", `<button class="hud-btn" data-unlockall>解锁全部回忆</button>`)}
       ${row("版本", `<span class="set-ver">v${GAME_VERSION}（${GAME_BUILD}）</span>`)}
       <div class="set-api"><h3>API（手机聊天、小红书用；Key 只存在本机）</h3>
         <label>接口地址（OpenAI兼容，例如 DeepSeek）</label><input id="api-base" value="${c.base}">
@@ -68,6 +72,8 @@ const Sys = {
     Sys.closeBtn(o, null);
     o.querySelector(".ov-close").onclick = () => { saveApi(); closeOverlay(); toast("设置已保存"); };
     Sys.bindLeave(o, saveApi);
+    const ua = o.querySelector("[data-unlockall]");   // 第十批：全开存档按钮——回忆里的结局／CG／事件全部解锁（不动存档进度）
+    if (ua) ua.onclick = () => { if (!confirm("解锁回忆里的全部结局、CG 和事件？\n（只影响“回忆”页，不改任何存档进度。）")) return; GalleryEv.unlockAll(); toast("回忆已全部解锁"); };
     o.querySelectorAll(".toggle").forEach((t) => t.onclick = () => {
       const k = t.dataset.t; Settings.set(k, !Settings.v[k]); t.classList.toggle("on", Settings.v[k]);
     });
@@ -102,7 +108,7 @@ const Sys = {
       const auto = Save.read("auto");
       const when = auto && auto.meta ? `上次自动存档在「${auto.meta.label}」，之后的进度会丢。` : "这一局还没有自动存档，进度会丢。";
       if (b.dataset.leave === "title") {
-        if (!confirm(`回到标题画面？\n${when}\n（想留着现在的进度，先点 HUD 上的“存档”。）`)) return;
+        if (!confirm(`回到标题画面？\n${when}\n（想留着现在的进度，先点“存档”。）`)) return;
         if (before) before();
         closeOverlay(); Flow.set("auto", false); Flow.set("skip", false);
         FX.tear(() => Scenes.title());
@@ -110,6 +116,39 @@ const Sys = {
         if (!confirm(`退出游戏？\n${when}`)) return;
         if (before) before();
         if (window.desktopApp && window.desktopApp.quit) window.desktopApp.quit(); else window.close();
+      }
+    });
+  },
+
+  // ===== 剧情里的菜单（第八批 #2）：和“记录／自动／快进”一排；存档、读档、设置、回标题，手机在剧情里先灰掉 =====
+  midStory() { return !!(Story.running && Scenes._seg); },
+  storyMenu(btn) {
+    const old = document.getElementById("story-menu");
+    if (old) return old.remove();
+    Flow.set("auto", false); Flow.set("skip", false);
+    const m = document.createElement("div");
+    m.id = "story-menu";
+    m.innerHTML = [["save", "存档"], ["load", "读档"], ["settings", "设置"], ["memory", "回忆"], ["title", "回到标题"], ["phone", "手机", "剧情里先不能看手机"]]
+      .map(([k, t, off]) => `<button data-m="${k}" ${off ? `class="off" title="${off}"` : ""}>${t}${off ? `<small>${off}</small>` : ""}</button>`).join("");
+    $("#stage").appendChild(m);
+    const close = () => { m.remove(); document.removeEventListener("pointerdown", outside, true); };
+    const outside = (e) => { if (!m.contains(e.target) && e.target !== btn) close(); };
+    setTimeout(() => document.addEventListener("pointerdown", outside, true), 0);
+    m.querySelectorAll("[data-m]").forEach((b) => b.onclick = (e) => {
+      e.stopPropagation();
+      const k = b.dataset.m;
+      if (k === "phone") return toast("剧情里先不能看手机，演完这段再看");
+      close();
+      if (k === "save") Sys.slots("save");
+      else if (k === "load") Sys.slots("load");
+      else if (k === "settings") Sys.settings();
+      else if (k === "memory") Sys.gallery("ev");
+      else if (k === "title") {
+        const auto = Save.read("auto");
+        const when = auto && auto.meta ? `上次自动存档在「${auto.meta.label}」（这段剧情开始前），之后的进度会丢。` : "这一局还没有自动存档，进度会丢。";
+        if (!confirm(`回到标题画面？\n${when}`)) return;
+        Flow.set("auto", false); Flow.set("skip", false);
+        FX.tear(() => Scenes.title());
       }
     });
   },

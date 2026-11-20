@@ -150,6 +150,7 @@ const Invites = {
   dayApp(i) { return Invites.on(DAY_KEYS[i]); },
   attend(a) {   // 去了
     a.status = "done";
+    markMet(a.who);
     S.lastMet[a.who] = absWeek();
     const love = Invites.isLove(a.who);
     return applyFx({ [(love ? "aff_" : "fr_") + a.who]: love ? Invites.T.goneLove : Invites.T.goneFriend });

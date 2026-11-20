@@ -110,6 +110,48 @@ const BGM = {
 };
 ["pointerdown", "keydown"].forEach((ev) => document.addEventListener(ev, () => BGM.unlock(), true));
 
+// ===== 第八批（docs/BGM接线_1119.md）：剧情没写 bgm 时按背景自动选；按事件类型覆盖 =====
+const BG_BGM = [
+  [/^(home_china|cn_restaurant)$/, "sad"],
+  [/^(airport|station|trip_|world_map|europe_map|map_uk|edinburgh|york|lake_district)/, "travel"],
+  [/^(dorm_night|station_night|studio_night)$/, "dorm_night"],
+  [/^(chinese_market|stockroom)$/, "chinese_shop"],
+  [/^(pub|pub_street)$/, "pub"],
+  [/^(fire_alarm|park_night)$/, "comedy"],
+  [/^exam_hall$/, "ddl"],
+  [/^graduation$/, "ending"],
+  [/^hall_stage$/, "romance"],
+  [/^(supermarket|indoor_market|brunch|gym|xmas_market|bicester|london|map_city)/, "weekend"],
+  [/./, "schedule"],   // 宿舍、合租、厨房、各人家里、学校
+];
+function bgBgm(bg) {
+  if (!bg || bg === "title") return null;
+  if (/^(home_china|cn_restaurant)$/.test(bg) && S && S.year === 1 && DATA.springWeeks.includes(S.week)) return "spring";
+  for (const [re, id] of BG_BGM) if (re.test(bg)) return id;
+  return null;
+}
+// 事件类型 → BGM（优先于背景）
+function eventBgm(id) {
+  if (!id) return null;
+  if (/^(fishpond_|jealous_|shura)/.test(id)) return "comedy";
+  if (/_past(_eve)?$/.test(id)) return "sad";
+  if (/^(confess_|trial_|date_)|valentine/.test(id) || /_heart$/.test(id)) return "romance";
+  if ((DATA.loveEvents || []).some((e) => e.id === id && !e.small)) return "romance";
+  return null;
+}
+BGM.story = { id: null, fixed: false };   // 现在这段剧情：剧情里写过 bgm 或者按事件类型定了歌，就不再跟着背景换
+BGM.storyStart = (id) => {
+  const e = eventBgm(id);
+  BGM.story = { id, fixed: !!e };
+  if (e) BGM.play(e);
+};
+BGM.storyEnd = () => { BGM.story = { id: null, fixed: false }; };
+BGM.onBg = (bg) => {
+  if (!BGM.story.id || BGM.story.fixed || BGM.saved !== null) return;
+  const id = bgBgm(bg);
+  if (id) BGM.play(id === "schedule" ? weekBgm("schedule") : id);   // 平常的歌在 ddl 周、春节周换成 ddl／spring
+};
+
 // 这一周默认放什么：春节周 > 有 deadline 的周 > 平常（排日程 / 周末各一首）
 function weekBgm(kind) {
   if (S && S.year === 1) {

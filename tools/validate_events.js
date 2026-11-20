@@ -21,7 +21,7 @@ const err = (where, msg) => errs.push(`${where}：${msg}`);
 const STEP_KEYS = new Set(["bg", "cg", "sfx", "alarm", "bgm", "mail", "msg", "invite", "show", "expr", "pose", "at", "hide", "meet", "fx",
   "say", "name", "tr", "face", "freeSaid", "choice", "free", "freeWho", "freeOnly", "if", "then", "else", "run", "wait",
   // 第五批新加
-  "phone", "time", "steps", "moment", "timed", "game", "win", "lose", "pick", "from", "narr", "kind", "store", "item", "note", "midweekLine"]);
+  "phone", "time", "steps", "moment", "timed", "game", "win", "lose", "pick", "from", "narr", "kind", "store", "item", "note", "midweekLine", "pov", "why"]);
 const OPT_KEYS = new Set(["text", "sub", "tr", "if", "fx", "then", "store", "kind", "say"]);
 const bgs = new Set(fs.readdirSync(path.join(ROOT, "assets/bg")).map((f) => f.replace(/\.\w+$/, "")));
 for (const k of Object.keys(DATA.bgFallback || {})) bgs.add(k);
@@ -29,7 +29,7 @@ for (const k of ["kieran_room", "ploy_flat", "ollie_house", "bicester", "senior_
 const cgs = new Set((DATA.cgList || []).map((c) => c.id));
 for (const k of ["senior_confess", "local_confess", "groupmate_confess", "otaku_confess"]) cgs.add(k);
 const chars = new Set(Object.keys(DATA.characters || {}));
-const FX_SPECIAL = new Set(["allowance_half", "ghost_buy", "pond_pair", "pond_count", "pond", "pond_trigger", "date_promise", "skip_week", "extend", "homework",
+const FX_SPECIAL = new Set(["skip_class", "followers", "allowance_half", "ghost_buy", "pond_pair", "pond_count", "pond", "pond_trigger", "date_promise", "skip_week", "extend", "homework",
   "rest_days", "energy_max"]);
 const STAT = new Set(["money", "energy", "study", "loneliness", "belonging", "adapt", "english"]);
 const CJK = /[一-鿿]/;
@@ -38,6 +38,7 @@ function checkFx(fx, where) {
   if (typeof fx !== "object") return err(where, "fx 不是对象");
   for (const [k, v] of Object.entries(fx)) {
     if (/^(aff|fr)_/.test(k)) { const c = k.replace(/^(aff|fr)_/, ""); if (!chars.has(c) && !/^\{.+\}$/.test(c)) err(where, `fx ${k}：没有这个角色 id`); }
+    else if (/^(affmin|affcap)_/.test(k)) { const c = k.replace(/^(affmin|affcap)_/, ""); if (!chars.has(c) && !/^\{.+\}$/.test(c)) err(where, `fx ${k}：没有这个角色 id`); }
     else if (/^(flag|unlock|inc|item)_/.test(k)) { if (/^item_/.test(k) && DATA.items && !DATA.items[k.slice(5)]) err(where, `fx ${k}：DATA.items 里没登记这个物品`); }
     else if (!STAT.has(k) && !FX_SPECIAL.has(k)) err(where, `fx 不认识的键 ${k}`);
     if (typeof v === "number" && !Number.isFinite(v)) err(where, `fx ${k} 不是数字`);
@@ -71,6 +72,8 @@ function walk(steps, where) {
       checkCond(o.if, ow); checkFx(o.fx, ow); if (o.then) walk(o.then, ow);
     });
     if (st.phone) { if (!st.steps) err(w, "phone 段要写 steps"); else walk(st.steps, w + ".phone"); }
+    if (st.pov !== undefined) { if (!st.steps) err(w, "pov 段要写 steps"); else walk(st.steps, w + ".pov"); }   // 第七批视角段
+    if (st.why) for (const r of st.why.rows || []) { checkCond(r.if, w + ".why." + r.key); if (!r.text) err(w, `why 的 ${r.key} 没有 text`); }
     if (st.timed) { const t = st.timed; if (!t.text) err(w, "timed 要写 text"); walk(t.then || [], w + ".timed.then"); walk(t.timeout || [], w + ".timed.timeout"); if (t.during) walk(t.during, w + ".timed.during"); }
     if (st.game) { if (st.win) walk(st.win, w + ".win"); if (st.lose) walk(st.lose, w + ".lose"); }
     if (st.run && !DATA.events[st.run]) err(w, `run 的事件不存在：${st.run}`);

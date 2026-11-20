@@ -229,6 +229,8 @@ Object.assign(DATA.events, {
     { if: "标签('天生丽质')", then: [
       { say: "Honestly, you barely need this. That's so annoying.", name: "groupmate", tr: "说真的，你几乎不需要化妆。烦死了。", fx: { aff_groupmate: 1 } },
     ] },
+    // 家境分支第四节※：富裕时 Ploy 改用“花时间而不是花钱”的方式，这段好感 +1
+    { if: "家境 == '富裕'", then: [ { fx: { aff_groupmate: 1 } } ] },
     { hide: true },
   ],
 
@@ -391,6 +393,8 @@ Object.assign(DATA.events, {
     { if: "性格 == 'E'", then: [
       { say: "第二天早上，你把她睫毛膏晕开的样子拍了下来，设成了她在你手机里的联系人头像。她发现以后追着你打了半条走廊。", fx: { aff_groupmate: 1 } },
     ] },
+    // 家境分支第四节※：富裕时这段好感 +1
+    { if: "家境 == '富裕'", then: [ { fx: { aff_groupmate: 1 } } ] },
     { hide: true },
   ],
 
@@ -426,7 +430,7 @@ Object.assign(DATA.events, {
       ] },
     ] },
     { if: "标签('二次元')", then: [
-      { say: "这部片子你看过。你在他耳边小声剧透了一句。他转过头，用一种被背叛的眼神看着你。", fx: { aff_otaku: 1 } },
+      { say: "这部片子你其实看过。散场前十分钟，你在他耳边小声剧透了一句。他转过头，用一种被背叛的眼神看着你。", fx: { aff_otaku: 1 } },
     ] },
     { hide: true },
   ],
@@ -557,7 +561,10 @@ Object.assign(DATA.events, {
           { say: "你们两个都没说话，过了好一会儿，他说：" },
           { say: "That was weird. Can we do it again.", name: "otaku", tr: "刚才有点奇怪。能再来一次吗。" },
         ] },
-        { text: "挂掉，睡觉", fx: { aff_otaku: 1 } },
+        { text: "挂掉，睡觉", fx: { aff_otaku: 1 }, then: [
+          { say: "第二天早上，他的消息：" },
+          { msg: { from: "otaku", text: "you hung up on a sleeping man. rude. (thanks)", tr: "你挂了一个睡着的人的电话。没礼貌。（谢谢）" } },
+        ] },
       ] },
     ], else: [
       { if: "标签('昼伏夜出')", then: [
@@ -568,6 +575,7 @@ Object.assign(DATA.events, {
           { say: "你一个人打了四十分钟。打完的时候，他在耳机里含糊地说了一句梦话，听不清。好像是你的名字。也好像是“大锤”。" },
         ] },
         { text: "小声说一句：“晚安，Kieran。”然后挂掉", fx: { aff_otaku: 4 }, then: [
+          { say: "挂断前的半秒，你听到他含糊地回了一句“night”。" },
           { phone: "otaku", steps: [
             { say: "（第二天早上。）" },
             { say: "did i fall asleep on mic. how long. what did i say", name: "otaku", tr: "我是不是开着麦睡着了。多久。我说了什么" },
@@ -853,3 +861,6 @@ DATA.midweek.push(
 //   12. flirt_senior_3 剧本“周末和学长一起吃饭（中餐厅、他住处、你住处）”：中餐厅不在地图上，先登记在中超；最好挂在和学长约饭（date_promise）时。
 //   13. flirt_senior_4 剧本“生病（精力归零）或失眠（孤独≥60 的周）”：用 数值('精力') <= 0 || 数值('孤独') >= 60。
 //   14. flirt_local_4 里“已读，不回”写了 store: ""（不存消息），引擎要能处理空 store。
+
+// 第十批 #2 缺反应补全（11/20）：flirt_otaku_5「小声说晚安」只加了“挂断前听到 night”一句，后半（第二天消息）和已有手机对话重复没加。
+// 待策划：flirt_senior_2 两个选项已有手机对话（phone），剧本补的反应内容冲突，没加。

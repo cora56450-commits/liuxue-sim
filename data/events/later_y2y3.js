@@ -11,6 +11,34 @@
   const DATING = "['senior', 'local', 'groupmate', 'otaku'].some((c) => 交往中(c))";
   const KNOWS = (id) => `('${id}' in S.fr)`;   // 认识某个固定 NPC（有友情值＝见过）
 
+  // ===== Ploy 推进·熬夜奶茶（★CG）：大二第18周小组展示前一晚（2026-11-19 从大一第17周挪来）=====
+  // 条件：Ploy 好感≥65，看过心动“凌晨路边薯条”（flag_heart_groupmate），没看过推进。
+  // 没赶上的：大二第20周期末大作业、大三第10周圣诞 ddl 前一晚补演（ddl 版：开头一句和 Ploy 的第一句换掉）
+  const ADV_TEA_COND = "好感('groupmate') >= 65 && 标记('heart_groupmate') && !标记('advance_groupmate')";
+  const ADV_TEA = (ddl) => [
+    { bg: "dorm_night" },
+    { say: ddl ? "ddl 前一天晚上十一点。有人敲门。" : "展示前一天晚上十一点。有人敲门。" },
+    { sfx: "knock" },
+    { show: "groupmate" },
+    { say: "Ploy 站在门口，素颜，拎着两杯奶茶，背着电脑包。" },
+    ddl
+      ? { say: "I've got a deadline too. I didn't go out tonight.", name: "groupmate", tr: "我也有 ddl。我今晚没出去。" }
+      : { say: "My group's presenting tomorrow too. I didn't go out tonight. Don't make it a thing.", name: "groupmate", tr: "我们组明天也展示。我今晚没去 club。别大惊小怪。" },
+    { if: "标记('ploy_ghostwrite') >= 1", then: [{ say: "（……她背着电脑。不是来让我写的。）" }] },
+    { cg: "groupmate_tea" },
+    { say: "你们一人一个笔记本电脑，坐在床上。她写一句，问你一句“is this okay?「这样行吗？」”。凌晨两点，她的部分写完了。是她自己写的。" },
+    { free: "凌晨两点，Ploy 自己写完了她那部分。", freeWho: "groupmate", choice: [
+      { text: "“写得很好。”", fx: { aff_groupmate: 5 }, then: [
+        { say: "Don't lie to me. …Okay, lie a little bit.", name: "groupmate", tr: "别骗我。……好吧，骗一点点。" },
+      ] },
+      { text: "“第三段太长了，砍一半。”", fx: { aff_groupmate: 6 }, then: [
+        { say: "她瞪着你，然后真的砍了。砍完以后她说：“Better. Annoyingly.「好多了。很烦，但好多了。」”" },
+      ] },
+    ] },
+    { cg: null, fx: { flag_advance_groupmate: 1 } },
+    { hide: true },
+  ];
+
 Object.assign(DATA.events, {
 
   // ======================================================================
@@ -33,6 +61,17 @@ Object.assign(DATA.events, {
         ] },
         { text: "随便拍几张", then: [
           { say: "你拍了十张。浴室那道裂缝不在里面。" },
+        ] },
+      ] },
+      // 铺垫 2a（剧本_铺垫.md，接学长考验·佣金）：加在 Mr. Khan 拍照那段后面
+      { say: "Leo sends me good people. Quiet. Pay on time. You're one of his?", name: "khan", tr: "Leo 介绍来的人都不错。安静，按时交租。你也是他介绍的？" },
+      { say: "（……“他的人”。）" },
+      { choice: [
+        { text: "“他帮我找的房子，算是吧。”", then: [
+          { say: "Good lad, Leo. Good for business.", name: "khan", tr: "Leo 是个好小伙。做生意的好手。" },
+        ] },
+        { text: "“我是我自己。”", fx: { belonging: 1 }, then: [
+          { say: "Mr. Khan 笑了：“Fair enough.「说得对。」”" },
         ] },
       ] },
     ] },
@@ -90,6 +129,9 @@ Object.assign(DATA.events, {
         { choice: [
           { text: "“是我。我们按用量分吧，我多出一点。”", fx: { money: -30, belonging: 2 }, then: [
             { say: "群里有人回了一个大拇指。有人说 “fair「公平」”。事情就这么结束了。" },
+            { if: "家境 == '拮据'", then: [{ say: "你转账的时候算了一下：三十镑，是中超四个小时的工。（……下次衣服晾房间里。）" }] },
+            // 富裕：剧本写“转过去五十”，数值仍是〔钱−£30〕，没改
+            { if: "家境 == '富裕'", then: [{ say: "你转过去五十。室友回：“you sent too much??「你转多了？？」”你才发现。（我没看。我从来不看。）" }] },
           ] },
           { text: "“英国晾不干衣服，大家都用吧？”", fx: { belonging: 1 }, then: [
             { say: "we hang ours in our rooms", name: "室友 B", tr: "我们都晾在自己房间" },
@@ -174,10 +216,15 @@ Object.assign(DATA.events, {
   y2_part_time: [
     { bg: "campus" },
     { say: "你看了一眼银行余额。又看了一眼。" },
-    { say: "（大二的房租比宿舍贵，账单还要自己交。家里的钱是够的，但是“够”和“不心疼”是两回事。）" },
+    { if: "家境 == '拮据'", then: [{ say: "（大二的房租比宿舍贵，账单还要自己交。这次不是想不想打工的问题，是必须。）" }] },
+    { if: "家境 == '中产'", then: [{ say: "（大二的房租比宿舍贵，账单还要自己交。家里的钱是够的，但是“够”和“不心疼”是两回事。）" }] },
+    { if: "家境 == '富裕'", then: [{ say: "（我不缺钱。我缺的是简历上的一行字，和一个周末不在房间里发呆的理由。）" }] },
     { say: "学生签证一周最多打工 20 个小时。你打开学校的兼职网站。" },
     { say: "找什么工作？" },
     { choice: [
+      { text: "“算了，不找了。”", if: "家境 == '富裕'", fx: { loneliness: 2 }, then: [
+        { say: "你关掉了网站，下午去 Waitrise 买了一盒草莓。" },
+      ] },
       { text: "中餐馆，现金结算，老板是温州人", fx: { flag_job_restaurant: 1, unlock_work: 1 }, then: [
         { bg: "cn_restaurant" },
         { say: "老板娘看了你一眼：“会不会用英文点单？会就来，周五周六晚上，一小时九镑。”" },
@@ -389,7 +436,9 @@ Object.assign(DATA.events, {
       ] },
       // 按对象接各自的圣诞文本（学长：加班后一起吃火锅；Ollie：萨里的家，见他父母前的预演；
       // Ploy：她的公寓，Pa Nok 已经回曼谷了；Kieran：他妈妈的圣诞晚餐）——正文还没写，见“缺反应”
-      { text: "和恋人过", if: DATING },
+      { text: "和恋人过", if: DATING, then: [
+        { say: "那天晚上下雪了。你们在窗边看了很久。" },
+      ] },
     ] },
   ],
 
@@ -450,16 +499,27 @@ Object.assign(DATA.events, {
         ] },
       ] },
       // 和{好感≥60的攻略对象}：按对象接各自春节文本（正文还没写）。Ollie 交往中接 Ollie 扩写第五节“阿姨好”（当面版）
-      { text: "和学长", if: "好感('senior') >= 60" },
-      { text: "和Ollie", if: "好感('local') >= 60" },
-      { text: "和Ploy", if: "好感('groupmate') >= 60" },
-      { text: "和Kieran", if: "好感('otaku') >= 60" },
+      { text: "和学长", if: "好感('senior') >= 60", then: [
+        { say: "他包了一百个饺子。“多了，冻着。”（他包的是两个人一个月的量。）" },
+      ] },
+      { text: "和Ollie", if: "好感('local') >= 60", then: [
+        { say: "他提前一周学了“恭喜发财”，见面第一句就说了，伸手要红包。" },
+      ] },
+      { text: "和Ploy", if: "好感('groupmate') >= 60", then: [
+        { say: "她穿了一身红：" },
+        { say: "Mum made me. Also I wanted to.", name: "groupmate", tr: "我妈逼的。我自己也想穿。" },
+      ] },
+      { text: "和Kieran", if: "好感('otaku') >= 60", then: [
+        { say: "他带了他妈妈做的牧羊人派，说：" },
+        { say: "Mum said it's a Chinese New Year present. I don't think she knows what that means.", name: "otaku", tr: "妈说这是春节礼物。我觉得她不知道这是什么意思。" },
+      ] },
       // ★CG：一个人的春节，大一已有，这里不再出
       { text: "自己过", then: [
         { say: "你买了一盒速冻饺子，看了春晚的回放。" },
         { say: "（小品还是那些人。我还是笑了。）" },
       ] },
       { text: "翘课回国", fx: { money: -800, study: -3, flag_spring_home_y2: 1 }, then: [
+        { say: "你在家待了五天。走的时候，妈妈在你的箱子里塞了二十包火锅底料。" },
         { bg: "home_china" },
         { game: "relatives" },   // 春节亲戚盘问（决定记录_1118 第六节）
       ] },
@@ -510,7 +570,7 @@ Object.assign(DATA.events, {
   ],
 
   // ===== 大二第15周·又找房 =====
-  // 考验（学长·佣金、Ollie·我们算什么）挂在周历 trials 上，这一段演完以后系统接着演
+  // 考验（学长·佣金、Ollie·我们算什么）2026-11-19 起挂在大三周历 trials 上（恋爱节奏调整第四节），这里不再接着演
   y2_house_again: [
     { bg: "shared_house" },
     { say: "去年这个时候，你说：“明年一定早点看。”" },
@@ -533,10 +593,14 @@ Object.assign(DATA.events, {
       { text: "换一个房子", fx: { energy: -10, flag_y3_new_house: 1 }, then: [
         { say: "你看了四套。第三套的房东说要英国担保人。（这句话我听了三年了。）" },
       ] },
-      // 接考验：Ollie·我们算什么（周历 trials 演）
-      { text: "他说他那栋房子明年有空房", if: "交往中('local')", fx: { flag_y3_ollie_house: 1 } },
-      // 接考验：学长·佣金（周历 trials 演）。没住 Khan 的房时，考验从二手群开始
-      { text: "问学长", if: `交往中('senior') && ${KHAN}` },
+      // 接考验：Ollie·我们算什么（剧本仍写“接考验”；新节奏挪到大三第6周起，由周历 trials 演）
+      { text: "他说他那栋房子明年有空房", if: "交往中('local')", fx: { flag_y3_ollie_house: 1 }, then: [
+        { say: "Ollie 说的时候很轻描淡写，像在说天气。但他已经把房东的电话发给你了，还打好了招呼。" },
+      ] },
+      // 接考验：学长·佣金（剧本仍写“接考验”；新节奏挪到告白后4周、最早大三第1周，由周历 trials 演）。没住 Khan 的房时，考验从二手群开始
+      { text: "问学长", if: `交往中('senior') && ${KHAN}`, then: [
+        { say: "学长回：“有。不过这次我收中介费。……开玩笑的。”" },
+      ] },
     ] },
     // 【如果：认识的室友要拆伙】（按室友）
     { if: "住宿 == '学校宿舍' && " + KNOWS("mei"), then: [
@@ -578,12 +642,19 @@ Object.assign(DATA.events, {
       { text: "填补偿表", fx: { money: 50 }, then: [
         { say: "表有六页。最后一页问：“罢工对你的学习造成了什么影响？”你写了三百字。比你作业的引言还长。" },
       ] },
-      { text: "在家自学", fx: { study: 1 } },   // 剧本没写反应，见“缺反应”
+      { text: "在家自学", fx: { study: 1 }, then: [
+        { say: "你在家看了三天网课录像。第三天的录像是去年的，老师在里面说“next year we'll do this differently”。（今年没有不一样。）" },
+      ] },   // 剧本没写反应，见“缺反应”
     ] },
   ],
 
+  // ===== Ploy 推进·熬夜奶茶（定义见文件开头 ADV_TEA）=====
+  groupmate_advance_tea: ADV_TEA(false),
+  groupmate_advance_tea_ddl: ADV_TEA(true),
+
   // ===== 大二第18周·小组展示 =====
   y2_group_presentation: [
+    { if: ADV_TEA_COND, then: [{ run: "groupmate_advance_tea" }] },   // 前一晚 · Ploy 推进·熬夜奶茶
     { bg: "crit_room" },
     { say: "大二的小组，你又分到了新的组员。" },
     { say: "第一次开会，你发现自己掏出了一张表。" },
@@ -629,11 +700,16 @@ Object.assign(DATA.events, {
 
   // ===== 大二第20周·期末大作业 =====
   y2_final_assignment: [
+    { if: ADV_TEA_COND, then: [{ run: "groupmate_advance_tea_ddl" }] },   // 没赶上第18周的：ddl 前一晚补演
     { bg: "library" },
     { say: "（这一周的流程我已经背下来了：图书馆、咖啡、焦虑、提交、睡死。）" },
     { choice: [
-      { text: "按计划写", fx: { homework: 10 } },
-      { text: "最后两天爆肝", fx: { homework: 4, energy: -20 } },
+      { text: "按计划写", fx: { homework: 10 }, then: [
+        { say: "截止前一天你就交了。你坐在图书馆，看着别人在赶，有一点不真实。" },
+      ] },
+      { text: "最后两天爆肝", fx: { homework: 4, energy: -20 }, then: [
+        { say: "交上去的时候是凌晨三点五十八分。你趴在桌上睡着了，醒来已经中午。" },
+      ] },
       { text: "找代写", if: "数值('作业') < 40", fx: { ghost_buy: 1, flag_ghost_y2: 1 } },   // Essay 学姐，大二价格 £350
     ] },
     { if: KNOWS("chen_siqi"), then: [
@@ -654,8 +730,12 @@ Object.assign(DATA.events, {
           { say: "你一个人去了海边小镇，吃了一份炸鱼薯条，被海鸥抢走了一半。" },
         ] },
       ] },
-      { text: "留下复习", fx: { study: 2 } },
-      { text: "打工", if: "标记('job_restaurant') || 标记('job_supermarket') || 标记('job_ambassador')", fx: { money: 180, energy: -15 } },
+      { text: "留下复习", fx: { study: 2 }, then: [
+        { if: "友情('陈思琪') > 0", then: [{ say: "图书馆只剩你和陈思琪。你们隔着一排书架，互相看了一眼，都没说话。" }] },
+      ] },
+      { text: "打工", if: "标记('job_restaurant') || 标记('job_supermarket') || 标记('job_ambassador')", fx: { money: 180, energy: -15 }, then: [
+        { say: "复活节你打了六个班。最后一天店长给了你一个巧克力蛋：“Happy Easter. You've earned it.「复活节快乐。你应得的。」”" },
+      ] },
     ] },
     { if: KNOWS("jake"), then: [
       { phone: "jake", steps: [
@@ -678,7 +758,9 @@ Object.assign(DATA.events, {
         { say: "我啥也没复习。……今天起，我们一起啥也没复习。", name: "chen_siqi" },
         { hide: true },
       ] },
-      { text: "一个人复习", fx: { study: 2 } },
+      { text: "一个人复习", fx: { study: 2 }, then: [
+        { say: "陈思琪的消息你没回。半夜她又发了一条：“你那边灯还亮着。我这边也是。”" },
+      ] },
       { text: "去看那件外套到底是谁的", then: [
         { say: "你在那个位子旁边坐了一天。到了晚上十点，有个人过来，拿起外套，穿上，走了。是一个你从来没见过的博士生。" },
         { say: "（两年的谜，就这么解开了。一点都不精彩。）" },
@@ -687,15 +769,19 @@ Object.assign(DATA.events, {
   ],
 
   // ===== 大二第23周·期末 =====
-  // 考验：Ploy·期末替写 挂在周历 trials 上
+  // 考验：Ploy·替写 2026-11-19 挪到大三第20周（周历 trials）
   y2_exam: [
     { if: "专业 == '设计'", then: [{ bg: "crit_room" }], else: [{ bg: "exam_hall" }] },   // 设计专业是作品集评审，不是考试
     { say: "考场里一排一排的桌子，每张桌子上都贴着一个号码。监考老师念规则，念到“No phones「不许带手机」”的时候，看了全场一眼。" },
     { say: "（大一的时候，我在这里手抖。今年我不抖了。……我的腿在抖。）" },
     { say: "成绩开始计入学位，这场比大一重要。" },
     { choice: [
-      { text: "稳着写" },
-      { text: "先写会的" },
+      { text: "稳着写", then: [
+        { say: "你写到最后一分钟。交卷的时候手心全是汗，但你写完了。" },
+      ] },
+      { text: "先写会的", then: [
+        { say: "你先写完了会的那三题，回头看那道不会的，居然想起来了一点。" },
+      ] },
       { text: "提前二十分钟交卷", if: "标签('学霸底子')", then: [
         { say: "监考老师看了你一眼，你走出考场的时候，后面有人在叹气。" },
       ] },
@@ -790,7 +876,9 @@ Object.assign(DATA.events, {
         { if: "专业 == '商科'", then: [{ say: "你想研究中国留学生在英国的消费习惯。（我就是研究对象。）" }] },
         { if: "专业 == '传媒'", then: [{ say: "你想拍一部纪录片，拍中超的陈建国。" }] },
       ] },
-      { text: "稳妥的、好拿分的", fx: { flag_thesis_safe: 1 } },
+      { text: "稳妥的、好拿分的", fx: { flag_thesis_safe: 1 }, then: [
+        { say: "导师说“solid choice”。（稳妥。三年了，我终于选了一次稳妥的。）" },
+      ] },
       { text: "和你喜欢的东西有关的", if: "标签('二次元')", fx: { flag_thesis_otaku: 1 }, then: [
         { say: "导师听完以后沉默了三秒：“…Go on.「……继续说。」”" },
       ] },
@@ -840,6 +928,13 @@ Object.assign(DATA.events, {
     // 【手机：家里】视频通话，按对白演
     { say: "你妈打来视频，你爸也在旁边。他们一般不一起打，除非有大事。" },
     { say: "我们想跟你商量一下，毕业以后的事。", name: "妈妈" },
+    { if: "家境 == '富裕'", then: [
+      { say: "厂里你表哥管着呢，你回来先跟着他学两年。——你妈的意思是，你在那边也找找看，找不到就回来。", name: "爸爸" },
+      { say: "（他说的是“找不到”。好像已经知道我找不到。）" },
+    ] },
+    { if: "家境 == '拮据'", then: [
+      { say: "……你爸最近厂里活少了。不是让你操心，就是跟你说一声。", name: "妈妈" },
+    ] },
     { say: "你想怎么样？" },
     { choice: [
       { text: "回国", fx: { flag_go_home: 1, flag_stay_uk: 0 }, then: [
@@ -852,6 +947,7 @@ Object.assign(DATA.events, {
         { say: "你说你也不知道。" },
         { say: "你自己想清楚就行。", name: "爸爸" },
         { say: "挂了以后，你爸又单独发了一条消息：“钱不够跟爸说。别跟你妈说。”" },
+        { if: "家境 == '拮据'", then: [{ say: "你看着那条消息看了很久。你知道他说这句话之前，先算过了。" }] },
       ] },
       { text: "“还没想好。”", then: [
         { say: "那你什么时候想好？", name: "妈妈" },
@@ -919,7 +1015,9 @@ Object.assign(DATA.events, {
     { say: "最后一个 reading week。" },
     { say: "（大一的时候我以为它是放假。大二我知道它是放假。大三我知道了，它是写毕设的。）" },
     { choice: [
-      { text: "写毕设", fx: { study: 2, homework: 5 } },
+      { text: "写毕设", fx: { study: 2, homework: 5 }, then: [
+        { say: "你写了五天，写了六千字。第五天晚上，你看着那六千字，觉得它们都是你自己的。" },
+      ] },
       { text: "出城，最后一次", fx: { loneliness: -5, money: -80 }, then: [
         { say: "你去了一个三年来一直说要去、一直没去的地方。" },
       ] },
@@ -927,11 +1025,22 @@ Object.assign(DATA.events, {
         { say: "第三天，你在床上刷到了大一时自己发的小红书。你看了很久，没有删。" },
       ] },
     ] },
+    // 铺垫 14（剧本_铺垫.md，接大三第7周导师反馈）：Reading week 结尾
+    { say: "（第一章写完了。四千二百字。）你把鼠标停在“发送”上，停了很久。" },
+    { choice: [
+      { text: "发", then: [
+        { say: "发送成功。你盯着“已发送”看了一分钟，然后去楼下买了一杯热巧克力。" },
+      ] },
+      { text: "再改一遍再发", fx: { study: 1, energy: -5, flag_thesis_revised: 1 }, then: [
+        { say: "你又改了两个小时。最后发出去的版本和第一版差别不大。（但我心里踏实了。）" },
+      ] },
+    ] },
   ],
 
   // ===== 大三第7周·导师第一次反馈 =====
   y3_supervisor_1: [
     { bg: "tutor_office" },
+    { if: "标记('thesis_revised')", then: [{ say: "你改了三遍，还是发了。" }] },   // 铺垫 14：选了“再改一遍再发”
     { say: "你把毕设的第一章发给了导师。三天后，她/他约你见面。" },
     { say: "It's… interesting.", name: "导师", tr: "这……很有意思。" },
     { say: "（我在心里数了一下：这是三年来第十一个说我 interesting 的老师。）" },
@@ -947,7 +1056,9 @@ Object.assign(DATA.events, {
       { hide: true },
     ] },
     { choice: [
-      { text: "认真记下每一条意见", fx: { homework: 5 } },
+      { text: "认真记下每一条意见", fx: { homework: 5 }, then: [
+        { say: "你记了两页。导师最后说：“You actually listen. That's rarer than you'd think.「你真的会听。这比你想的少见。」”" },
+      ] },
       { text: "“我不同意第三条。我可以解释吗？”", if: "标记('no_sorry')", fx: { homework: 8, english: 1 }, then: [
         { say: "导师愣了一下，然后笑了：“Please.「请。」”" },
         { say: "你讲了五分钟。最后导师说：“Okay. Keep it. But defend it in the writing.「好，保留。但在论文里把它论证清楚。」”" },
@@ -972,6 +1083,11 @@ Object.assign(DATA.events, {
         { if: "交往中('local')", then: [{ say: "Ollie 又掏出了仙女棒，这次他写的是你的名字，拼对了。" }] },
         { if: "交往中('groupmate')", then: [{ say: "Ploy 拍了一张你们俩在烟花下面的照片，没有加滤镜就发了。" }] },
         { if: "交往中('otaku')", then: [
+          // 铺垫 8（剧本_铺垫.md，接 Kieran 考验·圣诞聚会）：健身房朋友
+          { say: "公园另一边，一群穿运动服的男生在喊 “Kez!”。Kieran 回头，朝他们点了一下头，没过去。" },
+          { say: "他站在你旁边，手插在口袋里，离你有半步远。" },
+          { say: "（今晚他离我半步远。半步，是给那边的人看的。）" },
+          { if: "标记('kieran_rehook')", then: [{ say: "你往他那边挪了半步。他没躲。" }] },
           { say: "I hated this as a kid. Too loud.", name: "otaku", tr: "我小时候讨厌这个，太吵了" },
           { say: "然后在第三朵烟花的时候，他握住了你的手。" },
         ] },
@@ -985,12 +1101,17 @@ Object.assign(DATA.events, {
   // ===== 大三第10周·最后一个圣诞＋ddl =====
   // 考验：Kieran·健身房朋友的圣诞聚会 挂在周历 trials 上（有 kieran_jake_knows 时 Jake 也在，正文在攻略线）
   y3_last_xmas: [
+    { if: ADV_TEA_COND, then: [{ run: "groupmate_advance_tea_ddl" }] },   // 没赶上第18周、第20周的：圣诞 ddl 前一晚补演
     { bg: "studio_night" },
     { say: "毕设中期作业和圣诞假前的最后一个 ddl 撞在了一起。" },
     { say: "（三年的圣诞，三年的 ddl。英国人过圣诞，我过 ddl。）" },
     { choice: [
-      { text: "稳扎稳打", fx: { homework: 10, energy: -10 } },
-      { text: "最后三天爆肝", fx: { homework: 5, energy: -20 } },
+      { text: "稳扎稳打", fx: { homework: 10, energy: -10 }, then: [
+        { say: "你提前一周交了。圣诞节那天，你第一次没有在写作业。" },
+      ] },
+      { text: "最后三天爆肝", fx: { homework: 5, energy: -20 }, then: [
+        { say: "你在平安夜交了。窗外有人在唱圣诞歌。你关上电脑，躺在床上听完了一整首。" },
+      ] },
       // Essay 学姐，大三价格 £500；大三的代写判定见第 20 周
       { text: "找代写", if: "数值('作业') < 40", fx: { ghost_buy: 1, flag_ghost_y3: 1 } },
     ] },
@@ -1022,11 +1143,17 @@ Object.assign(DATA.events, {
         { say: "你一个人走了四十分钟去中超，中超又关门了。门上那张纸还是“春节见”，字迹褪色了。" },
         { say: "（三年了，它还是只认春节。）" },
       ] },
-      { text: "回国", fx: { flag_xmas_home_y3: 1 } },
-      { text: "欧洲旅行" },
+      { text: "回国", fx: { flag_xmas_home_y3: 1 }, then: [
+        { say: "机场的广播是中文和英文两种。你听到中文那一半的时候，眼眶有点热。" },
+      ] },
+      { text: "欧洲旅行", then: [
+        { say: "你买了一张去布拉格的车票。（三年里第一次，我是为了自己出去玩的。）" },
+      ] },
       // 按对象：学长的福建家里（视频，他爸妈第一次见你）；Ollie 的萨里家里（他妈妈准备了一个写着你名字的礼物，名字拼对了）；
       // Ploy 飞回曼谷前一天，和你在她的空公寓里过；Kieran 的家，他妈妈给你织了一条围巾。——只有提要，正文见“缺反应”
-      { text: "和恋人过", if: DATING },
+      { text: "和恋人过", if: DATING, then: [
+        { say: "最后一个英国的圣诞。你们谁都没说“最后”这两个字。" },
+      ] },
     ] },
   ],
 
@@ -1034,11 +1161,11 @@ Object.assign(DATA.events, {
   y3_offer: [
     { bg: "dorm_room" },
     { say: "邮件和消息一起来了。" },
-    { if: "标记('go_home') && 标记('job_hunt_serious')", then: [
+    { if: "标记('go_home') && 标记('internship_serious')", then: [
       { mail: { from: "校园招聘", title: "恭喜您通过我司 2027 届校园招聘……", body: "" } },
       { say: "你截图发给了家里。你妈在家族群里发了一句“我女儿拿到 offer 了”，后面跟了三个红包。", fx: { flag_cn_offer: 1 } },
     ] },
-    { if: "标记('go_home') && !标记('job_hunt_serious')", then: [
+    { if: "标记('go_home') && !标记('internship_serious')", then: [
       { say: "你收到的都是“感谢您的关注”。你妈说：“没事，回来再找。”" },
     ] },
     { if: "标记('stay_uk')", then: [
@@ -1061,12 +1188,15 @@ Object.assign(DATA.events, {
       { text: "和室友/朋友", then: [
         { say: "大一的 flat 里还在这个城市的人，全部叫来了。来了五个。" },
       ] },
-      { text: "和恋人", if: DATING },   // 按对象接（正文没写）
+      { text: "和恋人", if: DATING, then: [
+        { if: "交往中('groupmate')", then: [{ say: "她学了一句“新年快乐”，说得很认真，声调错了两个。" }], else: [{ say: "他学了一句“新年快乐”，说得很认真，声调错了两个。" }] },
+      ] },   // 按对象接（正文没写）
       { text: "自己过", then: [
         { say: "你又看了一遍春晚回放。（小品还是那些人。我还是笑了。三年了。）" },
       ] },
       // 春节亲戚盘问大三题库（“毕业回不回来”“还单着？”“在英国找到工作了吗”）
-      { text: "翘课回国", fx: { flag_spring_home_y3: 1 }, then: [
+      { text: "翘课回国", fx: { flag_spring_home_y3: 1, loneliness: -15 }, then: [
+        { say: "你在除夕前一天到家。妈妈开门看到你，愣了三秒，然后哭了。" },
         { bg: "home_china" },
         { game: "relatives" },
       ] },
@@ -1135,8 +1265,12 @@ Object.assign(DATA.events, {
     ] },
     { say: "这五周怎么安排？" },
     { choice: [
-      { text: "每天写一点", fx: { homework: 10 } },
-      { text: "先玩两周，后面三周拼命", fx: { homework: 4, loneliness: -3 } },
+      { text: "每天写一点", fx: { homework: 10 }, then: [
+        { say: "每天四百字。五周以后，你写完了，还有时间改了两遍。" },
+      ] },
+      { text: "先玩两周，后面三周拼命", fx: { homework: 4, loneliness: -3 }, then: [
+        { say: "前两周你去了海边、去了伦敦、去了湖区。后三周你在图书馆睡了两次。（不后悔。）" },
+      ] },
       { text: "先学会做一样能吃的菜，冲刺期不能再靠泡面", if: "标签('厨房杀手')", then: [
         { say: "你学会了番茄炒蛋。糖和盐分清楚了。", fx: { energy: 5 } },
         { say: "（这是我三年来最大的一次进步。）" },
@@ -1241,8 +1375,12 @@ Object.assign(DATA.events, {
   easter_3: [
     { bg: "dorm_room" },
     { choice: [
-      { text: "复习最后的考试", fx: { study: 2 } },
-      { text: "把这三年说要去、一直没去的地方，去一个", fx: { loneliness: -5, money: -100 } },
+      { text: "复习最后的考试", fx: { study: 2 }, then: [
+        { say: "（这是我最后一个复活节假期。我在图书馆过的。和第一个一样。）" },
+      ] },
+      { text: "把这三年说要去、一直没去的地方，去一个", fx: { loneliness: -5, money: -100 }, then: [
+        { say: "你去了湖区。下着雨，什么都看不清。你在湖边站了半个小时，觉得这三年值了。" },
+      ] },
       { text: "开始收拾东西", then: [
         { say: "你从床底下拖出来一个箱子，里面是大一的床单。（买了一套新的以后，这套就一直在床底下。三年了。）" },
       ] },
@@ -1256,7 +1394,9 @@ Object.assign(DATA.events, {
     { say: "监考老师念规则。“No phones.”" },
     { say: "（三年前我在这里手抖，两年前我腿抖，今年我什么都不抖了。我只是有点舍不得。）" },
     { choice: [
-      { text: "认真写完每一题" },
+      { text: "认真写完每一题", then: [
+        { say: "最后一题你写完了，还剩十分钟。你检查了一遍，然后放下笔，看着窗外。（三年。）" },
+      ] },
       { text: "提前交卷，在考场外面等朋友", if: "标签('学霸底子')", then: [
         { say: "你在门口等了四十分钟。每出来一个认识的人，你就跟他击个掌。" },
       ] },
@@ -1290,12 +1430,20 @@ Object.assign(DATA.events, {
     { if: "标签('厨房杀手')", then: [
       { say: "那口糊了的锅，三天了没人要。最后你把它扔了。（它陪了我三年，和我一样，没学会做饭。）" },
     ] },
-    // 爸妈来不来：家教森严一定来；其余的谁来谁不来见“给引擎”（flag_parents_come）
+    // 爸妈来不来（家境分支第〇节 3，2026-11-19）：家教森严一定来；其余按家境——富裕全家来、中产妈妈一个人来、拮据不来
     { if: "标签('家教森严')", then: [
       { say: "你妈三个月前就订好了机票。", fx: { flag_parents_come: 1 } },
-    ], else: [{ if: "!标记('parents_come')", then: [
-      { say: "你妈说：“太远了，签证也麻烦，你多拍点照片。”" },
-    ] }] },
+    ], else: [
+      { if: "家境 == '富裕'", then: [
+        { say: "你爸妈都来，你妈还带了一个小姨。他们住市中心最好的酒店，你妈在电话里说：“你也搬过来住两晚，那个房子有什么好住的。”", fx: { flag_parents_come: 1 } },
+      ] },
+      { if: "家境 == '中产'", then: [
+        { say: "来的是你妈一个人。机票她看了一个月，等降价，最后还是在最贵的那周买了。“你爸要上班，”她说，“他让我多拍点照片。”", fx: { flag_parents_come: 1, flag_mum_only: 1 } },
+      ] },
+      { if: "家境 == '拮据'", then: [
+        { say: "你妈说：“太远了，机票够你半年生活费。我们看直播。”你说学校没有直播。她说：“那你多拍点照片。”（……那就多拍点照片。）" },
+      ] },
+    ] },
     // 最后一晚
     { bg: "dorm_night" },
     { say: "房间空了。你躺在没有床单的床垫上，看着天花板。" },
@@ -1322,7 +1470,11 @@ Object.assign(DATA.events, {
       { hide: true },
     ] },
     { if: "标记('parents_come')", then: [
-      { say: "台下，你妈举着手机录像，你爸举着一个 iPad 录像。两个人录的是同一个角度。" },
+      { say: "台下，你妈举着手机录像，你爸举着一个 iPad 录像。两个人录的是同一个角度。" },   // mum_only 时这句有“你爸”，剧本没给妈妈一个人的版本，见“给引擎”
+      // 家境分支第一节末：有 refused_dad_money 时，毕业典礼你爸的第一句（剧本典礼段没有你爸的台词，放在这里）
+      { if: "标记('refused_dad_money') && !标记('mum_only')", then: [
+        { say: "这次不给钱了。给你带了你妈腌的菜。", name: "爸爸" },
+      ] },
     ] },
     { if: KNOWS("sophie") + " && 标记('sophie_name_right')", then: [
       { say: "典礼结束，你在门口收到一杯咖啡，杯子上写着你的名字，拼对了。旁边画了一顶学位帽。" },
@@ -1332,14 +1484,14 @@ Object.assign(DATA.events, {
 
 // ======================================================================
 // 大二、大三周历（docs/大二大三周表.md；每年 24 周）
-// trials：这周演恋爱考验（只有交往中的才演）；confess：告白窗口；spring：春节；mark：交作业出分；
+// trials：这周演恋爱考验（只有交往中的才演）；告白窗口（大二第20–24周／大三第1–6周）由引擎按周数做，周历里不写 confess；spring：春节；mark：交作业出分；
 // final：最终提交（代写判定）；close：这周先算学年总分；festival：年度大场面（正文另写）
 // 池子周不写 fixed。deadline 沿用大一的作业 id（a2＝秋季期末大作业、a4＝春季期末大作业），见“给引擎”
 // ======================================================================
 DATA.calendarY2 = [
-  { week: 1,  term: "大二·秋", label: "第1周",  fixed: ["y2_move_in"], confess: true },
+  { week: 1,  term: "大二·秋", label: "第1周",  fixed: ["y2_move_in"] },
   { week: 2,  term: "大二·秋", label: "第2周",  fixed: ["y2_first_bill"] },
-  { week: 3,  term: "大二·秋", label: "第3周",  fixed: ["y2_internship"], confess: true },
+  { week: 3,  term: "大二·秋", label: "第3周",  fixed: ["y2_internship"] },
   { week: 4,  term: "大二·秋", label: "第4周",  fixed: ["y2_part_time"] },
   { week: 5,  term: "大二·秋", label: "第5周" },
   { week: 6,  term: "大二·秋", label: "第6周",  fixed: ["reading_week_2"] },
@@ -1351,8 +1503,7 @@ DATA.calendarY2 = [
   { week: 12, term: "大二·春", label: "第12周", fixed: ["y2_results"] },
   { week: 13, term: "大二·春", label: "第13周", fixed: ["y2_spring"], spring: true },
   { week: 14, term: "大二·春", label: "第14周", fixed: ["valentines_2"] },
-  { week: 15, term: "大二·春", label: "第15周", fixed: ["y2_house_again"],
-    trials: [{ who: "senior", if: "flag('house_khan')" }, { who: "local" }] },
+  { week: 15, term: "大二·春", label: "第15周", fixed: ["y2_house_again"] },   // 学长、Ollie 的考验挪到大三（恋爱节奏调整第四节）
   { week: 16, term: "大二·春", label: "第16周", fixed: ["strike_2"] },
   { week: 17, term: "大二·春", label: "第17周", festival: "y2_fashion_show" },   // 时尚社走秀，正文另写
   { week: 18, term: "大二·春", label: "第18周", fixed: ["y2_group_presentation"] },
@@ -1360,7 +1511,7 @@ DATA.calendarY2 = [
   { week: 20, term: "大二·春", label: "第20周", fixed: ["y2_final_assignment"], deadline: "a4", mark: true },
   { week: 21, term: "复活节假", label: "第21周", fixed: ["easter_2"], vacation: true },
   { week: 22, term: "大二·夏", label: "第22周", fixed: ["y2_revision"] },
-  { week: 23, term: "大二·夏", label: "第23周", fixed: ["y2_exam"], exam: true, mark: true, trials: [{ who: "groupmate" }] },
+  { week: 23, term: "大二·夏", label: "第23周", fixed: ["y2_exam"], exam: true, mark: true },   // Ploy 考验挪到大三第20周
   { week: 24, term: "大二·夏", label: "第24周", fixed: ["y2_summer"], close: true },
 ];
 
@@ -1384,12 +1535,24 @@ DATA.calendarY3 = [
   { week: 17, term: "大三·春", label: "第17周", fixed: ["y3_midpoint"] },
   { week: 18, term: "大三·春", label: "第18周" },
   { week: 19, term: "大三·春", label: "第19周", fixed: ["y3_print_queue"] },
-  { week: 20, term: "大三·春", label: "第20周", fixed: ["y3_final"], deadline: "a4", mark: true, final: true },
+  { week: 20, term: "大三·春", label: "第20周", fixed: ["y3_final"], deadline: "a4", mark: true, final: true, trials: [{ who: "groupmate" }] },   // Ploy·替写毕业论文
   { week: 21, term: "复活节假", label: "第21周", fixed: ["easter_3"], vacation: true },
   { week: 22, term: "大三·夏", label: "第22周", fixed: ["y3_exam"], exam: true, mark: true, festival: "y3_grad_ball" },   // 考完接毕业舞会（另写）
   { week: 23, term: "大三·夏", label: "第23周", fixed: ["y3_leaving"], close: true },
   { week: 24, term: "大三·夏", label: "第24周", fixed: ["y3_graduation", "y3_after"] },
 ];
+// 考验周（docs/恋爱节奏调整_1118.md 第四节，2026-11-19）：
+//   学长·佣金：告白后 4 周以上，最早大三第1周（住不住 Khan 的房都演，没住的从二手群开始）
+//   Ollie·我们算什么：大三第6周起，告白后 4 周以上
+//   Ploy·替写：大三第20周（上面已写）；Kieran·圣诞聚会：大三第10周不变
+//   “起”的写法：每个学期周都挂一条，考验('x') == 0 时才演，演过一次就不再演（截到第19周，第20周以后是最终提交和毕业）
+for (const c of DATA.calendarY3) {
+  if (c.vacation || c.week > 19) continue;
+  const t = c.trials || [];
+  t.push({ who: "senior", if: "告白后('senior') >= 4 && 考验('senior') == 0" });
+  if (c.week >= 6) t.push({ who: "local", if: "告白后('local') >= 4 && 考验('local') == 0" });
+  c.trials = t;
+}
 })();
 
 // 真实地名：IKEA、约克（York）、湖区（Lake District）、布里斯班（Brisbane，澳大利亚）、博洛尼亚（Bologna）、巴黎／埃菲尔铁塔、
@@ -1440,6 +1603,12 @@ DATA.calendarY3 = [
 //  12. 依赖的旧标记：pike_supervisor（开局随机，设计专业三分之一）、giulia_invite_bologna、ollie_exchange、no_sorry、kieran_jake_knows、
 //      early_house、marcia_deposit、kexin_breakup、sophie_name_right（Sophie 写对过你的名字）——其中 giulia_invite_bologna、ollie_exchange、
 //      no_sorry、kieran_jake_knows、sophie_name_right、pike_supervisor 目前在数据里没找到设的地方。
-//  13. y3_leaving “爸妈来不来”：除家教森严外，谁家来谁家不来剧本没给条件；现在只有家教森严设 flag_parents_come，其余都按“不来”演。
+//  13. y3_leaving “爸妈来不来”：2026-11-19 按家境分支第〇节 3 改了——家教森严／富裕／中产设 flag_parents_come，中产另设 flag_mum_only，拮据不来。
 //  14. y3_print_queue 剧本写“最多出 6 个”，现在认识的全出（最多 8 个），要限人数请引擎处理。
 //  15. y2_spring／spring_3 “翘课回国”剧本没写 skip_week（大一写了），这里照剧本只扣钱和学业。
+
+// 第十批 #2 缺反应补全（11/20）待策划：
+//   · y2_final_assignment／y2_xmas_ddl／y3_last_xmas「找代写」：剧本只写【跳转：代写线正文（零碎补全第五节）】，正文在别的文件转，这里没加。
+//   · y3_print_queue「打印好就走」：剧本反应“走出图书馆……”和后面共用的“你抱着它走出打印店”冲突，没加。
+//   · easter_2「留下复习」：剧本写“陈思琪（或另一个熟人）”，只做了认识陈思琪的版本；不认识陈思琪时没有反应。
+//   · term_end_3「欧洲旅行」、y2_xmas_break「出去旅游」：只加了过渡句（后者剧本没写），选了以后不会自动进旅行系统。

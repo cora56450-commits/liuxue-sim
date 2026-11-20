@@ -38,7 +38,8 @@ for cid, c in sorted(C.items(), key=lambda kv: -kv[1]["height"]):
         diff_cm = (real_top - headY) / R["pxPerCm"]
         chinY = top + cal["chin"] * h
         rows.append((c["short"], key, c["height"], round(headY), round(real_top), round(diff_cm, 2), round(chinY), round(top + h)))
-        if abs(diff_cm) > 1: problems.append(f"{c['short']} {key}：头顶实际在 y={real_top:.0f}，身高 {c['height']}cm 应该在 y={headY:.0f}，差 {diff_cm:+.1f}cm")
+        if abs(diff_cm) > 1 and not cal.get("hat"): problems.append(   # hat：戴帽子（学位帽），帽子高出头顶不算
+            f"{c['short']} {key}：头顶实际在 y={real_top:.0f}，身高 {c['height']}cm 应该在 y={headY:.0f}，差 {diff_cm:+.1f}cm")
         if real_top < 0: problems.append(f"{c['short']} {key}：头顶超出画面顶部（y={real_top:.0f}）")
         if chinY > DIALOG_TOP: problems.append(f"{c['short']} {key}：下巴 y={chinY:.0f}，被对话框挡住")
         bottom = top + h

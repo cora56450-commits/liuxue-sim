@@ -1,0 +1,7 @@
+/* 出国旅行地图（js/travel6.js） */
+.trip-map .marker.trip { height: auto; min-height: 116px; padding-top: 18px; padding-bottom: 18px; }
+.trip-map .marker.trip span { white-space: normal; }
+.trip-map .marker.trip small.why { color: #c0504d; opacity: 1; font-size: 15px; margin-top: 2px; }
+.trip-map .marker.trip.locked { cursor: pointer; }
+.trip-map .marker.trip.locked small.why { color: #b04a46; }
+.trip-map .marker.trip.special:not(.locked) { filter: hue-rotate(-40deg) saturate(1.2); }

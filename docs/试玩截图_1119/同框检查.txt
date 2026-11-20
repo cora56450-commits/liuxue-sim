@@ -1,0 +1,27 @@
+
+表情切换（同一个人，和常规图比）：
+　学长 smile：头顶 +0px，头的大小 +0%
+　学长 shy：头顶 +0px，头的大小 +0%
+　学长 sad：头顶 +0px，头的大小 +0%
+　学长 annoyed：头顶 +0px，头的大小 +0%
+　Ollie normal：头顶 +0px，头的大小 +0%
+　Ollie smile：头顶 +0px，头的大小 -9%
+　Ollie annoyed：头顶 +0px，头的大小 -9%
+　Ollie shy：头顶 +0px，头的大小 -9%
+　Ollie surprised：头顶 +0px，头的大小 +0%
+　Ollie speechless：头顶 +0px，头的大小 +0%
+　Ollie stunned：头顶 +0px，头的大小 +0%
+　Ollie sad：头顶 +0px，头的大小 -9%
+　Ploy smile：头顶 +0px，头的大小 -6%
+　Ploy shy：头顶 +0px，头的大小 -6%
+　Ploy sad：头顶 +0px，头的大小 -6%
+　Ploy angry：头顶 +0px，头的大小 -6%
+　Ploy annoyed：头顶 +0px，头的大小 -6%
+　Kieran normal：头顶 +0px，头的大小 +2%
+　Kieran smile：头顶 +0px，头的大小 +2%
+　Kieran annoyed：头顶 +0px，头的大小 -8%
+　Kieran shy：头顶 +0px，头的大小 -8%
+　Kieran surprised：头顶 +0px，头的大小 +2%
+　Kieran speechless：头顶 +0px，头的大小 +2%
+　Kieran sparkle：头顶 +0px，头的大小 -1%
+　Kieran sad：头顶 +0px，头的大小 -8%

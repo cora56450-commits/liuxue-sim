@@ -27,12 +27,39 @@ const AI = {
   },
 
   // 玩家背景：家乡、性格、专业、tag、现在是什么时候
-  playerBrief() {
+  // charId：给谁看。主角生日只有玩家在和这个人的聊天里说过（S.flags["bd_known_"+id]）才放进去（防乱编第二节第 4 条）
+  playerBrief(charId) {
     const h = hometown();
+    const bd = charId && S.flags["bd_known_" + charId] && S.birthday ? `玩家生日${S.birthday.m}月${S.birthday.d}日（她在聊天里跟你说过）。` : "";
     const tagNames = S.tags.map((id) => DATA.tags.find((t) => t.id === id).name).join("、") || "无";
-    return `玩家叫${S.name || "（没起名）"}，中国女留学生，在英国北方城市读本科。家乡${h.name}，${optName("personality")}，专业${optName("major")}（${DATA.majorFlavor.ai[S.bg.major] || ""}），家境${optName("wealth")}，住${optName("accommodation")}。tag：${tagNames}。现在是${timeLabel().join(" ")}。`;
+    return `玩家叫${S.name || "（没起名）"}，中国女留学生，在英国北方城市读本科。家乡${h.name}，${optName("personality")}，专业${optName("major")}（${DATA.majorFlavor.ai[S.bg.major] || ""}），家境${optName("wealth")}，住${optName("accommodation")}。tag：${tagNames}。现在是${timeLabel().join(" ")}。${bd}`;
   },
-  RULES: "规则：像真人发消息一样简短（长度按上面的关系阶段）；吐槽喜剧基调；不要写动作描写和旁白；不要油腻情话，不要写“融入骨血”之类的套话；不写色情内容；不替玩家说话。",
+  RULES: "规则：像真人发消息一样简短（长度按上面的关系阶段）；吐槽喜剧基调；不要写动作描写和旁白；不要油腻情话，不要写“融入骨血”之类的套话；不写色情内容；不替玩家说话。\n"
+    // 防乱编硬规则（docs/AI聊天防乱编.md 第二节第 2 条，照抄）
+    + "关于事实：\n"
+    + "- 你只能提到事实卡里写了的人、地点、过去发生的事。没写的，一律不提、不编。\n"
+    + "- 被问到事实卡里没有的事（家里人、过去、以后的打算），用符合性格的方式含糊过去或岔开话题，不要编一个答案。\n"
+    + "- 你们之间发生过的事，只能提【已发生】标记的剧情消息和聊天记录里真实出现过的内容。\n"
+    + "- 不提任何真实的品牌、店名、游戏名、明星；需要的话用泛称（“那家店”“那个游戏”）。主机写 Swi○ch 2、P○5。\n"
+    + "- 不做具体的未来约定（时间、地点、“回头发你”）。想约玩家，只能用 [[INVITE ...]] 标记；不写标记就不许约。\n"
+    + "- 按关系阶段说话，不越级：没交往不说“我想你”“我爱你”，没告白不以恋人自居。\n"
+    + "- 外国角色只说英文，后面跟「中文」。",
+
+  // 事实卡（data/facts.js）：整张传给 AI。{ after, text } 的条目只有演过 after 那个事件（seen_/done_ 标记）才放；
+  // after 不是事件 id（比如还没转成事件的剧本名）的，对应标记永远不会有，自然就不放
+  factCard(charId) {
+    const card = ((DATA.facts || {})[charId] || []).map((f) => {
+      if (typeof f === "string") return f;
+      if (f && f.text && f.after && (S.flags["seen_" + f.after] || S.flags["done_" + f.after])) return f.text;
+      return "";
+    }).filter(Boolean);
+    return card.length ? "事实卡（关于你自己，只有这些是真的）：\n- " + card.join("\n- ") : "事实卡：没有。你的家人、过去、去过的地方一律不提。";
+  },
+  // Ploy 冷战周（S.flags.ploy_cold_week 由剧情那边设成周数）：这一周她回得短、冷
+  coldLine(charId) {
+    return charId === "groupmate" && S.flags.ploy_cold_week != null && S.flags.ploy_cold_week === absWeek()
+      ? "这周你心情不好，对玩家有点冷：回复比平时短（一句话，最多两句），语气淡，不主动找话题，不用表情，不开玩笑，也不解释为什么。" : "";
+  },
 
   // 邀约（邀约系统.md 第七部分）：告诉 AI 玩家这周哪天有约、这个角色固定什么时候忙；AI 想约就在末尾写机器能读的标记，由游戏校验
   inviteBrief(charId) {
@@ -111,19 +138,107 @@ const AI = {
     t = String(t || "");
     return /「[^」]+」/.test(t) && !/[\u4e00-\u9fff]/.test(t.replace(/「[^」]*」/g, ""));
   },
-  FALLBACK: {   // 重试一次还不对时用的固定兜底句（编程这边写的，见问题记录）
-    en: "Sorry — bit busy right now. Talk later?「抱歉——现在有点忙。晚点聊？」",
-    zh: "我这会儿有点忙，晚点回你。",
+  // ===== 回复以后程序再查一遍（docs/AI聊天防乱编.md 第二节第 3 条）：人名白名单、承诺词、语言 =====
+  // 英文里首字母大写、但不是人名的常见词（星期、月份、节日、国籍语言、课程词、语气词）。白名单比较一律不分大小写
+  COMMON_CAPS: ("I Im Ive Id Ill OK Okay Ok Monday Tuesday Wednesday Thursday Friday Saturday Sunday Mon Tue Tues Wed Thu Thur Thurs Fri Sat Sun "
+    + "January February March April May June July August September October November December Jan Feb Mar Apr Jun Jul Aug Sep Sept Oct Nov Dec "
+    + "Christmas Xmas Easter Halloween Bonfire Night Valentine Valentines Boxing Day Eve New Year Freshers Fresher Week Reading Uni University "
+    + "English Chinese British Brit Brits Irish Scottish Welsh Thai Italian Malaysian Japanese Korean French German European Asian America American Europe China UK Britain England Scotland Wales "
+    + "Essay Seminar Lecture Final Finals Exam Exams Presentation Deadline Module Tutor Society Library Hall Halls Ensuite Flat Brunch Fashion Marketing Finance Sociology Actuarial Media Hospitality Uber "
+    + "Hi Hey Hello Thanks Thank Cheers Sorry Yes Yeah Yep No Nah Nope Oh Ah Aw Aww Um Umm Hmm Lol Haha Omg Wow God Ugh Bye Please Wait Same Fair Honestly Literally Anyway Btw Tbh Love Babe").split(" "),
+  // 中文人名判断（保守，只拦明显是人名的三种写法；姓只用常见、不容易和普通词撞的那些，去掉了 于 何 高 方 马 金 夏 万 常 易 时 多 和 向 原 白 等）：
+  //   ① 亲戚/关系词＋姓名：“我哥王磊”“我朋友张伟说”
+  //   ② 句首（或标点后）姓名＋说/讲/告诉我/跟我说/问我：“张伟说他也去”
+  //   ③ 叫＋姓名＋的：“有个叫王磊的人”
+  // 抓到的姓名（2～3 字）只要和白名单里某个名字互为前缀就算过（“林子航”“林子悦”“陈老板”“陈建国”“赵子豪”）。
+  // 没有姓开头的称呼（“思琪说”“子豪说”）不查；音译名（「汤姆」）不查——宁可漏，不误伤。
+  ZH_SURNAME: "王李张刘陈杨黄赵吴周徐孙朱胡郭林罗郑梁谢宋唐韩冯邓曹彭曾萧田董潘袁蔡蒋杜叶程魏苏吕丁沈任姚卢姜崔钟谭陆汪范廖贾韦傅邹熊孟秦邱侯薛闫段雷黎陶贺毛郝顾龚邵钱严覃戴莫孔汤尹",
+  ZH_REL: "哥哥|姐姐|弟弟|妹妹|表哥|表姐|表弟|表妹|堂哥|堂姐|堂弟|堂妹|男朋友|女朋友|前男友|前女友|发小|闺蜜|朋友|同学|室友|同事|舅舅|姑姑|姨妈|小姨|叔叔|阿姨|哥|姐|弟|妹",
+  ZH_NOT_NAME: ["周末", "周一", "周二", "周三", "周四", "周五", "周六", "周日", "周天", "周围", "黄色", "林子", "陈皮", "王者", "孙子", "毛病", "严重", "任何", "汤圆"],
+
+  // 白名单：DATA.aiGuard.names ＋ 所有角色的 name/short ＋ 主角中文名、英文名、这个人对主角的称呼 ＋ 家乡名
+  nameSet(charId) {
+    const list = [...((DATA.aiGuard || {}).names || [])];
+    for (const c of Object.values(DATA.characters || {})) list.push(c.name, c.short);
+    try { list.push(S.name, S.enName, charId ? callMe(charId) : "", "Lily", hometown().name); } catch (e) {}
+    const set = new Set();
+    for (const n of list.filter(Boolean)) {
+      set.add(String(n).toLowerCase());
+      String(n).split(/[\s.·]+/).filter(Boolean).forEach((p) => set.add(p.toLowerCase()));   // "Dr. Nikos Lambert" → dr / nikos / lambert
+    }
+    return set;
   },
-  // 发请求；lang=en 的人回得不对（说了中文或没带「」）就带着提醒重试一次，再不对用兜底句
+  // 回复里看起来是人名、但不在白名单的词；返回列表（空＝过）
+  badNames(t, charId) {
+    t = String(t || "");
+    const set = AI.nameSet(charId), common = new Set(AI.COMMON_CAPS.map((w) => w.toLowerCase()));
+    const out = [];
+    // 英文：首字母大写、后面是小写字母的词；全大写（DDL、LOL）、带数字的不算
+    for (const m of t.matchAll(/\b([A-Z][a-z]+)(?:['’][a-z]*)?\b/g)) {
+      const w = m[1], before = t.slice(0, m.index).replace(/[\s"'“”‘’()（）*_~\-—…]+$/u, "");
+      if (!before || /[.!?。！？…\n」「:：;；]$/.test(before) || /\p{Extended_Pictographic}$/u.test(before)) continue;   // 句首（含 emoji、「」之后）跳过
+      const lw = w.toLowerCase();
+      if (common.has(lw) || set.has(lw)) continue;
+      out.push(w);
+    }
+    // 中文：见上面 ZH_* 的说明
+    const sn = `[${AI.ZH_SURNAME}]`, hz = "[\\u4e00-\\u9fff]";
+    const pats = [
+      new RegExp(`(?:我|他|她|你)的?(?:${AI.ZH_REL})(?:叫)?(${sn}${hz}{1,2}?)`, "g"),   // 懒惰匹配：只取姓＋一个字，免得把“王磊在”整个吃进来
+      new RegExp(`(?:^|[\\s，。！？、,.!?「」：:])(${sn}${hz}{1,2}?)(?:说|讲|告诉我|跟我说|问我)`, "g"),
+      new RegExp(`叫(${sn}${hz}{1,2}?)的`, "g"),
+    ];
+    const zhNames = [...set].filter((n) => /[一-鿿]/.test(n));
+    for (const re of pats) for (const m of t.matchAll(re)) {
+      const cand = m[1];
+      if (AI.ZH_NOT_NAME.some((w) => cand.startsWith(w))) continue;
+      if (zhNames.some((n) => n.startsWith(cand.slice(0, 2)) && (n.startsWith(cand) || cand.startsWith(n)))) continue;
+      out.push(cand);
+    }
+    return [...new Set(out)];
+  },
+  // 承诺词：没有 [[INVITE 标记却命中 → 返回命中的那段
+  badPromise(t, raw) {
+    if (/\[\[INVITE/.test(String(raw || t))) return "";
+    const g = DATA.aiGuard || {};
+    for (const p of g.promises || []) { const m = String(t).match(new RegExp(p)); if (m) return m[0]; }
+    for (const p of g.promisesEn || []) { const m = String(t).match(new RegExp(p, "i")); if (m) return m[0]; }
+    return "";
+  },
+  // 三项一起查。t＝玩家会看到的文本（去掉了分数、邀约标记），raw＝AI 原始回复（看有没有 INVITE）。返回 { ok, why }
+  guard(charId, t, raw) {
+    if (!AI.langOk(charId, t)) return { ok: false, why: "lang", hint: "你只能说英文，每句英文后面用「」写中文翻译。" };
+    const n = AI.badNames(t, charId);
+    if (n.length) return { ok: false, why: "name:" + n.join(","), hint: `你提到了事实卡里没有的人（${n.join("、")}）。不要提事实卡和聊天记录里没出现过的人。` };
+    const p = AI.badPromise(t, raw);
+    if (p) return { ok: false, why: "promise:" + p, hint: `你做了具体的未来约定（“${p}”）。不要承诺以后做什么；想约玩家只能用 [[INVITE …]] 标记。` };
+    return { ok: true };
+  },
+  // 不过的回复记到本地存档（最多 50 条），方便以后调规则
+  logReject(charId, why, text) {
+    S.aiRejects = S.aiRejects || [];
+    S.aiRejects.push({ who: charId, w: typeof absWeek === "function" ? absWeek() : 0, why, text: String(text).slice(0, 300) });
+    if (S.aiRejects.length > 50) S.aiRejects.splice(0, S.aiRejects.length - 50);
+  },
+  // 重试一次还不对时的兜底（第九批：不说话，按人发一个表情；原来那句“晚点回你”本身是承诺）
+  FALLBACK: { en: "[表情]", zh: "[表情]" },
+  FALLBACK_BY: { senior: "👍", local: "😂", groupmate: "🥺", otaku: "…" },
+  fallbackFor(c) { return AI.FALLBACK_BY[c] || "[表情]"; },
+  // 发请求；三项检查任何一个不过，带着提醒重试一次，再不过用兜底句
   async requestLang(c, messages, temperature, getText) {
     const pick = getText || ((r) => r);
     let r = await this.request(messages, temperature);
-    if (r.error || AI.langOk(c, pick(r))) return r;
-    const again = [...messages, { role: "assistant", content: r }, { role: "user", content: "（系统提醒：你刚才的回复格式不对。你只能说英文，每句英文后面用「」写中文翻译。请按这个格式重新回复刚才那条。）" }];
+    if (r.error) return r;
+    let g = AI.guard(c, pick(r), r);
+    if (g.ok) return r;
+    AI.logReject(c, g.why, r);
+    const again = [...messages, { role: "assistant", content: r }, { role: "user", content: `（系统提醒：你刚才的回复不合规矩：${g.hint}请重新回复刚才那条。）` }];
     const r2 = await this.request(again, temperature);
-    if (!r2.error && AI.langOk(c, pick(r2))) return r2;
-    return { fallback: true, text: AI.FALLBACK[AI.lang(c)] };
+    if (r2.error) return { fallback: true, text: AI.fallbackFor(c) };
+    g = AI.guard(c, pick(r2), r2);
+    if (g.ok) return r2;
+    AI.logReject(c, g.why + "（重试）", r2);
+    return { fallback: true, text: AI.fallbackFor(c) };
   },
 
   async chat(charId, history) {
@@ -131,18 +246,19 @@ const AI = {
     const sys = [
       `你在扮演留学生活模拟游戏里的角色「${c.name}」，正在用手机和玩家聊天。`,
       `人设：${c.persona || "（还没有人设，按名字自然地聊）"}`,
+      AI.lang(charId) === "en" ? `你叫玩家 ${callMe(charId)}。` : "",
       DATA.profiles && DATA.profiles[charId] ? `专业、年级和认识的人：${DATA.profiles[charId]}` : "",
-      this.playerBrief(), rel.line, this.langRule(charId), this.inviteBrief(charId), this.RULES, this.scoreLine(rel),
+      this.factCard(charId),
+      this.playerBrief(charId), rel.line, this.coldLine(charId), this.langRule(charId), this.inviteBrief(charId), this.RULES, this.scoreLine(rel),
     ].filter(Boolean).join("\n");
-    // 剧情消息（scripted）照常传进去，前面加【已发生】；日期分隔线、[语音]这类系统行只当上下文（手机消息与剧情同步.md 第 6 条）
+    // 上下文只放：聊天记录、【已发生】的剧情消息（scripted）；日期分隔线、[语音]这类系统行不放（手机消息与剧情同步.md 第 6 条）
     const hist = history.filter((m) => !m.sys && m.role !== "divider").slice(-20).map(({ role, content, tr, scripted }) => {
       const t = tr && role === "assistant" ? `${content}「${tr}」` : content;
       return { role: role === "system" ? "user" : role, content: scripted ? `【已发生】${t}` : t };
     });
-    const sysAll = sys + "\n以上带【已发生】的是之前已经发生过的事，可以自然地提起，但不要改写它的结果，也不要假装它没发生。"
-      + "\n不要在回复里承诺具体的未来安排（“回头确认了发你”“周六我带你去”这类），除非同时用 [[INVITE …]] 发出邀约。";
+    const sysAll = sys + "\n以上带【已发生】的是之前已经发生过的事，可以自然地提起，但不要改写它的结果，也不要假装它没发生。";
     const msgs = [{ role: "system", content: sysAll }, ...hist];
-    const r = await this.requestLang(charId, msgs, 0.9, (x) => this.parseScore(x, rel).text.replace(/\[\[INVITE[^\]]*\]\]/g, ""));
+    const r = await this.requestLang(charId, msgs, 0.9, (x) => this.parseScore(x, rel).text.replace(/\[\[INVITE[^\]]*\]\]/g, "").trim());
     if (r.error) return { text: r.error, aff: 0, failed: true };
     if (r.fallback) return { ...AI.splitTr(r.text), aff: 0 };
     const x = this.parseScore(r, rel);
@@ -165,15 +281,18 @@ const AI = {
     return { ...p, ...AI.splitTr(p.text) };
   },
   // 这一周通讯录里的人发的动态：返回 [{ who, text }]，失败返回 null
-  async momentsFeed(ids) {
-    const sys = `你在给一个留学生活模拟游戏生成手机里“动态”栏（像朋友圈／Instagram）的内容。${this.playerBrief()}\n下面是玩家通讯录里的人（id｜名字：人设）：\n${this.people(ids)}\n挑其中 4 到 6 个人，每人发一条贴近现在时间点、符合人设的动态，一到两句话。标了“只说英文”的人只用英文，并且每句英文后面用「」写中文翻译（格式：英文原句「中文」）；说中文的人用中文。只输出 JSON 数组，每项 {"who":"id","text":"内容"}，who 只能用上面的 id。`;
+  async momentsFeed(ids, opt = {}) {
+    // 第七批：opt.must 里的人一定要发（Ploy 每周必发）
+    const must = (opt.must || []).filter((c) => ids.includes(c));
+    const mustLine = must.length ? `其中 ${must.join("、")} 一定要发一条。Ploy 一周发好几条，滤镜感、emoji 多、配文短${typeof Phone6 !== "undefined" && Phone6.datingOther && Phone6.datingOther("groupmate") ? "；她现在在装作没事" : ""}。` : "";
+    const sys = `你在给一个留学生活模拟游戏生成手机里“动态”栏（像朋友圈／Instagram）的内容。${this.playerBrief()}\n下面是玩家通讯录里的人（id｜名字：人设）：\n${this.people(ids)}\n挑其中 4 到 6 个人，每人发一条贴近现在时间点、符合人设的动态，一到两句话。${mustLine}标了“只说英文”的人只用英文，并且每句英文后面用「」写中文翻译（格式：英文原句「中文」）；说中文的人用中文。只输出 JSON 数组，每项 {"who":"id","text":"内容"}，who 只能用上面的 id。`;
     const j = this.parseJson(await this.request([{ role: "system", content: sys }, { role: "user", content: "生成" }], 1.0));
     return Array.isArray(j) ? j.filter((p) => p && ids.includes(p.who) && p.text).map(AI.langItem).filter(Boolean).slice(0, 8) : null;
   },
   // 玩家评论了某人的动态：对方回一句，并判断加多少好感／友情。返回 { text, gain }
   async momentReply(post, comment) {
     const c = DATA.characters[post.who], rel = this.relation(post.who);
-    const sys = [`你在扮演「${c.name}」。人设：${c.persona || ""}`, this.playerBrief(), rel.line,
+    const sys = [`你在扮演「${c.name}」。人设：${c.persona || ""}`, this.factCard(post.who), this.playerBrief(post.who), rel.line, this.coldLine(post.who),
       `你发了一条动态：“${post.text}”。玩家在下面评论了，请回复她的评论，一句话。`, this.langRule(post.who), this.RULES, this.scoreLine(rel)].filter(Boolean).join("\n");
     const r = await this.requestLang(post.who, [{ role: "system", content: sys }, { role: "user", content: comment }], 0.9, (x) => this.parseScore(x, rel).text);
     if (r.error) return null;
@@ -211,7 +330,7 @@ const AI = {
       if (AI.lang(id) === "en") { if (AI.langOk(id, text)) out.push({ who, ...AI.splitTr(text) }); }   // 英文的人说了中文或没带翻译：这条丢掉
       else out.push({ who, text });
     }
-    return out.length ? out : [{ who: names[0], text: AI.lang(g.members[0]) === "en" ? AI.splitTr(AI.FALLBACK.en).text : AI.FALLBACK.zh, tr: AI.lang(g.members[0]) === "en" ? AI.splitTr(AI.FALLBACK.en).tr : "" }];
+    return out.length ? out : [{ who: names[0], text: AI.fallbackFor(g.members[0]), tr: "" }];
   },
 
   parseJson(r) {

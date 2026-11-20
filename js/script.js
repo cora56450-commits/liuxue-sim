@@ -1,9 +1,13 @@
 // 剧情脚本执行器：按 data/events.js 顶部说明的步骤格式逐条运行
 async function runScript(steps) {
+  const gen = Story.gen;
   for (const st0 of steps || []) {
+    if (gen !== Story.gen) return STALE();
     const st = Story5.resolve(st0);   // 随机挑人 {A}{B}：说话人、fx 键里的 {A} 换成实际的人
     // 第五批新步骤：手机段、朋友圈、限时选项、小游戏（js/story5.js）
     if (st.moment) Story5.moment(st.moment);
+    if (st.pov !== undefined && st.steps) { await Pov.run(st); continue; }   // 第七批：视角段（设置里能关）
+    if (st.why) { await say(Pov.text(st.why)); continue; }                    // 动心视角段的“原因那一行”
     if (st.phone) { await Story5.phone(st); continue; }
     if (st.timed) { await Story5.timed(st.timed); continue; }
     if (st.game) { const r = await Games.play(st.game); await runScript(r === "win" ? st.win : st.lose); continue; }
@@ -11,7 +15,7 @@ async function runScript(steps) {
     if (st.cg !== undefined) showCg(st.cg);
     if (st.sfx) playSfx(st.sfx);
     if (st.alarm !== undefined) FX.alarm(st.alarm);     // { alarm: true } 火警红灯开始闪；{ alarm: false } 停
-    if (st.bgm !== undefined) BGM.play(st.bgm);          // { bgm: "comedy" } 切歌；{ bgm: null } 停
+    if (st.bgm !== undefined) { BGM.play(st.bgm); BGM.story.fixed = true; }   // { bgm: "comedy" } 切歌；{ bgm: null } 停。写了就不再按背景换
     if (st.mail) await showMail(st.mail);                // { mail: { from, title, body } } 邮件卡片，看完就关
     if (st.msg) await showMsg(st.msg);                   // { msg: { from, text, tr } } 手机消息：弹一条通知，同时存进聊天记录
     if (st.invite) await Invites.offer({ source: "story", ...st.invite });   // { invite: { who, day, place, text, tr, festival } } 剧情固定邀约
@@ -81,6 +85,16 @@ async function runScript(steps) {
   }
 }
 
+// 这个事件算不算“感情事件”，算的话返回是谁的（攻略对象 id）
+function loveEventWho(id) {
+  const reg = [...(DATA.loveEvents || []), ...(DATA.loveEncounters || []), ...(DATA.stageEvents || [])].find((e) => e.id === id && DATA.loveIds.includes(e.who));
+  if (reg) return reg.who;
+  if (!/^(confess|trial|date|jealous|jl|acq|small|flirt|be|fishpond|valentine|cohab|dating)_|_(heart|advance|past|valentine)$/.test(id)) return null;
+  const m = { senior: "senior", local: "local", ollie: "local", groupmate: "groupmate", ploy: "groupmate", otaku: "otaku", kieran: "otaku" };
+  const k = Object.keys(m).find((x) => id.includes(x));
+  return k ? m[k] : (S.pick && S.pick.A && DATA.loveIds.includes(S.pick.A) ? S.pick.A : null);
+}
+
 // 第一次见面：好感 +5（巧舌如簧再 +3），只算一次
 function meetChar(c) {
   if (S.flags["met_" + c]) return [];
@@ -105,7 +119,20 @@ async function pondNow() {
 }
 
 // 剧情锁（试玩报告 29）：同一时间只跑一段剧情。第二段在第一段演完以后才开始，不会一句一句交错
-const Story = { q: Promise.resolve(), running: null };
+const Story = {
+  q: Promise.resolve(), running: null, gen: 0,
+  // 第八批：剧情中途回标题／读档。拆掉正在等的台词、选项、弹窗的监听，旧的剧情就停在原地不再往下走
+  abort() {
+    Story.gen++;
+    Story.q = Promise.resolve(); Story.running = null;
+    if (sayCancel) sayCancel();
+    if (chooseCancel) chooseCancel();
+    ["mail", "msgnote", "story-menu"].forEach((id) => { const el = document.getElementById(id); if (el) el.remove(); });
+    Scenes._seg = null;
+  },
+};
+// 旧的剧情（已经 abort 掉的）走到这里就永远停住
+const STALE = () => new Promise(() => {});
 function runEvent(id) {
   const p = Story.q.then(() => { Story.running = id; return runEventNow(id); }).finally(() => { if (Story.running === id) Story.running = null; });
   Story.q = p.catch(() => {});
@@ -115,6 +142,16 @@ async function runEventNow(id) {
   const ev = DATA.events[id];
   if (!ev) return console.warn("没有这个事件：", id);
   hideHud();
-  await runScript(ev);
+  const gen = Story.gen;
+  BGM.storyStart(id);
+  if (currentBg) BGM.onBg(currentBg);
+  if (typeof GalleryEv !== "undefined") GalleryEv.seen(id);   // 第十批回忆图鉴：演过就解锁
+  // 第八批 #4：剧情里出了错（数据写错、条件报错）不让整局停在一张空背景上：记下来、提示一句、接着往下走
+  try { await runScript(ev); }
+  catch (e) { console.error("剧情出错：", id, e); toast(`这段剧情出了点问题（${id}），已跳过`, 2600); }
+  BGM.storyEnd();
+  // 第七批 #17 恋爱脑：记下这次“感情事件”的人（攻略线、相识／暧昧／吃醋／交往后小事件、约会、爽约、鱼塘、BE 暗示……），下一次工作日结算 ×0.8
+  if (S && S.tags.includes("lovebrain")) { const who = loveEventWho(id); if (who) S.loveEvtWho = who; }
+  if (gen !== Story.gen) return STALE();
   hideDialog(); Stage.hide(true); showCg(null);
 }

@@ -19,6 +19,7 @@ const Sprites = {
     let pose = opt.pose;
     if (!pose) {
       if (c.isPlayer) pose = Sprites.playerOutfit(week, opt.bg);
+      else if (c.yearPose && typeof S !== "undefined" && S && c.yearPose[S.year] && c.sprites[c.yearPose[S.year]]) pose = c.yearPose[S.year];   // 第十批：学长大二起穿工作装
       else pose = (c.sprites.summer && week >= DATA.spriteRule.summerFromWeek) ? "summer" : "base";
     }
     if (!c.sprites[pose]) pose = Object.keys(c.sprites)[0];
@@ -33,7 +34,11 @@ const Sprites = {
   // 主角穿什么：居家场景用居家，第 7–20 周冬装，其余秋装
   playerOutfit(week, bg) {
     const r = DATA.spriteRule;
+    // 第十批：学位服＝大三第 24 周毕业典礼前后；夏装＝大一暑假、每年第 24 周以后
+    const st = typeof S !== "undefined" && S ? S : null;
+    if (st && st.year === 3 && st.week >= 23 && st.week <= 25 && (bg === "graduation" || st.week === 24)) return "gown";
     if (bg && r.homeBgs.includes(bg)) return "home";
+    if (st && ((st.summer && st.summer.active) || st.week >= r.summerFromWeek)) return "summer";
     return (week >= r.winterWeeks[0] && week <= r.winterWeeks[1]) ? "winter" : "autumn";
   },
 

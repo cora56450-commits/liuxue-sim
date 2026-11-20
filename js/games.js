@@ -12,7 +12,10 @@ const Games = {
   },
   async play(id) {
     if (!Games.info[id]) return null;
-    if (id === "relatives" && (DATA.relativesQuestions || []).length < 5) return null;   // 题库下一批写；没有题库不演
+    if (id === "relatives") {   // 没有题库（data/relatives.js 没加载）或这一年题不够 5 道：不演；一年只演一次（剧情里 {game} 和 scenes.js 春节钩子都会叫）
+      if (Games.relPool().length < 5 || S.flags["relatives_played_" + S.year]) return null;
+      S.flags["relatives_played_" + S.year] = 1;
+    }
     if (Settings.v.autoGames) { toast(`${Games.info[id].name}：自动通过`, 1600); return "win"; }
     hideDialog();
     const start = await Games.intro(id);
@@ -164,11 +167,24 @@ const Games = {
     });
   },
 
-  // ===== 春节盘问（决定记录第六节）：5 题，面子条；题库 DATA.relativesQuestions（策划下一批写 30 题）=====
-  // 一题：{ who: "二姨", likes: "honest"|"taichi"|"counter", q, year: [1,2,3], dating: 可选, a: { honest, taichi, counter } }
+  // ===== 春节盘问（决定记录第六节）：5 题，面子条；题库 DATA.relativesQuestions（data/relatives.js，第十批）=====
+  // 一题：{ who: "二姨", likes: "honest"|"taichi"|"counter", q, a: { honest, taichi, counter },
+  //        year: [1,2,3] 可选, wealth: "poor"|"middle"|"rich" 可选, dating: 可选, alt: { honest: { if, text } } 可选, score: { honest: 15, … } 可选, after: 可选 }
+  relFirstMark() { const m = (S.marks || []).find((x) => x.year === 1); return m ? String(Math.round(m.mark)) : ""; },
+  relPool() {
+    const W = { "拮据": "poor", "中产": "middle", "富裕": "rich" };
+    const fm = Games.relFirstMark();
+    return (DATA.relativesQuestions || []).filter((x) => x && x.q && x.a
+      && (!x.year || x.year.includes(S.year))
+      && (!x.wealth || (W[x.wealth] || x.wealth) === S.bg.wealth)
+      && (!x.dating || S.flags["confessed_" + x.dating])
+      && (fm || !/\{第一份作业分数\}/.test(JSON.stringify(x.a))));
+  },
   relatives() {
-    const all = (DATA.relativesQuestions || []).filter((x) => (!x.year || x.year.includes(S.year)) && (!x.dating || S.flags["confessed_" + x.dating]));
-    const qs = Games.shuffle([...all]).slice(0, 5);
+    const qs = Games.shuffle([...Games.relPool()]).slice(0, 5);
+    const E = DATA.relativesEnding || {};
+    const fill = (t) => fillText(String(t || "").replace(/\{第一份作业分数\}/g, Games.relFirstMark()));
+    const ans = (q, x) => { const al = q.alt && q.alt[x]; return fill(al && evalCond(al.if) ? al.text : q.a[x]); };
     let face = 50, k = 0;
     const o = overlay(`<div class="mg-box rl"><div class="mg-head"><b>春节盘问</b><span>面子</span><div class="rl-bar"><i></i></div></div><div class="rl-q"></div><div class="rl-a"></div></div>`, "ov-game");
     return new Promise((res) => {
@@ -177,13 +193,22 @@ const Games = {
         if (k >= qs.length) {
           const hi = face >= 60;
           applyFx(hi ? { loneliness: -5, money: 50 } : face < 40 ? { loneliness: 3 } : {});
-          return res(await Games.done(o, hi, hi ? "爸妈很有面子。家里多打了一点生活费。" : face < 40 ? "你妈在厨房叹了口气。" : "过关了，不好不坏。"));
+          return res(await Games.done(o, hi, hi ? (E.hi || "爸妈很有面子。家里多打了一点生活费。") : face < 40 ? (E.lo || "你妈在厨房叹了口气。") : (E.mid || "过关了，不好不坏。")));
         }
         const q = qs[k++];
-        o.querySelector(".rl-q").innerHTML = `<b>${Gloss.escape(q.who)}</b><p>${Gloss.escape(fillText(q.q))}</p>`;
-        const keys = Games.shuffle(["honest", "taichi", "counter"]);
-        o.querySelector(".rl-a").innerHTML = keys.map((x) => `<button class="hud-btn" data-s="${x}">${Gloss.escape(fillText(q.a[x]))}</button>`).join("");
-        o.querySelectorAll(".rl-a button").forEach((b) => b.onclick = () => { face = clamp(face + (b.dataset.s === q.likes ? 15 : -8), 0, 100); next(); });
+        o.querySelector(".rl-q").innerHTML = `<b>${Gloss.escape(q.who)}</b><p>${Gloss.escape(fill(q.q))}</p>`;
+        const keys = Games.shuffle(["honest", "taichi", "counter"]).filter((x) => q.a[x]);
+        o.querySelector(".rl-a").innerHTML = keys.map((x) => `<button class="hud-btn" data-s="${x}">${Gloss.escape(ans(q, x))}</button>`).join("");
+        o.querySelectorAll(".rl-a button").forEach((b) => b.onclick = async () => {
+          const s = b.dataset.s, d = q.score && q.score[s] != null ? q.score[s] : (s === q.likes ? 15 : -8);
+          face = clamp(face + d, 0, 100);
+          if (q.after) {   // 答完亲戚再说一句（第 37 题奶奶）
+            o.querySelectorAll(".rl-a button").forEach((x) => (x.disabled = true));
+            o.querySelector(".rl-q p").textContent = `“${fill(q.after)}”`;
+            await FX.wait(1600);
+          }
+          next();
+        });
       };
       next();
     });

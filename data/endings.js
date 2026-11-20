@@ -21,6 +21,7 @@ DATA.endings = {
     love_trial: { id: "love_trial", title: "恋爱裁判", stamp: "烟花底下，三个人，没有一个人在看烟花。" },
     // 交往中、但毕业时既不满足 HE 也不满足 BE
     love_ing: { id: "love_ing", title: "恋爱ing", stamp: "恋爱ing" , card: "毕业了，我们还在一起。以后在哪，还没想好。但是今天，他／她就在旁边。" },
+    love_ing_senior_stay: { id: "love_ing", title: "恋爱ing", stamp: "恋爱ing", card: "他在泉州，你在英国，时差八小时。" },   // 2026-11-19 剧本_BE暗示：学长交往中但去留选了留英
   },
   love: {
     senior:    { he: { id: "senior_he",    title: "告白预演",       stamp: "林子航 HE" , card: "店开张了。他剪彩之前，在我耳边小声问：“我们的房子找好没？”" }, be: { id: "senior_be",    title: "Money for Nothing", stamp: "林子航 BE" , card: "押金退回来了，收据最后一页写着他的名字。后来他还是发来一句：“毕业了？房子找好没？”" } },

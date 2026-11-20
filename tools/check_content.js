@@ -55,7 +55,7 @@ function walk(steps, trail, visit) {
     if (st.choice) for (const o of st.choice) walk(o.then, [...trail, `选项「${o.text}」`], visit);
   }
 }
-const isReaction = (st) => !!(st && (st.say || st.msg || st.mail || st.run || st.invite || st.free || (st.if !== undefined && (hasReaction(st.then) || hasReaction(st.else)))));
+const isReaction = (st) => !!(st && (st.say || st.msg || st.mail || st.run || st.invite || st.free || st.phone || st.moment || (st.if !== undefined && (hasReaction(st.then) || hasReaction(st.else)))));
 const hasReaction = (steps) => (steps || []).some(isReaction);
 
 for (const [id, steps] of Object.entries(D.events || {})) {

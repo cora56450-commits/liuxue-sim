@@ -132,7 +132,10 @@ Object.assign(DATA.events, {
         { say: "（他认真思考了三秒。）" },
         { say: "算了，送的。", name: "senior" },
       ] },
-      { text: "“谢谢学长，很有用。”", fx: { aff_senior: 2 } },
+      { text: "“谢谢学长，很有用。”", fx: { aff_senior: 2 }, then: [
+        { say: "有用就行。……第三页你看了吗？", name: "senior" },
+        { say: "（第三页是他的二维码。）" },
+      ] },
     ] },
     { hide: true },
   ],
@@ -149,7 +152,9 @@ Object.assign(DATA.events, {
     { say: "（他把同一句话说了两遍。第一次在情人节，第二次在这里。）", fx: { aff_senior: 4 } },
     { choice: [
       { text: "转他 £6.5", fx: { aff_senior: 2 }, then: [{ say: "他退回来了。" }] },
-      { text: "收下，回一个“谢谢学长”", fx: { aff_senior: 3 } },
+      { text: "收下，回一个“谢谢学长”", fx: { aff_senior: 3 }, then: [
+        { say: "他回：“嗯。”然后发了一张照片：那家店门口的价目表。（他在告诉我他没多收钱。）" },
+      ] },
     ] },
   ],
   // —— 学长·交往后第一次约会「记账」——
@@ -188,7 +193,10 @@ Object.assign(DATA.events, {
     { say: "你看到了他给你存的备注：不是名字，是一个🌙。" },
     { say: "Oh — that's… you said you liked the moon on the walk back that time. Is that weird? I can change it.", name: "local", tr: "哦——那个……那次走回去的时候你说你喜欢月亮。会不会很奇怪？我可以改。" },
     { choice: [
-      { text: "“不用改。”", fx: { aff_local: 4 } },
+      { text: "“不用改。”", fx: { aff_local: 4 }, then: [
+        { say: "他的脸红了：" },
+        { say: "…Okay. The moon stays.", name: "local", tr: "……好。月亮留着。" },
+      ] },
       { text: "“你给别人的备注是什么？”", fx: { aff_local: 1, flag_ollie_doubt_6: 1 }, then: [
         { say: "他愣了一下，笑着把手机扣在了桌上：" },
         { say: "Names. Boring names.", name: "local", tr: "名字。很无聊的名字。" },
@@ -209,7 +217,10 @@ Object.assign(DATA.events, {
         { say: "他愣了很久，然后说：" },
         { say: "…Yeah. Maybe. Yeah.", name: "local", tr: "……嗯。也许。嗯。" },
       ] },
-      { text: "全部吃完", fx: { aff_local: 3 } },
+      { text: "全部吃完", fx: { aff_local: 3 }, then: [
+        { say: "你把最后一口吃完。他看着空盘子笑了：" },
+        { say: "Nobody's ever finished my cooking. Ever.", name: "local", tr: "从来没有人吃完过我做的菜。从来没有。" },
+      ] },
     ] },
     { hide: true },
   ],
@@ -223,8 +234,14 @@ Object.assign(DATA.events, {
     { say: "Trust me. I have a PhD in this.", name: "groupmate", tr: "相信我。我在这方面是博士。" },
     { say: "（她的包比她的笔记本贵。）" },   // 试玩报告 31：第3周主角还不知道她作业交不全
     { choice: [
-      { text: "全买了", fx: { money: -28, aff_groupmate: 4 } },
-      { text: "只买口红", fx: { money: -9, aff_groupmate: 2 } },
+      { text: "全买了", fx: { money: -28, aff_groupmate: 4 }, then: [
+        { say: "收银员报价的时候你脸都白了。Ploy 在旁边鼓掌：" },
+        { say: "Self-care! That's self-care!", name: "groupmate", tr: "这叫爱自己！" },
+      ] },
+      { text: "只买口红", fx: { money: -9, aff_groupmate: 2 }, then: [
+        { say: "她看了你一眼：" },
+        { say: "Sensible. I hate it. But it's the right colour.", name: "groupmate", tr: "理智。我讨厌。但颜色是对的。" },
+      ] },
     ] },
     { hide: true },
   ],

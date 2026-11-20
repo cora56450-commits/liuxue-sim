@@ -100,7 +100,11 @@ Object.assign(DATA.events, {
         { say: "……我说了不是谈生意。", name: "senior" },
       ] },
       // 雷点（第五部分）：情人节他说“打了八折”，你接“所以这顿也是营销？” −8
-      { text: "“所以这顿也是营销？”", fx: { aff_senior: -8 } },
+      { text: "“所以这顿也是营销？”", fx: { aff_senior: -8 }, then: [
+        { say: "他放下杯子，看着你：" },
+        { say: "营销的话，我会挑便宜一点的店。", name: "senior" },
+        { say: "（这家店不便宜。）" },
+      ] },
     ] },
     { hide: true },
   ],
@@ -158,8 +162,17 @@ Object.assign(DATA.events, {
     { show: "senior" },
     { say: "你把事情说了。他没有否认。" },
     { say: "是。", name: "senior" },
+    // 第七批第一节 5：告白是主角先说的
+    { if: "标记('confess_me_first_senior')", then: [
+      { say: "……你又先说了。我本来想等退完押金，自己跟你讲的。", name: "senior" },
+      { say: "（你不知道该不该信这句。）" },
+    ] },
     { say: "那时候我们不熟。我介绍房子，房东给介绍费，这是我的生意。我没有骗你，房子是好房子，价格也是市价。", name: "senior" },
     { say: "我不觉得我做错了。但我知道你会不高兴。", name: "senior" },
+    // 学长扩写第六节※：拒绝过帮他带奶粉的，考验里多一句（剧本没定位置，先放在这里）
+    { if: "标记('refused_senior')", then: [
+      { say: "你上次说不带，我想了很久。我身边的人要么不敢跟我说不，要么不想跟我说话。你是第三种。", name: "senior" },
+    ] },
     { choice: [
       { text: "“我不是气你收钱。我是气你没说。”", fx: { flag_trial_senior: 1, aff_senior: 5 }, then: [
         { say: "他沉默了很久。" },
@@ -167,8 +180,12 @@ Object.assign(DATA.events, {
         { hide: true },
         { say: "第二天，你收到一个转账：£350。备注：“退给你。不是退佣金，是退那个没说的。”" },
         { choice: [
-          { text: "收下" },
-          { text: "退回去" },
+          { text: "收下", fx: { flag_trial_senior_kept: 1 }, then: [
+            { say: "你收下了。他第二天发来一条：“以后有事我先跟你说。不算钱。”你回：“好。”" },
+          ] },
+          { text: "退回去", then: [
+            { say: "你把 £350 退了回去，备注“不用，你说出来就行了”。他没再转。过了很久回了一句：“……行。我记着。”" },
+          ] },
         ] },
       ] },
       { text: "“你从一开始就是在赚我的钱。”", fx: { flag_trial_senior: -1, flag_senior_fallout: 1, aff_senior: -20 }, then: [
@@ -243,8 +260,13 @@ Object.assign(DATA.events, {
     { say: "桌上一下子安静了。" },
     // 雷点（第五部分）：当着他朋友的面问“你就是喜欢亚洲女生吧” −10（私下问不算雷点）。剧本只写了雷点，没写原来的默认选项，“什么都不说”是转换时补的
     { choice: [
-      { text: "什么都不说" },
-      { text: "当着他朋友的面问：“你就是喜欢亚洲女生吧？”", fx: { aff_local: -10 } },
+      // 第十批缺反应：剧本的反应（“回去的路上Ollie一直在说别的事……”）和后面共用的“Mate. Shut up.”“他一直没说话”冲突，只加了标记，台词待策划
+      { text: "什么都不说", fx: { flag_local_doubt_quiet: 1 } },
+      { text: "当着他朋友的面问：“你就是喜欢亚洲女生吧？”", fx: { aff_local: -10 }, then: [
+        { say: "桌上更安静了。Ollie 看着你，耳朵红了，过了很久才说：" },
+        { say: "…No. I like YOU. I'm sorry that's not a better answer.", name: "local", tr: "……不是。我喜欢的是你。抱歉，这不是一个更好的答案。" },
+        { say: "他朋友们都低头看手机。" },
+      ] },
     ] },
     { show: "local", expr: "annoyed" },
     { say: "Mate. Shut up.", name: "local", tr: "兄弟，闭嘴。" },
@@ -285,7 +307,9 @@ Object.assign(DATA.events, {
         { say: "Does it need a name? I like this. Don't you?", name: "local", tr: "需要一个名字吗？我喜欢现在这样。你不喜欢吗？" },
         { say: "（他又绕过去了。）", fx: { flag_local_doubt5: 1 } },
       ] },
-      { text: "什么都不问，吃饭", fx: { aff_local: 3 } },
+      { text: "什么都不问，吃饭", fx: { aff_local: 3 }, then: [
+        { say: "那顿饭很好吃。他讲了很多笑话，你笑了，他也笑了。（我们都很会绕。）" },
+      ] },
     ] },
     { hide: true },
   ],
@@ -325,16 +349,24 @@ Object.assign(DATA.events, {
   // 考验 · 我们算什么（大二·又找房，引擎调用）
   trial_local: [
     { bg: "shared_house" },
-    { say: "大二下学期又要找房了。你问他，大三要不要一起住。" },
+    { say: "大三上学期，又到了看下学期房子的时候。你问他，下学期要不要一起住。" },
     { show: "local" },
     { say: "Live together? That's… big. Can we just keep things how they are? It's working, isn't it?", name: "local", tr: "一起住？这……挺大的一步。我们能保持现在这样吗？现在不是挺好的吗？" },
-    { say: "你发现，在一起一年了，你没见过他爸妈。他的Instagram上，没有一张你的照片。" },
+    { say: "你发现，在一起这么久了，你没见过他爸妈。他的Instagram上，没有一张你的照片。" },
     { say: "（他对我很好。每次见面都很好。可每次一说到“以后”，他就笑着绕开。）" },
-    { free: "考验：在一起一年了，Ollie 不想一起住，你没见过他爸妈，他的 Instagram 没有你的照片。你怎么问他", freeWho: "local", freeOnly: [0], choice: [
+    // 第七批第一节 5：告白谁先说
+    { if: "标记('confess_them_first_local')", then: [
+      { say: "（告白是他先说的。可是“我们算什么”，还是得我来问。）" },
+    ] },
+    { if: "标记('confess_me_first_local')", then: [
+      { say: "（告白是我先说的。“我们算什么”，也还是得我来问。）" },
+    ] },
+    { free: "考验：在一起这么久了，Ollie 不想一起住，你没见过他爸妈，他的 Instagram 没有你的照片。你怎么问他", freeWho: "local", freeOnly: [0], choice: [
       { text: "问出口：“我们到底算什么？”", fx: { flag_trial_local: 1, flag_local_asked: 1 }, then: [
         { say: "他沉默了很久。" },
         { say: "…I've never been asked that. Everyone before just — let it be.", name: "local", tr: "……从来没有人这么问过我。以前的人都只是……就这么算了。" },
         { say: "I'm scared, okay? Last time I made it official, she left. If I don't say it, it can't end.", name: "local", tr: "我害怕，行吗？上次我把关系定下来，她就走了。不说出口，就不会结束。" },
+        { run: "local_trial_addon" },   // Ollie 扩写第五节：有 ollie_corrected 或 ollie_meet_mum 多一句（ext_ollie.js）
         { say: "But you asked. So — you're my girlfriend. I'll tell Mum this weekend. And I'll post you. A good photo. Your hair'll be fine.", name: "local", tr: "但你问了。所以——你是我女朋友。这周末我就告诉我妈。我也会发你的照片。一张好看的，你头发不会乱。" },
       ] },
       { text: "“没事，就这样吧。”", fx: { flag_trial_local: -1 }, then: [
@@ -375,13 +407,45 @@ Object.assign(DATA.events, {
     { fx: { flag_heart_groupmate: 1 } },
   ],
 
-  // 推进 · 熬夜奶茶（★CG）：已写在第17周小组展示前一晚（剧本草稿_大一第二学期13-18周.md），不在这里。
-  // 那段转脚本时要写 fx: { flag_advance_groupmate: 1 }。
+  // 推进 · 熬夜奶茶（★CG）：2026-11-19 挪到大二第 18 周小组展示前一晚（剧本_大二大三固定事件.md 第 18 周，
+  // 正文由同事写进 later_y2y3.js 的 y2_group_presentation）。这里是同一段的“补演版”：第 18 周没赶上（好感后来才到 65）的，
+  // 大二第 20 周、大三第 10 周 ddl 前一晚再演；开头一句、Ploy 第一句按剧本换。第 18 周固定事件里演过（设了 advance_groupmate）就不会再进这里。
+  groupmate_advance: [
+    { bg: "dorm_night" },
+    { if: "学年 == 2 && 周数 == 18", then: [
+      { say: "展示前一天晚上十一点。有人敲门。" },
+    ], else: [
+      { say: "ddl 前一天晚上十一点。有人敲门。" },
+    ] },
+    { show: "groupmate" },
+    { say: "Ploy 站在门口，素颜，拎着两杯奶茶，背着电脑包。" },
+    { if: "学年 == 2 && 周数 == 18", then: [
+      { say: "My group's presenting tomorrow too. I didn't go out tonight. Don't make it a thing.", name: "groupmate", tr: "我们组明天也展示。我今晚没去 club。别大惊小怪。" },
+    ], else: [
+      { say: "I've got a deadline too. I didn't go out tonight.", name: "groupmate", tr: "我也有 ddl。我今晚没出去。" },
+    ] },
+    { if: "标记('ploy_ghostwrite') >= 1", then: [
+      { say: "（……她背着电脑。不是来让我写的。）" },
+    ] },
+    { cg: "groupmate_tea" },
+    { say: "你们一人一个笔记本电脑，坐在床上。她写一句，问你一句“is this okay?「这样行吗？」”。凌晨两点，她的部分写完了。是她自己写的。" },
+    { free: "推进：凌晨两点，Ploy 自己写完了她那部分（她素颜带着奶茶和电脑来你这儿熬夜，没让你替写）", freeWho: "groupmate", choice: [
+      { text: "“写得很好。”", fx: { aff_groupmate: 5 }, then: [
+        { say: "Don't lie to me. …Okay, lie a little bit.", name: "groupmate", tr: "别骗我。……好吧，骗一点点。" },
+      ] },
+      { text: "“第三段太长了，砍一半。”", fx: { aff_groupmate: 6 }, then: [
+        { say: "她瞪着你，然后真的砍了。砍完以后她说：“Better. Annoyingly.「好多了。很烦，但好多了。」”" },
+      ] },
+    ] },
+    { cg: null },
+    { hide: true },
+    { fx: { flag_advance_groupmate: 1 } },
+  ],
 
   // 过去 · 空荡荡的酒店套房（★CG，回忆）
   groupmate_past: [
     { bg: "dorm_night" },
-    { say: "她生日那天办了一个很大的派对，来了五十个人。十二点，你找了一圈，在阳台找到了她。" },
+    { say: "她办了一个很大的派对，没有任何理由（“Do I need a reason?「我需要理由吗？」”），来了五十个人。十二点，你找了一圈，在阳台找到了她。" },
     { show: "groupmate" },
     { say: "Do you know where I had my tenth birthday?", name: "groupmate", tr: "你知道我十岁生日在哪过的吗？" },
     { cg: "groupmate_past" },
@@ -446,32 +510,66 @@ Object.assign(DATA.events, {
     // ※ 百合线照异性线同样处理，不另加关卡；家教森严的“视频里被发现”同样适用，要不要单独写一个版本，Cora 定。
   ],
 
-  // 考验 · 期末替写（大二·期末，引擎调用）
-  // 替写次数 flag_ploy_ghostwrite 全游戏累计（第3、9、17周和这里），总数≥2 就是 BE。
+  // 考验 · 替写（大三第 20 周，最终提交，引擎调用）
+  // 替写次数 flag_ploy_ghostwrite 全游戏累计（第3、9、17周、扩写一·三、这里），总数≥2 就是 BE。
+  // 剧本_BE暗示.md 一-2（第二次之前的预警）、一-4（结局前回响）、一-5（补救：正好 2 次＋ploy_own_work＋这里拒绝 → flag_ploy_redeemed，引擎把次数算回 1）
   trial_groupmate: [
-    // 【手机】大二期末，作业截止前两天，凌晨。
-    { say: "大二期末，作业截止前两天，凌晨。" },
-    { msg: { from: "groupmate", text: "babe… I'm so behind. Dad's company has a thing and I've been on calls all week. Can you write my part? Just this once. I swear.", tr: "宝……我落后太多了。我爸公司出了点事，我一整周都在打电话。你能帮我写吗？就这一次，我发誓。" } },
+    // 【手机】大三，毕业论文最终提交前两天，凌晨。
+    { say: "大三，毕业论文最终提交前两天，凌晨。" },
+    { msg: { from: "groupmate", text: "babe… I'm so behind. Dad's company has a thing and I've been on calls all week. Can you write my lit review? Just that chapter. Just this once. I swear.", tr: "宝……我落后太多了。我爸公司出了点事，我一整周都在打电话。你能帮我写文献综述吗？就那一章。就这一次，我发誓。" } },
     { say: "（就这一次。她第三周的时候也这么说过。）" },
+    { if: "标记('ploy_ghostwrite') == 1", then: [
+      { say: "（她上次也说“就这一次”。）" },
+    ] },
     { choice: [
-      { text: "帮她写", then: [
-        // 〔标记：替Ploy写作业+1〕；【如果：替写次数≥2】trial −1，否则 trial 1（只替写过这一次的话，这次不算失败）
+      { text: "帮她写", if: "标记('ploy_ghostwrite') < 1", then: [
+        // 〔标记：替Ploy写作业+1〕；只替写过这一次的话，这次不算失败
+        { fx: { flag_ploy_ghostwrite: 1, flag_trial_groupmate: 1 } },
+        { run: "trial_groupmate_helped" },
+      ] },
+      // BE暗示 一-2：第二次（及以后）的入口，选项文字换成“再帮她一次”
+      { text: "再帮她一次", if: "标记('ploy_ghostwrite') >= 1", then: [
+        // 【如果：替写次数≥2】trial −1
         { if: "标记('ploy_ghostwrite') >= 3", then: [{ fx: { flag_ploy_ghostwrite: 4, flag_trial_groupmate: -1 } }],
           else: [{ if: "标记('ploy_ghostwrite') >= 2", then: [{ fx: { flag_ploy_ghostwrite: 3, flag_trial_groupmate: -1 } }],
-            else: [{ if: "标记('ploy_ghostwrite') >= 1", then: [{ fx: { flag_ploy_ghostwrite: 2, flag_trial_groupmate: -1 } }],
-              else: [{ fx: { flag_ploy_ghostwrite: 1, flag_trial_groupmate: 1 } }] }] }] },
+            else: [{ fx: { flag_ploy_ghostwrite: 2, flag_trial_groupmate: -1 } }] }] },
+        { run: "trial_groupmate_helped" },
       ] },
       { text: "“我陪你写，但你自己写。”", fx: { flag_trial_groupmate: 1, energy: -15 }, then: [
+        { run: "trial_groupmate_redeem" },
         { say: "你们在她的公寓写了两个通宵。她写得很慢，一边写一边骂自己。" },
         { say: "第三天早上，她点了提交，转过来抱住你。" },
         { show: "groupmate", pose: "home" },
         { say: "I did it. Me. Not you.", name: "groupmate", tr: "我写完了。我。不是你。" },
         { say: "她的分数是58。她把成绩截图设成了手机壁纸。" },
         { hide: true },
+        // BE暗示 一-4：拒绝了，但次数已经≥2（没补救的）
+        { if: "标记('ploy_ghostwrite') >= 2 && !标记('ploy_redeemed')", then: [
+          { msg: { from: "groupmate", text: "I did it myself. …I should've done that from the start, huh.", tr: "我自己写完了。……我应该一开始就这样的，对吧。" } },
+        ] },
       ] },
       { text: "“不行。”", fx: { flag_trial_groupmate: 1, aff_groupmate: -5 }, then: [
-        { say: "她两天没回你消息。第三天她发来：“I submitted. It's bad. But it's mine.「我交了。写得很烂。但是我自己的。」”" },
+        { run: "trial_groupmate_redeem" },
+        // BE暗示 一-4：拒绝了，但次数已经≥2（没补救的）：她自己写完了，可是这条消息换成下面这句
+        { if: "标记('ploy_ghostwrite') >= 2 && !标记('ploy_redeemed')", then: [
+          { say: "她两天没回你消息。第三天她发来：" },
+          { msg: { from: "groupmate", text: "I did it myself. …I should've done that from the start, huh.", tr: "我自己写完了。……我应该一开始就这样的，对吧。" } },
+        ], else: [
+          { say: "她两天没回你消息。第三天她发来：“I submitted. It's bad. But it's mine.「我交了。写得很烂。但是我自己的。」”" },
+        ] },
       ] },
+    ] },
+  ],
+  // 帮她写了（BE暗示 一-4 结局前回响）
+  trial_groupmate_helped: [
+    { say: "她发来一大段感谢，最后一句是：" },
+    { msg: { from: "groupmate", text: "I couldn't have done any of it without you. Literally.", tr: "没有你我什么都做不成。字面意义上的。" } },
+    { say: "（字面意义上的。）" },
+  ],
+  // 补救（BE暗示 一-5，Cora 11/19 定：给）：次数正好 2 次、有 ploy_own_work、考验里拒绝了 → 引擎读 flag_ploy_redeemed 把次数算回 1
+  trial_groupmate_redeem: [
+    { if: "标记('ploy_ghostwrite') == 2 && 标记('ploy_own_work')", then: [
+      { fx: { flag_ploy_redeemed: 1 } },
     ] },
   ],
   // 毕业判定（规则）：
@@ -500,7 +598,12 @@ Object.assign(DATA.events, {
         { say: "Cheers. …It's hay fever.", name: "otaku", tr: "谢了。……是花粉过敏。" },
       ] },
       // 雷点（第五部分）：笑他看番哭 −8
-      { text: "笑他看番哭", fx: { aff_otaku: -8 } },
+      { text: "笑他看番哭", fx: { aff_otaku: -8 }, then: [
+        { say: "他把脸转过去：" },
+        { say: "It's NOT funny. You didn't see episode 9.", name: "otaku", tr: "这不好笑。你没看第九集。" },
+        { say: "过了一会儿，他小声说：" },
+        { say: "…You can laugh. It's fine. Just don't tell anyone.", name: "otaku", tr: "……你可以笑。没事。别告诉别人就行。" },
+      ] },
     ] },
     { cg: null },
     { hide: true },
@@ -618,14 +721,24 @@ Object.assign(DATA.events, {
     { msg: { from: "otaku", text: "the lads are doing a christmas thing at the pub. saturday.", tr: "那帮兄弟周六在pub搞圣诞聚会。" } },
     { say: "过了五分钟。" },
     { msg: { from: "otaku", text: "you don't have to come. I mean. I don't know if I should bring you.", tr: "你不用来。我是说，我不知道该不该带你去。" } },
+    // BE暗示 四-1：选项出来之前加一句内心（不改选项文字）
+    { say: "（他问的是“该不该带我去”。我听得出来，他想听到的答案是什么。）" },
     { choice: [
       { text: "“你想带我去吗？”", fx: { flag_trial_otaku: 1 }, then: [
         { say: "他很久没回。" },
         { msg: { from: "otaku", text: "yeah. I do.", tr: "想。" } },
+        // Kieran 扩写第五节※：说过“你不用只选一个”
+        { if: "标记('kieran_one_self')", then: [
+          { msg: { from: "otaku", text: "You said I don't have to pick one. I've been thinking about that for a year.", tr: "你说我不用只选一个。我想了一年。" } },
+        ] },
         { bg: "pub_street" },   // 剧本没写背景，转换时补的
         { show: "otaku" },
         { say: "周六，他在pub门口等你。他没有穿动漫T恤，但牵了你的手。他的朋友们看了一眼，有人吹了声口哨。" },
         { say: "Kez! Who's this then?", name: "Kieran的朋友", tr: "Kez！这位是谁？" },
+        // Kieran 扩写第六节※：Jake 知道 SilentMoon 是他，Jake 也在场，Kieran 介绍你之前先喊一句
+        { if: "标记('kieran_jake_knows')", then: [
+          { say: "Oi, it's SilentMoon's missus!", name: "jake", tr: "哟，这不是 SilentMoon 的女朋友！" },
+        ] },
         { say: "My girlfriend.", name: "otaku", tr: "我女朋友。" },
         { say: "（他说得很快，好像怕自己反悔。）" },
         { hide: true },
@@ -643,8 +756,15 @@ Object.assign(DATA.events, {
     { bg: "pub_street" },
     { show: "otaku" },
     { say: "毕业典礼之后，他的健身房朋友在pub里给大家庆祝。他问你要不要一起去。" },
+    // 第七批第一节 5：告白时主角打断了他的片子
+    { if: "标记('confess_me_first_otaku')", then: [
+      { say: "进门之前，他突然停下来：" },
+      { say: "You interrupted my film, you know. I'm still not over it. …I'll finish it one day. For the wedding.", name: "otaku", tr: "你知道吗，你打断了我的片子，我到现在还没缓过来。……总有一天我会放完的。婚礼上放。" },
+    ] },
     { say: "他从包里拿出一件T恤，是社团的那件，胸口印着那个很大的动漫角色。" },
     { say: "I'm thinking about wearing this. In there. Tell me I'm mad.", name: "otaku", tr: "我在想要不要穿这件进去。告诉我我疯了。" },
+    // BE暗示 四-1
+    { say: "（他已经把 T 恤带来了。一个不想穿的人，不会把它带来。）" },
     { choice: [
       { text: "“穿吧。”（鼓励他公开）", fx: { flag_otaku_public: 1 }, then: [
         { if: "交往中('otaku') && 考验('otaku') == 1 && 好感('otaku') >= 85", then: [
@@ -689,7 +809,11 @@ Object.assign(DATA.events, {
     { say: "国内买便宜一半。他买了两年了。我没跟任何人说过。", name: "senior" },
     { say: "He's the only one who knew. Before you.", name: "otaku", tr: "在你之前，他是唯一知道的人。" },
     { choice: [
-      { text: "“我也不会说的。”", fx: { aff_senior: 2, aff_otaku: 3 } },
+      { text: "“我也不会说的。”", fx: { aff_senior: 2, aff_otaku: 3 }, then: [
+        { say: "学长点点头。Kieran 看了你一眼，小声说：" },
+        { say: "…Thanks.", name: "otaku", tr: "……谢谢。" },
+        { say: "三个人谁都没再提这件事。" },
+      ] },
       { text: "“学长，给我也带一个。”", fx: { aff_senior: 3 }, then: [
         { say: "给你打九折。", name: "senior" },
         { say: "He gave me ten percent off. Two years. Two years and you get it on day one?", name: "otaku", tr: "他给我打九折？我买了两年，你第一天就有？" },
@@ -749,40 +873,45 @@ Object.assign(DATA.events, {
 // place：剧本写了“在周末某地点触发”的，记下地点；现在引擎在周开头演，地点只是备注（要做成周末去那里才演，需要引擎支持）。
 DATA.loveEvents = [
   // ----- 学长 -----
-  // 心动：好感≥40，生过病。第5周新生流感时直接进（first_sick 在第5周固定事件里设 been_sick），之后的生病也能进，只一次
-  { id: "senior_heart", who: "senior", kind: "heart", cond: "(学年 > 1 || 周数 >= 5) && 好感('senior') >= 40 && 标记('been_sick')" },
-  // 推进：好感≥65，心动之后，第10–22周任意一个周末，周末去中超时
-  { id: "senior_advance", who: "senior", kind: "advance", place: "chinese_market", cond: "学年 == 1 && 周数 >= 10 && 周数 <= 22 && 好感('senior') >= 65 && 标记('heart_senior')" },
+  // 心动：好感≥40，生过病。之后的生病也能进，只一次。2026-11-18 节奏调整：心动最早大一第 12 周
+  //（第5周新生流感时 fixed_y1.js 直接 run senior_fever，那里要另改，见报告）
+  { id: "senior_heart", who: "senior", kind: "heart", cond: "(学年 > 1 || 周数 >= 12) && 好感('senior') >= 40 && 标记('been_sick')" },
+  // 推进：好感≥65，心动之后，大二第 8 周以后任意一个周末，周末去中超时
+  { id: "senior_advance", who: "senior", kind: "advance", place: "chinese_market", cond: "(学年 == 2 && 周数 >= 8 || 学年 == 3) && 好感('senior') >= 65 && 标记('heart_senior')" },
   // 过去：推进之后的下一次见面
   { id: "senior_past", who: "senior", kind: "past", cond: "标记('advance_senior')" },
-  // 情人节：第16周，情人节邀约答应了学长（flag_valentine_senior 由 valentines 事件设）
-  { id: "senior_valentine", who: "senior", kind: "valentine", cond: "学年 == 1 && 周数 == 16 && 标记('valentine_senior')" },
+  // 情人节：节奏调整第四节——原来这段挪到大二第 14 周（暧昧版，60–79、还没交往）；大一第 16 周要换“心动版”，剧本还没写（见报告）
+  // ※ glue.js 会把 kind: "valentine" 从这张表里滤掉、大一第16周 valentines 仍直接 run valentine_{id}：两处都要引擎／同事改
+  { id: "senior_valentine", who: "senior", kind: "valentine", cond: "学年 == 2 && 周数 == 14 && 好感('senior') >= 60 && !交往中('senior')" },
 
   // ----- Ollie -----
   // 心动：好感≥40，rainy_outing（下雨周去过酒吧街或校园），在那个周末的地点里直接进
-  { id: "local_heart", who: "local", kind: "heart", place: "pub_street", cond: "好感('local') >= 40 && 标记('rainy_outing')" },
-  // 推进：好感≥65，心动之后，春季学期（第13–22周）的周末，brunch店或校园
-  { id: "local_advance", who: "local", kind: "advance", place: ["brunch", "campus"], cond: "学年 == 1 && 周数 >= 13 && 周数 <= 22 && 好感('local') >= 65 && 标记('heart_local')" },
+  { id: "local_heart", who: "local", kind: "heart", place: "pub_street", cond: "(学年 > 1 || 周数 >= 12) && 好感('local') >= 40 && 标记('rainy_outing')" },
+  // 推进：好感≥65，心动之后，大二第 8 周以后的周末，brunch店或校园
+  { id: "local_advance", who: "local", kind: "advance", place: ["brunch", "campus"], cond: "(学年 == 2 && 周数 >= 8 || 学年 == 3) && 好感('local') >= 65 && 标记('heart_local')" },
   // 过去：推进之后，下一次去酒吧街
   { id: "local_past", who: "local", kind: "past", place: "pub_street", cond: "标记('advance_local')" },
-  { id: "local_valentine", who: "local", kind: "valentine", cond: "学年 == 1 && 周数 == 16 && 标记('valentine_local')" },
+  { id: "local_valentine", who: "local", kind: "valentine", cond: "学年 == 2 && 周数 == 14 && 好感('local') >= 60 && !交往中('local')" },
 
   // ----- Ploy -----
-  // 心动：好感≥40，看过第9周展示（first_presentation）。第11周或第22周赶ddl之后，从图书馆出来时
-  { id: "groupmate_heart", who: "groupmate", kind: "heart", cond: "学年 == 1 && (周数 == 11 || 周数 == 22) && 好感('groupmate') >= 40 && 标记('first_presentation')" },
-  // 推进：在第17周固定事件里（不在这里）
-  // 过去：推进之后，Ploy生日那周（第20周）
-  { id: "groupmate_past", who: "groupmate", kind: "past", cond: "学年 == 1 && 周数 == 20 && 标记('advance_groupmate')" },
-  { id: "groupmate_valentine", who: "groupmate", kind: "valentine", cond: "学年 == 1 && 周数 == 16 && 标记('valentine_groupmate')" },
+  // 心动：好感≥40，看过第9周展示（first_presentation）。剧本写第11周或第22周赶ddl之后；心动最早大一第 12 周，所以这里只留第 22 周
+  //（第11周 fixed_y1.js 直接 run groupmate_chips，那里要另改，见报告）
+  { id: "groupmate_heart", who: "groupmate", kind: "heart", cond: "学年 == 1 && 周数 == 22 && 好感('groupmate') >= 40 && 标记('first_presentation')" },
+  // 推进：大二第 18 周小组展示前一晚（y2_group_presentation 里演）；没赶上的：第九批第三节改成大二第 8 周起任何一个作业截止周（距截止() == 0）补演（groupmate_advance，开头用“ddl 前一天晚上十一点”版）
+  // 条件同剧本：好感≥65、看过心动、没看过推进。第18周也写进来：固定事件里演过就有 advance_groupmate，不会重复
+  { id: "groupmate_advance", who: "groupmate", kind: "advance", cond: "(学年 == 2 && 周数 >= 8 || 学年 == 3) && 距截止() == 0 && 好感('groupmate') >= 65 && 标记('heart_groupmate') && !标记('advance_groupmate')" },
+  // 过去：推进之后，下一次见面（剧本：在她公寓或 pub）
+  { id: "groupmate_past", who: "groupmate", kind: "past", cond: "标记('advance_groupmate')" },
+  { id: "groupmate_valentine", who: "groupmate", kind: "valentine", cond: "学年 == 2 && 周数 == 14 && 好感('groupmate') >= 60 && !交往中('groupmate')" },
 
   // ----- Kieran -----
   // 心动：好感≥40，去过2次社团活动室；第二次之后的那个周末，再去活动室时
-  { id: "otaku_heart", who: "otaku", kind: "heart", place: "club_room", cond: "标签('二次元') && 好感('otaku') >= 40 && (S.visits.club_room || 0) >= 2" },
-  // 推进：好感≥65，心动之后，第21周（城里有一个小漫展）
-  { id: "otaku_advance", who: "otaku", kind: "advance", cond: "学年 == 1 && 周数 == 21 && 好感('otaku') >= 65 && 标记('heart_otaku')" },
-  // 过去：推进之后，去他家吃饭（第24周的周末）
-  { id: "otaku_past", who: "otaku", kind: "past", cond: "学年 == 1 && 周数 == 24 && 标记('advance_otaku')" },
-  { id: "otaku_valentine", who: "otaku", kind: "valentine", cond: "学年 == 1 && 周数 == 16 && 标记('valentine_otaku')" },
+  { id: "otaku_heart", who: "otaku", kind: "heart", place: "club_room", cond: "(学年 > 1 || 周数 >= 12) && 标签('二次元') && 好感('otaku') >= 40 && (S.visits.club_room || 0) >= 2" },
+  // 推进：好感≥65，心动之后，大二第 13 周（城里的小漫展每年这时候办）
+  { id: "otaku_advance", who: "otaku", kind: "advance", cond: "学年 == 2 && 周数 == 13 && 好感('otaku') >= 65 && 标记('heart_otaku')" },
+  // 过去：推进之后，去他家吃饭（大二第 18 周以后的周末）
+  { id: "otaku_past", who: "otaku", kind: "past", cond: "(学年 == 2 && 周数 >= 18 || 学年 == 3) && 标记('advance_otaku')" },
+  { id: "otaku_valentine", who: "otaku", kind: "valentine", cond: "学年 == 2 && 周数 == 14 && 好感('otaku') >= 60 && !交往中('otaku')" },
 
   // ----- 跨线 -----
   // 1. 学长和Kieran的秘密：第14周之后，学长好感≥20、Kieran好感≥20（中超）
@@ -791,3 +920,17 @@ DATA.loveEvents = [
   { id: "cross_ploy_cover", who: "groupmate", kind: "cross", cond: "!标记('ploy_cover') && 好感('groupmate') >= 60 && (好感('senior') >= 60 || 好感('local') >= 60 || 好感('otaku') >= 60)" },
   // 3. fishpond_bonfire 由篝火节翻车时调用，不进这张表
 ];
+
+// 给引擎（2026-11-19 第七批）：
+// - 情人节：原来四段 {id}_valentine 挪到大二第 14 周（暧昧版，条件改在上面表里：好感≥60、没交往）。但 glue.js 会把 kind "valentine" 滤掉，
+//   大一第 16 周 fixed_y1_spring.js 的 valentines 还在 run valentine_{id}：要么 glue 别滤、让表里的条件生效，要么 valentines_2 里按人 run。
+//   大一第 16 周“心动版”（不是约会）剧本还没写。
+// - groupmate_advance：大二第 18 周正文在 y2_group_presentation（同事写）；这里的同一段是补演版，表里条件写了第 18/20 周、大三第 10 周，
+//   loveEvents 在固定事件之后演，第 18 周固定事件里演过就有 advance_groupmate，不会重复。kind: "advance" 没 place → 走“当周见过面”。
+// - trial_groupmate：flag_ploy_redeemed（替写正好 2 次＋ploy_own_work＋考验拒绝）→ 结局判定把替写次数算回 1。
+//   ploy_own_work 由地点偶遇的图书馆交往段设（不在本文件）。
+// - trial_local 里 run 了 ext_ollie.js 的 local_trial_addon。
+// - otaku_pub_public：confess_me_first_otaku 那句已加；BE 暗示两句内心（考验、毕业 pub）已加。
+
+// 第十批 #2 缺反应补全（11/20）待策划：local_past「什么都不说」只加了 flag_local_doubt_quiet；剧本反应（回去路上他一直在说别的事）和后面共用的“Mate. Shut up.”“他一直没说话”冲突。
+//   otaku_heart「笑他看番哭」剧本建议〔好感+1〕，选项原来有 −8，没加。

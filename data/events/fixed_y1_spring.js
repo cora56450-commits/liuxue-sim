@@ -106,7 +106,9 @@ Object.assign(DATA.events, {
       { say: "……还没找啊。我认识一个房东，不要担保人的。要不要看看？", name: "senior" },
     ] },
     { choice: [
-      { text: "“好，麻烦学长了。”", fx: { aff_senior: 3, flag_senior_house: 1 } },
+      { text: "“好，麻烦学长了。”", fx: { aff_senior: 3, flag_senior_house: 1 }, then: [
+        { say: "不麻烦。看房那天我开车带你去。", name: "senior" },
+      ] },
       { text: "“我先自己看看。”", fx: { aff_senior: -1 }, then: [
         { say: "行。看不上再找我。", name: "senior" },
         { say: "（他说得很笃定，好像已经知道我会回来。）" },
@@ -269,7 +271,9 @@ Object.assign(DATA.events, {
         { say: "你们把破的那一半当汤喝了。他说他从来没有在家里请人吃过饭。" },
       ] },
       { text: "都答应", if: "(好感('senior') >= 50) + (好感('local') >= 50) + (好感('groupmate') >= 50) + (好感('otaku') >= 50) >= 2",
-        fx: { pond: 2, pond_trigger: 1, flag_cny_with: "all" } },
+        fx: { pond: 2, pond_trigger: 1, flag_cny_with: "all" }, then: [
+        { if: "!标记('pond_blown')", then: [{ say: "那天你跑了三个地方，吃了三顿饺子。半夜回到房间，你躺在床上，撑得睡不着，但心里很满。" }] },
+      ] },
       { text: "自己过", fx: { money: -20, loneliness: -8 }, then: [
         { if: "标签('厨房杀手')", then: [
           { say: "你点了四家外卖，在桌上拼成了一桌，然后打视频回家。妈妈说：“这不也挺好。”爸爸问：“哪家最好吃？”" },
@@ -285,7 +289,7 @@ Object.assign(DATA.events, {
         ] },
       ] },
       // 〔钱：家里出机票〕〔孤独归0〕〔精力加满〕；作业进度−15、缺勤由系统算
-      { text: "翻课回国", fx: { skip_week: 1, loneliness: -100, energy: 200 }, then: [
+      { text: "翻课回国", fx: { skip_week: 1, loneliness: -30, energy: 200, flag_back_home_next: 1, flag_spring_home_y1: 1 }, then: [
         { say: "你跟学校说家里有事，订了最近的一班飞机。转机加起来二十个小时。" },
         { bg: "home_china" },
         { say: "到家的时候，年夜饭已经摆好了。他们等你等到了零点以后。" },
@@ -299,7 +303,11 @@ Object.assign(DATA.events, {
     // 每条都能选“认真回”〔好感+3〕或“新年快乐！”；同时认真回了2个及以上好感≥50的人〔鱼塘值+1〕
     { if: "好感('senior') >= 40 && 标记('cny_with') != 'senior'", then: [
       { msg: { from: "senior", text: "新年快乐。中超明天饺子皮打折，别买贵了。" } },
-      { choice: [{ text: "认真回", fx: { aff_senior: 3, flag_cny_reply_senior: 1 } }, { text: "新年快乐！" }] },
+      { choice: [{ text: "认真回", fx: { aff_senior: 3, flag_cny_reply_senior: 1 }, then: [
+        { say: "你写了一段话。他看了很久才回：“……你也是。新的一年，好好的。”" },
+      ] }, { text: "新年快乐！", then: [
+        { say: "学长回：“新年快乐。”后面多了一个红包，£8.88，备注“汇率按今天算的”。" },
+      ] }] },
     ] },
     { if: "好感('local') >= 40 && 标记('cny_with') != 'local'", then: [
       { msg: { from: "local", text: "Happy Chinese New Year!! Is it the year of the… no, I'll get it wrong. Happy New Year x", tr: "春节快乐！！今年是……算了我会说错。新年快乐" } },
@@ -339,14 +347,20 @@ Object.assign(DATA.events, {
         { text: "答应Ploy", if: "好感('groupmate') >= 60", fx: { flag_valentine_with: "groupmate" }, then: [{ run: "valentine_groupmate" }] },
         { text: "答应Kieran", if: "好感('otaku') >= 60", fx: { flag_valentine_with: "otaku" }, then: [{ run: "valentine_otaku" }] },
         { text: "都答应", if: "(好感('senior') >= 60) + (好感('local') >= 60) + (好感('groupmate') >= 60) + (好感('otaku') >= 60) >= 2",
-          fx: { pond: 2, pond_trigger: 1, flag_valentine_with: "all" } },
-        { text: "都拒绝" },
+          fx: { pond: 2, pond_trigger: 1, flag_valentine_with: "all" }, then: [
+          { if: "!标记('pond_blown')", then: [{ say: "你那天跑了三个地方，换了两次衣服，回家的时候脚疼得走不动。（我好像做了一件很累的事。）" }] },
+        ] },
+        { text: "都拒绝", then: [
+          { say: "你给每个人回了一条差不多的消息。那天晚上你一个人去超市买了打折的巧克力，坐在厨房吃完了。（这样也挺好的。）" },
+        ] },
       ] },
     ] },
     { if: "标签('天生丽质')", then: [
       { say: "这天还有一条Ins私信，来自一个不认识的账号，头像是健身房的镜子自拍：“hey gorgeous, free tonight? 😉「嘿美女，今晚有空吗？」”" },
       { choice: [
-        { text: "不理" },
+        { text: "不理", then: [
+          { say: "第二天那个账号把头像换了，又给另外三个女生发了同样的消息——Ploy 截图发到了群里：“ladies. block.「姐妹们。拉黑。」”" },
+        ] },
         { text: "拉黑", then: [{ say: "半小时后他换了个小号又发了一遍。你又拉黑了一次。" }] },
       ] },
     ] },
@@ -404,18 +418,8 @@ Object.assign(DATA.events, {
 
     { bg: "dorm_night" },
     { say: "presentation前一天晚上十一点。" },
-    { if: "(S.cgSeen || {}).groupmate_chips && 好感('groupmate') >= 50", then: [
-      { sfx: "knock" },
-      { say: "有人敲门。" },
-      { show: "groupmate" },
-      { say: "Ploy站在门口，素颜，拎着两杯奶茶。" },
-      { say: "I didn't go out tonight. Don't make it a thing.", name: "groupmate", tr: "我今晚没去club。别大惊小怪。" },
-      { cg: "groupmate_tea" },
-      { say: "你们一人一个笔记本电脑，坐在床上。她写一句，问你一句“is this okay?「这样行吗？」”。凌晨两点，她的部分写完了。是她自己写的。",
-        fx: { aff_groupmate: 8, homework: 10, energy: -10, flag_advance_groupmate: 1 } },
-      { cg: null },
-      { hide: true },
-    ], else: [
+    // 2026-11-19：Ploy 推进·熬夜奶茶（CG 分支）挪到大二第 18 周（groupmate_advance_tea，见 later_y2y3.js），大一这里只留替写消息
+    { if: "true", then: [
       { say: "Ploy发来消息：" },
       { msg: { from: "groupmate", text: "babe… I haven't started my part. Could you just write it? I'll pay you in bubble tea. Forever.", tr: "宝……我那部分还没开始。你能帮我写一下吗？我用奶茶还你。一辈子。" } },
       { choice: [
@@ -531,7 +535,11 @@ Object.assign(DATA.events, {
     { if: "!标记('essay_senior_added')", then: [
       { say: "又一条好友申请。头像还是那只戴学士帽的兔子，备注换成了“学姐再来问问～”。" },
       // 代写线这一年到此为止
-      { choice: [{ text: "通过", fx: { flag_essay_senior_added: 1 } }, { text: "忽略" }] },
+      { choice: [{ text: "通过", fx: { flag_essay_senior_added: 1 }, then: [
+        { say: "亲～终于等到你啦～这次作业是不是有点难呀～", name: "essay_senior" },
+      ] }, { text: "忽略", then: [
+        { say: "那条好友申请在列表里待了三天，然后消失了。（第四天又出现了。）" },
+      ] }] },
     ], else: [
       { if: "标记('ghostwriter')", then: [
         { msg: { from: "essay_senior", text: "亲～老客户九折哦～上次那篇75分，老师都没发现呢～" } },
@@ -552,7 +560,10 @@ Object.assign(DATA.events, {
                 { say: "（就这一次。）", fx: { loneliness: 4 } },
               ] },
             ] },
-            { text: "“我再想想。”" },
+            { text: "“我再想想。”", then: [
+              { say: "好的亲～想好了随时找我哦～", name: "essay_senior" },
+              { say: "（她的头像一直在你的聊天列表里，一直在最上面。）" },
+            ] },
           ] },
         ] },
         { text: "“不用了，谢谢。”", then: [
@@ -614,7 +625,7 @@ Object.assign(DATA.events, {
     { say: "复活节怎么过？" },
     { choice: [
       // 〔钱：家里出机票，但本月生活费减半〕〔孤独归0了再+10〕〔精力加满〕
-      { text: "回国", fx: { allowance_half: 1, loneliness: -100, energy: 200 }, then: [
+      { text: "回国", fx: { allowance_half: 1, loneliness: -30, energy: 200, flag_back_home_next: 1 }, then: [
         { fx: { loneliness: 10 } },
         { bg: "home_china" },
         { say: "这次在家待了十六天。第一顿还是{家乡食物}，你还是吃了三碗。" },
@@ -652,7 +663,13 @@ Object.assign(DATA.events, {
     { if: "好感('senior') >= 40", then: [
       { say: "一张照片，机场的行李推车上摞着六个纸箱。" },
       { msg: { from: "senior", text: "回国一趟，帮人带东西。你要什么？" } },
-      { choice: [{ text: "认真回", fx: { aff_senior: 3, flag_easter_reply_senior: 1 } }, { text: "Happy Easter！" }] },
+      { choice: [{ text: "认真回", fx: { aff_senior: 3, flag_easter_reply_senior: 1 }, then: [
+        { say: "你列了三样东西。他回：" },
+        { msg: { from: "senior", text: "第三样海关不让带。前两样可以。" } },
+      ] }, { text: "Happy Easter！", then: [
+        { msg: { from: "senior", text: "同乐" } },
+        { msg: { from: "senior", text: "你什么都不要？那我随便带了。" } },
+      ] }] },
     ] },
     { if: "好感('local') >= 40", then: [
       { say: "一张视频。他家的花园，一群小孩在草丛里找彩蛋，他是负责藏的那个。" },
@@ -816,8 +833,12 @@ Object.assign(DATA.events, {
       { say: "窗外开始发白。五月的天，四点就亮了。" },
       { say: "（冬天四点天黑，夏天四点天亮。这个国家的天，从来不在正常的时间做事。）" },
       { choice: [
-        { text: "再撑一会儿", fx: { study: 3, energy: -15 } },
-        { text: "回去睡三个小时", fx: { energy: 10 } },
+        { text: "再撑一会儿", fx: { study: 3, energy: -15 }, then: [
+          { say: "六点，你终于合上书。窗外的鸟开始叫了，叫得很大声。（英国的鸟也不在正常的时间做事。）" },
+        ] },
+        { text: "回去睡三个小时", fx: { energy: 10 }, then: [
+          { say: "你睡了三个小时，醒来的时候脑子很清楚。考试的时候，你记住的东西比熬夜的那次多。" },
+        ] },
       ] },
       { cg: null },
     ] },
@@ -829,7 +850,9 @@ Object.assign(DATA.events, {
       { say: "Talk me through this one.", name: "校外考官", tr: "讲讲这一张。" },
       { say: "那是你“身份”项目的那张。" },
       { choice: [
-        { text: "用准备好的稿子讲", fx: { study: 2 } },
+        { text: "用准备好的稿子讲", fx: { study: 2 }, then: [
+          { say: "你讲完了。考官点点头，在本子上写了一行字。你后来在反馈里看到了：“Well-prepared. Would like to hear more of her own voice.”「准备充分。希望多听到她自己的声音。」" },
+        ] },
         { text: "不看稿，直接讲那瓶老干妈／那张照片／那个电饭煲", fx: { study: 2, belonging: 2 }, then: [
           { say: "你讲完，考官点了点头，在本子上写了一行字。于晓在他背后，冲你比了个大拇指。" },
         ] },
@@ -906,3 +929,7 @@ Object.assign(DATA.events, {
     ] },
   ],
 });
+
+// 第十批 #2 缺反应补全（11/20）待策划：
+//   · easter_break、spring_festival 的「认真回／Happy Easter！／新年快乐！」：剧本只写了学长的反应，只加在学长那条；Ollie、Ploy、Kieran 还缺。
+//   · spring_festival「都答应」、valentines「都答应」：反应包在 !标记('pond_blown') 里（翻车了不演）。

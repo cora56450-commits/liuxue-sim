@@ -112,6 +112,7 @@ Object.assign(DATA.events, {
     { say: "Mum kept everything. Even the ones that got — well. She found replacements for the torn ones.", name: "otaku", tr: "我妈什么都留着。连那些被——反正，被撕坏的，她都找了新的补上。" },
     { say: "（被撕坏的那些。）" },
     { say: "他从柜子里拿出两个手柄，线很长，缠在一起。" },
+    { cg: "otaku_loft" },   // 选项走完以后收起
     { say: "拳霸97. I was unbeatable at fourteen. Probably still am.", name: "otaku", tr: "拳霸97。我十四岁的时候没人打得过我。现在应该也是。" },
     { choice: [
       { text: "认真打", then: [
@@ -131,6 +132,7 @@ Object.assign(DATA.events, {
         { say: "屏幕上的角色还停在选人界面，一直在原地晃。" },
       ] },
     ] },
+    { cg: null },
     { say: "楼下传来他妈妈的声音：" },
     { say: "Tea's ready!", name: "Kieran的妈妈", tr: "茶好了！" },
     { say: "他把手柄放下，线还缠在一起。" },
@@ -150,8 +152,15 @@ Object.assign(DATA.events, {
     { game: "socks" },
     { say: "最后一关，双人成袜隔着一道门。门要两个人同时按开关才能打开，开关一个在门里，一个在门外。" },
     { choice: [
-      { text: "按住开关，等他", fx: { aff_otaku: 3 }, then: [] },
-      { text: "“你先按，我跟着。”", fx: { aff_otaku: 3 }, then: [] },
+      { text: "按住开关，等他", fx: { aff_otaku: 3 }, then: [
+        { say: "他等了三秒，你也等了三秒。然后两个人同时按下去。门开了。他说：" },
+        { say: "Same time. We pressed at the same time.", name: "otaku", tr: "同时。我们同时按的。" },
+        { say: "他好像觉得这件事很重要。" },
+      ] },
+      { text: "“你先按，我跟着。”", fx: { aff_otaku: 3 }, then: [
+        { say: "他按了。你跟着按。门开了，两只袜子在门口撞在一起，像在拥抱。他在耳机里说：" },
+        { say: "…Okay. That was cute. I didn't design that. The game did.", name: "otaku", tr: "……好吧。挺可爱的。不是我设计的。是游戏。" },
+      ] },
     ] },
     { fx: { flag_kieran_socks: 1 } },
     { say: "门开了。双人成袜挤在一起，滚进了同一个抽屉里。屏幕暗下去，字幕开始滚。" },
@@ -204,7 +213,12 @@ Object.assign(DATA.events, {
   // ===================== 九、告白（改版，覆盖 love.js 的 confess_otaku；引擎直接调用）=====================
   confess_otaku: [
     { bg: "club_room" },
-    { say: "学年最后一场放映会结束了。别人都走了，Kieran 没让你走。" },
+    // 第七批第一节 4：大三第 1–6 周换成新学期第一场
+    { if: "学年 == 3", then: [
+      { say: "新学期第一场放映会结束了。别人都走了，Kieran 没让你走。" },
+    ], else: [
+      { say: "学年最后一场放映会结束了。别人都走了，Kieran 没让你走。" },
+    ] },
     { show: "otaku", pose: "club" },
     { say: "Stay. Five minutes. I — there's one more thing to screen.", name: "otaku", tr: "留一下，五分钟。我——还有一个要放。" },
     { say: "他没把椅子收起来，反而把前排的两把摆正了，拍了拍其中一把让你坐。你没坐，站在他旁边。他坐下了，又站起来，又坐下。" },
@@ -243,14 +257,16 @@ Object.assign(DATA.events, {
         { say: "你还没开口，他先说话了，声音从手掌后面闷闷地传出来：" },
         { say: "I'm rubbish at saying things. So I made it say it. …Did it work?", name: "otaku", tr: "我不会说话。所以我让它替我说。……有用吗？" },
       ] } },
-    { free: "告白：Kieran 做了一个片子放给你看，最后的字幕是“好きです。……でござる。”他捂着脸从指缝里看你。你说出你自己的回答", freeWho: "otaku", choice: [
-      { text: "“我也是。”", fx: { flag_confessed_otaku: 1, aff_otaku: 6 }, then: [
-        { say: "Really? Like — really really?", name: "otaku", tr: "真的？真的真的？" },
-        { say: "他把脸埋得更深了，耳尖都粉了。" },
+    { if: "标记('confess_me_first_otaku')", then: [
+      // 主角先说的：已经说过喜欢了，第一项换成“字幕我看到了。所以——是，我也是。”
+      { free: "告白：你在字幕打完之前先跟 Kieran 说了喜欢他，他说那本来是他的台词。你已经说了喜欢他，接下来说点什么", freeWho: "otaku", choice: [
+        { text: "“字幕我看到了。所以——是，我也是。”", fx: { flag_confessed_otaku: 1, aff_otaku: 6 }, then: [ { run: "confess_otaku_yes" } ] },
+        { text: "“那个 ござる 是哪学的。”", fx: { flag_confessed_otaku: 1, aff_otaku: 3 }, then: [ { run: "confess_otaku_gozaru" } ] },
       ] },
-      { text: "“那个 ござる 是哪学的。”", fx: { flag_confessed_otaku: 1, aff_otaku: 3 }, then: [
-        { say: "…A samurai anime. When I was twelve. Is that a yes?", name: "otaku", tr: "……一部武士动画。十二岁的时候看的。这算是答应了吗？" },
-        { say: "你笑得说不出话，点了点头。" },
+    ], else: [
+      { free: "告白：Kieran 做了一个片子放给你看，最后的字幕是“好きです。……でござる。”他捂着脸从指缝里看你。你说出你自己的回答", freeWho: "otaku", choice: [
+        { text: "“我也是。”", fx: { flag_confessed_otaku: 1, aff_otaku: 6 }, then: [ { run: "confess_otaku_yes" } ] },
+        { text: "“那个 ござる 是哪学的。”", fx: { flag_confessed_otaku: 1, aff_otaku: 3 }, then: [ { run: "confess_otaku_gozaru" } ] },
       ] },
     ] },
     { cg: null },
@@ -260,6 +276,27 @@ Object.assign(DATA.events, {
     { say: "…Can we keep it between us for now? Just for a bit. My gym mates — I'll tell them. I will. Just not yet.", name: "otaku", tr: "……能先别告诉别人吗？就一阵子。健身房那帮人——我会告诉他们的，真的。只是现在还不行。", fx: { flag_otaku_persona2: 1 } },
     { say: "（这句话，到大三的圣诞会有答案。）" },
     { hide: true },
+  ],
+  confess_otaku_yes: [
+    { say: "Really? Like — really really?", name: "otaku", tr: "真的？真的真的？" },
+    { say: "他把脸埋得更深了，耳尖都粉了。" },
+  ],
+  confess_otaku_gozaru: [
+    { say: "…A samurai anime. When I was twelve. Is that a yes?", name: "otaku", tr: "……一部武士动画。十二岁的时候看的。这算是答应了吗？" },
+    { say: "你笑得说不出话，点了点头。" },
+  ],
+
+  // ===================== BE 暗示（剧本_BE暗示.md 第四节 2）：考验选了“私下过就好”（trial_otaku = -1）=====================
+  // 考验后：主号发了圣诞聚会合照，你不在；小号同一天发了一张你们的手
+  be_otaku_photo: [
+    { moment: { who: "otaku", account: "kieran", text: "", tr: "", img: "圣诞聚会的合照，十二个人，你不在" } },
+    { moment: { who: "otaku", account: "silentmoon", text: "", tr: "", img: "你们的手" } },
+  ],
+  // 大三春天：他妈妈问你
+  be_otaku_mum: [
+    { bg: "walsh_home" },
+    { say: "Has he introduced you to the lads yet?", name: "Kieran的妈妈", tr: "他带你见过那帮朋友了吗？" },
+    { say: "你说没有。她没说话，给你多盛了一勺派。" },
   ],
 });
 
@@ -286,14 +323,18 @@ DATA.momentsPool.otaku = [
   { id: "kieran_monster_night", day: "tue", time: "晚上", cond: "好感('otaku') >= 20 && (学年 > 1 || 周数 > 6)", who: "otaku", prio: 2, small: true },
   // 第五节：好感≥70，看过推进·漫展，春季学期，告白之前，周五晚上，只一次
   { id: "kieran_socks", day: "fri", time: "晚上", cond: "好感('otaku') >= 70 && 标记('advance_otaku') && 季节 == '春' && !交往中('otaku')", who: "otaku", prio: 2, small: true },
+  // BE暗示 四-2：考验（大三第10周，周开头固定事件里演）选了私下以后，同一周周五晚上发动态（剧本写“考验后”，那个周六聚会当天）
+  { id: "be_otaku_photo", day: "fri", time: "晚上", cond: "考验('otaku') == -1", week: 10, year: 3, who: "otaku", prio: 1 },
 );
 (DATA.loveEvents = DATA.loveEvents || []).push(
   // 第三节：好感≥35，联机过；周末去社团活动室时
   { id: "kieran_messy_room", who: "otaku", kind: "ext", place: "club_room", cond: "好感('otaku') >= 35 && 标记('kieran_online')", small: true },
-  // 第四节：接在 otaku_past（第24周去他家吃饭）之后，同一天。after 见"给引擎"
-  { id: "kieran_loft_fighter", who: "otaku", kind: "ext", cond: "学年 == 1 && 周数 == 24 && 标记('advance_otaku')", after: "otaku_past", small: true },
-  // 第六节：交往中，认识 Jake，大二秋季学期，周末去健身房，一次
-  { id: "kieran_jake_screen", who: "otaku", kind: "ext", place: "gym", cond: "交往中('otaku') && 友情档('jake') != '' && 学年 == 2 && 季节 == '秋'", small: true },
+  // 第四节：接在 otaku_past（去他家吃饭，节奏调整后大二第 18 周以后）之后，同一天，条件跟着 otaku_past
+  { id: "kieran_loft_fighter", who: "otaku", kind: "ext", cond: "(学年 == 2 && 周数 >= 18 || 学年 == 3) && 标记('advance_otaku')", after: "otaku_past", small: true },
+  // 第六节：第七批第二节 3——交往中，认识 Jake，大三秋季学期（Jake 交换回来以后），周末去健身房，一次
+  { id: "kieran_jake_screen", who: "otaku", kind: "ext", place: "gym", cond: "交往中('otaku') && 友情档('jake') != '' && 学年 == 3 && 季节 == '秋'", small: true },
+  // BE暗示 四-2：大三春天，考验没过、还在交往，去他家（剧本没写地点／周，放周开头）
+  { id: "be_otaku_mum", who: "otaku", kind: "ext", cond: "交往中('otaku') && 考验('otaku') == -1 && 学年 == 3 && 季节 == '春'" },
 );
 
 // 给引擎：
@@ -325,3 +366,9 @@ DATA.momentsPool.otaku = [
 // - kieran_socks 最后一关两个选项（"按住开关，等他"／"你先按，我跟着。"）剧本没写各自的反应，直接接"门开了"。
 
 // 真实地名：无（本段剧本没有出现英国真实地名/楼名）
+// 给引擎（2026-11-19 第七批）：
+// - confess_otaku：大三第 1–6 周开头换“新学期第一场放映会结束了”；主角先说时第一项换成“字幕我看到了。所以——是，我也是。”，自由输入场景说明分两版。
+// - kieran_loft_fighter：CG otaku_loft（cg.js 要登记）；条件跟 otaku_past（大二第 18 周以后）。
+// - kieran_jake_screen：挪到大三秋（剧本里“Jake 下学期去交换之前”只在触发条件里，正文没有这句）。
+// - BE 暗示（考验 trial_otaku = -1）：be_otaku_photo（大三第 10 周五，两条动态，moment 里写了 account: kieran／silentmoon，Story5.moment 现在不读 account，请支持）；
+//   be_otaku_mum（大三春天，他妈妈，周开头）。偶遇段“他松手了。这次你没再去勾。”在地点偶遇文件（不在本文件）。

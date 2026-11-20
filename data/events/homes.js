@@ -47,7 +47,11 @@ Object.assign(DATA.events, {
         { say: "Yeah! Yeah, definitely. Next time I've got the film camera.", name: "local", expr: "smile", tr: "好啊！当然。下次我带胶片相机。" },
         { say: "（下次。）" },
       ] },
-      { text: "什么都不说，下楼", fx: { aff_local: 1 } },
+      { text: "什么都不说，下楼", fx: { aff_local: 1 }, then: [
+        { say: "你下楼的时候他在后面喊：" },
+        { say: "I mean it! Next time!", name: "local", tr: "我说真的！下次！" },
+        { say: "楼梯间有回声，“next time”被说了三遍。" },
+      ] },
     ] },
     { hide: true },
     { fx: { flag_home_local: 1 } },

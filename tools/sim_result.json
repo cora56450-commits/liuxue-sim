@@ -1,109 +1,181 @@
 {
- "n": 500,
+ "n": 300,
  "love": [
   {
-   "name": "每周聊天＋约会＋均衡（一个对象）",
-   "goal": "HE 70–85%",
+   "name": "认真玩：每周聊＋三周一约＋周末出门（Ollie）",
+   "goal": "告白中位大二第18–24周，HE 70–85%",
+   "confessRate": "100%",
+   "confessMedian": "大二第22周",
    "he": "77%",
    "be": "22%",
-   "dated": "99%",
+   "dated": "100%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
-   "small": "7.3",
-   "smallAff": "7.4",
-   "degree": "64.4"
+   "small": "35.3",
+   "smallAff": "10.5",
+   "degree": "69.7"
   },
   {
-   "name": "每周聊天＋约会＋均衡（学长）",
-   "goal": "HE 70–85%",
-   "he": "81%",
-   "be": "18%",
-   "dated": "99%",
+   "name": "认真玩（学长）",
+   "goal": "同上",
+   "confessRate": "100%",
+   "confessMedian": "大二第20周",
+   "he": "77%",
+   "be": "23%",
+   "dated": "100%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
-   "small": "17.3",
+   "small": "43.9",
+   "smallAff": "15.1",
+   "degree": "69.5"
+  },
+  {
+   "name": "认真玩（Ploy）",
+   "goal": "同上",
+   "confessRate": "76%",
+   "confessMedian": "大二第22周",
+   "he": "61%",
+   "be": "15%",
+   "dated": "76%",
+   "trial": "0%",
+   "pond1": "0%",
+   "aff": "98.1",
+   "small": "41.2",
    "smallAff": "16.1",
-   "degree": "63.7"
+   "degree": "69.7"
   },
   {
-   "name": "只聊天不约会",
-   "goal": "HE ≤15%",
-   "he": "1%",
-   "be": "0%",
-   "dated": "1%",
+   "name": "认真玩（Kieran）",
+   "goal": "同上",
+   "confessRate": "100%",
+   "confessMedian": "大二第22周",
+   "he": "76%",
+   "be": "24%",
+   "dated": "100%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
-   "small": "7.6",
-   "smallAff": "10.3",
-   "degree": "63.4"
+   "small": "42.9",
+   "smallAff": "15.6",
+   "degree": "69.5"
   },
   {
-   "name": "大二大三一直卷（大一正常谈）",
-   "goal": "HE ≤30%",
-   "he": "1%",
-   "be": "94%",
+   "name": "一周聊一次＋周末偶遇（不约会）",
+   "goal": "告白 ≥80%",
+   "confessRate": "98%",
+   "confessMedian": "大二第23周",
+   "he": "79%",
+   "be": "19%",
    "dated": "98%",
    "trial": "0%",
    "pond1": "0%",
-   "aff": "60.7",
-   "small": "8.0",
-   "smallAff": "8.6",
-   "degree": "63.3"
+   "aff": "100.0",
+   "small": "31.1",
+   "smallAff": "17.9",
+   "degree": "69.8"
   },
   {
-   "name": "同时对三个人都热情",
-   "goal": "鱼塘翻车 ≥50%",
-   "he": "0%",
-   "be": "97%",
-   "dated": "1%",
-   "trial": "100%",
-   "pond1": "100%",
-   "aff": "57.8",
-   "small": "39.6",
-   "smallAff": "42.6",
-   "degree": "64.0"
-  },
-  {
-   "name": "只走剧情（不聊天不约会）",
-   "goal": "—",
+   "name": "刷聊天、不出门",
+   "goal": "告白 ≤5%",
+   "confessRate": "0%",
+   "confessMedian": "—",
    "he": "0%",
    "be": "0%",
    "dated": "0%",
    "trial": "0%",
    "pond1": "0%",
-   "aff": "7.0",
-   "small": "2.0",
-   "smallAff": "2.0",
-   "degree": "63.2"
+   "aff": "59.0",
+   "small": "1.0",
+   "smallAff": "1.2",
+   "degree": "69.9"
+  },
+  {
+   "name": "大二大三一直卷（大一正常谈）",
+   "goal": "HE ≤30%",
+   "confessRate": "0%",
+   "confessMedian": "—",
+   "he": "0%",
+   "be": "0%",
+   "dated": "0%",
+   "trial": "0%",
+   "pond1": "0%",
+   "aff": "79.0",
+   "small": "16.8",
+   "smallAff": "9.0",
+   "degree": "70.2"
+  },
+  {
+   "name": "同时对三个人都热情",
+   "goal": "鱼塘翻车 ≥50%",
+   "confessRate": "16%",
+   "confessMedian": "大三第4周",
+   "he": "0%",
+   "be": "90%",
+   "dated": "16%",
+   "trial": "100%",
+   "pond1": "100%",
+   "aff": "56.2",
+   "small": "89.8",
+   "smallAff": "56.3",
+   "degree": "69.9"
+  },
+  {
+   "name": "BE 补救·Ploy：替写 2 次＋自己写过＋考验拒绝",
+   "goal": "走得通",
+   "confessRate": "73%",
+   "confessMedian": "大二第22周",
+   "he": "56%",
+   "be": "16%",
+   "dated": "73%",
+   "trial": "0%",
+   "pond1": "0%",
+   "aff": "97.8",
+   "small": "40.7",
+   "smallAff": "15.9",
+   "degree": "69.8"
+  },
+  {
+   "name": "BE 补救·Ollie：考验没问，最后机会问了（要 90）",
+   "goal": "走得通",
+   "confessRate": "100%",
+   "confessMedian": "大二第22周",
+   "he": "80%",
+   "be": "20%",
+   "dated": "100%",
+   "trial": "0%",
+   "pond1": "0%",
+   "aff": "100.0",
+   "small": "35.2",
+   "smallAff": "10.5",
+   "degree": "69.8"
   }
  ],
  "mains": {
   "均衡·关": {
-   "home": 500
+   "home": 300
   },
   "均衡·开": {
-   "home": 500
+   "home": 300
   },
   "卷王·关": {
-   "lonely": 500
+   "lonely": 300
   },
   "卷王·开": {
-   "lonely": 500
+   "lonely": 300
   },
   "摆烂·关": {
-   "home": 500
+   "home": 300
   },
   "摆烂·开": {
-   "home": 500
+   "home": 300
   },
   "老鼠·关": {
-   "lonely": 500
+   "lonely": 300
   },
   "老鼠·开": {
-   "lonely": 500
+   "lonely": 300
   }
  }
 }

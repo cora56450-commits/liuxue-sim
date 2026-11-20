@@ -114,8 +114,10 @@ function applyFx(fx) {
       if (S.tags.includes("lovebrain") && v > 0) v = v * 1.5;
       const before = S.aff[c] || 0;
       // 序章到第1周结束前，好感最多到 earlyAffCap（试玩报告 6、19：开局就过 20，第一周就进了熟人阶段）
-      let cap = S.year === 1 && S.week <= 1 ? Math.max(before, DATA.tuning.earlyAffCap) : 100;
-      // 好感来源控制（决定记录_1118 第十一节）：小事件 ×0.6、不能跨阶段；每人每周最多 +8（固定攻略线事件不算）
+      let cap = S.year === 1 && S.week <= 1 && affCtx() !== "fixed" ? Math.max(before, DATA.tuning.earlyAffCap) : 100;   // 固定事件（迎新集市）不受开局上限
+      // 好感来源控制（决定记录_1118 第十一节＋恋爱节奏调整_1118 第三节）：
+      //   小事件 ×0.4、不能跨阶段；每人每周最多 +4（固定攻略线、旅行不算）；AI 聊天每人每周最多 +2；
+      //   所有非固定来源（旅行也算）过不了阶段门：没心动最多 59，没推进最多 79；修罗场-6 之后 affcap_{id}
       if (v > 0 && DATA.loveIds.includes(c)) {
         const ctx = affCtx(), T = DATA.tuning;
         if (ctx === "small") {
@@ -123,18 +125,33 @@ function applyFx(fx) {
           const nextLine = DATA.loveStages.find((x) => x > before);
           if (nextLine) cap = Math.min(cap, Math.max(before, nextLine - 1));
         }
-        if (ctx !== "fixed") {
+        if (ctx !== "fixed" && ctx !== "bridge") {
+          const gate = !S.flags["heart_" + c] ? 59 : !S.flags["advance_" + c] ? 79 : 100;
+          cap = Math.min(cap, Math.max(before, gate));
+        }
+        if (ctx === "chat") {
+          S.chatGain = S.chatGain && S.chatGain.wk === absWeek() ? S.chatGain : { wk: absWeek() };
+          v = Math.min(v, Math.max(0, T.chatWeeklyCap - (S.chatGain[c] || 0)));
+          S.chatGain[c] = (S.chatGain[c] || 0) + v;
+        }
+        if (ctx !== "fixed" && ctx !== "trip") {
           S.affGain = S.affGain && S.affGain.wk === absWeek() ? S.affGain : { wk: absWeek() };
-          const left = Math.max(0, T.affWeeklyCap - (S.affGain[c] || 0));
+          const left = Math.max(0, (S.tags.includes("lovebrain") ? T.affWeeklyCapLovebrain : T.affWeeklyCap) - (S.affGain[c] || 0));   // 第七批 #17：恋爱脑每周上限 6
           v = Math.min(v, left);
           S.affGain[c] = (S.affGain[c] || 0) + v;
         }
+        if (S.affCapOf && S.affCapOf[c] != null) cap = Math.min(cap, Math.max(before, S.affCapOf[c]));
       }
       S.aff[c] = clamp(before + v, 0, cap);
       S.lastMet[c] = absWeek();
       if (S.aff[c] >= DATA.tuning.pondLevel) S.everHigh[c] = 1;
       S.affWeek[c] = (S.affWeek[c] || 0) + (S.aff[c] - before);
       changes.push([charName(c) + "好感", r1(S.aff[c] - before)]);
+      // 第七批 #17 恋爱脑·情绪放大：感情事件里好感下降，孤独额外 +3；好感上升 ≥3，孤独额外 −2
+      const dAff = S.aff[c] - before;
+      if (S.tags.includes("lovebrain") && DATA.loveIds.includes(c) && typeof Story !== "undefined" && Story.running && (dAff < 0 || dAff >= 3)) {
+        const lv = dAff < 0 ? 3 : -2; S.stats.loneliness = clamp(S.stats.loneliness + lv, 0, 100); changes.push(["孤独", lv]);
+      }
     } else if (k.startsWith("fr_")) {
       const c = k.slice(3);
       const d = addFr(c, v);
@@ -150,7 +167,7 @@ function applyFx(fx) {
     } else if (k === "pond_count") {
       S.pond.count += v;                                // 翻车次数 +1（恋爱裁判看这个）
     } else if (k === "pond") {
-      S.pond.value = (S.pond.value || 0) + v;          // 鱼塘值（同时对好几个人热情）
+      S.pond.value = (S.pond.value || 0) + v + (v > 0 && S.tags.includes("pretty") ? 1 : 0);   // 第七批 #17：天生丽质每次多 +1          // 鱼塘值（同时对好几个人热情）
     } else if (k === "pond_trigger") {
       if (v) S.pondTriggerNow = 1;                      // 节日里“都答应”：当场判定翻车（由 runScript 接着处理）
     } else if (k === "date_promise") {   // 剧情里直接答应的周末约会："local:brunch"（谁:哪个地点）→ 写进邀约日程
@@ -158,10 +175,24 @@ function applyFx(fx) {
       S.appointments = S.appointments || [];
       S.appointments.push({ who, week: absWeek(), day: "WEEKEND", place: loc, source: "story", status: "accepted" });
     } else if (k === "skip_week") {
-      if (v) S.skipWeek = S.week;           // 翻课回国：这一周不排日程（作业进度和缺勤由系统算）
+      if (v) { S.skipWeek = S.week; Rules.truant(Rules.fixedDays().length || 1); }   // 翻课回国：这一周不排日程；这周的固定课都算翘了（第十批）
+    } else if (k === "followers") {
+      if (S.notes) S.notes.followers = (S.notes.followers || 0) + v;   // 第十批：小红书粉丝
+    } else if (k === "skip_class") {
+      if (v) Rules.truant(v);               // 第十批：事件里翘课（周中 w22 晒太阳、宿醉周一）
     } else if (k === "extend") {
       Rules.extendDeadline(v);              // 作业延期：最近一份没交的作业截止推后 v 周
       changes.push(["截止推后", v]);
+    } else if (k.startsWith("affmin_")) {   // 过渡段：好感至少到 v（没资格吃醋链的最后一段，好感≥35 时直接进 40）
+      const c = k.slice(7), b = S.aff[c] || 0;
+      if (b < v) { S.aff[c] = v; changes.push([charName(c) + "好感", r1(v - b)]); }
+    } else if (k === "flag_back_home_next") {   // 回国：记下周数，回来后第一个不放假的周孤独 +8
+      S.flags.back_home_next = v ? absWeek() : 0;
+    } else if (k === "flag_ploy_cold_week") {   // Ploy-变2：这一周冷下来（AI 回复变短、不主动）。存周数
+      S.flags.ploy_cold_week = v ? absWeek() : 0;
+    } else if (k.startsWith("affcap_")) {   // 修罗场-6：这个人好感以后最多 v
+      S.affCapOf = S.affCapOf || {}; S.affCapOf[k.slice(7)] = v;
+      const c = k.slice(7); if (S.aff[c] > v) S.aff[c] = v;
     } else if (k.startsWith("inc_")) {     // 计数：inc_ploy_ghostwrite: 1 → 标记 +1
       S.flags[k.slice(4)] = (+S.flags[k.slice(4)] || 0) + v;
     } else if (k.startsWith("item_")) {    // 背包：item_heater_key: 1 拿到／−1 用掉（同一样最多叠 9 个）
@@ -248,6 +279,14 @@ const Rules = {
 
   // 每周一：到账、固定开销、回精力、孤独感自然上涨、适应度、好感自然下降
   weekStart() {
+    // 第十批周中 w15：楼下的流浪猫，之后每学期周报一句（孤独 −2）；大三最后一周告别
+    if (S.flags.stray_cat) {
+      const c = Rules.cal(), key = "cat_" + S.year + "_" + ((c && c.term) || "");
+      if (c && !c.vacation && !S.flags[key] && Math.random() < 0.25) { S.flags[key] = 1; S.stats.loneliness = clamp(S.stats.loneliness - 2, 0, 100); (S._catNote = "楼下那只橘猫又来了。孤独 −2"); }
+      if (S.year === 3 && c && !Rules.calList().some((x) => x.week > S.week) && !S.flags.cat_bye) { S.flags.cat_bye = 1; S._catNote = "走之前，我去楼下看了它一眼。它不在。"; }
+    }
+    // 第九批：没地方设的标记。ollie_cn_fluent＝和 Ollie 语言交换（周末 brunch 版＋工作日版，inc_ollie_exchange_n）累计 12 次以上，或教过他声调
+    if (!S.flags.ollie_cn_fluent && (S.flags.ollie_learn_hard || (S.flags.ollie_exchange_n || 0) >= 12)) S.flags.ollie_cn_fluent = 1;
     const T = DATA.tuning, notes = [];
     // 大一暑假（docs/大一暑假.md）：在国内不打生活费、不扣固定开销、孤独不自然增长；在英国孤独每周 +3
     const sm = S.summer && S.summer.active ? S.summer : null, inCn = sm && sm.loc === "cn";
@@ -260,12 +299,14 @@ const Rules = {
     else S.stats.energy = Math.min(energyMax(), S.stats.energy + T.weeklyEnergy);
     if (S.flags.half_allowance) { S.allowanceHalf = 1; S.flags.half_allowance = 0; }   // 剧情标记的写法（同 allowance_half）
     let lon = sm ? (inCn ? 0 : T.summerUkLoneliness) : Rules.isWinter() ? T.winterLoneliness : T.weeklyLoneliness;
+    if (!sm) lon *= 1 - S.stats.loneliness / 120;   // 数值体检_1119 第三节第 1 条：越高涨得越慢
     if (S.bg.accommodation === "studio" && S.year === 1 && !sm) lon += T.studioLoneliness;
     if (S.tags.includes("glassstomach")) lon += T.glassLoneliness;                  // 玻璃肠胃
     const friends = friendsNow();
-    lon -= Math.min(T.friendLonelinessMax, friends.length * T.friendLoneliness);    // 每个“朋友”孤独增长 −1，最多 −3
+    lon -= Math.min(T.friendLonelinessMax, friends.length * T.friendLoneliness);    // 每个“朋友”孤独增长 −0.5，最多 −2（数值体检_1119）
     const besties = friends.filter((c) => S.fr[c] >= T.frTiers.bestie).length;
     lon -= Math.min(T.bestieLonelinessMax, besties * T.bestieLoneliness);          // 挚友再 −1／人，最多 −2（手机与友情.md 2026-11-18）
+    if (S.flags.back_home_next && absWeek() > S.flags.back_home_next && !(Rules.cal() || {}).vacation) { lon += T.backHomeLoneliness; S.flags.back_home_next = 0; S.homeBackPending = 1; notes.push("回来了：倒时差，房间好空"); }   // 回国回来那一周 +8
     S.stats.loneliness = clamp(S.stats.loneliness + lon, 0, 100);
     S.stats.adapt = clamp(S.stats.adapt + T.weeklyAdapt, 0, 100);
     const foreign = friends.filter((c) => DATA.characters[c].friend.from !== "cn").length;
@@ -277,10 +318,8 @@ const Rules = {
       const d = dating ? (gap > T.datingDecayAfterWeeks ? T.datingDecay : 0) : (S.aff[c] >= T.affDecayMin && gap > T.affDecayAfterWeeks ? T.affDecay : 0);
       if (d) { const b = S.aff[c]; S.aff[c] = Math.max(0, S.aff[c] + d); S.affWeek[c] = (S.affWeek[c] || 0) + S.aff[c] - b; }
     }
-    // 恋爱脑：上一周任何一个攻略对象好感净变化 ≥8，这周学业和作业进度 ×0.8
-    S.loveDistract = S.tags.includes("lovebrain") && (S.year > 1 || S.week > 2) && DATA.loveIds.some((c) => Math.abs(S.affWeek[c] || 0) >= T.loveDistractAt);
+    // 恋爱脑（第七批 #17 修 bug）：改成在工作日结算时看“上次结算以后有没有发生感情事件”（S.loveEvtWho，js/script.js 记），见 Scenes.settle
     S.affWeek = {};
-    if (S.loveDistract) notes.push("满脑子都是那个人，这周学习效率打了折");
     if (S.tags.includes("shopaholic") && Math.random() < 0.3) { S.stats.money -= 40; playSfx("cash"); notes.push("又没忍住，剁手了 -£40"); }
     if (S.tags.includes("weak") && Rules.isWinter() && Math.random() < T.weakColdChance) {   // 弱不禁风：冬季小感冒
       S.stats.energy = clamp(S.stats.energy + T.weakColdEnergy, 0, energyMax()); notes.push(`又感冒了，精力${T.weakColdEnergy}`);
@@ -315,6 +354,7 @@ const Rules = {
     }
     if (loc.id === "chinese_market" && S.tags.includes("glassstomach")) fx.loneliness *= T.glassChineseShop;
     if (loc.id === "dorm_room") fx.energy = Rules.homeEnergy(fx.energy);
+    if (S.tags.includes("otaku")) { if (loc.id === "pub_street") fx.loneliness = T.otakuSocialLoneliness; if (loc.id === "club_room") fx.loneliness = T.otakuClubLoneliness; }   // 第七批 #17
     // 朋友专属好处（决定记录第三节）
     if (typeof Perk !== "undefined") {
       if (loc.id === "gym" && Perk.on("jake")) fx.energy = (fx.energy || 0) + 3;
@@ -339,11 +379,15 @@ const Rules = {
     const a = Rules.act(id);
     const fx = { ...a.fx };
     const eff = S.stats.energy < T.lowEnergy ? T.lowEnergyFactor : 1;
-    if (id === "class" && fx.study) fx.study *= 0.6 + S.stats.english / 100;
+    // 第十批固定课表：上课学业固定 +0.3（不再看英语）；这周固定课都去了，图书馆、做作业 ×1.15；这周翘过课，做作业进度 ×0.85
+    if ((id === "library" || id === "homework") && Rules.fixedDays().length && S.truantWeek !== absWeek()) { if (fx.study) fx.study *= T.attendBonus; if (fx.homework) fx.homework *= T.attendBonus; }
+    if (id === "homework" && S.truantWeek === absWeek() && fx.homework) fx.homework *= T.truantPenalty;
     if (id === "library" && S.tags.includes("scholar")) fx.study *= 1.4;
+    if (id === "work" && S.flags.work_supervisor && fx.money) fx.money += 3;   // 第十批：打工当上小组长，每次 +£3
     if (id === "library" && typeof Perk !== "undefined" && Perk.on("chen_siqi")) fx.study *= 1.1;   // 朋友专属好处：陈思琪
     if (opt.late && fx.study) fx.study *= 0.5;   // 昼伏夜出：迟到，只听了半节（迎新周的“参加迎新活动”没有学业，不算）
     if (id === "social") {
+      if (S.tags.includes("otaku") && fx.loneliness) fx.loneliness = T.otakuSocialLoneliness;   // 第七批 #17：二次元，pub 聚会“不是你的场子”
       fx.energy = Rules.isIntrovert() ? -10 : -3;
       fx.belonging *= Rules.isIntrovert() ? 0.9 : 1.25;
     }
@@ -365,6 +409,7 @@ const Rules = {
     const fx = Rules.activityFx(id, opt);
     const changes = applyFx(fx);
     if (id === "class" && !Rules.act(id).freshers) S.att.classes++;
+    if (id === "work") S.workCount = (S.workCount || 0) + 1;   // 第十批：打工次数（求职线）
     let sick = false;
     if (S.stats.energy <= 0) {   // 精力排到0：生病，下周锁2格宅家
       sick = true; S.sickCount++; S.flags.been_sick = 1;
@@ -373,6 +418,17 @@ const Rules = {
     }
     return { changes, sick };
   },
+
+  // 第十批：这周哪几天固定上课（0＝周一）。大一第 1 周（迎新）、考试周、reading week、假期不锁
+  fixedDays() {
+    const cal = Rules.cal();
+    if (!cal || cal.vacation || cal.exam) return [];
+    if (S.year === 1 && S.week === 1) return [];
+    if ((cal.fixed || []).some((id) => /^reading_week/.test(id))) return [];
+    return ((DATA.timetable || {})[S.year] || []).slice();
+  },
+  // 事件里翘了 n 节课：记这学期的次数，这周做作业 ×0.85
+  truant(n = 1) { S.truantTerm = (S.truantTerm || 0) + n; S.truantWeek = absWeek(); S.att.classes = Math.max(0, S.att.classes - n); },
 
   // 这周是不是“赶ddl周”：截止那周作业进度还不到60
   needRush() { return !!(Rules.deadlineThisWeek() && S.homework < DATA.tuning.rushBelow); },
@@ -431,7 +487,7 @@ const Rules = {
     const hannah = typeof Perk !== "undefined" && Perk.on("hannah") && /小组|presentation/i.test(assignmentName(Rules.deadlineThisWeek() || "")) ? 2 : 0;   // 朋友专属好处：Hannah 小组作业分 +2
     return clamp(18 + 0.32 * S.stats.study + 0.1 * S.stats.english + 0.2 * q + hannah + (Math.random() * 8 - 4) - Rules.yearPenalty(), 0, 100);
   },
-  examMark() { return clamp(25 + 0.45 * S.stats.study + 0.1 * S.stats.english + (Math.random() * 10 - 5) - Rules.yearPenalty(), 0, 100); },
+  examMark() { return clamp(25 + DATA.tuning.examStudyCoef * S.stats.study + 0.1 * S.stats.english + (Math.random() * 10 - 5) - Rules.yearPenalty(), 0, 100); },
   yearPenalty() { return DATA.tuning.yearPenalty[S.year] || 0; },   // 分数公式：大二 −6、大三 −10
 
   // 鱼塘：好感≥60的有2个及以上，有概率翻车；同一个周末约了两个人必翻。
@@ -442,7 +498,8 @@ const Rules = {
     const dated = S.weekendDates.filter((c) => S.aff[c] >= T.pondLevel);
     if (pond.length < 2) return null;
     const p = (T.pondChance * (pond.length - 1) + 0.02 * (S.pond.value || 0)) * (S.tags.includes("lovebrain") ? 2 : 1);   // 鱼塘值每点 +2%
-    if (!(dated.length >= 2 || Math.random() < p)) return null;
+    const pHonest = S.flags.fishpond_honest ? 0.5 : 1;   // 修罗场-5 坦白过：翻车概率减半
+    if (!(dated.length >= 2 || Math.random() < p * pHonest)) return null;
     const who = dated.length >= 2 ? dated : pond;
     for (const c of who) { const b = S.aff[c]; S.aff[c] = Math.max(0, S.aff[c] + T.pondPenalty); S.affWeek[c] = (S.affWeek[c] || 0) + S.aff[c] - b; }
     S.pond.count++; S.pond.maxPeople = Math.max(S.pond.maxPeople, who.length);
@@ -478,12 +535,12 @@ const Rules = {
     if (sun) out.push({ type: "note", text: sun.text, changes: sun.changes });
     // 学期最后一周统计出勤
     if (S.year === 1 && DATA.terms.some(([, b]) => b === S.week)) {
-      const a = S.att;
-      if (typeof Perk !== "undefined" && Perk.on("zhou_kexin") && a.weeksWithClass < a.weeks) a.weeksWithClass++;   // 朋友专属好处：周可欣的笔记，每学期抵一次缺课
-      if (typeof Perk !== "undefined" && Perk.on("zhou_kexin") && a.classes < a.weeks) a.classes++;
-      if (a.weeksWithClass < a.weeks / 2) { S.flags.att_meeting = (S.flags.att_meeting || 0) + 1; out.push({ type: "event", id: "attendance_meeting" }); }
-      else if (a.classes < a.weeks) { S.flags.att_warning = (S.flags.att_warning || 0) + 1; out.push({ type: "event", id: "attendance_warning" }); }
-      S.att = { classes: 0, weeks: 0, weeksWithClass: 0 };
+      // 第十批固定课表：固定课自动算出勤，只有事件里翘课才算缺勤。一学期翘 3 次警告、6 次约谈；周可欣的笔记每学期抵一次
+      let n = S.truantTerm || 0;
+      if (typeof Perk !== "undefined" && Perk.on("zhou_kexin") && n > 0) n--;
+      if (n >= T.truantMeeting) { S.flags.att_meeting = (S.flags.att_meeting || 0) + 1; out.push({ type: "event", id: "attendance_meeting" }); }
+      else if (n >= T.truantWarn) { S.flags.att_warning = (S.flags.att_warning || 0) + 1; out.push({ type: "event", id: "attendance_warning" }); }
+      S.att = { classes: 0, weeks: 0, weeksWithClass: 0 }; S.truantTerm = 0;
     }
     const pond = Rules.pondCheck();
     if (pond) out.push(pond);
@@ -535,13 +592,15 @@ const Rules = {
     const friends = Object.values(S.fr || {}).filter((v) => v >= DATA.tuning.frTiers.friend).length;
     if (f.ghost_caught) main = E.special.ghost;
     else if (f.resit_failed) main = E.special.brain;
-    else if (st.loneliness >= 70 && st.belonging < 30 && friends === 0) main = E.main.lonely;
+    else if (st.loneliness - (f.lonely_exit ? 10 : 0) >= 70 && st.belonging < 30 && friends === 0) main = f.lonely_card_sent ? { ...E.main.home, card: "妈，这张明信片比我先到。" } : E.main.lonely;   // 第十批非恋爱结局：孤独线出口版
     else if (!Object.keys(S.everHigh).length && st.loneliness < 50 && st.belonging < 50) main = E.main.disco;
-    else if (f.stay_uk && (f.internship || (degree >= 60 && st.belonging >= 50))) main = E.main.alien;
+    else if (f.stay_uk && (f.internship || (degree >= 60 && st.belonging >= DATA.tuning.alienBelonging))) main = E.main.alien;   // 融入门槛 50 → 65（数值体检_1119）
     else if (f.stay_uk) main = E.main.creep;
     else main = E.main.home;
     const stamps = [];
-    if (degree >= 70) stamps.push(E.stamps.first);
+    const first = degree >= 70 || (f.borderline_ask && degree >= 69.5);   // 第十批：差 0.4 分去问了（borderline_ask），69.5 也算 First
+    if (first) stamps.push(E.stamps.first);
+    if (f.final_balanced && !first) main = { ...main, card: (main.card || "") + "差 0.4。我还是吃了每一顿饭。" };
     // 恋爱裁判（盖章）：鱼塘翻车 2 次，或一次牵涉 3 人以上；涉及的人这一局拿不到 HE
     const trialStamp = S.pond.count >= 2 || S.pond.maxPeople >= 3;
     if (trialStamp) stamps.push(E.stamps.love_trial);
@@ -550,28 +609,39 @@ const Rules = {
     // HE：交往中 confessed_{id}，考验通过 trial_{id} = 1，好感 ≥ 85（家教森严选了隐瞒的是 90），再加各自原来的条件
     // BE：各自原来的条件；或者交往中但考验没过（trial_{id} = −1）
     const T = DATA.tuning;
+    // BE 暗示的两个补救（剧本_BE暗示.md，Cora 11/19 定）：Ploy 替写正好 2 次＋自己写过＋考验拒绝 → 次数算回 1；
+    // Ollie 最后机会（local_asked_late）：也算问出口了，但 HE 好感要 90
+    const ghost = f.ploy_redeemed && (f.ploy_ghostwrite || 0) === 2 ? 1 : (f.ploy_ghostwrite || 0);
     const he = {
       senior: !f.stay_uk && !f.senior_fallout,
-      local: !!f.local_asked,
-      groupmate: (f.ploy_ghostwrite || 0) <= 1,
+      local: !!(f.local_asked || f.local_asked_late),
+      groupmate: ghost <= 1,
       otaku: !!f.otaku_public,
     };
     const be = {
       senior: S.everHigh.senior && S.aff.senior < 60,
-      local: S.everHigh.local && !f.local_asked,
-      groupmate: (f.ploy_ghostwrite || 0) >= 2,
+      local: S.everHigh.local && !f.local_asked && !f.local_asked_late,
+      groupmate: ghost >= 2,
       otaku: !!f.otaku_private,
     };
     const love = {};
     for (const c of DATA.loveIds) {
       const dating = !!f["confessed_" + c], trial = f["trial_" + c] || 0;
-      const need = f.strict_hidden ? T.heAffStrictHidden : T.heAff;
-      if (dating && trial === 1 && S.aff[c] >= need && he[c] && !pondHit[c]) { stamps.push(E.love[c].he); love[c] = "he"; }
+      let need = f.strict_hidden ? T.heAffStrictHidden : T.heAff;
+      if (c === "local" && f.local_asked_late && !f.local_asked) need = Math.max(need, 90);
+      if (dating && trial === 1 && S.aff[c] >= need && he[c] && !pondHit[c]) {
+        let st = E.love[c].he;   // HE 明信片的两种变体（剧本_攻略线与友情线 学长 HE、剧本_BE暗示 第三节）
+        if (c === "senior" && f.confess_me_first_senior) st = { ...st, card: "店开张了。剪完彩，他凑过来小声说：“这次我先说：房子找好了。——我是说我们的。”" };
+        if (c === "local" && f.local_asked_late && !f.local_asked) st = { ...st, card: "Sunday roast，萨里。他妈妈说的第一句是：“So you're the one in the corner of all his graduation photos.”「原来你就是他毕业照每张角落里的那个人。」" + st.card.replace(/^Sunday roast，萨里。/, "") };
+        const why = S.flags["why_" + c + "_3"], ps = why && (DATA.whyPostscript || {})[c] && DATA.whyPostscript[c][why];   // 第十批：动心原因的 P.S.
+        if (ps && st.card) st = { ...st, card: st.card + "\n" + ps.text };
+        stamps.push(st); love[c] = "he";
+      }
       else if (be[c] || (dating && trial === -1)) { stamps.push(E.love[c].be); love[c] = "be"; }
       else if (dating) love[c] = "ing";
     }
-    if (Object.values(love).includes("ing")) stamps.push(E.stamps.love_ing);   // 恋爱ing：交往中、HE BE 都不满足（盖一个就够）
-    return { main, stamps, love, degree, band: Rules.band(degree) };
+    if (Object.values(love).includes("ing")) stamps.push(love.senior === "ing" && f.stay_uk && E.stamps.love_ing_senior_stay ? E.stamps.love_ing_senior_stay : E.stamps.love_ing);   // 学长交往中但留英：专门一句   // 恋爱ing：交往中、HE BE 都不满足（盖一个就够）
+    return { main, stamps, love, degree, band: first ? "First" : Rules.band(degree) };
   },
 };
 
@@ -597,12 +667,25 @@ function optName(group) {
 }
 
 // 文本里的变量：{名字} {家乡} {家乡食物} {老乡台词} {专业}，以及旧写法 {food} {meme} {hometown} {name} {money}
+// 这个人叫你什么（docs/英文名规则.md 第三节）：中国人叫中文名；外国人有英文名叫英文名；Ollie 坚持中文名；
+// Ploy 叫英文名，没起就叫 Lily，选过“叫我{名字}”（ploy_real_name）叫中文名；老师看 Nikos 点名时选的
+function callMe(c) {
+  const zh = S.name || "你", en = S.enName || "";
+  if (!c || !DATA.characters[c]) return zh;
+  if (c === "local") return zh;
+  if (c === "groupmate") return S.flags.ploy_real_name ? zh : (en || "Lily");
+  if (["nikos", "marcia", "pike"].includes(c)) return en && S.flags.teachers_en ? en : zh;
+  const ch = DATA.characters[c];
+  return ch.lang === "en" && c !== "mei" ? (en || zh) : zh;
+}
 function fillText(t) {
   if (!S || !t) return t || "";
   const h = hometown();
   const food = h.food.split("、")[0];
-  const map = { "名字": S.name || "你", name: S.name || "你", "家乡": h.name, hometown: h.name, "家乡食物": food, food,
-                "老乡台词": h.meme, meme: h.meme, "专业": optName("major"), money: Math.round(S.stats.money),
+  const map = { "打工次数": String(S.workCount || 0), "名字": S.name || "你", name: S.name || "你", "家乡": h.name, hometown: h.name, "家乡食物": food, food,
+                "老乡台词": h.line || h.meme, meme: h.meme, "英文名": S.enName || S.name || "你", "叫我": callMe(fillText.speaker),
+                "同伴": S.tripMate ? charName(S.tripMate) : "",
+                "名字的错误念法": typeof Story5 !== "undefined" ? Story5.nameTypo() : "", "离谱念法": typeof Story5 !== "undefined" ? Story5.nameTypo() : "", "专业": optName("major"), money: Math.round(S.stats.money),
                 "代写价格": "£" + Rules.ghostCost(), "今天": `${Rules.month()}月${7 + (S.week * 3) % 21}日` };
   for (const [k, id] of Object.entries(S.pick || {})) map[k] = charName(id);
   // 大二大三剧本里的人名变量
@@ -640,10 +723,10 @@ function condCtx() {
   const deadlineIn = () => Rules.deadlineIn();
   const c = {
     week: S.week, year: S.year, wealth: S.bg.wealth, housing: S.bg.accommodation, english: S.stats.english,
-    ie: S.bg.personality === "i" ? "I" : "E", hometown: hometown().name, major: S.bg.major, firstAbroad: S.bg.abroad === "yes",
+    ie: S.bg.personality === "i" ? "I" : "E", hometown: hometown().like || hometown().name,   // 第十批：港澳台在条件里按广东算 major: S.bg.major, firstAbroad: S.bg.abroad === "yes",
     tag, flag, aff, stat, fr, frTier: frTierOf, dating, trial, deadlineIn,
     // 第五批：省份（家乡省份名，如 '广东'）、季节（秋/冬/春/夏）、下雨（这周下雨）、周末日（'六'/'日'）、时段（'上午'/'下午'/'晚上'）、物品('id')
-    province: (hometown().name || "").replace(/[省市]$/, ""), season: Rules.season(), rain: !!(Rules.cal() || {}).rain,
+    province: (hometown().like || hometown().name || "").replace(/[省市]$/, ""), season: Rules.season(), rain: !!(Rules.cal() || {}).rain,
     seen: (id) => !!(S.flags["seen_" + id] || S.flags["done_" + id] || (S.midSeen || {})[id] || (S.placeSeen || {})[id] || (S.encountersSeen || {})[id]),
     term: (() => { const t = (Rules.cal() || {}).term || ""; return /秋/.test(t) ? "秋" : /春/.test(t) ? "春" : /夏/.test(t) ? "夏" : "假"; })(),
     examWeek: !!(Rules.cal() || {}).exam,
@@ -657,8 +740,14 @@ function condCtx() {
   return Object.assign(c, { "周数": c.week, "学年": c.year, "家境": optName("wealth"), "住宿": optName("accommodation"), "英语": c.english,
     "性格": c.ie, "家乡": c.hometown, "专业": optName("major"), "第一次出国": c.firstAbroad, "标签": tag, "标记": flag, "好感": aff, "数值": stat,
     "友情": fr, "友情档": frTierOf, "交往中": dating, "考验": trial, "距截止": deadlineIn,
-    "省份": c.province, "季节": c.season, "下雨": c.rain, "周末日": c.wkday, "时段": c.tod, "物品": c.has, "演过": c.seen, "春节": c.spring, "好处": (n) => typeof Perk !== "undefined" && Perk.on(charId(n)),
-    "学期": c.term, "考试周": c.examWeek, "下雪": c.snow, "学期末": c.termEnd, "假期前": c.termEnd, "刚交完作业": c.justSubmitted, "名字错法": c.nameTypo });
+    "省份": c.province, "季节": c.season, "下雨": c.rain, "周末日": c.wkday, "时段": c.tod, "物品": c.has, "演过": c.seen, "演过几周了": (id) => (S.seenWk && S.seenWk[id] != null ? absWeek() - S.seenWk[id] : -1), "春节": c.spring, "好处": (n) => typeof Perk !== "undefined" && Perk.on(charId(n)),
+    "学期": c.term, "考试周": c.examWeek, "下雪": c.snow, "学期末": c.termEnd, "假期前": c.termEnd, "刚交完作业": c.justSubmitted, "名字错法": c.nameTypo,
+    // 第六、七批：英文名（没起是空串）、告白后几周（没告白 -1）、这周见过面、阶段 0–4、有交往对象、孤独、精力、冬季（大一第7–20周，大二大三按日历）
+    "翘课次数": S.truantTerm || 0, "这周翘课": S.truantWeek === absWeek(),   // 第十批固定课表
+    "英文名": S.enName || "", "告白后": (n) => (S.confessWk && S.confessWk[charId(n)] != null ? absWeek() - S.confessWk[charId(n)] : -1),
+    "见过面": (n) => !!(S.metWk && S.metWk[charId(n)] === absWeek()), "阶段": (n) => (DATA.loveIds.includes(charId(n)) ? loveStageOf(charId(n)) : friendStageOf(charId(n))),
+    "有交往对象": DATA.loveIds.some((x) => S.flags["confessed_" + x]), "孤独": S.stats.loneliness, "精力": S.stats.energy, "学业": S.stats.study, "融入": S.stats.belonging,
+    "生活费": S.stats.money, "旅伴": S.tripMate || "", "告白前一周": (n) => !!(S.confessEveWk && S.confessEveWk[charId(n)] && S.confessEveWk[charId(n)].wk === absWeek()), "冬季": S.year === 1 ? S.week >= 7 && S.week <= 20 : Rules.season() === "冬" });
 }
 function evalCond(expr) {
   if (expr === true || expr === undefined) return true;
@@ -670,10 +759,11 @@ function evalCond(expr) {
 const Save = {
   SLOTS: 6,
   key(i) { return "liuxue_slot_" + i; },   // i: 1–6 或 "auto"
-  write(i) {
-    const cal = Rules.cal();
-    const meta = { label: timeLabel().join(" "), date: new Date().toLocaleString("zh-CN", { hour12: false }), bg: currentBg || "dorm_room", name: S.name };
-    localStorage.setItem(Save.key(i), JSON.stringify({ meta, S }));
+  // snap：Save.snapshot() 先拍下来的进度（剧情开始前那一刻）。不给就存现在
+  write(i, snap) { localStorage.setItem(Save.key(i), snap || Save.snapshot()); },
+  snapshot(label, bg) {
+    const meta = { label: label || timeLabel().join(" "), date: new Date().toLocaleString("zh-CN", { hour12: false }), bg: bg || currentBg || "dorm_room", name: S.name };
+    return JSON.stringify({ meta, S });
   },
   read(i) { try { return JSON.parse(localStorage.getItem(Save.key(i))); } catch (e) { return null; } },
   load(i) {

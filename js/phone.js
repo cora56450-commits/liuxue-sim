@@ -1,4 +1,4 @@
-// 手机：聊天（单聊 + 群聊）、小红书、日历
+// 手机：WeChap／Instagran（单聊 + 群聊 + 动态）、小红书、日历、邮件、便签本。动态引擎（固定池、story、点赞效果）在 js/phone6.js
 const Phone = {
   esc(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;"); },
 
@@ -19,18 +19,32 @@ const Phone = {
   },
 
   open() { Phone.home(); },
-  tabs(cur) { return `<div class="chat-tabs"><b class="${cur === "chat" ? "on" : ""}" data-ct="chat">消息</b><b class="${cur === "moments" ? "on" : ""}" data-ct="moments">动态</b></div>`; },
-  bindTabs(o) { o.querySelectorAll("[data-ct]").forEach((b) => b.onclick = () => (b.dataset.ct === "chat" ? Phone.chatList() : Phone.moments())); },
+  // 方案 A（docs/手机App和动态.md）：聊天拆成 WeChap（wc，中国人＋家人，动态＝朋友圈）和 Instagran（ig，外国人＋混合群，动态＝帖子＋story）
+  curApp: "wc",
+  appName(app) { return app === "ig" ? "Instagran" : "WeChap"; },
+  tabs(cur, app) {
+    app = app || Phone.curApp;
+    return `<div class="chat-tabs p6-tabs ${app}"><b class="${cur === "chat" ? "on" : ""}" data-ct="chat">${app === "ig" ? "私信" : "消息"}</b><b class="${cur === "moments" ? "on" : ""}" data-ct="moments">${app === "ig" ? "帖子" : "朋友圈"}</b></div>`;
+  },
+  bindTabs(o, app) { o.querySelectorAll("[data-ct]").forEach((b) => b.onclick = () => (b.dataset.ct === "chat" ? Phone.chatList(app) : Phone.moments(app))); },
 
   home() {
-    // 邮件、便签本还没有图标（要 app_mail.png、app_glossary.png），先用现有的图顶着
-    const apps = [["chat", "聊天", () => Phone.chatList()], ["notes", "小红书", () => Phone.notes("feed")], ["calendar", "日历", () => Phone.calendar()],
-      ["mail", "邮件", () => Phone.mailbox(), "shipping_label"], ["glossary", "便签本", () => Phone.glossary(), "stamp_rect"], ["bag", "背包", () => Bag.open(), "stamp_rect"], ["settings", "设置", () => Sys.settings()]];
-    const unread = (S.mailbox || []).filter((m) => !m.seenInBox).length;
-    const o = Phone.frame(`<div class="app-grid">${apps.map(([id, name, , ph], i) => `<div class="app" data-i="${i}">${ph ? `<span class="app-ph"><img src="assets/ui/${ph}.png" alt=""></span>` : `<img src="assets/ui/app_${id}.png" alt="">`}<span>${name}</span>${id === "mail" && unread ? `<i class="app-badge">${unread}</i>` : ""}${id === "chat" && (S.unreadMoments || S.unreadChat) ? `<i class="app-badge">${(S.unreadMoments || 0) + (S.unreadChat || 0)}</i>` : ""}</div>`).join("")}</div>
+    Phone6.init(); Phone6.weekly();
+    const mail = (S.mailbox || []).filter((m) => !m.seenInBox).length;
+    // [id, 名字, 打开, 图标（assets/ui/ 下的文件名）, 角标数, 没有图标时的替代图]
+    const apps = [["wechap", "WeChap", () => Phone.chatList("wc"), "app_wechap", Phone6.unread("wc")],
+      ["instagran", "Instagran", () => Phone.chatList("ig"), "app_instagran", Phone6.unread("ig")],
+      ["notes", "小红书", () => Phone.notes("feed"), "app_notes"], ["calendar", "日历", () => Phone.calendar(), "app_calendar"],
+      ["mail", "邮件", () => Phone.mailbox(), "app_mail", mail], ["glossary", "便签本", () => Phone.glossary(), "app_glossary"],
+      ["bag", "背包", () => Bag.open(), null, 0, "stamp_rect"], ["settings", "设置", () => Sys.settings(), "app_settings"]];
+    const o = Phone.frame(`<div class="app-grid">${apps.map(([id, name, , icon, n, ph], i) => `<div class="app" data-i="${i}" data-app="${id}">${icon ? `<img src="assets/ui/${icon}.png" alt="">` : `<span class="app-ph"><img src="assets/ui/${ph}.png" alt=""></span>`}<span>${name}</span>${n ? `<i class="app-badge">${n}</i>` : ""}</div>`).join("")}</div>
       <div class="ph-wall">${timeLabel().join("<br>")}</div>`, { title: S.name || "手机", cls: "home" });
     o.querySelectorAll(".app").forEach((el) => el.onclick = apps[+el.dataset.i][2]);
-    setTimeout(() => Guide.show("phone", o.querySelector(".app")), 400);
+    // 新手卡：第一次打开手机 → WeChap；通讯录里第一次有外国人 → Instagran
+    setTimeout(() => {
+      Guide.show("wechap", o.querySelector("[data-app=wechap]"));
+      if (Phone.contacts().some((c) => Phone6.platOf(c) === "ig")) Guide.show("instagran", o.querySelector("[data-app=instagran]"));
+    }, 400);
   },
 
   // 通讯录（docs/手机与友情.md）：见过面的攻略对象 + 认识了的、有联系方式的固定 NPC + Essay学姐
@@ -49,16 +63,21 @@ const Phone = {
   ava(c) { const ch = DATA.characters[c]; return `<div class="c-ava" style="background:${ch.color}">${ch.short[0]}</div>`; },
   groups() { return Object.keys(DATA.groups).filter((g) => S.flags["grp_" + g] || evalCond(DATA.groups[g].unlock)); },
 
-  chatList() {
+  // 聊天列表：app = "wc"（WeChap）或 "ig"（Instagran）。联系人按 lang 分，Mei 两边都有；家庭群、老乡群在 WeChap，别的群（小组群、flat 群）在 Instagran
+  chatList(app) {
+    app = app || Phone.curApp || "wc"; Phone.curApp = app;
+    Phone6.init();
     const last = (arr, f) => (arr && arr.length ? Phone.esc(f(arr[arr.length - 1])).slice(0, 18) : "还没有消息");
+    const dot = (n) => (n ? `<i class="c-unread">${n}</i>` : "");
     const rows = [
-      ...Phone.groups().map((g) => `<div class="contact" data-g="${g}"><div class="c-ava grp">群</div><div><b>${fillText(DATA.groups[g].name)}</b><small>${last(S.groupChats[g], (m) => m.text)}</small></div></div>`),
-      ...Phone.contacts().map((c) => `<div class="contact" data-c="${c}">${Phone.ava(c)}<div><b>${DATA.characters[c].name}</b><small>${last(S.chats[c], (m) => m.content)}</small></div>${Phone.relLabel(c)}</div>`),
+      ...Phone.groups().filter((g) => Phone6.groupApp(g) === app).map((g) => `<div class="contact" data-g="${g}"><div class="c-ava grp">群</div><div><b>${fillText(DATA.groups[g].name)}</b><small>${last(S.groupChats[g], (m) => m.text)}</small></div>${dot(Phone6.chatUnread("g:" + g))}</div>`),
+      ...Phone.contacts().filter((c) => Phone6.inApp(c, app)).map((c) => `<div class="contact" data-c="${c}">${Phone.ava(c)}<div><b>${DATA.characters[c].name}</b><small>${last(S.chats[c], (m) => m.content)}</small></div>${Phone.relLabel(c)}${dot(Phone6.chatUnread("c:" + c))}</div>`),
     ];
-    const o = Phone.frame(`${Phone.tabs("chat")}<div class="contact-list">${rows.join("")}</div>`, { title: "聊天", back: () => Phone.home() });
-    Phone.bindTabs(o);
+    const o = Phone.frame(`${Phone.tabs("chat", app)}<div class="contact-list">${rows.join("") || `<div class="note-empty">${app === "ig" ? "还没有互关的人" : "还没有联系人"}</div>`}</div>`, { title: Phone.appName(app), back: () => Phone.home(), cls: "app-" + app });
+    Phone.bindTabs(o, app);
     o.querySelectorAll("[data-c]").forEach((el) => el.onclick = () => Phone.chat(el.dataset.c));
     o.querySelectorAll("[data-g]").forEach((el) => el.onclick = () => Phone.group(el.dataset.g));
+    setTimeout(() => Guide.show("phone", o.querySelector(".contact-list .contact")), 400);
   },
 
   // 单聊（API）。攻略对象加好感（0–3）、固定 NPC 加友情（0–2）由 AI 判断，每人每周只算一次；Essay学姐 不加
@@ -67,7 +86,8 @@ const Phone = {
     S.chats[cur] = S.chats[cur] || [];
     const head = () => Phone.relLabel(cur).replace(/<\/?em[^>]*>/g, "");
     S.unreadChat = 0; renderPhoneDot();
-    const o = Phone.frame(`<div class="phone-log"></div>${Phone.canAsk(cur) ? `<button class="hud-btn ask-btn">约</button>` : ""}${Gift.canGive(cur) && cur !== "essay_senior" ? `<button class="hud-btn gift-btn">送东西</button>` : ""}`, { title: c.name, right: head(), back: () => Phone.chatList(), input: "说点什么……" });
+    if (!Phone6.inApp(cur, Phone.curApp)) Phone.curApp = Phone6.platOf(cur);   // 从 story 的“回复”、剧情里进来：回到对的 App
+    const o = Phone.frame(`<div class="phone-log"></div>${Phone.canAsk(cur) ? `<button class="hud-btn ask-btn">约</button>` : ""}${Gift.canGive(cur) && cur !== "essay_senior" ? `<button class="hud-btn gift-btn">送东西</button>` : ""}`, { title: c.name, right: head(), back: () => Phone.chatList(), input: "说点什么……", cls: "app-" + Phone.curApp });
     if (Phone.canAsk(cur)) o.querySelector(".ask-btn").onclick = () => Phone.askFlow(cur);
     if (o.querySelector(".gift-btn")) o.querySelector(".gift-btn").onclick = () => Gift.pick(cur, () => Phone.chat(cur));
     const log = o.querySelector(".phone-log");
@@ -75,6 +95,7 @@ const Phone = {
     const render = () => {
       log.innerHTML = (S.chats[cur].length || busy ? "" : `<div class="log-empty">还没聊过</div>`) + S.chats[cur].map((m) => Story5.bubble(m, false)).join("") + (busy ? `<div class="msg them typing">…</div>` : "");
       log.scrollTop = log.scrollHeight;
+      Phone6.markSeen("c:" + cur, S.chats[cur].length);
     };
     render();
     if (!AI.hasKey()) return Phone.chatFallback(cur, o, render, head);   // 没有 Key：每周一次固定三选一
@@ -187,27 +208,36 @@ const Phone = {
     const love = DATA.loveIds.includes(cur);
     if (!n || S.chatWeek[cur] === weekKey() || (!love && !(cur in S.fr))) return;   // 攻略对象可以是负的（敷衍、冒犯）
     S.chatWeek[cur] = weekKey();
-    FX.float(applyFx({ [(love ? "aff_" : "fr_") + cur]: love ? n : Math.min(DATA.tuning.frChatMax, n) }));
+    S.affCtx = "chat";
+    try { FX.float(applyFx({ [(love ? "aff_" : "fr_") + cur]: love ? n : Math.min(DATA.tuning.frChatMax, n) })); } finally { S.affCtx = null; }
   },
 
-  // ===== 动态（Ins／朋友圈）：通讯录里的人发动态，内容走 API；没有 Key 用 data/notes.js 的固定内容 =====
+  // ===== 动态：WeChap 朋友圈（中国人发的、主角发在朋友圈的）／Instagran 帖子＋story（外国人发的、主角发在 Ins 的）=====
+  // 来源：AI 每周的 S.moments.feed（没有 Key 用 data/notes.js 兜底）＋剧情的 S.moments.story（Story5.moment）＋固定池 S.ig.posts（js/phone6.js）＋主角的 S.moments.mine
   async loadMoments(force) {
     const people = Phone.contacts().filter((c) => c !== "essay_senior");
     if (!force && S.moments.week === weekKey() && S.moments.feed.length) return;
-    let feed = people.length && AI.hasKey() ? await AI.momentsFeed(people) : null;
+    // 第二个参数：要求这周必发的人（Ploy）。现在的 AI.momentsFeed 只认第一个参数，提示词要 ai.js 那边改（见 phone6.js 顶上的说明）
+    let feed = people.length && AI.hasKey() ? await AI.momentsFeed(people, { must: people.includes("groupmate") ? ["groupmate"] : [] }) : null;
     if (!feed) {
       const pool = DATA.momentsFallback;
       feed = people.slice(0, 6).map((c, i) => { const lines = pool[c] || pool._default; return { who: c, text: lines[Math.abs(Flow.hash(c) + S.week + i) % lines.length] }; });
     }
-    S.moments.feed = feed.map((p) => ({ likes: 1 + (Math.abs(Flow.hash(p.text)) % 16), liked: false, comments: [], ...p }));
+    Phone6.init();
+    S.moments.feed = feed.map((p) => ({ likes: 1 + (Math.abs(Flow.hash(p.text)) % 16), liked: false, comments: [], ...p, week: weekKey(), t: S.ig.seq++ }));
     S.moments.week = weekKey();
+    Phone6.afterAiFeed(S.moments.feed);
   },
-  async moments() {
+  async moments(app) {
+    app = app || Phone.curApp || "wc"; Phone.curApp = app;
+    Phone6.init(); Phone6.weekly();
     const draw = (inner) => {
-      const o = Phone.frame(`${Phone.tabs("moments")}<div class="mo-bar"><b data-mo="new">＋发动态</b><b data-mo="refresh">刷新</b></div>${inner}`, { title: "动态", back: () => Phone.home(), cls: "moments" });
-      Phone.bindTabs(o);
-      o.querySelector("[data-mo=new]").onclick = () => Phone.momentCompose();
-      o.querySelector("[data-mo=refresh]").onclick = () => { S.moments.week = -1; Phone.moments(); };
+      const o = Phone.frame(`${Phone.tabs("moments", app)}${app === "ig" ? Phone6.ringRow() : ""}<div class="mo-bar p6-bar"><b data-mo="new">＋发${app === "ig" ? "帖子" : "朋友圈"}</b><b data-mo="refresh">刷新</b></div>${inner}`,
+        { title: app === "ig" ? "Instagran" : "朋友圈", back: () => Phone.home(), cls: "moments app-" + app });
+      Phone.bindTabs(o, app);
+      o.querySelector("[data-mo=new]").onclick = () => Phone.momentCompose(app);
+      o.querySelector("[data-mo=refresh]").onclick = () => { S.moments.week = -1; Phone.moments(app); };
+      if (app === "ig") Phone6.bindRings(o);
       return o;
     };
     if (S.moments.week !== weekKey() || !S.moments.feed.length) {
@@ -215,75 +245,95 @@ const Phone = {
       await Phone.loadMoments();
       if (!document.querySelector("#overlay.ov-phone")) return;
     }
-    // 剧情写的朋友圈（Story5.moment）：最近的排在最前面，看过就不算未读
-    for (const p of (S.moments.story || []).slice(0, 8).reverse()) if (!S.moments.feed.includes(p) && !S.moments.feed.some((f) => f.text === p.text && f.who === p.who)) S.moments.feed.unshift(p);
-    S.unreadMoments = 0; renderPhoneDot();
-    const name = (w) => (w === "me" ? S.name || "我" : charName(w));
-    const post = (p, i, mine) => `<div class="mo-post">${p.who === "me" ? `<div class="c-ava me">${(S.name || "我")[0]}</div>` : Phone.ava(p.who)}
-      <div class="mo-main"><b>${Phone.esc(name(p.who))}</b><p>${Phone.esc(fillText(p.text))}${p.tr && Settings.v.showTr ? `<em class="msg-tr">${Phone.esc(p.tr)}</em>` : ""}</p>${p.img ? `<div class="mo-img">［${Phone.esc(fillText(p.img))}］</div>` : ""}
-      <div class="mo-acts"><span class="mo-like ${p.liked ? "on" : ""}" data-like="${mine ? "m" : "f"}${i}">♥ ${p.likes + (p.liked ? 1 : 0)}</span>${mine ? "" : `<span class="mo-cmt" data-cmt="${i}">评论</span>`}</div>
-      ${p.comments.length ? `<div class="mo-cmts">${p.comments.map((c) => `<div><b>${Phone.esc(name(c.who))}</b>${Phone.esc(c.text)}${c.tr && Settings.v.showTr ? `<em class="msg-tr">${Phone.esc(c.tr)}</em>` : ""}</div>`).join("")}</div>` : ""}</div></div>`;
-    const o = draw(`<div class="mo-list">${S.moments.mine.map((p, i) => post(p, i, true)).join("")}${S.moments.feed.map((p, i) => post(p, i, false)).join("")}</div>`);
+    const list = Phone6.feedList(app);
+    Phone6.clearFeed(app);   // 看过就不算未读（只清这个 App 的）
+    const o = draw(`<div class="mo-list p6-list">${list.map((p, i) => (app === "ig" ? Phone6.igPost(p, i) : Phone6.wcPost(p, i))).join("") || `<div class="note-empty">${app === "ig" ? "还没有人发帖子" : "朋友圈还是空的"}</div>`}</div>`);
     o.querySelectorAll("[data-like]").forEach((el) => el.onclick = () => {
-      const k = el.dataset.like, p = (k[0] === "m" ? S.moments.mine : S.moments.feed)[+k.slice(1)];
-      if (k[0] === "m") return;
-      p.liked = !p.liked; Phone.moments();
+      const p = list[+el.dataset.like];
+      if (p.who === "me") return;
+      p.liked = !p.liked;
+      if (p.liked) Phone6.onLike(p);
+      Phone.moments(app);
     });
-    o.querySelectorAll("[data-cmt]").forEach((el) => el.onclick = () => Phone.momentComment(+el.dataset.cmt));
+    o.querySelectorAll("[data-cmt]").forEach((el) => el.onclick = () => Phone.momentComment(list[+el.dataset.cmt], app));
+    o.querySelectorAll("[data-rp]").forEach((el) => el.onclick = () => { Phone6.repost(list[+el.dataset.rp]); Phone.moments(app); });
+    if (list.length) setTimeout(() => Guide.show("feed", o.querySelector(".p6-list")), 400);
   },
-  // 评论别人的动态：算一次互动（有 Key 时对方会回，AI 判断加好感／友情）
-  momentComment(i) {
-    const p = S.moments.feed[i];
-    const o = Phone.frame(`<div class="mo-list">
-      <div class="mo-post">${Phone.ava(p.who)}<div class="mo-main"><b>${Phone.esc(charName(p.who))}</b><p>${Phone.esc(fillText(p.text))}</p></div></div></div>`,
-      { title: "评论", back: () => Phone.moments(), input: "写评论……", cls: "moments" });
+  // 评论别人的动态：算一次互动。固定池的帖子写了 reply 就用写好的回复（replyTo 只在你说的是那句时用），否则走 AI
+  momentComment(p, app) {
+    app = app || Phone.curApp;
+    if (typeof p === "number") p = Phone6.feedList(app)[p];   // 旧的调用方式（下标）
+    if (!p) return Phone.moments(app);
+    const o = Phone.frame(`<div class="mo-list p6-list">${app === "ig" ? Phone6.igPost(p, -1, true) : Phone6.wcPost(p, -1, true)}</div>`,
+      { title: "评论", back: () => Phone.moments(app), input: "写评论……", cls: "moments app-" + app });
     const input = o.querySelector(".phone-input input");
     const send = async () => {
       const text = input.value.trim(); if (!text) return; playSfx("phone_send");
       input.disabled = true;
+      p.comments = p.comments || [];
       p.comments.push({ who: "me", text });
-      logLine(`〔评论了${charName(p.who)}的动态〕${text}`);
-      if (AI.hasKey()) {
+      p.commented = 1;
+      logLine(`〔评论了${Phone6.whoName(p.who, p.account)}的动态〕${text}`);
+      const real = DATA.characters[p.who] && p.who !== "me";
+      const fixed = real ? Phone6.fixedReply(p, text) : null;
+      if (fixed) {
+        p.comments.push({ who: p.who, text: fixed.text, tr: fixed.tr || "" });
+        if (AI.hasKey()) { const r = await AI.momentReply(p, text); if (r) Phone.gain(p.who, r.gain); else S.lastMet[p.who] = absWeek(); }   // 回复用写好的，好感还是 AI 判断
+        else S.lastMet[p.who] = absWeek();
+      } else if (real && AI.hasKey()) {
         const r = await AI.momentReply(p, text);
         if (r) { p.comments.push({ who: p.who, text: r.text, tr: r.tr || "" }); Phone.gain(p.who, r.gain); }
         else S.lastMet[p.who] = absWeek();
-      } else S.lastMet[p.who] = absWeek();
-      Phone.moments();
+      } else if (real) S.lastMet[p.who] = absWeek();
+      Phone.moments(app);
     };
     o.querySelector(".phone-input button").onclick = send;
     input.onkeydown = (e) => { if (e.key === "Enter") send(); };
     input.focus();
   },
-  momentCompose() {
-    const o = Phone.frame(`<div class="compose"><textarea id="mo-body" maxlength="200" placeholder="这一刻的想法……"></textarea>
-      <button class="hud-btn" id="mo-send">发布</button><small>通讯录里的人会来点赞、评论（有 API Key 时由 AI 生成）。</small></div>`, { title: "发动态", back: () => Phone.moments(), cls: "moments" });
+  // 发动态：先选平台。朋友圈只有中国人看得到、能评论；Ins 只有外国人（Mei 两边都在）
+  momentCompose(app) {
+    let plat = app || Phone.curApp || "wc";
+    const o = Phone.frame(`<div class="compose p6-compose">
+      <div class="plat-pick"><button data-pl="wc"><img src="assets/ui/app_wechap.png" alt="">朋友圈</button><button data-pl="ig"><img src="assets/ui/app_instagran.png" alt="">Instagran</button></div>
+      <small class="plat-hint"></small>
+      <textarea id="mo-body" maxlength="200" placeholder="这一刻的想法……"></textarea>
+      <button class="hud-btn" id="mo-send">发布</button><small>看得到的人会来点赞、评论（有 API Key 时由 AI 生成）。</small></div>`, { title: "发动态", back: () => Phone.moments(plat), cls: "moments app-" + plat });
+    const pick = () => {
+      o.querySelectorAll("[data-pl]").forEach((b) => b.classList.toggle("on", b.dataset.pl === plat));
+      o.querySelector(".plat-hint").textContent = plat === "wc" ? "发在朋友圈：只有中国同学和家里人看得到、能评论。" : "发在 Instagran：只有外国同学看得到、能评论。";
+    };
+    o.querySelectorAll("[data-pl]").forEach((b) => b.onclick = () => { plat = b.dataset.pl; pick(); });
+    pick();
     o.querySelector("#mo-send").onclick = async () => {
       const text = $("#mo-body").value.trim(); if (!text) return toast("写点什么");
       playSfx("camera");
       const btn = $("#mo-send"); btn.disabled = true; btn.textContent = "发布中……";
-      const post = { who: "me", text, likes: 0, comments: [], week: weekKey() };
-      const people = Phone.contacts().filter((c) => c !== "essay_senior");
+      Phone6.init();
+      const post = { who: "me", text, likes: 0, comments: [], week: weekKey(), platform: plat, t: S.ig.seq++ };
+      const people = Phone.contacts().filter((c) => c !== "essay_senior" && Phone6.inApp(c, plat));
       const r = AI.hasKey() && people.length ? await AI.momentsReact(post, people) : null;
       if (r) { post.likes = r.likes; post.comments = r.comments; }
       else post.likes = Math.min(people.length, 1 + Math.floor(Math.random() * 4));
       S.moments.mine.unshift(post);
       if (S.moments.mine.length > 30) S.moments.mine.pop();
-      logLine(`〔发了一条动态〕${text}`);
-      Phone.moments();
+      logLine(`〔发了一条${plat === "ig" ? " Ins" : "朋友圈"}〕${text}`);
+      Phone.moments(plat);
     };
   },
-
   // 群聊（API）：小组群、老乡群、家人
   group(gid) {
     const g = DATA.groups[gid];
     S.groupChats[gid] = S.groupChats[gid] || [];
     const msgs = S.groupChats[gid];
-    const o = Phone.frame(`<div class="phone-log"></div>`, { title: fillText(g.name), right: `${g.members.length + 1}人`, back: () => Phone.chatList(), input: "在群里说点什么……" });
+    Phone.curApp = Phone6.groupApp(gid);
+    const o = Phone.frame(`<div class="phone-log"></div>`, { title: fillText(g.name), right: `${g.members.length + 1}人`, back: () => Phone.chatList(), input: "在群里说点什么……", cls: "app-" + Phone.curApp });
     const log = o.querySelector(".phone-log");
     let busy = false;
     const render = () => {
       log.innerHTML = msgs.map((m) => Story5.bubble(m, true)).join("") + (busy ? `<div class="msg them typing">…</div>` : "");
       log.scrollTop = log.scrollHeight;
+      Phone6.markSeen("g:" + gid, msgs.length);
     };
     render();
     const input = o.querySelector(".phone-input input");
@@ -304,7 +354,8 @@ const Phone = {
   // ===== 小红书：信息流 + 发帖（内容走 API；没有 Key 时用 data/notes.js 的固定内容） =====
   cover(i) { return DATA.noteCovers[Math.abs(i) % DATA.noteCovers.length]; },
   // 封面：有配图（cover）就用图；没有的像真的小红书那样，用标题做一张文字封面（浅色底、大引号、开头两个字划荧光笔）
-  TEXT_COVERS: [["#DDF7D4", "#B5E3A8", "#F2B8E4"], ["#FFE9D6", "#FFC9A3", "#BFE6D6"], ["#E3EDFF", "#BCD0F5", "#FFD86B"], ["#FFE3EC", "#F7B7C8", "#BFE6D6"], ["#FFF3C4", "#F5D77A", "#F7B7C8"]],
+  // 第十批第二节 3：荧光笔（第三个颜色）加深一档，绿底、黄底上原来几乎看不见
+  TEXT_COVERS: [["#DDF7D4", "#B5E3A8", "#E98FD3"], ["#FFE9D6", "#FFC9A3", "#7FD1B0"], ["#E3EDFF", "#BCD0F5", "#F2B84B"], ["#FFE3EC", "#F7B7C8", "#7FD1B0"], ["#FFF3C4", "#F5D77A", "#F08AA6"]],
   coverHtml(p, big) {
     if (p.cover) return `<div class="note-cover ${big ? "big" : ""}" style="background-image:url(assets/bg/${p.cover}.jpg)"></div>`;
     const [bg, mark, hl] = Phone.TEXT_COVERS[Math.abs(Flow.hash(p.title || "")) % Phone.TEXT_COVERS.length];
@@ -358,12 +409,12 @@ const Phone = {
       <h3>${Phone.esc(fillText(p.title))}</h3><div class="note-author">${Phone.esc(fillText(p.author || S.name))}</div>
       <p>${Phone.esc(fillText(p.body))}</p>
       <div class="note-acts"><span class="a-heart">${p.likes || 0}</span><span class="a-star"></span><span class="a-comment">${(p.comments || []).length}</span><span class="a-share"></span></div>
-      ${comments ? `<div class="cmts">${comments}</div>` : ""}</div>`, { title: "笔记", back: () => Phone.notes(tab), cls: "notes" });
+      <div class="cmts">${comments || `<div class="cmt">还没有评论</div>`}</div></div>`, { title: "笔记", back: () => Phone.notes(tab), cls: "notes" });
   },
 
   compose() {
     const o = Phone.frame(`<div class="compose"><input id="note-title" maxlength="20" placeholder="标题（最多20字）"><textarea id="note-body" maxlength="300" placeholder="今天想说点什么……"></textarea>
-      <button class="hud-btn" id="note-send">发布</button><small>发出去以后，赞和评论由 API 生成；没有设置 Key 的话只会有几个路人点赞。</small></div>`, { title: "发帖", back: () => Phone.notes("mine"), cls: "notes" });
+      <button class="hud-btn" id="note-send">发布</button><small>发出去以后，赞和评论由 API 生成；没有设置 Key 的话是路人的固定评论。</small></div>`, { title: "发帖", back: () => Phone.notes("mine"), cls: "notes" });
     o.querySelector("#note-send").onclick = async () => {
       const title = $("#note-title").value.trim(), body = $("#note-body").value.trim();
       if (!title || !body) return toast("标题和正文都要写");
@@ -371,9 +422,15 @@ const Phone = {
       const btn = $("#note-send"); btn.disabled = true; btn.textContent = "发布中……";
       const post = { title, body, author: S.name, likes: 0, comments: [] };   // 玩家发的帖子没有配图：用文字封面
       const r = AI.hasKey() ? await AI.notesReact(post) : null;
-      const boost = S.tags.includes("surfer") ? 1.5 : 1;
-      post.likes = Math.round((r ? clamp(r.likes, 0, 500) : 3 + Math.floor(Math.random() * 12)) * boost);
+      const surfer = S.tags.includes("surfer");
+      if (r) post.likes = Math.round(clamp(r.likes, 0, 500) * (surfer ? 1.5 : 1));
+      else post.likes = (3 + Math.floor(Math.random() * 38)) * (surfer ? 2 : 1);   // 没 Key（或 AI 失败）：零碎第八节 2——发帖当周 3–40 随机，冲浪高手 ×2
       post.comments = r && Array.isArray(r.comments) ? r.comments.filter((c) => c && c.user && c.text).slice(0, 5) : [];
+      if (!post.comments.length) {   // 没 Key：按帖子长度抽 2–4 条兜底评论（data/notes.js 的 notesMineFallback）
+        const pool = [...(DATA.notesMineFallback || [])].sort(() => Math.random() - 0.5);
+        const n = body.length < 40 ? 2 : body.length < 100 ? 3 : 4;
+        post.comments = pool.slice(0, n).map((text) => ({ user: DATA.notesMineUser || "路人", text }));
+      }
       const gain = Math.round(post.likes / 10);
       S.notes.followers += gain;
       S.notes.mine.unshift(post);

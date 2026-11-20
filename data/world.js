@@ -4,14 +4,14 @@ window.DATA = window.DATA || {};
 // 工作日日程（每周5格）。数值照 docs/数值规划.md 第三部分，和 tools/balance_sim.py 的 ACT 表一致。
 // fx 是基础值；I/E、tag、英语、精力过低等修正写在 js/state.js 的 Rules.activityFx 里。
 DATA.activities = [
-  { id: "class",    name: "上课",   desc: "学业+（看英语），计入出勤",   fx: { energy: -8,  study: 1 } },
+  { id: "class",    name: "上课",   desc: "学业+一点、英语+一点；这周课都去了，图书馆和做作业更有效",   fx: { energy: -6,  study: 0.3, english: 0.1 } },   // 第十批固定课表：上课不是涨学业的地方（docs/固定课表.md）
   { id: "library",  name: "图书馆", desc: "学业++，精力--，有点孤独",    fx: { energy: -12, study: 2.5, loneliness: 1 } },
   { id: "homework", name: "做作业", desc: "作业进度+20，有点孤独",       fx: { energy: -12, homework: 20, loneliness: 1 } },
   { id: "social",   name: "社交",   desc: "孤独-，融入+，花£15",         fx: { energy: -6,  loneliness: -6, belonging: 1.5, money: -15 } },
   { id: "home",     name: "宅家",   desc: "回精力，孤独可能上升",        fx: { energy: 15,  loneliness: 1 } },
   // 和 Kieran 联机（Kieran 扩写第八节）：联机过（flag_kieran_online）以后出现，一周最多两次；算宅家的一种
   { id: "kieran_online", name: "和Kieran联机", desc: "宅家，戴着耳机打游戏", fx: { energy: -4, loneliness: -3, aff_otaku: 1 }, flag: "kieran_online", max: 2, icon: "home" },
-  { id: "work",     name: "打工",   desc: "中超5小时，现金£40",          fx: { energy: -14, loneliness: -2, money: 40 }, unlock: "work" },
+  { id: "work",     name: "打工",   desc: "中超5小时，现金£40",          fx: { energy: -14, loneliness: -2, money: 40, belonging: 0.5 }, unlock: "work" },   // 融入 +0.5（数值体检_1119）
 ];
 
 // 周末地图（日常城市）。数值照 docs/数值规划.md 第四部分。
@@ -26,11 +26,12 @@ DATA.mapCity = [
   { id: "library",        name: "图书馆",   bg: "library",        x: 1263, y: 255, cost: 1, open: ["am", "pm"], fx: { study: 2.5, energy: -6 },            text: "周末的图书馆空荡荡的，适合补作业。", meet: ["chen_siqi", "hannah"] },
   { id: "gym",            name: "健身房",   bg: "gym",            x: 1665, y: 290, cost: 1, open: ["am", "pm", "eve"], fx: { energy: -5, loneliness: -2 },        text: "跑步机上跑了二十分钟，你觉得自己又行了。", meet: ["otaku", "jake"] },
   { id: "club_room",      name: "社团活动室", bg: "club_room",    x: 264,  y: 440, cost: 1, open: ["eve"], fx: { belonging: 2, loneliness: -6 },      text: "今晚放映会，屋里黑漆漆的，屏幕上的光照在每个人脸上。", meet: ["otaku"], needTag: "otaku" },
-  { id: "supermarket",    name: "超市",     bg: "supermarket_day", x: 1446, y: 415, cost: 1, open: ["am", "pm"], fx: { money: -15, energy: 5 },            text: "又是meal deal。三明治、薯片、饮料，一个都不能少。", meet: ["giulia"] },
+  { id: "supermarket",    name: "超市",     bg: "supermarket_day", x: 1446, y: 415, cost: 1, open: ["am", "pm", "eve"], fx: { money: -15, energy: 5 },            text: "又是meal deal。三明治、薯片、饮料，一个都不能少。", meet: ["giulia"] },
   { id: "chinese_market", name: "中超",     bg: "chinese_market", x: 1693, y: 430, cost: 1, open: ["am", "pm"], fx: { money: -25, loneliness: -6 },        text: "货架上摆着{food}的同款调料，你站在那里看了很久。", meet: ["senior", "chen_jianguo", "wu_tong"] },
   { id: "indoor_market",  name: "室内市场", bg: "indoor_market",  x: 1475, y: 600, cost: 1, open: ["am", "pm"], closed: ["sun_pm"], fx: { money: -8, belonging: 1 },          text: "水果摊老板叫你love，你愣了一下。", meet: ["zhou_kexin"] },
   { id: "pub_street",     name: "pub",      bg: "pub",     x: 1607, y: 800, cost: 1, open: ["eve"], fx: { money: -25, belonging: 3, loneliness: -6, energy: -8 }, text: "小组的人在pub门口招手。", meet: ["local", "groupmate", "jake", "zhao_zihao"] },
   { id: "brunch",         name: "brunch店", bg: "brunch",         x: 1114, y: 815, cost: 1, open: ["am"], fx: { money: -18, energy: 10, loneliness: -5 }, text: "炸鸡华夫饼还是那么好吃，至少今天有在好好生活。", meet: ["local", "groupmate", "sophie"] },
+  { id: "city_centre",    name: "市中心",   bg: "pub_street",     x: 780,  y: 650, cost: 1, open: ["pm", "eve"], fx: { loneliness: -2 },                    text: "市中心的步行街上人来人往。", meet: [] },   // 第六批：剧本_日常生活池 第二节。地图上没有对应建筑，先放河边空地；背景暂用 pub_street；text 是编程这边写的（选了活动就不出这句）
   { id: "station",        name: "车站·出城", bg: "station",       x: 511,  y: 830, cost: 99, travel: true, open: ["am"],                             text: "去哪儿？火车票不便宜。" },
 ];
 
@@ -141,9 +142,9 @@ DATA.terms = [[1, 11], [13, 22], [24, 28]];
 // close：演这一段之前先算这一年的总分（不及格进补考）
 DATA.laterYears = [
   { year: 2, name: "大二", weight: 0.3, periods: [
-    { id: "y2_move_in",     label: "搬家周",     event: "y2_move_in",     span: 4, bg: "shared_house", confess: true,
+    { id: "y2_move_in",     label: "搬家周",     event: "y2_move_in",     span: 4, bg: "shared_house",
       trials: [{ who: "senior", if: "flag('house_khan')" }] },
-    { id: "y2_internship",  label: "实习申请季", event: "y2_internship",  span: 4, confess: true },
+    { id: "y2_internship",  label: "实习申请季", event: "y2_internship",  span: 4 },
     { id: "y2_xmas_ddl",    label: "圣诞前ddl周", event: "y2_xmas_ddl",   span: 3, mark: true, after: "y2_xmas_break" },
     { id: "y2_spring",      label: "春节",       event: "y2_spring",      span: 4, spring: true },
     { id: "y2_house_again", label: "又找房",     event: "y2_house_again", span: 4,
@@ -184,9 +185,12 @@ DATA.groups = {
               brief: "玩家的家人群。妈妈爱发养生文章和语音转文字的长消息，爸爸话少，偶尔发一个大拇指表情。说中文。" },
 };
 
+// 第十批：固定课表（docs/固定课表.md）。周几固定上课（0＝周一）：大一一三、大二二四、大三周三
+DATA.timetable = { 1: [0, 2], 2: [1, 3], 3: [2] };
 DATA.tuning = {
+  attendBonus: 1.15, truantPenalty: 0.85, truantWarn: 3, truantMeeting: 6,   // 固定课都去了：图书馆、做作业 ×1.15；这周翘过课：做作业进度 ×0.85；一学期翘 3 次警告、6 次约谈
   earlyAffCap: 10,     // 序章＋第1周：好感上限 10（试玩报告 6、19）
-  smallEventAffMult: 0.4, affWeeklyCap: 8,   // 好感来源控制（决定记录_1118 第十一节）：小事件好感 ×0.4（决定记录写先设 0.6，跑 sim_check 后调成 0.4，见 docs/结局模拟报告.md）、不跨阶段；每人每周最多 +8（固定攻略线不算）
+  smallEventAffMult: 0.4, affWeeklyCap: 4, chatWeeklyCap: 2,   // 好感来源控制（决定记录_1118 第十一节）：小事件好感 ×0.4（决定记录写先设 0.6，跑 sim_check 后调成 0.4，见 docs/结局模拟报告.md）、不跨阶段；每人每周最多 +4、聊天每人每周最多 +2（恋爱节奏调整_1118，固定攻略线、旅行不算）
   extraEnglishCap: 0.6, englishMax: 95,      // 和母语者交往的额外英语：每周最多 +0.6，英语上限 95（Ollie 扩写第六节）
   midweekPoolGap: 2,                         // 周中事件池：连续两周有了，第三周不从池子里抽
   stageMinWeek: 3,     // 攻略对象的阶段事件最早第3周，且认识满 2 周
@@ -220,12 +224,18 @@ DATA.tuning = {
   askFamilyLoneliness: 8, askFamilyExtra: 100,   // 负债时跟家里要钱：补平欠款再多给 £100（金额是暂定的）
   // —— 第三阶段（问题记录·策划回复、docs/tag效果.md、docs/手机与友情.md）——
   studyHalfAt: 80,                     // 学业到80以后每次增长减半
-  yearPenalty: { 2: 6, 3: 10 },        // 分数公式：大二 −6、大三 −10
+  yearPenalty: { 2: 3, 3: 5 },         // 分数公式：大二 −3、大三 −5（数值体检_1119，原来 −6／−10）
+  examStudyCoef: 0.5,                  // 考试公式的学业系数（原来 0.45）
+  alienBelonging: 65,                  // 外星人结局：留英＋学位≥60 时的融入门槛（原来 50）
+  backHomeLoneliness: 8,               // 回国回来那一周孤独 +8（回国本身改成 −30）
+  newYearBelonging: -5,                // 大二、大三开学：“新学期，一半的人不认识了”
+  jakeGoneBelonging: -2,               // Jake 去交换那周（和他同住时）
+  lowEnergyWarn: 15,                   // 结算单上精力低于这个数，加一行提醒
   heAff: 85, heAffStrictHidden: 90,    // HE 好感门槛；家教森严“隐瞒”后 90
   // 友情
   frStart: 10, frSilver: 3, frPretty: 3, frTiers: { acquaintance: 30, friend: 60, bestie: 80 },
   frWeekendMeet: 3, frChatMax: 2, roommateFr: 0.5, roommateFrChef: 1,
-  friendLoneliness: 1, friendLonelinessMax: 3, friendBelonging: 0.3, bestieLoneliness: 1, bestieLonelinessMax: 2,
+  friendLoneliness: 0.5, friendLonelinessMax: 2, friendBelonging: 0.3, bestieLoneliness: 1, bestieLonelinessMax: 2,
   // tag
   homeEnergyChef: 20, homeEnergyKiller: 12, homeEnergyNeat: 3, homeEnergyPhone: 0.8,
   ironSupermarketEnergy: 8, saverSupermarketMoney: -10,
@@ -234,7 +244,8 @@ DATA.tuning = {
   weakColdChance: 0.05, weakColdEnergy: -15,
   strictVideoEnergy: -3, strictVideoLoneliness: -2,
   loveDistractAt: 8, loveDistract: 0.8,
-  neatShared: -3, otakuBelonging: 0.9,
+  neatShared: -3, otakuBelonging: 0.8,   // 第七批 #17 双刃 tag：二次元融入 ×0.9 → ×0.8
+  otakuSocialLoneliness: -4, otakuClubLoneliness: -8, affWeeklyCapLovebrain: 6,
   lostEnergy: -5, lostAP: 1, lostMoney: -5,
   // tutor
   tutorCheckinLoneliness: 70, tutorCheckinGap: 4,
