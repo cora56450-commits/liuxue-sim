@@ -82,3 +82,10 @@
 .contact .c-tag { display: block; font-size: 18px; opacity: 0.7; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .phone-head .remark-btn { background: none; border: 0; cursor: pointer; font-size: 0.85em; opacity: 0.55; padding: 0 4px; color: inherit; }
 .phone-head .remark-btn:hover { opacity: 1; }
+/* v0.8.3 周末下雨 */
+#stage.raining::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .35;
+  background-image: repeating-linear-gradient(105deg, rgba(255,255,255,.0) 0 14px, rgba(220,230,255,.55) 14px 15px, rgba(255,255,255,0) 15px 38px);
+  background-size: 240px 240px; animation: rainfall .45s linear infinite; mix-blend-mode: screen; }
+@keyframes rainfall { from { background-position: 0 0; } to { background-position: -60px 240px; } }
+.rain-mk { color: #3F6FB0 !important; margin-left: 6px; }
+.rain-tag { font-size: 22px; color: #3F6FB0; font-weight: bold; margin-bottom: 6px; }

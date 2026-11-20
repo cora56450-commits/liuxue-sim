@@ -148,3 +148,66 @@
   // 去他家：L3 排在张1 后面
   Scenes.HOME_EVENTS.senior = ["senior_tension_5", "senior_tension_1", "senior_L3", ...Scenes.HOME_EVENTS.senior.filter((x) => !["senior_tension_5", "senior_tension_1", "senior_L3"].includes(x))];
 })();
+
+// ===== Kieran：只有选了“二次元”tag 才能认识、进恋爱线；没选的人他只是普通 NPC（Cora 11/21）=====
+(function () {
+  const tagOf = () => (DATA.characters.otaku && DATA.characters.otaku.hidden) || "otaku";
+  const ok = () => !S || S.tags.includes(tagOf());
+  const _apply = applyFx;
+  applyFx = function (fx) {
+    if (fx && !ok() && Object.keys(fx).some((k) => k === "aff_otaku" || /_otaku$/.test(k) && /^(flag_)?(contact|confessed|met)_/.test(k))) {
+      const o = {}; for (const [k, v] of Object.entries(fx)) if (!(k === "aff_otaku" || /^(flag_)?(contact|confessed)_otaku$/.test(k))) o[k] = v; fx = o;
+    }
+    return _apply.apply(this, [fx, ...[].slice.call(arguments, 1)]);
+  };
+  const _ct = Phone.contacts;
+  Phone.contacts = function () { const r = _ct.apply(this, arguments); return ok() ? r : r.filter((c) => c !== "otaku"); };
+})();
+
+// ===== 第十三批 D3：周末随机下雨（每周 30%，冬天 45%；周历里本来就写了下雨的周照旧）=====
+(function () {
+  const OUT_BG = { campus: "campus_rain", city_centre: "city_centre_rain" };
+  const OUTDOOR = ["campus", "campus_rain", "city_centre", "city_centre_rain", "pub_street", "station", "station_night", "park_night", "bus_stop_night", "map_city"];
+  const OUT_LOC = ["campus", "city_centre", "station", "indoor_market", "pub_street"];
+  const roll = () => {
+    if (!S) return;
+    S.rainWk = S.rainWk || {};
+    const w = absWeek();
+    if (!(w in S.rainWk)) S.rainWk[w] = Math.random() < ((Rules.isWinter && Rules.isWinter()) ? 0.45 : 0.3);
+  };
+  const _cal = Rules.cal;
+  Rules.cal = function () {
+    const c = _cal.apply(this, arguments);
+    if (!c || !S || !S.rainWk || !S.rainWk[absWeek()] || c.rain) return c;
+    return { ...c, rain: true };
+  };
+  const _wk = Scenes.week;
+  Scenes.week = function () { roll(); return _wk.apply(this, arguments); };
+  window.V084.raining = () => !!(S && (Rules.cal() || {}).rain);
+  // 下雨：户外背景换雨天版，盖一层雨
+  const _bg = setBg;
+  setBg = function (id) {
+    const rain = window.V084.raining();
+    if (rain && OUT_BG[id]) id = OUT_BG[id];
+    const r = _bg.apply(this, [id, ...[].slice.call(arguments, 1)]);
+    const st = document.getElementById("stage");
+    if (st) st.classList.toggle("raining", !!(rain && OUTDOOR.includes(id)));
+    return r;
+  };
+  // 周末地图：户外地点标签后面写“下雨”；到了户外地点提示一句
+  const _wkend = Scenes.weekend;
+  Scenes.weekend = function () {
+    const r = _wkend.apply(this, arguments);
+    if (window.V084.raining()) setTimeout(() => {
+      const names = (DATA.mapCity || []).filter((l) => OUT_LOC.includes(l.id)).map((l) => l.name);
+      document.querySelectorAll(".map-layer .marker > span").forEach((sp) => { const n = sp.firstChild && sp.firstChild.textContent; if (names.includes(n) && !sp.querySelector(".rain-mk")) sp.insertAdjacentHTML("beforeend", `<small class="rain-mk">☔ 下雨</small>`); });
+      const board = document.querySelector(".wk-board"); if (board && !board.querySelector(".rain-tag")) board.insertAdjacentHTML("afterbegin", `<div class="rain-tag">☔ 这个周末下雨</div>`);
+    }, 50);
+    return r;
+  };
+  const _visit = Scenes.visit;
+  Scenes.visit = function (loc) {
+    if (loc && OUT_LOC.includes(loc.id) && window.V084.raining()) setTimeout(() => toast("下雨了。你撑着伞出了门。", 1800), 400);
+    return _visit.apply(this, arguments);
+  };
+})();

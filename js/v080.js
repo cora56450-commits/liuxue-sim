@@ -433,12 +433,12 @@
     if (S.flags.v8hint_yes) { S.flags.v8hint_yes = 0; Invites.list().push({ who: c.e.who, week: absWeek(), day: "WEEKEND", slot, place: c.place, source: "hint", status: "accepted", soft: true }); toast(`约好了：${slName} ${loc.name}（${charName(c.e.who)}）`, 2200); }
   };
   V.lowInvites = async function () {
-    if (!S || S.year !== 1 || !DATA.lowInvites) return;
+    if (!S || !DATA.lowInvites) return;   // 十三批 F7 验收：大二大三也发（间隔长一点），不然不聊天的玩家好感到不了 40
     S.lowInv = S.lowInv || {};
     for (const c of DATA.loveIds.sort(() => Math.random() - 0.5)) {
-      const L = DATA.lowInvites[c]; if (!L || !hasContact(c) || (S.aff[c] || 0) < 10) continue;
+      const L = DATA.lowInvites[c]; if (!L || !hasContact(c) || (S.aff[c] || 0) < 10 || S.flags["confessed_" + c] || S.flags["broke_up_" + c] || S.flags["confess_refused_" + c]) continue;
       const ch = DATA.characters[c]; if (ch.hidden && !S.tags.includes(ch.hidden)) continue;
-      if (absWeek() - (S.lowInv[c] || -9) < 3 + (Math.random() < 0.5 ? 1 : 0)) continue;
+      if (absWeek() - (S.lowInv[c] || -9) < (S.year === 1 ? 3 : 4) + (Math.random() < 0.5 ? 1 : 0)) continue;
       const l = L.filter((x) => !x.if || evalCond(x.if))[Math.floor(Math.random() * L.length)]; if (!l) continue;
       S.lowInv[c] = absWeek();
       await Invites.offer({ who: c, day: l.day, slot: l.slot, place: l.place, text: l.text, tr: l.tr, source: "npc" });

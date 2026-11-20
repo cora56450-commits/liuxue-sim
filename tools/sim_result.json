@@ -1,80 +1,80 @@
 {
- "n": 300,
+ "n": 100,
  "love": [
   {
    "name": "认真玩：每周聊＋三周一约＋周末出门（Ollie）",
    "goal": "告白中位大二第18–24周，HE 70–85%",
    "confessRate": "100%",
    "confessMedian": "大二第20周",
-   "he": "76%",
-   "be": "24%",
+   "he": "75%",
+   "be": "25%",
    "dated": "100%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
-   "small": "34.6",
-   "smallAff": "10.5",
-   "degree": "70.8"
+   "small": "34.5",
+   "smallAff": "10.7",
+   "degree": "70.9"
   },
   {
    "name": "认真玩（学长）",
    "goal": "同上",
    "confessRate": "100%",
    "confessMedian": "大二第22周",
-   "he": "83%",
-   "be": "17%",
+   "he": "79%",
+   "be": "21%",
    "dated": "100%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
-   "small": "44.3",
-   "smallAff": "15.2",
-   "degree": "70.5"
+   "small": "46.2",
+   "smallAff": "15.5",
+   "degree": "70.3"
   },
   {
    "name": "认真玩（Ploy）",
    "goal": "同上",
-   "confessRate": "72%",
+   "confessRate": "79%",
    "confessMedian": "大二第22周",
-   "he": "61%",
-   "be": "11%",
-   "dated": "72%",
+   "he": "64%",
+   "be": "15%",
+   "dated": "79%",
    "trial": "0%",
    "pond1": "0%",
-   "aff": "97.3",
-   "small": "41.6",
-   "smallAff": "15.9",
+   "aff": "98.3",
+   "small": "42.6",
+   "smallAff": "16.3",
    "degree": "70.9"
   },
   {
    "name": "认真玩（Kieran）",
    "goal": "同上",
    "confessRate": "100%",
-   "confessMedian": "大二第22周",
-   "he": "82%",
-   "be": "18%",
+   "confessMedian": "大二第20周",
+   "he": "81%",
+   "be": "19%",
    "dated": "100%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
-   "small": "43.6",
-   "smallAff": "15.8",
-   "degree": "70.5"
+   "small": "43.0",
+   "smallAff": "15.4",
+   "degree": "70.4"
   },
   {
    "name": "一周聊一次＋周末偶遇（不约会）",
    "goal": "告白 ≥80%",
-   "confessRate": "98%",
-   "confessMedian": "大二第22周",
-   "he": "77%",
+   "confessRate": "99%",
+   "confessMedian": "大二第23周",
+   "he": "78%",
    "be": "21%",
-   "dated": "98%",
+   "dated": "99%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
-   "small": "30.9",
-   "smallAff": "17.9",
-   "degree": "70.8"
+   "small": "31.2",
+   "smallAff": "17.6",
+   "degree": "70.9"
   },
   {
    "name": "刷聊天、不出门",
@@ -89,7 +89,7 @@
    "aff": "59.0",
    "small": "1.0",
    "smallAff": "1.2",
-   "degree": "71.1"
+   "degree": "71.0"
   },
   {
    "name": "大二大三一直卷（大一正常谈）",
@@ -102,82 +102,139 @@
    "trial": "0%",
    "pond1": "0%",
    "aff": "79.0",
-   "small": "16.6",
-   "smallAff": "9.0",
-   "degree": "71.4"
+   "small": "17.0",
+   "smallAff": "8.7",
+   "degree": "71.3"
   },
   {
    "name": "同时对三个人都热情",
    "goal": "鱼塘翻车 ≥50%",
-   "confessRate": "14%",
+   "confessRate": "9%",
    "confessMedian": "大三第5周",
-   "he": "1%",
-   "be": "87%",
-   "dated": "14%",
+   "he": "0%",
+   "be": "92%",
+   "dated": "9%",
    "trial": "0%",
    "pond1": "100%",
-   "aff": "55.5",
-   "small": "90.2",
-   "smallAff": "57.1",
-   "degree": "70.9"
+   "aff": "56.2",
+   "small": "92.0",
+   "smallAff": "58.4",
+   "degree": "71.0"
   },
   {
    "name": "BE 补救·Ploy：替写 2 次＋自己写过＋考验拒绝",
    "goal": "走得通",
-   "confessRate": "75%",
+   "confessRate": "79%",
    "confessMedian": "大二第22周",
-   "he": "63%",
-   "be": "12%",
-   "dated": "75%",
+   "he": "64%",
+   "be": "15%",
+   "dated": "79%",
    "trial": "0%",
    "pond1": "0%",
-   "aff": "97.0",
-   "small": "41.5",
-   "smallAff": "16.0",
-   "degree": "70.9"
+   "aff": "98.1",
+   "small": "41.9",
+   "smallAff": "15.3",
+   "degree": "70.8"
   },
   {
    "name": "BE 补救·Ollie：考验没问，最后机会问了（要 90）",
    "goal": "走得通",
    "confessRate": "100%",
    "confessMedian": "大二第22周",
-   "he": "84%",
-   "be": "16%",
+   "he": "83%",
+   "be": "17%",
    "dated": "100%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
-   "small": "34.5",
-   "smallAff": "10.4",
+   "small": "34.8",
+   "smallAff": "10.8",
    "degree": "70.8"
+  },
+  {
+   "name": "普通玩（不聊天、周末随便去，学长＋Ollie＋Ploy）",
+   "goal": "大一结束至少一人好感≥30、每人≥4段；三年交往过≥25%",
+   "confessRate": "11%",
+   "confessMedian": "大三第3周",
+   "he": "3%",
+   "be": "24%",
+   "dated": "11%",
+   "trial": "0%",
+   "pond1": "84%",
+   "aff": "62.2",
+   "small": "100.0",
+   "smallAff": "63.1",
+   "degree": "70.7",
+   "y1aff30": "93%",
+   "y1min4": "99%",
+   "y1affAvg": "35.9",
+   "y1cnt": "19.3／16.6／18.0"
+  },
+  {
+   "name": "普通玩，只追一个人（Ollie）",
+   "goal": "同上",
+   "confessRate": "0%",
+   "confessMedian": "—",
+   "he": "0%",
+   "be": "0%",
+   "dated": "0%",
+   "trial": "0%",
+   "pond1": "0%",
+   "aff": "68.0",
+   "small": "28.9",
+   "smallAff": "15.8",
+   "degree": "70.7",
+   "y1aff30": "34%",
+   "y1min4": "100%",
+   "y1affAvg": "27.2",
+   "y1cnt": "16.3"
+  },
+  {
+   "name": "普通玩（二次元，四个人都认识）",
+   "goal": "同上",
+   "confessRate": "11%",
+   "confessMedian": "大三第4周",
+   "he": "1%",
+   "be": "31%",
+   "dated": "11%",
+   "trial": "0%",
+   "pond1": "91%",
+   "aff": "58.7",
+   "small": "130.1",
+   "smallAff": "83.0",
+   "degree": "70.6",
+   "y1aff30": "99%",
+   "y1min4": "100%",
+   "y1affAvg": "38.2",
+   "y1cnt": "18.9／15.0／18.2／21.2"
   }
  ],
  "mains": {
   "均衡·关": {
-   "home": 300
+   "home": 100
   },
   "均衡·开": {
-   "home": 300
+   "home": 100
   },
   "卷王·关": {
-   "lonely": 300
+   "lonely": 100
   },
   "卷王·开": {
-   "lonely": 300
+   "lonely": 100
   },
   "摆烂·关": {
-   "home": 177,
-   "brain_girl": 123
+   "home": 64,
+   "brain_girl": 36
   },
   "摆烂·开": {
-   "home": 170,
-   "brain_girl": 130
+   "home": 56,
+   "brain_girl": 44
   },
   "老鼠·关": {
-   "lonely": 300
+   "lonely": 100
   },
   "老鼠·开": {
-   "lonely": 300
+   "lonely": 100
   }
  }
 }

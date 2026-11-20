@@ -15,6 +15,7 @@ ctx.window = ctx; vm.createContext(ctx);
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 for (const f of [...html.matchAll(/<script src="(data\/[^"?]+)/g)].map((m) => m[1])) vm.runInContext(fs.readFileSync(path.join(root, f), "utf8"), ctx, { filename: f });
 vm.runInContext(`var Story = { running: null }; function playSfx() {} function toast() {} function renderPhoneDot() {} var Settings = { v: {} }; var Flow = { hash: (s) => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) | 0; return h; } }; var AI = { lang: () => "zh", hasKey: () => false };`, ctx);
+vm.runInContext(`var V083 = { weeksDating: () => -1, rivalRecent: () => false }; var V084 = { days: (a) => (S.schedule || []).filter((x) => x === a).length, rush: () => !!S.rushWeek, pubRecent: () => false, hoarse: () => false, called: () => false, careOk: () => true };`, ctx);
 for (const f of ["js/state.js", "js/story5.js", "js/social5.js"]) vm.runInContext(fs.readFileSync(path.join(root, f), "utf8"), ctx, { filename: f });
 
 const run = vm.runInContext(`(function (cfg) {
@@ -54,7 +55,7 @@ const run = vm.runInContext(`(function (cfg) {
   if (targets.includes("otaku") && !S.tags.includes("otaku")) S.tags.push("otaku");
   const loc = (id) => DATA.mapCity.find((l) => l.id === id);
   const W = { home: "dorm_room", social: "pub_street", brunch: "brunch", chinese: "chinese_market", lib: "library" };
-  const sm = { small: 0, smallAff: 0 };
+  const sm = { small: 0, smallAff: 0 }; const cnt = {}; let y1 = null;   // cnt：每人演过几段（F7 验收）
   const fixedGive = (c, v) => { S.affCtx = "fixed"; applyFx({ ["aff_" + c]: v }); S.affCtx = null; };
   const normalGive = (c, v) => { S.affCtx = "normal"; applyFx({ ["aff_" + c]: v }); S.affCtx = null; };
 
@@ -76,18 +77,20 @@ const run = vm.runInContext(`(function (cfg) {
       // 约会：好感≥20 每三周一次
       if (cfg.date && !busy && a >= 20 && absWeek() % 3 === 0 && !cal.vacation) { normalGive(c, Invites_T.goneLove); S.lastMet[c] = absWeek(); S.weekendDates.push(c); met[c] = true; }
       // 周末去地点：一半机会碰到
-      if (cfg.outing && !busy && !cal.vacation && Math.random() < 0.5) met[c] = true;
+      if (cfg.outing && !busy && !cal.vacation && Math.random() < (cfg.outingP || 0.5)) met[c] = true;
+      // F5 低门槛邀约（好感 ≥ 10，大一每 4 周最多一次，没 Key 也有）
+      if (cfg.lowInv && !cal.vacation && (S.year === 1 || cfg.lowInvAll) && a >= 10 && (absWeek() + c.length) % 4 === 0) { normalGive(c, Invites_T.goneLove); S.lastMet[c] = absWeek(); met[c] = true; cnt[c] = (cnt[c] || 0) + 1; }
       S.metWk = S.metWk || {}; if (met[c]) S.metWk[c] = absWeek();
       // 小事件：周末碰到时演一段、周中一次机会（相识、没资格吃醋、温情暧昧、交往后、地点偶遇……条件满足、没演过的随机一段）
       if (!cal.vacation && cfg.small !== false) {
-        const can = POOLS[c].filter((e) => !S.flags["simseen_" + e.id] && (!e.stage || e.stage === (S.flags["confessed_" + c] ? "dating" : S.aff[c] >= 40 ? "flirt" : "acquaint")) && evalCond(e.cond) && (e.mid || met[c]));
+        const can = POOLS[c].filter((e) => !S.flags["simseen_" + e.id] && (!e.stage || e.stage === (S.flags["confessed_" + c] ? "dating" : S.aff[c] >= 40 ? "flirt" : "acquaint")) && evalCond(e.cond) && (e.mid || met[c] || (cfg.makeup && /^acq_/.test(e.id))));
         for (let k = 0; k < 2 && can.length; k++) {
           if (Math.random() > 0.5) continue;
           const e = can.splice(Math.floor(Math.random() * can.length), 1)[0];
           S.flags["simseen_" + e.id] = 1;
           const b = S.aff[c]; S.affCtx = e.bridge ? "bridge" : "small"; applyFx({ ["aff_" + c]: e.aff }); S.affCtx = null;
           if (e.bridge && S.aff[c] >= 35 && S.aff[c] < 40) S.aff[c] = 40;
-          sm.small++; sm.smallAff += S.aff[c] - b; S.lastMet[c] = absWeek();
+          sm.small++; sm.smallAff += S.aff[c] - b; S.lastMet[c] = absWeek(); cnt[c] = (cnt[c] || 0) + 1;
         }
       }
       if (!met[c]) continue;
@@ -135,6 +138,7 @@ const run = vm.runInContext(`(function (cfg) {
       if (cal.close && S.yearMarks[year] === undefined) { S.yearMarks[year] = Rules.yearMark(year); if (Rules.needResit(year)) Rules.resitYear(year, false); }
     }
     if (S.yearMarks[year] === undefined) { S.yearMarks[year] = Rules.yearMark(year); if (Rules.needResit(year)) Rules.resitYear(year, year === 1); }   // 第十二批：补考（大一暑假复习 +6）
+    if (year === 1) y1 = { maxAff: Math.max(0, ...targets.map((c) => S.aff[c] || 0)), min4: targets.every((c) => (cnt[c] || 0) >= 4), cnt: targets.map((c) => cnt[c] || 0) };
     if (year === 1) for (let k = 0; k < 13; k++) { S.week++; Rules.weekStart(); }   // 暑假
   }
   if (cfg.stay) S.flags.stay_uk = 1;
@@ -142,7 +146,7 @@ const run = vm.runInContext(`(function (cfg) {
   const e = Rules.ending();
   return { main: e.main.id, he: Object.entries(e.love).filter(([, v]) => v === "he").map(([c]) => c), be: Object.entries(e.love).filter(([, v]) => v === "be").map(([c]) => c),
     trial: e.stamps.some((s) => s.id === "love_trial"), pond: S.pond.count, degree: e.degree, aff: targets.map((c) => Math.round(S.aff[c])), dated: targets.filter((c) => S.flags["confessed_" + c]).length, ...sm, confAbs: targets.map((c) => S.confAbs[c]).filter((x) => x != null), confAt: targets.map((c) => S.confAt[c]).filter(Boolean),
-    y1aff: 0 };
+    y1aff: y1 ? y1.maxAff : 0, y1min4: y1 ? y1.min4 : false, y1cnt: y1 ? y1.cnt : [] };
 })`, ctx);
 vm.runInContext(`var Invites_T = { goneLove: 5 };`, ctx);
 
@@ -165,6 +169,10 @@ const SC = [
   ["同时对三个人都热情", { targets: ["senior", "local", "groupmate"], chat: true, date: true, outing: true, y1: P.balanced, weekend: ["home", "social"] }, "鱼塘翻车 ≥50%"],
   ["BE 补救·Ploy：替写 2 次＋自己写过＋考验拒绝", { targets: ["groupmate"], chat: true, date: true, outing: true, y1: P.balanced, weekend: ["home", "social"], flags: { ploy_ghostwrite: 2, ploy_own_work: 1, ploy_redeemed: 1 } }, "走得通"],
   ["BE 补救·Ollie：考验没问，最后机会问了（要 90）", { targets: ["local"], chat: true, date: true, outing: true, y1: P.balanced, weekend: ["home", "social"], noAsk: true, flags: { local_asked_late: 1 } }, "走得通"],
+  // 第十三批 F7：普通玩——不聊天、不约会，周末按喜好随便去（不刻意找人；地图提示＋第一次 100%／之后 60%，折算每人每周 25% 碰到），有低门槛邀约和相识补演
+  ["普通玩（不聊天、周末随便去，学长＋Ollie＋Ploy）", { targets: ["senior", "local", "groupmate"], chat: false, date: false, outing: true, outingP: 0.25, lowInv: true, lowInvAll: true, makeup: true, y1: P.balanced, weekend: ["home", "social"], f7: true }, "大一结束至少一人好感≥30、每人≥4段；三年交往过≥25%"],
+  ["普通玩，只追一个人（Ollie）", { targets: ["local"], chat: false, date: false, outing: true, outingP: 0.25, lowInv: true, lowInvAll: true, makeup: true, y1: P.balanced, weekend: ["home", "social"], f7: true }, "同上"],
+  ["普通玩（二次元，四个人都认识）", { targets: ["senior", "local", "groupmate", "otaku"], chat: false, date: false, outing: true, outingP: 0.25, lowInv: true, lowInvAll: true, makeup: true, y1: P.balanced, weekend: ["home", "social"], f7: true }, "同上"],
 ];
 const median = (xs) => { if (!xs.length) return null; const a = [...xs].sort((x, y) => x - y); return a[Math.floor(a.length / 2)]; };
 console.log(`每种跑 ${N} 次\n`);
@@ -180,6 +188,7 @@ for (const [name, cfg, goal] of SC) {
     aff: avg(rs, (r) => r.aff.reduce((a, b) => a + b, 0) / Math.max(1, r.aff.length)), small: avg(rs, (r) => r.small), smallAff: avg(rs, (r) => r.smallAff), degree: avg(rs, (r) => r.degree) };
   out.push(line);
   console.log(`${name}（目标 ${goal}）：告白 ${line.confessRate}（中位 ${line.confessMedian}）　HE ${line.he}　BE ${line.be}　交往过 ${line.dated}　翻车≥1次 ${line.pond1}　恋爱裁判 ${line.trial}　毕业好感均值 ${line.aff}　小事件 ${line.small} 段／好感 +${line.smallAff}　学位 ${line.degree}`);
+  if (cfg.f7) { line.y1aff30 = pct(rs, (r) => r.y1aff >= 30); line.y1min4 = pct(rs, (r) => r.y1min4); line.y1affAvg = avg(rs, (r) => r.y1aff); line.y1cnt = rs[0] ? rs.map((r) => r.y1cnt).reduce((acc, xs) => xs.map((x, i) => (acc[i] || 0) + x / rs.length), []).map((x) => x.toFixed(1)).join("／") : ""; console.log(`  └ F7 验收：大一结束最高好感≥30 ${line.y1aff30}（均值 ${line.y1affAvg}）　每人≥4段 ${line.y1min4}（平均段数 ${line.y1cnt}）　三年交往过 ${line.dated}　翻车≥1次 ${line.pond1}`); }
 }
 // 非恋爱结局：小事件开／关对比（不追任何人，但周末照常去地点）
 console.log("\n非恋爱结局（主线）：小事件池开／关对比");
