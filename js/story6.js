@@ -408,7 +408,7 @@ const Weekday = {
   async runChoice(c) {
     S.choiceSeen[c.id] = 1; S.lastChoiceWk = absWeek();
     hideAll();
-    sayStatic(c.text + (c.tr && Settings.v.showTr ? `<br><small>${c.tr}</small>` : ""));
+    sayStatic(c.text, c.tr);
     const o = c.options[await choose(c.options.map((x) => ({ text: x.text })))];
     hideDialog();
     const res = o.alt && evalCond(o.alt.if) ? o.alt.result : o.result;

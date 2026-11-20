@@ -210,3 +210,11 @@ CG id（文件改名用）：
 - 恋爱线流程：`js/story6.js` 的 `Love6`（告白前消息、`blocked`、`news`）、`Enc6`（地点偶遇，含车站）；`js/phone.js` 的 `Phone.more`／`nickPick`／`playNow`；`js/scenes.js` 的 `visitHome`、`tonight`、`pathEvent`。
 - 文本变量 `{名后两字}` `{全名}` `{我叫他}`、记周数 `flag_wk_xxx`／`过了几周()`：`js/love10.js`。
 - 回忆图鉴：`js/gallery10.js`。
+
+---
+
+## 完成记录（2026-11-20 深夜，Claude Code）：第十三、十四批（v0.8.0）
+
+新增 `js/v080.js`（引擎改动都在这里，用“包一层”改原函数：联系方式、周中插播优先级、手机未读、没 Key 聊天、念错名字、露行踪消息、地图 Q 版头像、选项分页……）和 `data/v080_text.js`（策划给的文本、插进现有事件的句子、背景回退）。没做的：第十三批 C（作业按模块）、D3（下雨）、F7（普通玩模拟）。详情和要策划定的在 `docs/问题记录.md` 最后一节。
+新工具：`tools/check_messages.js`（消息时机检查）、`tools/import_batch13.py`（加长立绘、睡衣、Q 版头像、恋爱ing 邮戳）。
+测试：这台机器没有浏览器；在云端用无头 Chrome＋`tools/test_bot.js` 跑（先把 BGM、音效换成空函数，机器人 `ms` 用 250，太快会把翻牌动画误判成卡住）。

@@ -37,7 +37,7 @@ const Scenes = {
       el.className = "title-bar" + (ok ? "" : " off") + (i === 3 ? " extra" : "");
       el.style.top = [330, 452, 574, 696][i] + "px";
       el.style.animationDelay = 600 + i * 110 + "ms";
-      el.innerHTML = `<span>${t}</span><i>${en}</i>`;
+      el.innerHTML = `<div class="tb-in"><span>${t}</span><i>${en}</i></div>`;   // 第十四批 G4：▶ 挂在文字块左边
       if (ok) el.onclick = fn;
       bars.appendChild(el);
     });
@@ -53,6 +53,7 @@ const Scenes = {
       let html = `<div class="panel-title"><span>开局 · 你是谁</span></div><div class="scroll">
         <div class="opt-group"><h3>名字</h3><div class="opt-row"><input id="name-input" class="chip-input" maxlength="8" placeholder="起个名字（最多8个字）" value="${S.name}"></div></div>
         <div class="opt-group"><h3>英文名（可以不起）</h3><div class="opt-row"><input id="en-input" class="chip-input" maxlength="12" placeholder="比如 Lily" value="${S.enName || ""}"></div>
+        <div class="opt-group"><h3>名字拼音（可以不填）</h3><div class="opt-row"><input id="py-input" class="chip-input" maxlength="20" placeholder="比如 yu xuan（外国同学会照着念错）" value="${S.namePinyin || ""}"></div>
         <p class="opt-note">留子的英文名，可以是 Lily、Cora，也可以是你中文名的拼音。不起也行，大家会学着念你的真名。</p></div>`;
       for (const g of DATA.backgroundOptions) {
         html += `<div class="opt-group"><h3>${g.name}</h3><div class="opt-row">`;
@@ -77,6 +78,7 @@ const Scenes = {
       p.querySelector(".scroll").scrollTop = top;
       p.querySelector("#name-input").oninput = (e) => { S.name = e.target.value.trim(); };
       // 英文名（docs/英文名规则.md 第一节）：只能英文字母、空格、连字符，最多 12 个字
+      p.querySelector("#py-input").oninput = (e) => { const v = e.target.value.replace(/[^A-Za-z ]/g, "").slice(0, 20); if (v !== e.target.value) e.target.value = v; S.namePinyin = v.trim().toLowerCase(); if (S.wrongNames) S.wrongNames = {}; };   // 第十四批 G1
       p.querySelector("#en-input").oninput = (e) => { const v = e.target.value.replace(/[^A-Za-z \-]/g, "").slice(0, 12); if (v !== e.target.value) e.target.value = v; S.enName = v.trim(); };
       p.querySelectorAll("[data-g]").forEach((el) => el.onclick = () => {
         S.bg[el.dataset.g] = el.dataset.o;
@@ -639,7 +641,8 @@ const Scenes = {
     });
     setTimeout(() => Guide.seq([["map", p.querySelector(".wk-board")], ["map_people", p.querySelector(".marker:not(.locked)")]]), 1100);
     const nb = p.querySelector(".next-btn");
-    nb.appendChild(receipt(slot % 3 === 2 ? "回家睡觉" : "待在家，等到" + DATA.todName[DATA.weekendSlots[slot + 1].tod], 3, () => FX.tear(() => Scenes.weekend(slot + 1))));
+    // 第十三批 A8：周末宅家的时段也回精力（和工作日宅家一样 +15），结算单写出来
+    nb.appendChild(receipt(slot % 3 === 2 ? "回家睡觉" : "待在家，等到" + DATA.todName[DATA.weekendSlots[slot + 1].tod], 3, () => { const ch = applyFx({ energy: Rules.homeEnergy ? Rules.homeEnergy(15) : 15 }); showFx(ch); toast(`待在家：${fxText(ch)}`, 1600); FX.tear(() => Scenes.weekend(slot + 1)); }));
     nb.appendChild(receipt("结束这周", 4, () => FX.tear(() => Scenes.endWeek())));
   },
 
@@ -759,7 +762,8 @@ const Scenes = {
     if (loc.id === "pub_street") S.hangover = slot < 3 ? "sun" : "mon";   // 晚上去 pub：第二天上午精力 −10   // Ollie 心动事件的条件
     // 答应过的周末约会：去了约好的地点就演约会（不再随机偶遇）
     // 约会：答应过的周末邀约，去了约好的地点必定见到对方（不靠 60% 偶遇）
-    const date = Invites.thisWeek().find((a) => a.day === "WEEKEND" && a.place === loc.id && (!a.slot || a.slot === DATA.weekendSlots[slot].id));
+    const date = V080.dateAt(loc.id, slot);   // 第十三批 A9：约好的地点，哪个时段到都算赴约（先找同一时段的）
+    V080.softAt(loc.id);   // 第十四批 H4：对方随口说“周六我在 X”，你答应了也去了：好感 +1，接下来照常演那个地点的事件
     if (date) {
       markMet(date.who);
       Stage.show(date.who);

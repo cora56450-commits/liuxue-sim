@@ -117,6 +117,7 @@ const Phone = {
       const iv = Invites.parseAI(r.text);   // AI 想约你：[[INVITE day=SAT place=brunch]]，由游戏校验后弹邀约卡
       S.chats[cur].push({ role: "assistant", content: iv ? r.text.replace(iv.raw, "").trim() : r.text, tr: r.tr || "" });   // 英文角色：tr 是「」里的中文
       Phone.gain(cur, r.aff);
+      if (!iv && typeof V080 !== "undefined" && await V080.maybeDate(cur, text, r.text)) return Phone.chat(cur);   // 第十三批 A9：AI 答应了但没带约会标记 → 确认卡
       if (iv && iv.place) { closeOverlay(); await Invites.offer({ who: cur, day: iv.day, place: iv.place, source: "ai" }); return Phone.chat(cur); }
       o.querySelector(".phone-head em").innerHTML = head();
       if (document.getElementById("overlay") === o) render();

@@ -28,39 +28,39 @@ DATA.characters = {
     persona: "中国学长，在这座城市第三四年。热心带新生，同时在做租房中介和代购，帮人是真心，赚佣金也是真的。说话圆滑、笑眯眯，营业笑和真心笑不一样。",
     // 2026-11-17 Cora：学长就用“可攻略对象初始立绘”里的两张（常规＝base、夏装＝summer），先不加表情差分。
     // 旧的表情图还在 assets/chara/senior/expr_*.png，以后要用把 exprOld 改回 expr 就行。
-    sprites: { base: "chara/senior/base.png", summer: "chara/senior/summer.png", work: "chara/senior/work.png" },   // 第十批：工作装，大二起默认（yearPose）
+    sprites: { base: "chara/senior/base.png", summer: "chara/senior/summer.png", work: "chara/senior/work.png", pajama: "chara/senior/pajama.png" },   // 第十批：工作装，大二起默认（yearPose）
     yearPose: { 2: "work", 3: "work" },
     expr: { smile: "chara/senior/n_smile.png", shy: "chara/senior/n_shy.png", sad: "chara/senior/n_sad.png", annoyed: "chara/senior/n_annoyed.png" },   // 第十批：四张新表情（透明底，画到大腿）   // 2026-11-19 第七批：害羞、伤心两张新表情（画到膝盖），别的表情还用 base
     exprOld: { normal: "chara/senior/expr_1.png", smile: "chara/senior/expr_2.png", annoyed: "chara/senior/expr_3.png", shy: "chara/senior/expr_4.png",
             surprised: "chara/senior/expr_5.png", speechless: "chara/senior/expr_6.png", bizsmile: "chara/senior/expr_7.png" },
     exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", bizsmile: "营业笑", sad: "伤心" },
-    calib: { base: { top: 0.0304, chin: 0.268 }, summer: { top: 0.02, chin: 0.301 }, work: { top: 0.0276, chin: 0.205 }, expr_smile: { top: 0.0297, chin: 0.2 }, expr_shy: { top: 0.0228, chin: 0.2 }, expr_sad: { top: 0.029, chin: 0.205 }, expr_annoyed: { top: 0.0193, chin: 0.215 } } },
+    calib: { pajama: { top: 0.029, chin: 0.227 }, base: { top: 0.0304, chin: 0.268 }, summer: { top: 0.02, chin: 0.301 }, work: { top: 0.0276, chin: 0.205 }, expr_smile: { top: 0.0297, chin: 0.2 }, expr_shy: { top: 0.0228, chin: 0.2 }, expr_sad: { top: 0.029, chin: 0.205 }, expr_annoyed: { top: 0.0193, chin: 0.215 } } },
 
   local: { name: "Ollie", short: "Ollie", height: 187, color: "#E07A9A", lang: "en", love: true,
     persona: "本地英国男生，帅，服美役，情绪价值很足，每次约会都夸你好看，会认真练你名字的发音。对中国的了解来自短视频和外卖。关系一直不愿意定义。用英文夹少量中文和对方聊天。",
-    sprites: { base: "chara/local/base.png", summer: "chara/local/summer.png", coffee: "chara/local/coffee.png" },
+    sprites: { base: "chara/local/base.png", summer: "chara/local/summer.png", coffee: "chara/local/coffee.png", pajama: "chara/local/pajama.png" },
     expr: { normal: "chara/local/expr_1.png", smile: "chara/local/n_smile.png", annoyed: "chara/local/n_annoyed.png", shy: "chara/local/n_shy.png",
             surprised: "chara/local/expr_5.png", speechless: "chara/local/expr_6.png", stunned: "chara/local/expr_7.png", sad: "chara/local/n_sad.png" },   // 第十批：笑／害羞／伤心／不满换成新图（透明底）   // 第七批：害羞换新图（旧的 expr_4 还在），伤心新加
     exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", stunned: "愣住", sad: "伤心" },
-    calib: { base: { top: 0.0039, chin: 0.273 }, summer: { top: 0.0234, chin: 0.308 }, coffee: { top: 0.0165, chin: 0.296 }, expr_normal: { top: 0.0035, chin: 0.31 }, expr_smile: { top: 0.0407, chin: 0.225 }, expr_annoyed: { top: 0.0214, chin: 0.23 }, expr_shy: { top: 0.0325, chin: 0.215 }, expr_surprised: { top: 0.0028, chin: 0.31 }, expr_speechless: { top: 0.0035, chin: 0.31 }, expr_stunned: { top: 0.0028, chin: 0.31 }, expr_sad: { top: 0.0483, chin: 0.225 } } },
+    calib: { pajama: { top: 0.0186, chin: 0.2506 }, base: { top: 0.0039, chin: 0.273 }, summer: { top: 0.0234, chin: 0.308 }, coffee: { top: 0.0165, chin: 0.296 }, expr_normal: { top: 0.0035, chin: 0.31 }, expr_smile: { top: 0.0407, chin: 0.225 }, expr_annoyed: { top: 0.0214, chin: 0.23 }, expr_shy: { top: 0.0325, chin: 0.215 }, expr_surprised: { top: 0.0028, chin: 0.31 }, expr_speechless: { top: 0.0035, chin: 0.31 }, expr_stunned: { top: 0.0028, chin: 0.31 }, expr_sad: { top: 0.0483, chin: 0.225 } } },
 
   groupmate: { name: "Ploy", short: "Ploy", height: 168, color: "#FF7A45", lang: "en", love: true,
     persona: "国际生女生，家里有钱、长得好看，魅力大，小组作业经常划水但presentation当天光彩照人。会拉你进她的圈子。用英文聊天。",
-    sprites: { base: "chara/groupmate/base.png", summer: "chara/groupmate/summer.png", home: "chara/groupmate/home.png" },
+    sprites: { base: "chara/groupmate/base.png", summer: "chara/groupmate/summer.png", home: "chara/groupmate/home.png", pajama: "chara/groupmate/pajama.png" },
     expr: { smile: "chara/groupmate/n_smile.png", shy: "chara/groupmate/n_shy.png", sad: "chara/groupmate/n_sad.png", angry: "chara/groupmate/n_angry.png", annoyed: "chara/groupmate/n_angry.png" },   // 第十批：四张新表情；剧本写“不满”的用生气   // 2026-11-19 第七批：伤心（画到膝盖）；害羞还没到
     // 2026-11-17 Cora：Ploy 先不加表情差分（只有 Kieran 和 Ollie 用差分），用常规／夏装／素颜三张；以后要用把 exprOld 改回 expr
     exprOld: { normal: "chara/groupmate/expr_1.png", smile: "chara/groupmate/expr_2.png", annoyed: "chara/groupmate/expr_3.png", shy: "chara/groupmate/expr_4.png",
             surprised: "chara/groupmate/expr_5.png", speechless: "chara/groupmate/expr_6.png" },
     exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", sad: "伤心", angry: "生气" },
-    calib: { base: { top: 0.0286, chin: 0.338 }, summer: { top: 0.0148, chin: 0.315 }, home: { top: 0.0113, chin: 0.362 }, expr_smile: { top: 0.0325, chin: 0.265 }, expr_shy: { top: 0.018, chin: 0.25 }, expr_sad: { top: 0.0283, chin: 0.255 }, expr_angry: { top: 0.0304, chin: 0.258 }, expr_annoyed: { top: 0.0304, chin: 0.258 } } },
+    calib: { pajama: { top: 0.02, chin: 0.234 }, base: { top: 0.0286, chin: 0.338 }, summer: { top: 0.0148, chin: 0.315 }, home: { top: 0.0113, chin: 0.362 }, expr_smile: { top: 0.0325, chin: 0.265 }, expr_shy: { top: 0.018, chin: 0.25 }, expr_sad: { top: 0.0283, chin: 0.255 }, expr_angry: { top: 0.0304, chin: 0.258 }, expr_annoyed: { top: 0.0304, chin: 0.258 } } },
 
   otaku: { name: "Kieran", short: "Kieran", height: 184, color: "#6DB3A6", lang: "en", love: true, hidden: "otaku",
     persona: "本地英国男生，资深二次元，练肌肉防止被当成nerd，姜红色鲻鱼头。嘴笨、护短，认定了就很认真，但不敢让朋友知道自己的爱好。用英文聊天，聊到番会突然话多。",
-    sprites: { base: "chara/otaku/base.png", summer: "chara/otaku/summer.png", club: "chara/otaku/club.png", figure: "chara/otaku/figure.png" },
+    sprites: { base: "chara/otaku/base.png", summer: "chara/otaku/summer.png", club: "chara/otaku/club.png", figure: "chara/otaku/figure.png", pajama: "chara/otaku/pajama.png" },
     expr: { normal: "chara/otaku/expr_1.png", smile: "chara/otaku/expr_2.png", annoyed: "chara/otaku/n_annoyed.png", shy: "chara/otaku/n_shy.png",
             surprised: "chara/otaku/expr_5.png", speechless: "chara/otaku/expr_6.png", sparkle: "chara/otaku/n_sparkle.png", sad: "chara/otaku/n_sad.png" },   // 第十批：害羞／伤心／不满／眼睛发亮换新图
     exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", sparkle: "聊到番时眼睛发亮", sad: "伤心" },
-    calib: { base: { top: 0.0048, chin: 0.272 }, summer: { top: 0.0304, chin: 0.34 }, club: { top: 0.0321, chin: 0.308 }, figure: { top: 0.0373, chin: 0.318 }, expr_normal: { top: 0.0055, chin: 0.359 }, expr_smile: { top: 0.0076, chin: 0.359 }, expr_annoyed: { top: 0.029, chin: 0.25 }, expr_shy: { top: 0.0283, chin: 0.26 }, expr_surprised: { top: 0.0069, chin: 0.359 }, expr_speechless: { top: 0.0062, chin: 0.359 }, expr_sparkle: { top: 0.0249, chin: 0.285 }, expr_sad: { top: 0.0304, chin: 0.255 } } },
+    calib: { pajama: { top: 0.0304, chin: 0.2494 }, base: { top: 0.0048, chin: 0.272 }, summer: { top: 0.0304, chin: 0.34 }, club: { top: 0.0321, chin: 0.308 }, figure: { top: 0.0373, chin: 0.318 }, expr_normal: { top: 0.0055, chin: 0.359 }, expr_smile: { top: 0.0076, chin: 0.359 }, expr_annoyed: { top: 0.029, chin: 0.25 }, expr_shy: { top: 0.0283, chin: 0.26 }, expr_surprised: { top: 0.0069, chin: 0.359 }, expr_speechless: { top: 0.0062, chin: 0.359 }, expr_sparkle: { top: 0.0249, chin: 0.285 }, expr_sad: { top: 0.0304, chin: 0.255 } } },
 
   // ===== 固定 NPC =====
   nikos:        { name: "Dr. Nikos Lambert", short: "Nikos", height: 183, color: "#3A4766", lang: "en", sprites: { base: "chara/npc/nikos.png" },        calib: { base: { top: 0.0252, chin: 0.277 } } },

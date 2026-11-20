@@ -31,7 +31,7 @@ Object.assign(DATA.events, {
   ],
   meet_jake: [
     { bg: "gym" },
-    { say: "跑步机上，一个金发男生跑着跑着回头跟人说话，然后被跑步机甩了下来。" },
+    { say: "跑步机上，一个棕发男生跑着跑着回头跟人说话，然后被跑步机甩了下来。" },
     { show: "jake" },
     { say: "I'm fine! I'm fine. That happens a lot.", name: "jake", tr: "我没事！没事。这种事经常发生。" },
     { say: "他爬起来，看到你在笑，也笑了。" },

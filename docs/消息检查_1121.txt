@@ -1,0 +1,193 @@
+对方主动发消息的事件：120 个
+
+== 有问题的 ==
+group_presentation｜groupmate｜①groupmate 没要求认识｜条件：（日历固定：大一第 17 周）
+essay_senior_again｜essay_senior｜①essay_senior 没要求认识｜条件：学年 == 1 && 周数 >= 19 && 周数 <= 22
+term3_start｜mei｜①mei 没要求认识｜条件：（日历固定：大一第 24 周）
+summer_9_house｜senior｜①senior 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+y2_house_again｜jake｜①jake 没要求认识｜条件：（日历固定：大二第 15 周）
+trial_groupmate｜groupmate｜①groupmate 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+trial_otaku｜otaku｜①otaku 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+trial_groupmate_helped｜groupmate｜①groupmate 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+y2_first_rejection｜hannah｜①hannah 没要求认识｜条件：（日历固定：大二第 7 周）
+y2_results｜jake｜①jake 没要求认识｜条件：（日历固定：大二第 12 周）
+easter_2｜jake｜①jake 没要求认识｜条件：（日历固定：大二第 21 周）
+be_ploy_ddl｜groupmate｜①groupmate 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+bd_senior_invite｜senior｜①senior 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+bd_senior_missed｜senior｜①senior 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+bd_local_invite｜local｜①local 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+bd_local_missed｜local｜①local 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+bd_groupmate_invite｜groupmate｜①groupmate 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+bd_otaku_invite｜otaku｜①otaku 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+bd_ben｜ben｜①ben 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+jealous_senior｜senior｜①senior 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+jealous_local｜local｜①local 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+jealous_otaku｜otaku｜①otaku 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+dl_jollybea_first｜giulia｜①giulia 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+enc_library_groupmate_acquaint｜groupmate｜①groupmate 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+enc_dorm_room_local_flirt｜local｜①local 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+enc10_gym_otaku_dating｜otaku｜①otaku 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+enc10_club_room_groupmate_meet｜groupmate｜①groupmate 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+enc10_pub_street_senior_dating｜senior｜①senior 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+trip_japan_0｜otaku｜①otaku 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+confess_eve_senior｜senior｜①senior 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+confess_eve_local｜local｜①local 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+confess_eve_groupmate｜groupmate｜①groupmate 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+confess_eve_otaku｜otaku｜①otaku 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+groupmate_past_eve｜groupmate｜①groupmate 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+otaku_past_eve｜otaku｜①otaku 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+ploy_ins_quiet｜groupmate｜①groupmate 没要求认识｜条件：标记('ploy_ins_quiet_due')
+tbd_senior｜senior｜①senior 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+tbd_groupmate｜groupmate｜①groupmate 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+tbd_otaku｜otaku｜①otaku 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+tbd_local｜local｜①local 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+gala_host_ask｜zhao_zihao｜①zhao_zihao 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+confess_ask_senior｜senior｜①senior 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+confess_ask_local｜local｜①local 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+confess_ask_groupmate｜groupmate｜①groupmate 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+confess_ask_otaku｜otaku｜①otaku 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+nick_senior_zihang｜senior｜①senior 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+nick_local_aoli｜local｜①local 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+nick_groupmate_bao｜groupmate｜①groupmate 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+nick_otaku_kez｜otaku｜①otaku 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+news_sick_senior_flirt｜senior｜①senior 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+news_sick_local_flirt｜local｜①local 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+news_sick_groupmate_flirt｜groupmate｜①groupmate 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+news_sick_otaku_flirt｜otaku｜①otaku 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+news_first_senior_flirt｜senior｜①senior 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+news_first_local_flirt｜local｜①local 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+news_first_groupmate_flirt｜groupmate｜①groupmate 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+news_first_otaku_flirt｜otaku｜①otaku 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+news_late_sick_senior｜senior｜①senior 没要求认识｜条件：标记('news_untold_sick_senior') && 过了几周('wk_news_untold_sick_senior') >= 1
+news_late_first_senior｜senior｜①senior 没要求认识｜条件：标记('news_untold_first_senior') && 过了几周('wk_news_untold_first_senior') >= 1
+news_late_sick_local｜local｜①local 没要求认识｜条件：标记('news_untold_sick_local') && 过了几周('wk_news_untold_sick_local') >= 1
+news_late_first_local｜local｜①local 没要求认识｜条件：标记('news_untold_first_local') && 过了几周('wk_news_untold_first_local') >= 1
+news_late_sick_groupmate｜groupmate｜①groupmate 没要求认识｜条件：标记('news_untold_sick_groupmate') && 过了几周('wk_news_untold_sick_groupmate') >= 1
+news_late_first_groupmate｜groupmate｜①groupmate 没要求认识｜条件：标记('news_untold_first_groupmate') && 过了几周('wk_news_untold_first_groupmate') >= 1
+news_late_sick_otaku｜otaku｜①otaku 没要求认识｜条件：标记('news_untold_sick_otaku') && 过了几周('wk_news_untold_sick_otaku') >= 1
+news_late_first_otaku｜otaku｜①otaku 没要求认识｜条件：标记('news_untold_first_otaku') && 过了几周('wk_news_untold_first_otaku') >= 1
+summer_9_house_khan｜senior｜①senior 没要求认识｜条件：（没有登记条件：由别的事件 run 或系统调用）
+
+== ③ 同一周固定发出超过 3 条 ==
+
+== 全部 ==
+dark_at_four｜senior,local,groupmate,otaku｜（日历固定：大一第 7 周）
+term_end｜senior,local,groupmate,otaku｜（日历固定：大一第 12 周）
+xmas_market｜otaku｜（日历固定：大一第 11 周）
+spring_festival｜senior,local,groupmate,otaku｜（日历固定：大一第 15 周）
+valentines｜senior,local,groupmate,otaku｜（日历固定：大一第 16 周）
+group_presentation｜groupmate｜（日历固定：大一第 17 周）
+essay_senior_again｜essay_senior｜学年 == 1 && 周数 >= 19 && 周数 <= 22
+easter_break｜senior,local,groupmate,otaku｜（日历固定：大一第 23 周）
+term3_start｜mei｜（日历固定：大一第 24 周）
+summer_msgs｜senior,local,groupmate,otaku｜（没有登记条件：由别的事件 run 或系统调用）
+summer_9_house｜senior｜（没有登记条件：由别的事件 run 或系统调用）
+y2_house_again｜jake｜（日历固定：大二第 15 周）
+y3_stay_or_go｜senior｜（日历固定：大三第 4 周）
+y3_leaving｜senior｜（日历固定：大三第 23 周）
+trial_groupmate｜groupmate｜（没有登记条件：由别的事件 run 或系统调用）
+trial_otaku｜otaku｜（没有登记条件：由别的事件 run 或系统调用）
+senior_valentine｜senior｜学年 == 2 && 周数 == 14 && 好感('senior') >= 60 && !交往中('senior')
+local_valentine｜local｜学年 == 2 && 周数 == 14 && 好感('local') >= 60 && !交往中('local')
+groupmate_valentine｜groupmate｜学年 == 2 && 周数 == 14 && 好感('groupmate') >= 60 && !交往中('groupmate')
+trial_groupmate_helped｜groupmate｜（没有登记条件：由别的事件 run 或系统调用）
+otaku_valentine｜otaku｜学年 == 2 && 周数 == 14 && 好感('otaku') >= 60 && !交往中('otaku')
+y2_first_rejection｜hannah｜（日历固定：大二第 7 周）
+y2_results｜jake｜（日历固定：大二第 12 周）
+easter_2｜jake｜（日历固定：大二第 21 周）
+y3_freshers_again｜senior｜（日历固定：大三第 5 周）
+ollie_hungry_msg｜local｜标记('ollie_exchange') && !交往中('local')
+kieran_monster_night｜otaku｜好感('otaku') >= 20 && (学年 > 1 || 周数 > 6)
+kieran_socks｜otaku｜好感('otaku') >= 70 && 标记('advance_otaku') && 季节 == '春' && !交往中('otaku')
+senior_moment_bicester｜senior｜好感('senior') >= 20 && (学年 > 1 || 周数 >= 6) && !交往中('senior')
+senior_transit｜senior｜好感('senior') >= 30
+senior_black_friday｜senior｜好感('senior') >= 25
+senior_bicester_date｜senior｜交往中('senior') && 学年 == 3 && 周数 <= 11 && 好感('senior') >= 70
+be_senior_stay_hint｜senior｜交往中('senior')
+ploy_jiaren｜groupmate｜好感('groupmate') >= 20 && (学年 > 1 || 周数 >= 5)
+be_ploy_ddl｜groupmate｜（没有登记条件：由别的事件 run 或系统调用）
+be_ploy_hannah｜hannah｜标记('ploy_ghostwrite') >= 2 && 友情('hannah') > 0
+bd_senior_invite｜senior｜（没有登记条件：由别的事件 run 或系统调用）
+bd_senior_missed｜senior｜（没有登记条件：由别的事件 run 或系统调用）
+bd_local_invite｜local｜（没有登记条件：由别的事件 run 或系统调用）
+bd_local_missed｜local｜（没有登记条件：由别的事件 run 或系统调用）
+bd_groupmate_invite｜groupmate｜（没有登记条件：由别的事件 run 或系统调用）
+bd_otaku_invite｜otaku｜（没有登记条件：由别的事件 run 或系统调用）
+bd_ben｜ben｜（没有登记条件：由别的事件 run 或系统调用）
+small_otaku_4｜otaku｜好感('otaku') >= 20 && 标签('二次元')
+flirt_local_4｜local｜好感('local') >= 60 && !交往中('local') && 好感('senior') >= 20
+flirt_groupmate_2｜groupmate｜好感('groupmate') >= 60 && !交往中('groupmate')
+flirt_groupmate_4｜groupmate｜好感('groupmate') >= 55 && !交往中('groupmate')
+flirt_otaku_2｜otaku｜好感('otaku') >= 60 && !交往中('otaku') && 标记('kieran_online')
+flirt_otaku_5｜otaku｜好感('otaku') >= 60 && !交往中('otaku') && 标记('kieran_online')
+flirt_senior_2｜senior｜好感('senior') >= 60 && !交往中('senior')
+flirt_senior_4｜senior｜好感('senior') >= 60 && !交往中('senior') && 标记('heart_senior') && (数值('精力') <= 0 || 数值('孤独') >= 60)
+acq_senior_1｜senior｜学年 == 1 && 周数 == 1 && 标记('met_senior') && !交往中('senior')
+acq_senior_2｜senior｜学年 == 1 && 周数 >= 2 && 周数 <= 4 && !交往中('senior')
+acq_senior_4｜senior｜学年 == 1 && 周数 >= 6 && 周数 <= 10 && !交往中('senior')
+acq_local_2｜local｜学年 == 1 && 周数 >= 3 && 周数 <= 8 && !交往中('local')
+acq_otaku_3｜otaku｜学年 == 1 && 周数 >= 4 && 周数 <= 10 && 标签('二次元') && 标记('met_otaku') && !交往中('otaku')
+acq_otaku_4｜otaku｜学年 == 1 && 周数 >= 5 && 周数 <= 12 && 标记('met_otaku') && !交往中('otaku')
+jl_local_1｜local｜演过('acq_local_6') && 好感('local') >= 20 && 好感('local') < 40 && 学年 == 1 && 周数 >= 8 && 周数 <= 14 && !交往中('local')
+jl_local_4｜local｜(演过('jl_local_3') && 好感('local') >= 20 && 好感('local') < 40 && !交往中('local')) && 标记('chain_now_jl_local_4')
+jl_senior_2｜senior｜演过('jl_senior_1') && 标记('senior_tea') && 好感('senior') >= 20 && 好感('senior') < 40 && 学年 == 1 && 周数 >= 8 && 周数 <= 14 && !交往中('senior')
+jl_otaku_1｜otaku｜演过('acq_otaku_5') && 好感('otaku') >= 20 && 好感('otaku') < 40 && 学年 == 1 && 周数 >= 8 && 周数 <= 14 && !交往中('otaku')
+jl_otaku_3｜otaku｜演过('jl_otaku_2') && 好感('otaku') >= 20 && 好感('otaku') < 40 && !交往中('otaku')
+dating_senior_3｜senior｜交往中('senior') && 告白后('senior') >= 2
+dating_local_1｜local｜交往中('local') && 考验('local') == 1
+dating_otaku_1｜otaku｜交往中('otaku') && 考验('otaku') == 0
+jealous_senior｜senior｜（没有登记条件：由别的事件 run 或系统调用）
+jealous_local｜local｜（没有登记条件：由别的事件 run 或系统调用）
+jealous_otaku｜otaku｜（没有登记条件：由别的事件 run 或系统调用）
+cohab_otaku_3｜otaku｜交往中('otaku') && 演过几周了('cohab_otaku_2') >= 2 && 演过几周了('cohab_otaku_2') <= 4 && 学年 == 3
+dl_jollybea_first｜giulia｜（没有登记条件：由别的事件 run 或系统调用）
+enc_library_groupmate_acquaint｜groupmate｜（没有登记条件：由别的事件 run 或系统调用）
+enc_dorm_room_local_flirt｜local｜（没有登记条件：由别的事件 run 或系统调用）
+enc10_gym_otaku_dating｜otaku｜（没有登记条件：由别的事件 run 或系统调用）
+enc10_club_room_groupmate_meet｜groupmate｜（没有登记条件：由别的事件 run 或系统调用）
+enc10_pub_street_senior_dating｜senior｜（没有登记条件：由别的事件 run 或系统调用）
+trip_japan_0｜otaku｜（没有登记条件：由别的事件 run 或系统调用）
+confess_eve_senior｜senior｜（没有登记条件：由别的事件 run 或系统调用）
+confess_eve_local｜local｜（没有登记条件：由别的事件 run 或系统调用）
+confess_eve_groupmate｜groupmate｜（没有登记条件：由别的事件 run 或系统调用）
+confess_eve_otaku｜otaku｜（没有登记条件：由别的事件 run 或系统调用）
+fs_y2_ploy_group｜groupmate｜好感('groupmate') >= 65 && 标记('heart_groupmate') && !标记('advance_groupmate')
+groupmate_past_eve｜groupmate｜（没有登记条件：由别的事件 run 或系统调用）
+otaku_past_eve｜otaku｜（没有登记条件：由别的事件 run 或系统调用）
+ploy_ins_quiet｜groupmate｜标记('ploy_ins_quiet_due')
+tbd_senior｜senior｜（没有登记条件：由别的事件 run 或系统调用）
+tbd_groupmate｜groupmate｜（没有登记条件：由别的事件 run 或系统调用）
+tbd_otaku｜otaku｜（没有登记条件：由别的事件 run 或系统调用）
+tbd_local｜local｜（没有登记条件：由别的事件 run 或系统调用）
+end_belong_2｜jake,hannah,sophie｜融入 >= 55 && 学年 >= 2 && 学期 == '秋' && 周数 >= 9 && !有交往对象 && (友情('jake') >= 60 || 友情('hannah') >= 60 || 友情('sophie') >= 60)
+dual_pretty_3｜senior｜标签('天生丽质') && 标记('met_senior')
+gala_host_ask｜zhao_zihao｜（没有登记条件：由别的事件 run 或系统调用）
+gala_model_ask｜local｜knows('local')
+y2_fashion_show｜otaku,senior｜（没有登记条件：由别的事件 run 或系统调用）
+gala_ball_ask｜senior,local,groupmate,otaku｜（没有登记条件：由别的事件 run 或系统调用）
+confess_ask_senior｜senior｜（没有登记条件：由别的事件 run 或系统调用）
+confess_ask_local｜local｜（没有登记条件：由别的事件 run 或系统调用）
+confess_ask_groupmate｜groupmate｜（没有登记条件：由别的事件 run 或系统调用）
+confess_ask_otaku｜otaku｜（没有登记条件：由别的事件 run 或系统调用）
+nick_senior_zihang｜senior｜（没有登记条件：由别的事件 run 或系统调用）
+nick_local_aoli｜local｜（没有登记条件：由别的事件 run 或系统调用）
+nick_groupmate_bao｜groupmate｜（没有登记条件：由别的事件 run 或系统调用）
+nick_otaku_kez｜otaku｜（没有登记条件：由别的事件 run 或系统调用）
+news_sick_senior_flirt｜senior｜（没有登记条件：由别的事件 run 或系统调用）
+news_sick_local_flirt｜local｜（没有登记条件：由别的事件 run 或系统调用）
+news_sick_groupmate_flirt｜groupmate｜（没有登记条件：由别的事件 run 或系统调用）
+news_sick_otaku_flirt｜otaku｜（没有登记条件：由别的事件 run 或系统调用）
+news_first_senior_flirt｜senior｜（没有登记条件：由别的事件 run 或系统调用）
+news_first_local_flirt｜local｜（没有登记条件：由别的事件 run 或系统调用）
+news_first_groupmate_flirt｜groupmate｜（没有登记条件：由别的事件 run 或系统调用）
+news_first_otaku_flirt｜otaku｜（没有登记条件：由别的事件 run 或系统调用）
+news_late_sick_senior｜senior｜标记('news_untold_sick_senior') && 过了几周('wk_news_untold_sick_senior') >= 1
+news_late_first_senior｜senior｜标记('news_untold_first_senior') && 过了几周('wk_news_untold_first_senior') >= 1
+news_late_sick_local｜local｜标记('news_untold_sick_local') && 过了几周('wk_news_untold_sick_local') >= 1
+news_late_first_local｜local｜标记('news_untold_first_local') && 过了几周('wk_news_untold_first_local') >= 1
+news_late_sick_groupmate｜groupmate｜标记('news_untold_sick_groupmate') && 过了几周('wk_news_untold_sick_groupmate') >= 1
+news_late_first_groupmate｜groupmate｜标记('news_untold_first_groupmate') && 过了几周('wk_news_untold_first_groupmate') >= 1
+news_late_sick_otaku｜otaku｜标记('news_untold_sick_otaku') && 过了几周('wk_news_untold_sick_otaku') >= 1
+news_late_first_otaku｜otaku｜标记('news_untold_first_otaku') && 过了几周('wk_news_untold_first_otaku') >= 1
+summer_9_house_khan｜senior｜（没有登记条件：由别的事件 run 或系统调用）
+senior_graduation｜senior｜knows('senior') && 标记('contact_senior')

@@ -48,3 +48,33 @@
 .nick-free input { flex: 1; font: 600 20px var(--font); padding: 8px 10px; border: 3px solid var(--navy); border-radius: 10px; }
 .more-btn { margin-left: 6px; }
 .rl-q .rl-face { width: 120px; height: 120px; float: left; margin: 0 18px 8px 0; border-radius: 50%; }
+
+/* 第十三批 A3：本周末时刻板放进地图上没有地点的那块空地（x 590–1350，y 335–565），不再挡住市中心 */
+.wk-board { left: 590px; top: 335px; width: 760px; padding: 14px 22px 16px; }
+.wb-head { margin-bottom: 6px; padding-bottom: 6px; }
+.wb-head b { font-size: 28px; }
+.wb-row { margin-top: 8px; gap: 8px; }
+.wb-cell { height: 62px; }
+.wb-cell b { font-size: 24px; }
+
+/* 第十四批 G4：标题菜单的 ▶ 在“继续＋CONTINUE”整块的左边 12px、竖直居中；只在鼠标移上去时出现 */
+.title-bar::before { content: none !important; }
+.title-bar .tb-in { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.title-bar .tb-in::before { content: "▶"; position: absolute; right: 100%; top: 50%; margin-right: 12px; transform: translateY(-50%) rotate(-6deg); font: 700 30px/1 var(--en); color: var(--navy); opacity: 0; transition: opacity var(--t); pointer-events: none; }
+.title-bar:not(.off):hover .tb-in::before { opacity: 1; }
+
+/* 第十三批 B4：手机按钮上的未读数字、来消息抖一下；剧情里右上角也有 手机／存档／设置 */
+#btn-phone.dot::after, #sys-phone.dot::after { content: attr(data-n); width: auto; min-width: 26px; height: 26px; padding: 0 7px; top: -10px; right: -10px; border-radius: 13px; background: #E5484D; color: #fff;
+  font: 800 16px/26px var(--en); text-align: center; border: 2px solid var(--paper); position: absolute; box-sizing: border-box; }
+#sys-phone { position: relative; }
+.shake { animation: v8shake .5s; }
+@keyframes v8shake { 0%,100% { transform: none; } 20% { transform: rotate(-8deg); } 40% { transform: rotate(7deg); } 60% { transform: rotate(-5deg); } 80% { transform: rotate(3deg); } }
+#sysbar [data-sys^="v8"] { border-color: var(--orange); }
+/* 第十三批 B3：第一次以名字出场的小标签 */
+.v8-nametag { position: absolute; left: 160px; top: 640px; z-index: 40; background: var(--navy); color: var(--paper); font-size: 24px; font-weight: 700; padding: 10px 22px; box-shadow: 6px 6px 0 var(--orange);
+  animation: tagIn .35s both; transition: opacity .5s; pointer-events: none; }
+.v8-nametag.out { opacity: 0; }
+/* 十三批 F4：地图上的 Q 版头像 */
+.marker .v8-dots { position: absolute; right: -8px; top: -30px; display: flex; gap: 2px; pointer-events: none; }
+.marker .v8-dots img { width: 56px; height: 56px; border-radius: 50%; border: 3px solid #fff; background: var(--paper); object-fit: cover; opacity: .45; box-shadow: 0 2px 0 rgba(0,0,0,.15); }
+.marker .v8-dots img.hot { opacity: 1; box-shadow: 0 0 0 3px var(--orange); }

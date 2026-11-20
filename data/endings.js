@@ -36,7 +36,8 @@ DATA.endings = {
 DATA.endingArt = {
   stamps: { home: "home", alien: "alien", creep: "creep", disco: "disco", lonely: "lonely",
             ghost_rule: "ghost_rule", brain_girl: "brain_girl" },   // love_trial.png 是邮票形状，恋爱裁判改成盖章后先不用（要一张邮戳形状的图）
-  postmarks: { first: "first",
+  postmarks: { first: "first", love_ing: "love_ing",   // 第十五批补 3：恋爱ing 邮戳到了
+               
                senior_he: "senior_he", senior_be: "senior_be", local_he: "local_he", local_be: "local_be",
                groupmate_he: "groupmate_he", groupmate_be: "groupmate_be", otaku_he: "otaku_he", otaku_be: "otaku_be" },
 };

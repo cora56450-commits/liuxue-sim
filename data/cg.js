@@ -23,8 +23,9 @@ DATA.cgList = [
   { id: "senior_bench",       title: "长椅" },
   { id: "senior_tea",         title: "一杯铁观音" },
   { id: "senior_confess",     title: "学长·告白" },   // 2026-11-18 第五批入库
-  { id: "senior_he",          title: "回国开张" },
-  { id: "senior_be",          title: "学长·BE" },
+  { id: "senior_he",   // 第十四批 G3：HE／BE 格子写结局名
+           title: "告白预演" },
+  { id: "senior_be",          title: "Money for Nothing" },
   { id: "local_past",         title: "gap year夜市" },
   { id: "local_rain",         title: "大衣挡雨" },
   { id: "local_name",         title: "练名字" },
@@ -33,8 +34,8 @@ DATA.cgList = [
   { id: "local_sunday",       title: "周日早上" },
   { id: "local_notes",        title: "图书馆便利贴" },
   { id: "local_confess",      title: "Ollie·告白" },   // 2026-11-18 第五批入库
-  { id: "local_he",           title: "周日烤肉" },
-  { id: "local_be",           title: "Ollie·BE" },
+  { id: "local_he",           title: "Wonderwall" },
+  { id: "local_be",           title: "没有明天" },
   { id: "groupmate_past",     title: "空荡荡的酒店套房" },
   { id: "groupmate_chips",    title: "凌晨路边薯条" },
   { id: "groupmate_tea",      title: "熬夜奶茶" },
@@ -43,8 +44,8 @@ DATA.cgList = [
   { id: "groupmate_asleep",   title: "凌晨一点睡着了" },
   { id: "groupmate_egg",      title: "第一个煎蛋" },
   { id: "groupmate_confess",  title: "Ploy·告白" },   // 2026-11-18 第五批入库
-  { id: "groupmate_he",       title: "曼谷泼水节" },
-  { id: "groupmate_be",       title: "Ploy·BE" },
+  { id: "groupmate_he",       title: "融化" },
+  { id: "groupmate_be",       title: "吸血鬼" },
   { id: "otaku_past",         title: "还没练肌肉的时候" },
   { id: "otaku_screening",    title: "放映室" },
   { id: "otaku_con",          title: "漫展" },
@@ -53,6 +54,6 @@ DATA.cgList = [
   { id: "otaku_hoodie",       title: "他的卫衣" },
   { id: "otaku_earphones",    title: "同一副耳机" },
   { id: "otaku_confess",      title: "Kieran·告白" },   // 2026-11-18 第五批入库
-  { id: "otaku_he",           title: "pub公开" },
-  { id: "otaku_be",           title: "Kieran·BE" },
+  { id: "otaku_he",           title: "神的随波逐流" },
+  { id: "otaku_be",           title: "拜启二重身" },
 ];

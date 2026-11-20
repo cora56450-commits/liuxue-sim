@@ -70,8 +70,11 @@ Object.assign(DATA.events, {
     { if: "knows('chen_jianguo')", then: [
       { say: "陈叔赞助了抽奖的一等奖：中超全年八折卡。抽中的人尖叫了。" },
     ] },
-    { if: "knows('local') && 标记('gala_bring_local')", then: [   // 待策划：第 3 周群里问“能带外国朋友吗”那一步剧本没写，现在没有地方设 gala_bring_local
-      { say: "Ollie 坐在一群中国人中间，表情认真，每个节目结束都第一个鼓掌，鼓得太用力了。" },
+    { if: "knows('local') && (标记('gala_bring_local') || 好感('local') >= 10)", then: [   // 第十三批 A7：认识 Ollie 且好感 ≥ 10 就来（Ploy 拖他来的）
+      { show: "local" },
+      { say: "Ploy dragged me. I'm learning about mooncakes.", name: "local", tr: "Ploy 拖我来的。我在学月饼。" },
+      { say: "Ollie 坐在一群中国人中间，表情认真，每个节目结束都第一个鼓掌，鼓得太用力了。", fx: { aff_local: 1 } },
+      { hide: true },
     ] },
     // 抽奖：认识的中国朋友每人 +5%，最多 40%
     { say: "抽奖。你的号是 47。" },

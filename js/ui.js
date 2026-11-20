@@ -1,11 +1,22 @@
 // 画面层：背景、立绘、CG、对话框、选项、面板、HUD
 const $ = (s) => document.querySelector(s);
 
+// 第十三批 A2：小窗口／手机横屏也整块等比缩放、居中，左右或上下留黑边；页面本身不让缩放（Safari 双指缩放会把舞台放大裁掉）
 function fitStage() {
-  const sc = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
-  $("#stage").style.transform = `translate(-50%, -50%) scale(${sc})`;
+  const vv = window.visualViewport;
+  const W = document.documentElement.clientWidth || window.innerWidth, H = document.documentElement.clientHeight || window.innerHeight;
+  const sc = Math.min(W / 1920, H / 1080);
+  const st = $("#stage"); if (!st) return;
+  st.style.left = W / 2 + "px"; st.style.top = H / 2 + "px";
+  st.style.transform = `translate(-50%, -50%) scale(${sc})`;
+  if (vv && vv.scale && Math.abs(vv.scale - 1) > 0.01) window.scrollTo(0, 0);
 }
 window.addEventListener("resize", fitStage);
+window.addEventListener("orientationchange", () => setTimeout(fitStage, 200));
+if (window.visualViewport) window.visualViewport.addEventListener("resize", fitStage);
+["gesturestart", "gesturechange"].forEach((e) => document.addEventListener(e, (ev) => ev.preventDefault()));
+document.addEventListener("wheel", (e) => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });   // 触控板双指缩放
+document.addEventListener("fullscreenchange", () => setTimeout(fitStage, 100));
 
 // ===== 设置（存在本机，不随存档） =====
 const Settings = {
@@ -350,11 +361,13 @@ function say(text, nameId, opt = {}) {
   });
 }
 // 在对话框里显示一句提问（系统选项用，不等点击；试玩报告 52）
-function sayStatic(text) {
+function sayStatic(text, tr) {   // 第十三批 A1：翻译走 #dialog-tr，不往正文里拼 HTML
   const d = $("#dialog");
   d.classList.remove("hidden"); $("#sysbar").classList.add("hidden"); $("#stage").classList.remove("nodlg");
   $("#nameplate").classList.add("hidden"); $("#avatar").classList.add("hidden"); d.classList.remove("with-avatar", "has-tr");
-  $("#dialog-text").innerHTML = Gloss.mark(fillText(text)); $("#dialog-tr").textContent = ""; $("#dialog-next").classList.add("hidden");
+  const t = tr && Settings.v.showTr ? fillText(tr) : "";
+  d.classList.toggle("has-tr", !!t);
+  $("#dialog-text").innerHTML = Gloss.mark(fillText(text)); $("#dialog-tr").innerHTML = t ? Gloss.mark(t) : ""; $("#dialog-tr").style.visibility = "visible"; $("#dialog-next").classList.add("hidden");
   d.onclick = null;
 }
 // 显示一句台词但不等点击（限时选项倒计时期间对方继续说话用）
@@ -440,11 +453,16 @@ function panel(html, cls = "") { const p = $("#panel"); p.className = cls; p.inn
 
 // 按钮的小英文（车站标识风：中文大字＋下面一行英文）
 const BTN_EN = { "开始这一周": "DEPART", "周末出门": "WEEKEND", "结束这周": "END WEEK", "下一步": "NEXT", "落地英国": "LAND", "继续": "CONTINUE", "回到标题": "TITLE", "不去了": "BACK", "知道了": "OK" };
+// 第十三批 D2：没登记的按钮按开头猜一个英文
+function btnEnGuess(label) {
+  const G = [[/^待在家/, "STAY IN"], [/^回家睡觉/, "SLEEP"], [/^回家/, "HOME"], [/^周末/, "WEEKEND"], [/^去/, "GO"], [/^好/, "OK"], [/^算了|^不/, "NO THANKS"], [/^确定|^确认/, "CONFIRM"], [/^返回|^回去/, "BACK"], [/^开始/, "START"], [/^看/, "VIEW"], [/^买/, "BUY"], [/^交/, "SUBMIT"]];
+  const m = G.find(([re]) => re.test(label)); return m ? m[1] : "";
+}
 function receipt(label, n, onclick) {
   const el = document.createElement("div");
   el.className = "receipt btn primary";
   el.tabIndex = 0;
-  el.innerHTML = `<span class="bi"><span class="zh">${label}</span><span class="en">${BTN_EN[label] || ""}</span></span><span class="arr">→</span>`;
+  el.innerHTML = `<span class="bi"><span class="zh">${label}</span><span class="en">${BTN_EN[label] || btnEnGuess(label)}</span></span><span class="arr">→</span>`;
   // 防连点（试玩报告 29）：点一次就锁住，所有按钮 0.8 秒内不再响应；如果点了以后画面没换（比如日程没排满），解锁
   const go = () => {
     if (el._fired || receipt.locked) return;

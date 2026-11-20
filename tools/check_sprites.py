@@ -59,8 +59,10 @@ if todo:
     for p in todo: print("·", p)
 
 # ===== 同框图 =====
-font = ImageFont.truetype("/System/Library/Fonts/Hiragino Sans GB.ttc", 26, index=2)
-small = ImageFont.truetype("/System/Library/Fonts/Hiragino Sans GB.ttc", 18, index=2)
+try: font = ImageFont.truetype("/System/Library/Fonts/Hiragino Sans GB.ttc", 26, index=2)
+except OSError: font = ImageFont.load_default()   # 不在 Mac 上跑（没有冬青黑体）时用默认字体
+try: small = ImageFont.truetype("/System/Library/Fonts/Hiragino Sans GB.ttc", 18, index=2)
+except OSError: small = ImageFont.load_default()
 def sheet(entries, out):
     SL, X0 = 230, 120
     W = X0 + SL * len(entries); H = 1080

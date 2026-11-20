@@ -5,21 +5,6 @@
    "name": "认真玩：每周聊＋三周一约＋周末出门（Ollie）",
    "goal": "告白中位大二第18–24周，HE 70–85%",
    "confessRate": "100%",
-   "confessMedian": "大二第20周",
-   "he": "84%",
-   "be": "16%",
-   "dated": "100%",
-   "trial": "0%",
-   "pond1": "0%",
-   "aff": "100.0",
-   "small": "34.6",
-   "smallAff": "10.5",
-   "degree": "69.7"
-  },
-  {
-   "name": "认真玩（学长）",
-   "goal": "同上",
-   "confessRate": "100%",
    "confessMedian": "大二第22周",
    "he": "82%",
    "be": "18%",
@@ -27,53 +12,68 @@
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
-   "small": "44.0",
-   "smallAff": "15.0",
-   "degree": "69.5"
-  },
-  {
-   "name": "认真玩（Ploy）",
-   "goal": "同上",
-   "confessRate": "74%",
-   "confessMedian": "大二第22周",
-   "he": "55%",
-   "be": "19%",
-   "dated": "74%",
-   "trial": "0%",
-   "pond1": "0%",
-   "aff": "97.3",
-   "small": "41.6",
-   "smallAff": "16.3",
+   "small": "34.5",
+   "smallAff": "10.6",
    "degree": "69.8"
   },
   {
-   "name": "认真玩（Kieran）",
+   "name": "认真玩（学长）",
    "goal": "同上",
    "confessRate": "100%",
-   "confessMedian": "大二第20周",
+   "confessMedian": "大二第22周",
    "he": "81%",
    "be": "19%",
    "dated": "100%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
-   "small": "43.6",
-   "smallAff": "15.8",
+   "small": "44.3",
+   "smallAff": "15.1",
+   "degree": "69.4"
+  },
+  {
+   "name": "认真玩（Ploy）",
+   "goal": "同上",
+   "confessRate": "77%",
+   "confessMedian": "大二第22周",
+   "he": "66%",
+   "be": "12%",
+   "dated": "77%",
+   "trial": "0%",
+   "pond1": "0%",
+   "aff": "97.5",
+   "small": "42.3",
+   "smallAff": "16.7",
+   "degree": "69.9"
+  },
+  {
+   "name": "认真玩（Kieran）",
+   "goal": "同上",
+   "confessRate": "100%",
+   "confessMedian": "大二第22周",
+   "he": "81%",
+   "be": "19%",
+   "dated": "100%",
+   "trial": "0%",
+   "pond1": "0%",
+   "aff": "100.0",
+   "small": "43.4",
+   "smallAff": "15.6",
    "degree": "69.4"
   },
   {
    "name": "一周聊一次＋周末偶遇（不约会）",
    "goal": "告白 ≥80%",
-   "confessRate": "98%",
+   "confessRate": "99%",
    "confessMedian": "大二第23周",
-   "he": "75%",
-   "be": "23%",
-   "dated": "98%",
+   "he": "81%",
+   "be": "17%",
+   "dated": "99%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
    "small": "31.2",
-   "smallAff": "17.8",
+   "smallAff": "18.1",
    "degree": "69.7"
   },
   {
@@ -89,7 +89,7 @@
    "aff": "59.0",
    "small": "1.0",
    "smallAff": "1.2",
-   "degree": "70.0"
+   "degree": "69.9"
   },
   {
    "name": "大二大三一直卷（大一正常谈）",
@@ -102,54 +102,54 @@
    "trial": "0%",
    "pond1": "0%",
    "aff": "78.9",
-   "small": "16.6",
-   "smallAff": "8.7",
+   "small": "17.1",
+   "smallAff": "9.0",
    "degree": "70.2"
   },
   {
    "name": "同时对三个人都热情",
    "goal": "鱼塘翻车 ≥50%",
-   "confessRate": "15%",
+   "confessRate": "16%",
    "confessMedian": "大三第4周",
    "he": "0%",
    "be": "88%",
-   "dated": "15%",
+   "dated": "16%",
    "trial": "100%",
    "pond1": "100%",
-   "aff": "55.9",
-   "small": "90.3",
-   "smallAff": "56.9",
-   "degree": "69.9"
+   "aff": "56.2",
+   "small": "90.1",
+   "smallAff": "56.7",
+   "degree": "69.8"
   },
   {
    "name": "BE 补救·Ploy：替写 2 次＋自己写过＋考验拒绝",
    "goal": "走得通",
-   "confessRate": "73%",
+   "confessRate": "69%",
    "confessMedian": "大二第22周",
-   "he": "59%",
-   "be": "14%",
-   "dated": "73%",
+   "he": "58%",
+   "be": "10%",
+   "dated": "69%",
    "trial": "0%",
    "pond1": "0%",
-   "aff": "98.0",
-   "small": "41.6",
-   "smallAff": "16.7",
-   "degree": "69.8"
+   "aff": "96.2",
+   "small": "41.1",
+   "smallAff": "16.0",
+   "degree": "69.9"
   },
   {
    "name": "BE 补救·Ollie：考验没问，最后机会问了（要 90）",
    "goal": "走得通",
    "confessRate": "100%",
    "confessMedian": "大二第22周",
-   "he": "83%",
-   "be": "17%",
+   "he": "80%",
+   "be": "20%",
    "dated": "100%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
    "small": "34.3",
    "smallAff": "10.3",
-   "degree": "69.6"
+   "degree": "69.8"
   }
  ],
  "mains": {
@@ -166,12 +166,12 @@
    "lonely": 300
   },
   "摆烂·关": {
-   "brain_girl": 124,
-   "home": 176
+   "home": 173,
+   "brain_girl": 127
   },
   "摆烂·开": {
-   "home": 169,
-   "brain_girl": 131
+   "home": 184,
+   "brain_girl": 116
   },
   "老鼠·关": {
    "lonely": 300
