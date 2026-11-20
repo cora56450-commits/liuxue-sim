@@ -3,7 +3,7 @@ async function runScript(steps) {
   const gen = Story.gen;
   for (const st0 of steps || []) {
     if (gen !== Story.gen) return STALE();
-    const st = Story5.resolve(st0);   // 随机挑人 {A}{B}：说话人、fx 键里的 {A} 换成实际的人
+    let st = Story5.resolve(st0);   // 随机挑人 {A}{B}：说话人、fx 键里的 {A} 换成实际的人
     // 第五批新步骤：手机段、朋友圈、限时选项、小游戏（js/story5.js）
     if (st.moment) Story5.moment(st.moment);
     if (st.pov !== undefined && st.steps) { await Pov.run(st); continue; }   // 第七批：视角段（设置里能关）
@@ -44,6 +44,11 @@ async function runScript(steps) {
       const opts = st.choice.filter((c) => c.if === undefined || evalCond(c.if)).map((c) => Story5.resolve(c));
       // 出选项时不隐藏对话框（试玩报告 33）：保留最后一句台词，选项摆在对话框上方
       const list = opts.map((c) => ({ text: c.text, sub: c.sub, tr: c.tr }));   // tr：选项的中文翻译
+      // v0.8.3（Cora 11/21）：影响好感／友情的选项，剧本没写 free 的也给“✎ 自己说……”，回应的人就是被加减好感的那个人
+      if (!st.free && !st.noFree && typeof AI !== "undefined" && AI.hasKey()) {
+        const k = opts.map((c) => Object.keys(c.fx || {}).find((x) => /^(aff|fr)_/.test(x))).find(Boolean);
+        if (k) { const who = k.replace(/^(aff|fr)_/, ""), last = ($("#dialog-text") || {}).textContent || ""; st = { ...st, free: `和${charName(who)}说话。${last ? `刚才的话是：“${last.slice(0, 80)}”` : ""}`, freeWho: who }; }
+      }
       const free = FreeInput.can(st);   // 有 Key 时多一张“✎ 自己说……”（js/freeinput.js）
       if (free) list.push({ text: FreeInput.LABEL });   // 车票上只写“✎ 自己说……”（试玩报告 5）
       // 只有一个选项、又不能自己说：不做成选项，直接演（试玩报告 25）。“…”引号的当主角说的话，其余当旁白

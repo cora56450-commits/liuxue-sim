@@ -41,3 +41,53 @@
     return _le.apply(this, arguments);
   };
 })();
+
+// ===== 通讯录：每个人都能自己改备注；默认在名字下面带一行身份（Cora 11/21）=====
+(function () {
+  DATA.contactTag = Object.assign({
+    senior: "金融大三 · 代购／租房中介", local: "时尚社 · Fashion Marketing", groupmate: "小组组员 · Fashion Marketing", otaku: "动漫社干事 · 工程",
+    zhao_zihao: "中国学生会会长", chen_jianguo: "中超老板", khan: "房东／中介", essay_senior: "自称“学姐”的中介",
+    jake: "英国男生 · 爱踢球", giulia: "意大利女生 · 建筑系", mei: "马来西亚华人", hannah: "小组组员", ben: "小组组员",
+    chen_siqi: "湖南人 · 精算", zhou_kexin: "上海人 · 传媒", wu_tong: "四川人 · 家里开火锅店",
+    sophie: "brunch 店店员", dave: "宿舍楼管", marcia: "个人导师", mum: "家人", dad: "家人",
+  }, DATA.contactTag || {});
+  const esc = (s) => (typeof Gloss !== "undefined" ? Gloss.escape(s) : String(s));
+  const base = (c) => { try { return speakerName(c); } catch (e) { return DATA.characters[c].name; } };
+  Phone.displayName = (c) => ((S.remark || {})[c]) || ((S.nick || {})[c]) || base(c);
+  Phone.tagOf = (c) => { const t = DATA.contactTag[c] || ""; const room = window.V080 && V080.myFlatmate && !DATA.loveIds.includes(c) && V080.myFlatmate(c) && c in (S.fr || {}); return room ? "室友" + (t ? " · " + t : "") : t; };
+  const _list = Phone.chatList;
+  Phone.chatList = function () {
+    const r = _list.apply(this, arguments);
+    document.querySelectorAll(".ov-phone .contact[data-c]").forEach((el) => {
+      const c = el.dataset.c, b = el.querySelector("b");
+      if (!b) return;
+      b.textContent = Phone.displayName(c);
+      const tag = Phone.tagOf(c), custom = (S.remark || {})[c] || (S.nick || {})[c];
+      const sub = [custom ? base(c) : "", tag].filter(Boolean).join(" · ");
+      if (sub && !el.querySelector(".c-tag")) b.insertAdjacentHTML("afterend", `<span class="c-tag">${esc(sub)}</span>`);
+    });
+    return r;
+  };
+  const _chat = Phone.chat;
+  Phone.chat = function (cur) {
+    const r = _chat.apply(this, arguments);
+    const head = document.querySelector(".ov-phone .phone-head span");
+    if (head && DATA.characters[cur]) {
+      head.innerHTML = `${esc(Phone.displayName(cur))} <button class="remark-btn" title="改备注">✎</button>`;
+      head.querySelector(".remark-btn").onclick = (e) => { e.stopPropagation(); Phone.remarkEdit(cur); };
+    }
+    return r;
+  };
+  Phone.remarkEdit = function (c) {
+    const cur = (S.remark || {})[c] || "";
+    const o = Phone.frame(`<div class="ask-box"><div class="ask-list">
+      <p class="fb-done">${esc(base(c))}${Phone.tagOf(c) ? " · " + esc(Phone.tagOf(c)) : ""}</p>
+      <div class="nick-free"><input maxlength="12" placeholder="给 TA 写个备注（最多 12 个字）" value="${esc(cur)}"><button class="hud-btn" data-save>保存</button></div>
+      ${cur ? `<button class="hud-btn" data-reset>恢复默认</button>` : ""}</div></div>`, { title: "改备注", back: () => Phone.chat(c) });
+    const inp = o.querySelector("input"); inp.focus();
+    const save = () => { const v = inp.value.trim().replace(/[<>{}]/g, ""); S.remark = S.remark || {}; if (v) S.remark[c] = v; else delete S.remark[c]; toast(v ? `备注改成了“${v}”` : "备注恢复默认"); Phone.chat(c); };
+    o.querySelector("[data-save]").onclick = save;
+    inp.onkeydown = (e) => { if (e.key === "Enter") save(); };
+    const rs = o.querySelector("[data-reset]"); if (rs) rs.onclick = () => { delete S.remark[c]; toast("备注恢复默认"); Phone.chat(c); };
+  };
+})();

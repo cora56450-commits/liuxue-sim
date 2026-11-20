@@ -78,3 +78,7 @@
 .marker .v8-dots { position: absolute; right: -8px; top: -30px; display: flex; gap: 2px; pointer-events: none; }
 .marker .v8-dots img { width: 56px; height: 56px; border-radius: 50%; border: 3px solid #fff; background: var(--paper); object-fit: cover; opacity: .45; box-shadow: 0 2px 0 rgba(0,0,0,.15); }
 .marker .v8-dots img.hot { opacity: 1; box-shadow: 0 0 0 3px var(--orange); }
+/* v0.8.3 通讯录备注 */
+.contact .c-tag { display: block; font-size: 18px; opacity: 0.7; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.phone-head .remark-btn { background: none; border: 0; cursor: pointer; font-size: 0.85em; opacity: 0.55; padding: 0 4px; color: inherit; }
+.phone-head .remark-btn:hover { opacity: 1; }

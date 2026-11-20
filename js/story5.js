@@ -134,6 +134,7 @@ const Story5 = {
       if (Flow.skip) setTimeout(go, 200);
     });
     const gen = Story.gen;
+    let lastThem = null;   // v0.8.3：短信选项的“✎ 自己说”用（回谁、对方刚说了什么）
     const run = async (steps) => {
       for (const s0 of steps || []) {
         if (gen !== Story.gen) return STALE();
@@ -142,7 +143,7 @@ const Story5 = {
         if (s.say !== undefined) {
           if (s.name) {
             const me = s.name === "me";
-            if (!me) { render(true); await FX.wait(Flow.skip ? 50 : 450); playSfx("phone_msg"); }
+            if (!me) { render(true); await FX.wait(Flow.skip ? 50 : 450); playSfx("phone_msg"); lastThem = { id: s.name, text: fillText(s.say) }; }
             push(isGroup ? { who: me ? "me" : speakerName(s.name), text: fillText(s.say), tr: s.tr ? fillText(s.tr) : "", kind: s.kind || "text" }
               : { role: me ? "user" : "assistant", content: fillText(s.say), tr: s.tr ? fillText(s.tr) : "", kind: s.kind || "text" });
             Flow.push(speakerName(s.name) + "（手机）", fillText(s.say), s.tr ? fillText(s.tr) : "");
@@ -155,13 +156,34 @@ const Story5 = {
         }
         if (s.choice) {
           const opts = s.choice.filter((c) => c.if === undefined || evalCond(c.if)).map((c) => Story5.resolve(c));
-          const i = await new Promise((res) => {
+          // v0.8.3（Cora 11/21）：短信里的选项都可以自己打字回（有 API Key 时）；剧本没写场景说明的，按“回谁＋对方刚发的那句”自动生成
+          const fwho = s.freeWho || (!isGroup ? target : lastThem && lastThem.id) || "";
+          const canFree = opts.length > 0 && typeof FreeInput !== "undefined" && typeof AI !== "undefined" && AI.hasKey() && !s.noFree;
+          const fst = { free: s.free || `在手机上${isGroup ? "群聊里" : "私聊里"}回复${fwho ? charName(fwho) : "对方"}的消息。${lastThem ? `对方刚发的是：“${lastThem.text}”` : ""}`, freeWho: fwho, freeOnly: s.freeOnly };
+          const pickOpt = () => new Promise((res) => {
             if (!alive()) return res(0);
             const wt = watch(() => res(0));
             log.onclick = null;
-            replies.innerHTML = opts.map((c, k) => `<button class="ph-reply" data-k="${k}">${Gloss.escape(fillText(c.text))}${c.tr && Settings.v.showTr ? `<em>${Gloss.escape(fillText(c.tr))}</em>` : ""}</button>`).join("");
+            replies.innerHTML = opts.map((c, k) => `<button class="ph-reply" data-k="${k}">${Gloss.escape(fillText(c.text))}${c.tr && Settings.v.showTr ? `<em>${Gloss.escape(fillText(c.tr))}</em>` : ""}</button>`).join("")
+              + (canFree ? `<button class="ph-reply ph-free" data-k="${opts.length}">${FreeInput.LABEL}</button>` : "");
             replies.querySelectorAll("button").forEach((b) => b.onclick = () => { clearInterval(wt); replies.innerHTML = ""; res(+b.dataset.k); });
           });
+          let i = await pickOpt(), freeSaid = null;
+          while (canFree && i === opts.length) { freeSaid = await FreeInput.ask(); if (freeSaid) break; i = await pickOpt(); }
+          if (freeSaid) {
+            replies.innerHTML = `<div class="ph-wait">……</div>`;
+            const res = await FreeInput.judge(fst, opts, freeSaid);
+            replies.innerHTML = "";
+            const c = opts[res.closest];
+            push(isGroup ? { who: "me", text: freeSaid, kind: "text" } : { role: "user", content: freeSaid, kind: "text" });
+            Flow.push("", "▶ ✎ " + freeSaid);
+            render(); playSfx("phone_send");
+            const _say = window.say; window.say = async () => {};
+            let then; try { then = await FreeInput.apply(fst, c, freeSaid, res); } finally { window.say = _say; }
+            showFx(applyFx(c.fx));
+            await run(then);
+            continue;
+          }
           const c = opts[i];
           const said = c.store || Story5.spoken(fillText(c.text));
           const sys = !!c.store || !/^[“"「]/.test(fillText(c.text).trim());
