@@ -30,7 +30,7 @@ const cgs = new Set((DATA.cgList || []).map((c) => c.id));
 for (const k of ["senior_confess", "local_confess", "groupmate_confess", "otaku_confess"]) cgs.add(k);
 const chars = new Set(Object.keys(DATA.characters || {}));
 const FX_SPECIAL = new Set(["weekend_skip", "study_mult_next", "skip_class", "followers", "allowance_half", "ghost_buy", "pond_pair", "pond_count", "pond", "pond_trigger", "date_promise", "skip_week", "extend", "homework",
-  "rest_days", "energy_max"]);
+  "rest_days", "energy_max", "pond_setup", "pond_reset"]);   // 第十五批 J：鱼塘分流（js/v081.js）
 const STAT = new Set(["money", "energy", "study", "loneliness", "belonging", "adapt", "english"]);
 const CJK = /[一-鿿]/;
 function checkFx(fx, where) {

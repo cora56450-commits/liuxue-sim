@@ -463,7 +463,7 @@
     if (Math.random() >= (DATA.dailyVoiceChance || 0.3)) return null;
     S.voiceLast = S.voiceLast || {}; S.voiceUsed = S.voiceUsed || {}; S.voiceGap = S.voiceGap || {};
     const acts = Object.entries(DATA.dailyActs || {}).filter(([id, d]) => d.voice && S.flags[d.flag] && knows(d.who) && hasContact(d.who) && DATA.activities.some((a) => a.id === id)
-      && absWeek() - (S.voiceLast[d.who] ?? -99) >= (S.voiceGap[d.who] || 3));
+      && absWeek() - (S.voiceLast[d.who] ?? -99) >= (S.voiceGap[d.who] || 3) && !(S.pondCool && S.pondCool[d.who] > absWeek()));
     if (!acts.length) return null;
     const [id, d] = acts[Math.floor(Math.random() * acts.length)];
     let pool = d.voice.filter((v) => (!v.if || evalCond(v.if)) && !(S.voiceUsed[d.who] || []).includes(v.text));

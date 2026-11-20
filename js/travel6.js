@@ -296,6 +296,7 @@ const Travel6 = (() => {
     if (mate && (DATA.loveIds || []).includes(mate)) S.lastMet[mate] = absWeek();
     await say(`（${r.name}，${days} 天。${mate ? "和" + name(mate) + "一起。" : "一个人。"}）`);
     showFx(applyFx(fx));
+    if (typeof V081 !== "undefined") V081.reimburse(-fx.money);   // 第十五批 L3：出国旅游中产报销一半、富裕全报（下次打钱时补）
     if (mate && typeof markMet === "function") markMet(mate);
 
     S.tripVisits[r.id]++;

@@ -638,7 +638,7 @@ const Rules = {
     if (first) stamps.push(E.stamps.first);
     if (f.final_balanced && !first) main = { ...main, card: (main.card || "") + "差 0.4。我还是吃了每一顿饭。" };
     // 恋爱裁判（盖章）：鱼塘翻车 2 次，或一次牵涉 3 人以上；涉及的人这一局拿不到 HE
-    const trialStamp = S.pond.count >= 2 || S.pond.maxPeople >= 3;
+    const trialStamp = false;   // 第十五批 J：恋爱裁判改成中途事件（fishpond_big），不再盖章、不锁 HE
     if (trialStamp) stamps.push(E.stamps.love_trial);
     const pondHit = trialStamp ? (S.pond.involved || {}) : {};
     // 恋爱线（问题记录·策划回复第五部分）：只在毕业时判定，放在 y3_after（Kieran 的 pub 公开事件）之后
