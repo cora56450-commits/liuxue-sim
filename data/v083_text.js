@@ -241,7 +241,7 @@
   DATA.midweek.push(
     { id: "ploy_rosa_1", who: G, day: "thu", time: "上午", line: "Ploy：紧急情况", prio: 2, cond: `学年 >= 2 && 好感('groupmate') >= 30 && !标记('cohab_groupmate') && ${NO_DATE}` },
     { id: "ploy_rosa_3", who: G, day: "thu", time: "上午", line: "周四早上，门锁响了", prio: 2, cond: `标记('met_rosa') && (标记('slept_over_groupmate') || 标记('intimate_groupmate')) && !标记('cohab_groupmate') && ${NO_DATE}` },
-    { id: "ploy_rich_1", who: G, day: "sun", time: "上午", line: "Ploy 发了 story", prio: 4, cond: "标记('met_rosa')" },
+    { id: "ploy_rich_1", who: G, day: "fri", time: "晚上", line: "Ploy 发了 story", prio: 4, cond: "标记('met_rosa')" },
     { id: "ploy_rich_2", who: G, day: "tue", time: "晚上", line: "小组群", prio: 4, cond: "学年 == 1 && 周数 >= 3 && 周数 <= 6 && knows('groupmate')" },
     { id: "ploy_rich_3", who: G, day: "wed", time: "下午", line: "和 Ploy 去 Tesco", prio: 4, cond: "学年 == 1 && 好感('groupmate') >= 15" },
     { id: "ploy_rich_4", who: G, day: "mon", time: "晚上", line: "Ploy：（消息）", prio: 4, cond: "学年 >= 2 && knows('groupmate')" },

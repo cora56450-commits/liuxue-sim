@@ -19,7 +19,7 @@ const errs = [];
 const err = (where, msg) => errs.push(`${where}：${msg}`);
 
 const STEP_KEYS = new Set(["bg", "cg", "sfx", "alarm", "bgm", "mail", "msg", "invite", "show", "expr", "pose", "at", "hide", "meet", "fx",
-  "say", "name", "tr", "face", "freeSaid", "choice", "free", "freeWho", "freeOnly", "if", "then", "else", "run", "wait",
+  "say", "name", "tr", "face", "freeSaid", "choice", "free", "freeWho", "freeOnly", "noFree", "if", "then", "else", "run", "wait",
   // 第五批新加
   "phone", "time", "steps", "moment", "timed", "game", "win", "lose", "pick", "from", "narr", "kind", "store", "item", "note", "midweekLine", "pov", "why"]);
 const OPT_KEYS = new Set(["text", "sub", "tr", "if", "fx", "then", "store", "kind", "say"]);
