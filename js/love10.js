@@ -21,6 +21,8 @@
   const _fill = fillText;
   fillText = function (t) {
     if (S && t && /\{(名后两字|全名)\}/.test(t)) t = t.replace(/\{名后两字\}/g, givenName()).replace(/\{全名\}/g, Love10.fullName());
+    // 第十二批：{我叫他}＝你给交往对象改的备注（没改过就是平常的叫法）
+    if (S && t && t.includes("{我叫他}")) { const c = DATA.loveIds.find((x) => S.flags["confessed_" + x] && !S.flags["broke_up_" + x]); t = t.replace(/\{我叫他\}/g, c ? ((S.nick || {})[c] || DATA.characters[c].short) : "他"); }
     return _fill(t);
   };
   for (const k of Object.keys(_fill)) fillText[k] = _fill[k];

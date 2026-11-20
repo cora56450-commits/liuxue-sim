@@ -188,6 +188,7 @@ DATA.groups = {
 // 第十批：固定课表（docs/固定课表.md）。周几固定上课（0＝周一）：大一一三、大二二四、大三周三
 DATA.timetable = { 1: [0, 2], 2: [1, 3], 3: [2] };
 DATA.tuning = {
+  resitFails: 1, resitSummerBonus: 6, resitLibBonus: 4,   // 第十二批补考：一年挂 2 门要补考；暑假补考复习 +6；大二大三考前两周图书馆 ≥4 格 +4
   attendBonus: 1.15, truantPenalty: 0.85, truantWarn: 3, truantMeeting: 6,   // 固定课都去了：图书馆、做作业 ×1.15；这周翘过课：做作业进度 ×0.85；一学期翘 3 次警告、6 次约谈
   earlyAffCap: 10,     // 序章＋第1周：好感上限 10（试玩报告 6、19）
   smallEventAffMult: 0.4, affWeeklyCap: 4, chatWeeklyCap: 2,   // 好感来源控制（决定记录_1118 第十一节）：小事件好感 ×0.4（决定记录写先设 0.6，跑 sim_check 后调成 0.4，见 docs/结局模拟报告.md）、不跨阶段；每人每周最多 +4、聊天每人每周最多 +2（恋爱节奏调整_1118，固定攻略线、旅行不算）

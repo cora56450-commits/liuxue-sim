@@ -203,6 +203,10 @@ function applyFx(fx) {
       if (!S.items[id]) delete S.items[id];
       if (S.items[id] && !before) { S.itemFrom = S.itemFrom || {}; S.itemFrom[id] = timeLabel().join(" "); }
       if (S.items[id] !== before && it) changes.push([(S.items[id] > before ? "得到 " : "少了 ") + it.name, 0]);
+    } else if (k === "weekend_skip") {   // 第十二批：周六上午睡过头（那格精力 −10、不能排活动）
+      if (v) S.weekendSkip = absWeek();
+    } else if (k === "study_mult_next") {   // 第十二批：下一周所有学业 ×v
+      S.studyMultNext = { wk: absWeek() + 1, v };
     } else if (k === "rest_days") {       // 剧情里病倒等：这周剩下的 n 天宅家（周中插播用）
       S.restDays = Math.max(S.restDays || 0, v);
     } else if (k === "energy_max") {      // 精力上限永久 +v（只加一次的写在剧情里）
@@ -265,6 +269,7 @@ const Rules = {
 
   livingCost() {
     let v = S.living;
+    if (S.flags.rent_minus_20 && S.year === 2) v -= 5;   // 第十二批：看房砍价，第二年房租每月 −£20（每周约 −£5）
     for (const [tag, f] of Object.entries(DATA.tuning.livingFactor)) if (S.tags.includes(tag)) v *= f;
     return Math.round(v);
   },
@@ -284,6 +289,13 @@ const Rules = {
       const c = Rules.cal(), key = "cat_" + S.year + "_" + ((c && c.term) || "");
       if (c && !c.vacation && !S.flags[key] && Math.random() < 0.25) { S.flags[key] = 1; S.stats.loneliness = clamp(S.stats.loneliness - 2, 0, 100); (S._catNote = "楼下那只橘猫又来了。孤独 −2"); }
       if (S.year === 3 && c && !Rules.calList().some((x) => x.week > S.week) && !S.flags.cat_bye) { S.flags.cat_bye = 1; S._catNote = "走之前，我去楼下看了它一眼。它不在。"; }
+    }
+    // 第十二批：亲密关系之后的周报一句（DATA.intimateLines），交往中每 5 周一句，按顺序
+    for (const c of DATA.loveIds) {
+      const L = (DATA.intimateLines || {})[c];
+      if (!L || !S.flags["intimate_" + c] || !S.flags["confessed_" + c] || S.flags["broke_up_" + c]) continue;
+      S.intimLine = S.intimLine || {}; const r = S.intimLine[c] || { n: 0, wk: absWeek() };
+      if (r.n < L.length && absWeek() - r.wk >= 5) { S._intimNote = L[r.n]; S.intimLine[c] = { n: r.n + 1, wk: absWeek() }; } else if (!S.intimLine[c]) S.intimLine[c] = r;
     }
     // 第九批：没地方设的标记。ollie_cn_fluent＝和 Ollie 语言交换（周末 brunch 版＋工作日版，inc_ollie_exchange_n）累计 12 次以上，或教过他声调
     if (!S.flags.ollie_cn_fluent && (S.flags.ollie_learn_hard || (S.flags.ollie_exchange_n || 0) >= 12)) S.flags.ollie_cn_fluent = 1;
@@ -397,7 +409,7 @@ const Rules = {
       if (S.tags.includes("otaku")) fx.loneliness = -2;
       if (fx.loneliness === 0) delete fx.loneliness;
     }
-    const love = S.loveDistract ? DATA.tuning.loveDistract : 1;
+    const love = (S.loveDistract ? DATA.tuning.loveDistract : 1) * (S.studyMultNext && S.studyMultNext.wk === absWeek() ? S.studyMultNext.v : 1);
     if (fx.study) fx.study *= eff * love;
     if (fx.homework) fx.homework *= eff * love;
     if (a === DATA.previewActivity) fx.study = Math.max(1, fx.study || 0);   // 预习至少学业 +1（试玩报告 22）
@@ -484,8 +496,9 @@ const Rules = {
       if (S.rushWeek) q += T.rushQuality;
       if (S.stats.energy < T.tiredBelow) q += T.tiredQuality;
     }
+    let plus2 = 0; if (!S.ghostPending && (S.flags.regrade_asked || S.flags.next_mark_plus2)) { plus2 = 2; S.flags.regrade_asked = 0; S.flags.next_mark_plus2 = 0; }   // 第十二批：申请看批改细节／二次评分，下一份作业 +2
     const hannah = typeof Perk !== "undefined" && Perk.on("hannah") && /小组|presentation/i.test(assignmentName(Rules.deadlineThisWeek() || "")) ? 2 : 0;   // 朋友专属好处：Hannah 小组作业分 +2
-    return clamp(18 + 0.32 * S.stats.study + 0.1 * S.stats.english + 0.2 * q + hannah + (Math.random() * 8 - 4) - Rules.yearPenalty(), 0, 100);
+    return clamp(18 + 0.32 * S.stats.study + 0.1 * S.stats.english + 0.2 * q + hannah + plus2 + (Math.random() * 8 - 4) - Rules.yearPenalty(), 0, 100);
   },
   examMark() { return clamp(25 + DATA.tuning.examStudyCoef * S.stats.study + 0.1 * S.stats.english + (Math.random() * 10 - 5) - Rules.yearPenalty(), 0, 100); },
   yearPenalty() { return DATA.tuning.yearPenalty[S.year] || 0; },   // 分数公式：大二 −6、大三 −10
@@ -520,7 +533,9 @@ const Rules = {
     if (due) {
       const mark = r1(Rules.assignmentMark());
       const a = { name: assignmentName(due) };
-      S.marks.push({ year: S.year, id: due, name: a.name, mark });
+      const ghostMark = !!(S.ghostWeek || S.ghostPending);
+      S.marks.push({ year: S.year, id: due, name: a.name, mark, ghost: ghostMark });
+      if (mark < 40 && !ghostMark) out.push(Rules.failMail(a.name));
       out.push({ type: "mark", name: a.name, mark, band: Rules.band(mark), rushed: S.rushWeek, ghost: S.ghostWeek || !!S.ghostPending });
       S.ghostPending = 0; S.homework = 0;
     }
@@ -528,9 +543,11 @@ const Rules = {
       const mark = r1(Rules.examMark());
       const en = S.year === 1 ? assignmentName("exam") : `${S.year === 2 ? "大二" : "大三"}期末考试`;
       S.marks.push({ year: S.year, id: "exam_" + S.week, name: en, mark });
+      if (mark < 40) out.push(Rules.failMail(en));
       out.push({ type: "mark", name: en, mark, band: Rules.band(mark) });
     }
     S.rushWeek = false; S.ghostWeek = false;
+    S.libHist = [...(S.libHist || []).slice(-3), (S.schedule || []).filter((x) => x === "library").length];   // 第十二批：补考前两周的图书馆格数
     const sun = Rules.sunday();
     if (sun) out.push({ type: "note", text: sun.text, changes: sun.changes });
     // 学期最后一周统计出勤
@@ -548,6 +565,25 @@ const Rules = {
   },
 
   // 一年的平均分；不及格进补考
+  // 第十二批补考：任意一份作业或考试 < 40 记一门挂科（代写的不算）；一年挂 ≥ resitFails 门、或年分 < 40 要补考
+  // 挂了一门：邮件（第二门起标题带序号）
+  failMail(name) {
+    S.failN = S.failN || {}; const n = S.failN[S.year] = (S.failN[S.year] || 0) + 1;
+    return { type: "mail", mail: { from: "Assessment Office", title: `Module result: Fail — you will be offered a resit${n > 1 ? ` (${n})` : ""}`, tr: "你这门没过，可以补考",
+      body: `Dear student,\n\nYour result for ${name} is below the pass mark of 40. You will be offered a resit opportunity. Please check the resit timetable on the student portal.\n\nAssessment Office`,
+      bodyTr: `你的「${name}」成绩低于及格线 40 分。你可以参加补考，补考时间表见学生系统。` } };
+  },
+  failedModules(year) { return S.marks.filter((m) => m.year === year && m.mark < 40 && !m.ghost).length; },
+  needResit(year) { return Rules.yearMark(year) < 40 || Rules.failedModules(year) >= DATA.tuning.resitFails; },
+  // 补考分：examMark − 8，大一暑假选了补考复习 +6；大二大三结算前最后两周图书馆 ≥ 4 格 +4。过了这一年按 40 封顶
+  resitYear(year, summerRevise) {
+    const T = DATA.tuning;
+    const lib = (S.libHist || []).slice(-2).reduce((a, b) => a + b, 0);
+    const score = Rules.examMark() - T.resitPenalty + (summerRevise ? T.resitSummerBonus : year > 1 && lib >= 4 ? T.resitLibBonus : 0);
+    const pass = score >= 40;
+    if (pass) S.yearMarks[year] = 40; else { S.yearMarks[year] = Rules.yearMark(year); S.flags.resit_failed = 1; }
+    return { pass, score };
+  },
   yearMark(year) {
     const ms = S.marks.filter((m) => m.year === year).map((m) => m.mark);
     return ms.length ? r1(ms.reduce((a, b) => a + b, 0) / ms.length) : 0;
@@ -626,6 +662,7 @@ const Rules = {
     };
     const love = {};
     for (const c of DATA.loveIds) {
+      if (f["broke_up_" + c]) continue;   // 第十二批：分手的人，考验、HE、BE 都不判
       const dating = !!f["confessed_" + c], trial = f["trial_" + c] || 0;
       let need = f.strict_hidden ? T.heAffStrictHidden : T.heAff;
       if (c === "local" && f.local_asked_late && !f.local_asked) need = Math.max(need, 90);

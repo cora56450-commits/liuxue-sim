@@ -43,7 +43,7 @@ Object.assign(DATA.events, {
           { say: "（她那门 71。）" },
         ] },
       ] },
-      { text: "什么都不发，打开下一份作业的要求", fx: { study: 2, flag_path_scholar: 1 } },
+      { text: "什么都不发，打开下一份作业的要求", fx: { study: 2, flag_path_scholar: 1 }, then: [ { say: "你打开了下一份 brief，读到第三行的时候，发现自己在笑。" } ] },
     ] },
   ],
 
@@ -53,7 +53,7 @@ Object.assign(DATA.events, {
     { say: "Marcia（或你的论文导师）约你见面。她桌上摊着你的作业，页边写满了铅笔字。" },
     { say: "You've got a good mind. Messy, but good. I want to put you forward for the summer research scheme. It's unpaid. It's eight weeks. It'd look very good.", name: "marcia", tr: "你脑子很好。乱，但是好。我想推荐你参加暑期科研项目。没工资，八周，但简历上会很好看。" },
     { choice: [
-      { text: "“我去。”", fx: { study: 3, flag_summer_research: 1 } },   // （大二暑假回不了国，暑假那一轮改成“科研”版本）见给引擎 6
+      { text: "“我去。”", fx: { study: 3, flag_summer_research: 1 }, then: [ { say: "Marcia 点点头，在一张表格上签了名：" }, { say: "Good. Don't make me regret it.", name: "marcia", tr: "好。别让我后悔。" } ] },   // （大二暑假回不了国，暑假那一轮改成“科研”版本）见给引擎 6
       { text: "“我暑假想回家。”", fx: { loneliness: -3 }, then: [
         { say: "Fair. Family matters. Come see me in third year, then.", name: "marcia", tr: "有道理。家人重要。那大三再来找我。" },
       ] },
@@ -78,7 +78,7 @@ Object.assign(DATA.events, {
         ] },
       ] },
       // （衔接孤独线：`孤独-1` 的条件 +1）——见待策划 3，先记一个标记
-      { text: "把三条消息设成已读，明天再说", fx: { study: 2, loneliness: 5, flag_scholar_isolated: 1 } },
+      { text: "把三条消息设成已读，明天再说", fx: { study: 2, loneliness: 5, flag_scholar_isolated: 1 }, then: [ { say: "你合上电脑。（明天。明天一定回。）" } ] },
     ] },
   ],
 
@@ -88,9 +88,9 @@ Object.assign(DATA.events, {
     { say: "69.6 是二等一。70.0 是一等。差 0.4。" },
     { choice: [
       // （这两周的社交格子全部变成“图书馆”）见给引擎 4
-      { text: "最后两周拼了", fx: { study: 4, energy: -20, loneliness: 6, flag_final_grind: 1 } },
+      { text: "最后两周拼了", fx: { study: 4, energy: -20, loneliness: 6, flag_final_grind: 1 }, then: [ { say: "这两周你在图书馆睡了三次，喝了二十一杯咖啡。" } ] },
       // （如果最后没到 70：明信片背面多一句“差 0.4。我还是吃了每一顿饭。”）见给引擎 5
-      { text: "正常复习，该吃饭吃饭", fx: { study: 2, loneliness: -2, flag_final_balanced: 1 } },
+      { text: "正常复习，该吃饭吃饭", fx: { study: 2, loneliness: -2, flag_final_balanced: 1 }, then: [ { say: "你每天十点睡，早上七点起。考试那天，你是全场少数几个没有黑眼圈的人。" } ] },
       { text: "给 Marcia 发邮件问能不能申请 borderline 复议", fx: { flag_borderline_ask: 1 }, then: [
         { say: "她回：“If you're at 69.6, the board will look at your profile. Your profile is good.”", tr: "如果你是 69.6，委员会会看你的整体表现。你的表现很好。" },
       ] },
@@ -104,7 +104,7 @@ Object.assign(DATA.events, {
     { say: "You're reliable. You turn up. That's rarer than you'd think. Want to do a supervisor shift? £1.50 more an hour.", name: "店长", tr: "你靠谱。你从来不缺勤。这比你想的要少见。想当值班组长吗？每小时多 1.5 镑。" },
     { choice: [
       // 〔钱：打工每次 +3〕见给引擎 3；（简历上多了一行“管理经验”）
-      { text: "“好。”", fx: { study: -1, flag_work_supervisor: 1 } },
+      { text: "“好。”", fx: { study: -1, flag_work_supervisor: 1 }, then: [ { say: "店长递给你一个新的工牌，上面多了一行字：“Supervisor”。" } ] },
       { text: "“我得留时间学习。”", then: [
         { say: "Fair enough. Offer stands.", name: "店长", tr: "理解。这个机会一直在。" },
       ] },
@@ -116,7 +116,7 @@ Object.assign(DATA.events, {
     { say: "第四十封拒信。模板都一样：“After careful consideration…”", tr: "经过慎重考虑……" },
     { say: "你把邮箱里的“拒信”文件夹点开，往下滑，滑了很久。" },
     { choice: [
-      { text: "改简历，再投十封", fx: { energy: -10, flag_job_persist: 1 } },
+      { text: "改简历，再投十封", fx: { energy: -10, flag_job_persist: 1 }, then: [ { say: "你改到凌晨两点。第四十一封发出去以后，你给自己泡了一碗面。" } ] },
       { text: "去学校 careers service", fx: { flag_job_persist: 1, belonging: 1 }, then: [
         { say: "顾问看了你的简历十分钟，划掉了一半：" },
         { say: "They don't care that you were class monitor in high school. Tell them what you did HERE.", name: "顾问", tr: "他们不在乎你高中当过班长。告诉他们你在这里做过什么。" },
@@ -132,7 +132,7 @@ Object.assign(DATA.events, {
     { say: "第一次线下面试。你穿着在 Primark 买的西装，鞋子磨脚。" },
     { say: "面试官问：“Where do you see yourself in five years?”", tr: "你五年后想在哪里？" },
     { choice: [
-      { text: "“Here. In this city.”", tr: "这里。在这座城市。", fx: { flag_stay_leaning: 1 } },
+      { text: "“Here. In this city.”", tr: "这里。在这座城市。", fx: { flag_stay_leaning: 1 }, then: [ { say: "面试官抬起头，看了你一眼，在本子上写了一行字。" } ] },
       { text: "“Honestly, I don't know yet.”", tr: "说实话，我还不知道。", then: [
         { say: "面试官笑了：“Best answer I've had all day.”", tr: "今天听到的最好的回答。" },
       ] },
@@ -147,7 +147,7 @@ Object.assign(DATA.events, {
     { if: "标记('internship') || 标记('interview_shine') || 标记('work_supervisor')", then: [
       { say: "邮件标题：“Offer of Employment”。你看了三遍，确认不是拒信的另一种写法。", tr: "录用通知" },
       { choice: [
-        { text: "接，用毕业生签证留下", fx: { flag_stay_uk: 1, flag_internship: 1 } },   // （走向外星人外星人）
+        { text: "接，用毕业生签证留下", fx: { flag_stay_uk: 1, flag_internship: 1 }, then: [ { say: "你点了“Accept”。然后打开了签证页面，看了一眼申请费，深呼吸了一下。" } ] },   // （走向外星人外星人）
         // （走向好久不见）：stay_uk 清零，见待策划 6
         { text: "截图给妈妈看，然后拒掉，回国", fx: { flag_stay_uk: 0 }, then: [
           { say: "妈妈说：“留着这个截图。以后给你孩子看。”" },
@@ -156,8 +156,8 @@ Object.assign(DATA.events, {
     ], else: [
       { say: "没有 offer。毕业生签证还是能办，两年。" },
       { choice: [
-        { text: "留下来，边打工边找", fx: { flag_stay_uk: 1 } },   // （走向 Creep）
-        { text: "回国", fx: { flag_stay_uk: 0 } },   // （走向好久不见）
+        { text: "留下来，边打工边找", fx: { flag_stay_uk: 1 }, then: [ { say: "你续了一年的房租，把简历又改了一遍。（还有两年。）" } ] },   // （走向 Creep）
+        { text: "回国", fx: { flag_stay_uk: 0 }, then: [ { say: "你把 offer 截图发给了妈妈，然后礼貌地回了拒绝信。写完那封信，你在房间里坐了很久。" } ] },   // （走向好久不见）
       ] },
     ] },
   ],
@@ -169,7 +169,7 @@ Object.assign(DATA.events, {
     { say: "Thank you, love. Are you from round here?", name: "老太太", tr: "谢谢你，亲爱的。你是本地人吗？" },
     { say: "（她问的不是“你从哪里来”，是“你是本地的吗”。）" },
     { choice: [
-      { text: "“Sort of.”", tr: "算是吧。", fx: { belonging: 2 } },
+      { text: "“Sort of.”", tr: "算是吧。", fx: { belonging: 2 }, then: [ { say: "老太太点点头，好像这是世界上最正常的回答：“Well, welcome home then, love.「那欢迎回家，亲爱的。」”" } ] },
       { text: "“No, I'm from China.”", tr: "不，我从中国来。", fx: { belonging: 1, loneliness: -2 }, then: [
         { say: "Well, you know the buses better than my son does.", name: "老太太", tr: "那你比我儿子还熟公交。" },
       ] },
@@ -195,8 +195,8 @@ Object.assign(DATA.events, {
     ] },
     { choice: [
       // （圣诞那周改成“英国家庭的圣诞”：拉炮、纸帽子、女王/国王讲话、没人吃完的布丁）见待策划 4
-      { text: "去", fx: { belonging: 4, loneliness: -8, flag_xmas_uk_family: 1 } },
-      { text: "“我跟国内的朋友一起过。”", fx: { loneliness: -3 } },
+      { text: "去", fx: { belonging: 4, loneliness: -8, flag_xmas_uk_family: 1 }, then: [ { say: "你到的时候，门口挂着一个槲寄生花环，门上贴着一张纸：“Welcome {叫我}!”，名字拼对了。" } ] },
+      { text: "“我跟国内的朋友一起过。”", fx: { loneliness: -3 }, then: [ { say: "对方回：“Fair enough! Offer stands for next year.「好吧！明年这个邀请还有效。」”" } ] },
     ] },
   ],
 
@@ -205,8 +205,8 @@ Object.assign(DATA.events, {
     { say: "你醒过来，记得刚才那个梦：你在跟妈妈说话，用的是英语。妈妈在梦里也听懂了。" },
     { say: "你躺在床上，想了很久。" },
     { free: "主角第一次用英语做梦，梦里在跟妈妈说话", choice: [
-      { text: "给妈妈打个视频，用中文说了半个小时", fx: { loneliness: -4 } },
-      { text: "记在手机备忘录里：今天第一次用英语做梦", fx: { belonging: 2 } },
+      { text: "给妈妈打个视频，用中文说了半个小时", fx: { loneliness: -4 }, then: [ { say: "妈妈问你怎么突然打电话。你说想她了。她说“神经”，但多聊了二十分钟。" } ] },
+      { text: "记在手机备忘录里：今天第一次用英语做梦", fx: { belonging: 2 }, then: [ { say: "你翻了一下备忘录，上一条是大一写的：“今天第一次听懂了一个英国人的笑话。”" } ] },
     ] },
   ],
 
@@ -219,8 +219,8 @@ Object.assign(DATA.events, {
       { text: "帮她拖箱子到宿舍，加她微信", fx: { belonging: 2, loneliness: -4 }, then: [
         { say: "学姐，在英国……会好起来的吧？", name: "新生" },
         { free: "大一新生问主角：在英国会好起来的吧", choice: [
-          { text: "“会的。”" },
-          { text: "“会的，但要一段时间。”" },
+          { text: "“会的。”", then: [ { say: "她点点头，眼泪终于掉下来，但在笑。" } ] },
+          { text: "“会的，但要一段时间。”", then: [ { say: "她想了想，点头：“那……多久？”你说：“你会知道的。到时候你也会站在这里帮别人拖箱子。”" } ] },
         ] },
       ] },
       { text: "告诉她新生指南在哪领（学长那本）", fx: { belonging: 1 }, then: [
@@ -245,7 +245,7 @@ Object.assign(DATA.events, {
       { text: "给家里发一条语音", fx: { loneliness: -3, inc_lonely_reach: 1 }, then: [
         { say: "妈妈秒回：“怎么声音哑了？感冒了？”" },
       ] },
-      { text: "算了", fx: { loneliness: 2 } },
+      { text: "算了", fx: { loneliness: 2 }, then: [ { say: "你躺回床上。房间很安静。" } ] },
     ] },
     { fx: { flag_lonely_hint_due: 1 } },   // 页面小字提示（只一次），见给引擎 9
   ],
@@ -264,7 +264,7 @@ Object.assign(DATA.events, {
         ] },
         { say: "三天以后那个群里有人@你：“你还好吗？好久没看到你了。”", fx: { loneliness: -4, inc_lonely_reach: 1 } },
       ] },
-      { text: "都设上", fx: { loneliness: 3 } },
+      { text: "都设上", fx: { loneliness: 3 }, then: [ { say: "手机安静了三天。第四天你打开，所有的群都显示“99+”，你一个都没点开。" } ] },
     ] },
   ],
 
@@ -286,8 +286,8 @@ Object.assign(DATA.events, {
       { say: "（这张就是孤独患者结局的那张明信片。）" },
       { choice: [
         // （明信片换成好久不见的一句：“妈，这张明信片比我先到。”）见给引擎 8
-        { text: "把它寄回家", fx: { loneliness: -5, flag_lonely_card_sent: 1 } },
-        { text: "放在抽屉里" },   // （走向孤独患者）
+        { text: "把它寄回家", fx: { loneliness: -5, flag_lonely_card_sent: 1 }, then: [ { say: "你在邮局排了二十分钟队，把它投进了红色的邮筒。走回去的路上，天好像没那么灰了。" } ] },
+        { text: "放在抽屉里", then: [ { say: "你关上抽屉。（也许明天再寄。）" } ] },   // （走向孤独患者）
       ] },
     ] },
   ],

@@ -258,7 +258,7 @@ Object.assign(DATA.events, {
   stage_groupmate_date: [
     { bg: "dorm_room" },
     { show: "groupmate" },
-    { say: "她视频打给曼谷的外婆，把手机转向你，用粤语说了一句什么。" },
+    { say: "她视频打给曼谷的 Pa Nok，把手机转向你，用粤语说了一句什么。" },
     { say: "外婆凑近屏幕看了你半天，用粤语问你吃饭了没有。" },
     { say: "（小声，用中文）我跟她说你是我朋友。", name: "groupmate" },
     { say: "她停了一下。" },

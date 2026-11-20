@@ -51,6 +51,43 @@ const Phone6 = {
   norm(t) { return String(t || "").toLowerCase().replace(/[\s\p{P}\p{S}]/gu, ""); },
   same(a, b) { return a.who === b.who && Phone6.norm(a.text) === Phone6.norm(b.text) && (Phone6.norm(a.text) !== "" || (a.img || "") === (b.img || "")); },
 
+  // ===== 第十一批：配图 =====
+  // 帖子上的 pic（assets/ui/ 下的路径）优先；没有的（旧存档、别的文件里的池子）按“人|img 描述”或“人|#配文”去查：
+  //   DATA.momentPics（data/daily10.js）＋所有 DATA.momentsPool 里写了 pic 的条目。都没有 → 文字卡（img 的描述）。
+  _picIdx: null,
+  picIdx() {
+    if (Phone6._picIdx) return Phone6._picIdx;
+    const m = Object.assign({}, DATA.momentPics || {});
+    for (const [who, pool] of Object.entries(DATA.momentsPool || {})) for (const e of pool || []) {
+      if (!e || !e.pic) continue;
+      const k = e.img ? who + "|" + e.img : who + "|#" + (e.text || "");
+      if (!m[k]) m[k] = e.pic;
+    }
+    return (Phone6._picIdx = m);
+  },
+  picOf(p) {
+    if (!p) return "";
+    if (p.pic) return p.pic;
+    const m = Phone6.picIdx(), who = p.who === "me" && p.repostOf ? p.repostOf.who : p.who;
+    return (p.img && m[who + "|" + p.img]) || (!p.img && p.text && m[who + "|#" + p.text]) || "";
+  },
+  // AI／兜底的帖子：有图的描述、对不上配图 → 按配文稳定地挑一张这个人的备用图（DATA.momentSpares）
+  sparePic(p) {
+    const list = (DATA.momentSpares || {})[p.who];
+    if (!list || !list.length || !p.img || Phone6.picOf(p)) return;
+    p.pic = list[Math.abs(Flow.hash(p.who + "|" + (p.text || "") + "|" + p.img)) % list.length];
+  },
+  // 文字卡底色（给ClaudeCode_第十一批.md 第二节）；别人用淡紫
+  CARD_BG: { groupmate: "#F7D6DE", local: "#EFE2CC", otaku: "#D6DEE8", senior: "#DDE6D3" },
+  // kind：ig（Ins 大图）／wc（朋友圈小图）／sty（story）
+  photo(p, kind) {
+    const pic = Phone6.picOf(p), desc = p.img ? fillText(p.img) : "";
+    const who = p.who === "me" && p.repostOf ? p.repostOf.who : p.who;
+    if (pic) return `<div class="p6-photo ${kind} has-pic"><img src="assets/ui/${Phone.esc(pic)}" alt="${Phone.esc(desc)}" loading="lazy"></div>`;
+    if (!desc) return "";
+    return `<div class="p6-photo ${kind} p6-card" style="background:${Phone6.CARD_BG[who] || "#ECE6F4"}"><img class="p6-cam" src="assets/ui/app_camera.png" alt=""><span>${Phone.esc(desc)}</span></div>`;
+  },
+
   // ===== 未读：分 App =====
   chatUnread(key) {
     const [k, id] = [key[0], key.slice(2)];
@@ -79,7 +116,7 @@ const Phone6 = {
     const seen = [], out = [];
     const src = [...S.moments.mine, ...S.ig.posts, ...(S.moments.story || []).slice(0, 30), ...S.moments.feed];
     for (const p of src) {
-      if (!p || (p.who !== "me" && !p.repostOf && !p.text && !p.img)) continue;
+      if (!p || (p.who !== "me" && !p.repostOf && !p.text && !p.img && !p.pic)) continue;
       const plat = Phone6.postPlat(p);
       if (plat && plat !== app) continue;
       if (p.who !== "me" && seen.some((q) => Phone6.same(p, q))) continue;
@@ -99,7 +136,7 @@ const Phone6 = {
     const mine = p.who === "me";
     return `<div class="mo-post p6-post wc">${Phone6.ava(p)}
       <div class="mo-main"><div class="p6-name"><b>${Phone.esc(Phone6.whoName(p.who, p.account))}</b>${Phone6.badge("wc")}</div>
-      ${p.text ? `<p>${Phone.esc(fillText(p.text))}${p.tr && Settings.v.showTr ? `<em class="msg-tr">${Phone.esc(p.tr)}</em>` : ""}</p>` : ""}${Phone6.repostHtml(p)}${p.img ? `<div class="mo-img">［${Phone.esc(fillText(p.img))}］</div>` : ""}
+      ${p.text ? `<p>${Phone.esc(fillText(p.text))}${p.tr && Settings.v.showTr ? `<em class="msg-tr">${Phone.esc(p.tr)}</em>` : ""}</p>` : ""}${Phone6.repostHtml(p)}${Phone6.photo(p, "wc")}
       ${still ? "" : `<div class="mo-acts p6-acts"><button class="p6-btn mo-like ${p.liked ? "on" : ""}" ${mine ? "" : `data-like="${i}"`}>♥ ${(p.likes || 0) + (p.liked ? 1 : 0)}</button>${mine ? "" : `<button class="p6-btn" data-cmt="${i}">评论</button>`}${Phone6.rpBtn(p, i)}</div>`}
       ${Phone6.cmtsHtml(p)}</div></div>`;
   },
@@ -108,7 +145,7 @@ const Phone6 = {
     const mine = p.who === "me", name = Phone.esc(Phone6.whoName(p.who, p.account));
     return `<div class="ig-post">
       <div class="ig-top">${Phone6.ava(p)}<b>${name}</b>${Phone6.badge("ig")}</div>
-      ${Phone6.repostHtml(p)}${p.img ? `<div class="ig-photo"><span>${Phone.esc(fillText(p.img))}</span></div>` : (p.text ? "" : `<div class="ig-photo"><span>……</span></div>`)}
+      ${Phone6.repostHtml(p)}${p.img || Phone6.picOf(p) ? Phone6.photo(p, "ig") : (p.text ? "" : `<div class="ig-photo"><span>……</span></div>`)}
       ${still ? "" : `<div class="ig-acts">${mine ? "" : `<button class="ig-ic" data-like="${i}" aria-label="点赞"><img src="assets/ui/ig_heart${p.liked ? "_on" : ""}.png" alt=""></button><button class="ig-ic" data-cmt="${i}" aria-label="评论"><img src="assets/ui/ig_comment.png" alt=""></button>`}${Phone6.rpBtn(p, i)}</div>`}
       <div class="ig-likes">${(p.likes || 0) + (p.liked ? 1 : 0)} 赞</div>
       ${p.text ? `<p class="ig-cap"><b>${name}</b>${Phone.esc(fillText(p.text))}${p.tr && Settings.v.showTr ? `<em class="msg-tr">${Phone.esc(p.tr)}</em>` : ""}</p>` : ""}
@@ -157,7 +194,7 @@ const Phone6 = {
       AI.igStories(want).then((list) => {
         if (!Array.isArray(list) || S.ig.wk !== wk) return;
         for (const s of list.slice(0, 6)) if (s && s.who && want.some((w) => w.who === s.who) && (s.text || s.img))
-          S.ig.stories.push({ who: s.who, account: s.account, text: s.text || "", tr: s.tr || "", img: s.img || "", week: wk, seen: 0, t: S.ig.seq++ });
+        { const st = { who: s.who, account: s.account, text: s.text || "", tr: s.tr || "", img: s.img || "", week: wk, seen: 0, t: S.ig.seq++ }; Phone6.sparePic(st); S.ig.stories.push(st); }
         renderPhoneDot();
       }).catch((e) => console.warn("igStories", e));
     }
@@ -193,14 +230,14 @@ const Phone6 = {
       const sto = shuffle(items.filter((x) => x[0].story && ready(x)));
       for (const [e, i] of sto.slice(0, opt.stories)) {
         I.posted[key(i)] = 1; stories++;
-        I.stories.push({ who, account: e.account, text: e.text || "", tr: e.tr || "", img: e.img || "", reply: e.reply, week: weekKey(), seen: 0, t: I.seq++ });
+        I.stories.push({ who, account: e.account, text: e.text || "", tr: e.tr || "", img: e.img || "", pic: e.pic || "", reply: e.reply, week: weekKey(), seen: 0, t: I.seq++ });
       }
     }
     return { posts: out.length, stories };
   },
   extra(e) {
     const x = {};
-    for (const k of ["cmtNote", "reply", "likeOnly", "withMe", "account", "afterSay"]) if (e[k] !== undefined) x[k] = e[k];
+    for (const k of ["cmtNote", "reply", "likeOnly", "withMe", "account", "afterSay", "pic"]) if (e[k] !== undefined) x[k] = e[k];
     return x;
   },
   publish(who, e, key) {
@@ -226,7 +263,7 @@ const Phone6 = {
   },
   // 有 Key：AI 这周没给 Ploy 发帖，就从固定池再补一条（凑够每周 2 帖）
   afterAiFeed(feed) {
-    for (const p of feed) { if (!p.platform) p.platform = Phone6.platOf(p.who); }
+    for (const p of feed) { if (!p.platform) p.platform = Phone6.platOf(p.who); Phone6.sparePic(p); }
     if (!knows("groupmate") || feed.some((p) => p.who === "groupmate")) return;
     const wk = weekKey(), have = S.ig.posts.filter((p) => p.who === "groupmate" && p.week === wk).length;
     if (have < 2) Phone6.gen("groupmate", { exact: true, posts: have + 1 });
@@ -280,7 +317,7 @@ const Phone6 = {
     const rm = pickFrom(roommates()), fr = pickFrom(typeof friendsNow === "function" ? friendsNow() : Object.keys(S.fr));
     const who = (rm.length ? rm : fr)[Math.floor(Math.random() * (rm.length ? rm : fr).length)];
     const plat = who ? Phone6.platOf(who) : Phone6.postPlat(p) || "ig";
-    S.moments.mine.unshift({ who: "me", text: "", img: p.img || "", repostOf: { who: p.who, text: p.text || "" }, likes: 2 + Math.floor(Math.random() * 6),
+    S.moments.mine.unshift({ who: "me", text: "", img: p.img || "", pic: Phone6.picOf(p), repostOf: { who: p.who, text: p.text || "" }, likes: 2 + Math.floor(Math.random() * 6),
       comments: who ? [{ who, text: "？？？" }] : [], week: weekKey(), platform: plat, t: S.ig.seq++ });
     if (S.moments.mine.length > 30) S.moments.mine.pop();
     logLine(`〔转发了${Phone6.whoName(p.who)}的帖子〕`);
@@ -327,7 +364,7 @@ const Phone6 = {
     const o = Phone.frame(`<div class="ig-story">
       <div class="sty-bars">${grp.list.map((_, i) => `<i class="${i <= k ? "on" : ""}"></i>`).join("")}</div>
       <div class="sty-ava">${Phone6.ava(s)}</div><div class="sty-name">${Phone.esc(Phone6.whoName(s.who, s.account))}</div>
-      <div class="sty-main">${s.text ? `<p>${Phone.esc(fillText(s.text))}${s.tr && Settings.v.showTr ? `<em class="msg-tr">${Phone.esc(s.tr)}</em>` : ""}</p>` : ""}${s.img ? `<div class="sty-img">［${Phone.esc(fillText(s.img))}］</div>` : ""}</div>
+      <div class="sty-main">${s.text ? `<p>${Phone.esc(fillText(s.text))}${s.tr && Settings.v.showTr ? `<em class="msg-tr">${Phone.esc(s.tr)}</em>` : ""}</p>` : ""}${Phone6.photo(s, "sty")}</div>
       <div class="sty-bottom">${canReply ? `<button class="sty-reply">回复</button>` : `<span>点一下看下一条</span>`}</div></div>`,
       { title: "Story", back: () => Phone.moments("ig"), cls: "app-ig ig-story-body" });
     o.querySelector(".ig-story").onclick = (e) => { if (!e.target.closest(".sty-reply")) Phone6.storyView(grp, k + 1); };
@@ -423,7 +460,7 @@ if (typeof Story5 !== "undefined" && !Story5._p6) {
     if (!p) return;
     p.platform = m.platform || Phone6.platOf(m.who);
     p.nw = 1; p.t = S.ig.seq++;
-    for (const k of ["account", "withMe", "cmtNote", "reply", "likeOnly"]) if (m[k] !== undefined) p[k] = m[k];
+    for (const k of ["account", "withMe", "cmtNote", "reply", "likeOnly", "pic"]) if (m[k] !== undefined) p[k] = m[k];
   };
   Story5._p6 = 1;
 }

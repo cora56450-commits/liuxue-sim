@@ -31,7 +31,10 @@ Object.assign(DATA.events, {
         { say: "他笑了。" },
         { say: "在这边，不砍价的人每个月多花一百镑。你先学会第一句：What's your best price?", name: "senior" },
       ] },
-      { text: "接过橙子，说谢谢", if: "性格 == 'I'", fx: { aff_senior: 1 } },
+      { text: "接过橙子，说谢谢", if: "性格 == 'I'", fx: { aff_senior: 1 }, then: [
+        { say: "不客气。……下周团购记得报名。", name: "senior" },
+        { say: "他已经转身去跟下一个摊主谈了。" },
+      ] },
     ] },
     { hide: true },
   ],
@@ -182,9 +185,14 @@ Object.assign(DATA.events, {
     { say: "她拿出拍立得，对着你拍了一张。" },
     { say: "This one's not going in any box.", name: "groupmate", tr: "这张不会进任何箱子。" },
     { free: "Ploy 在旧照片摊前给你拍了一张拍立得。", freeWho: "groupmate", choice: [
-      { text: "也给她拍一张", fx: { aff_groupmate: 3 } },
+      { text: "也给她拍一张", fx: { aff_groupmate: 3 }, then: [
+        { say: "照片慢慢显出来，她在笑，眼睛有点湿。她说是风吹的。" },
+      ] },
       // 剧本：（结局如果是交往，最后的回忆相册里多一页：每个月一张拍立得。）——给引擎的说明，不是台词
-      { text: "“那我们一个月拍一张。”", fx: { aff_groupmate: 3, flag_ploy_monthly_photo: 1 } },
+      { text: "“那我们一个月拍一张。”", fx: { aff_groupmate: 3, flag_ploy_monthly_photo: 1 }, then: [
+        { say: "她把拍立得递给你：" },
+        { say: "Deal. Starting now. Your turn.", name: "groupmate", tr: "成交。现在开始。该你了。" },
+      ] },
     ] },
     { hide: true },
   ],
@@ -237,7 +245,9 @@ Object.assign(DATA.events, {
     { say: "Kieran 打开，是一个对戒造型的挂件，两只角色手拉手。" },
     { say: "I didn't — I didn't ask him to keep this. I asked him to keep \"something\". That's different.", name: "otaku", tr: "我没有——我没让他留这个。我让他留‘点什么’。这不一样。" },
     { free: "手办摊主给 Kieran 留了一对手拉手的挂件。", freeWho: "otaku", choice: [
-      { text: "“那就买吧。”", fx: { aff_otaku: 3 } },
+      { text: "“那就买吧。”", fx: { aff_otaku: 3 }, then: [
+        { say: "他付了钱，把其中一个挂在了你的包上，另一个挂在了自己的钥匙上，挂了三次才挂上。" },
+      ] },
       { text: "“你跟摊主说过我？”", fx: { aff_otaku: 3 }, then: [
         { say: "Talks about nothing else, love.", name: "摊主", tr: "他什么都不聊，就聊你。" },
         { say: "Kieran 把盒子塞给你就往外走了。" },
@@ -409,7 +419,10 @@ Object.assign(DATA.events, {
       { text: "“那我的东西放哪？”", fx: { aff_groupmate: 2 }, then: [
         { say: "她打开第一个箱子，里面整整齐齐留了三分之一的空间，贴着一张便利贴：“yours ♡”。" },
       ] },
-      { text: "帮她拖一个", fx: { aff_groupmate: 2 } },
+      { text: "帮她拖一个", fx: { aff_groupmate: 2 }, then: [
+        { say: "箱子比你想的重。“What's in here?「这里面是什么？」”" },
+        { say: "Shoes. Seven pairs. For three days.", name: "groupmate", tr: "鞋。七双。三天用。" },
+      ] },
     ] },
     { hide: true },
   ],

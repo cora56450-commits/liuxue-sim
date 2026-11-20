@@ -26,10 +26,21 @@ const Love6 = {
     if (kind === "advance") return S.year === 3 || (S.year === 2 && S.week >= 8);
     return true;
   },
+  // 第十二批：生病／拿 First 的消息（剧本_恋爱补充_1120.md 第六节）。交往中的人直接演；暧昧期（40–79、没交往）好感最高的那个人问“要不要告诉”
+  async news(kind) {
+    if (!S || S.replay) return;
+    for (const c of DATA.loveIds) if (S.flags["confessed_" + c] && !S.flags["broke_up_" + c] && DATA.events[`news_${kind}_${c}_dating`]) await runEvent(`news_${kind}_${c}_dating`);
+    if (DATA.loveIds.some((c) => S.flags["confessed_" + c] && !S.flags["broke_up_" + c])) return;
+    const f = DATA.loveIds.filter((c) => knows(c) && !S.flags["broke_up_" + c] && !S.flags["confess_refused_" + c] && (S.aff[c] || 0) >= 40 && (S.aff[c] || 0) < 80).sort((a, b) => S.aff[b] - S.aff[a])[0];
+    if (f && DATA.events[`news_ask_${kind}_${f}`]) await runEvent(`news_ask_${kind}_${f}`);
+  },
   tries(c) { return (S.confessTries || {})[c] || 0; },
+  // 第十二批：做朋友（被拒）、分手的人，不再进恋爱线的这些段
+  blocked(e) { return !!e && !!e.who && (S.flags["confess_refused_" + e.who] || S.flags["broke_up_" + e.who]) && ["heart", "advance", "past", "hug", "kiss", "cohab", "intimate", "valentine"].includes(e.kind); },
   // 还能告白吗：没交往；第一次，或者大二演过没答应、现在是大三（最多两次）
   canConfess(c) {
     if (S.flags["confessed_" + c] || !S.flags["advance_" + c] || (S.aff[c] || 0) < 80) return false;
+    if (S.flags["confess_missed_" + c] || S.flags["confess_refused_" + c] || S.flags["broke_up_" + c]) return false;   // 第十二批：错过、被拒、分手过的不再告白
     const t = Love6.tries(c);
     if (t === 0) return true;
     return t === 1 && S.year === 3 && (S.confessTryYear || {})[c] === 2;
@@ -41,7 +52,7 @@ const Love6 = {
   async lateWeek() {
     if (!S || (Rules.cal() || {}).vacation && !Love6.inWindow()) { /* 假期周照样可以有旅行见面，往下走 */ }
     // 1. 心动、推进（没有地点的那几段）：当周见过面才演，每周最多一段
-    const ev = (DATA.loveEvents || []).find((e) => Love6.needsMet(e) && !S.flags["seen_" + e.id] && DATA.events[e.id] && metThisWeek(e.who)
+    const ev = (DATA.loveEvents || []).find((e) => Love6.needsMet(e) && !Love6.blocked(e) && !S.flags["seen_" + e.id] && DATA.events[e.id] && metThisWeek(e.who)
       && Love6.earliest(e.kind) && (!DATA.characters[e.who].hidden || S.tags.includes(DATA.characters[e.who].hidden)) && evalCond(e.cond));
     if (ev) { S.flags["seen_" + ev.id] = 1; await runEvent(ev.id); }
     // 2. 动心视角段：心动演完 ① ，推进演完 ②（当周周结算前）
@@ -66,14 +77,25 @@ const Love6 = {
       S.confessEveWk[c] = { wk: absWeek(), n: Love6.tries(c) + 1 };
       if (DATA.confessEve[c] && DATA.events[DATA.confessEve[c]]) await runEvent(DATA.confessEve[c]);
       if ((DATA.heartPov[c] || [])[2]) await Love6.pov(c, 2);
+      // 第十二批：告白前先发约人消息（剧本_恋爱补充_1120.md 第一节）：好／这周有点忙／做朋友
+      if (DATA.events["confess_ask_" + c]) { S.flags["confess_ok_" + c] = 0; await runEvent("confess_ask_" + c); }
       return;   // 一周只铺一个人
     }
     // 4. 告白：窗口里、条件到了、这周见过面、“前一周”在之前的周演过
     if (Love6.inWindow()) await Love6.confess();
   },
   async confess() {
-    const c = DATA.loveIds.find((id) => Love6.canConfess(id) && metThisWeek(id) && (() => { const e = (S.confessEveWk || {})[id]; return e && e.n === Love6.tries(id) + 1 && e.wk < absWeek(); })());
+    // 第十二批：上周约人时说“这周有点忙”的，这个窗口算用掉一次（大三窗口会再约一次；第二次还躲就是错过）
+    for (const id of DATA.loveIds) {
+      const e = (S.confessEveWk || {})[id];
+      if (S.flags["confess_dodged_" + id] && !S.flags["confess_ok_" + id] && e && e.n === Love6.tries(id) + 1 && e.wk < absWeek()) {
+        S.confessTries = S.confessTries || {}; S.confessTries[id] = Love6.tries(id) + 1;
+        S.confessTryYear = S.confessTryYear || {}; S.confessTryYear[id] = S.year;
+      }
+    }
+    const c = DATA.loveIds.find((id) => Love6.canConfess(id) && metThisWeek(id) && (!DATA.events["confess_ask_" + id] || S.flags["confess_ok_" + id]) && (() => { const e = (S.confessEveWk || {})[id]; return e && e.n === Love6.tries(id) + 1 && e.wk < absWeek(); })());
     if (!c) return;
+    S.flags["confess_ok_" + c] = 0;
     S.confessTries = S.confessTries || {}; S.confessTries[c] = Love6.tries(c) + 1;
     S.confessTryYear = S.confessTryYear || {}; S.confessTryYear[c] = S.year;
     S.flags["confess_done_" + c] = 1;   // 旧标记：保留（剧本里有用到）
@@ -97,7 +119,8 @@ const Love6 = {
     if (!A || !DATA.jealousy[A]) return;
     const J = DATA.jealousy[A], key = `jealous_${A}_${S.year}_${(Rules.cal() || {}).term || ""}`;
     if (S.flags[key] || S.flags["seen_" + J.id] || !DATA.events[J.id]) return;
-    const B = DATA.loveIds.find((c) => c !== A && (S.aff[c] || 0) >= 40 && S.metWk && S.metWk[c] === absWeek() - 1 && knows(c));
+    const pretty = S.tags.includes("pretty");   // 第七批 #17：天生丽质门槛降一档（好感 30、两周内见过面就算）
+    const B = DATA.loveIds.find((c) => c !== A && (S.aff[c] || 0) >= (pretty ? 30 : 40) && S.metWk && (S.metWk[c] === absWeek() - 1 || (pretty && S.metWk[c] === absWeek() - 2)) && knows(c));
     if (!B) return;
     S.flags[key] = 1; S.flags["seen_" + J.id] = 1;
     S.pick = { B };
@@ -170,8 +193,10 @@ const Enc6 = {
   list(loc) {
     S.loveEncSeen = S.loveEncSeen || {};
     return DATA.loveEncounters.filter((e) => e.place === loc && DATA.events[e.id] && !S.loveEncSeen[e.id] && S.flags["met_" + e.who]
+      && !(S.flags["broke_up_" + e.who] && Love10.weeksSince("wk_broke_up_" + e.who) < 4)   // 分手 4 周内不出现
       && (!DATA.characters[e.who].hidden || S.tags.includes(DATA.characters[e.who].hidden))
-      && Enc6.stageOf(e.who) === e.stage && (!e.cond || evalCond(e.cond)));
+      && Enc6.stageOf(e.who) === e.stage && (!e.cond || evalCond(e.cond))
+      && !(e.id === "enc10_gym_otaku_dating" && S.flags.trial_otaku !== 1 && S.flags.enc_gym_otaku_alt));
   },
   // 第十批：车站的偶遇不在周末地点池里抽，出城／回国出发／回国返校时各抽一段（登记表里 at: trip | home_leave | home_back）
   async station(at) {
@@ -181,6 +206,13 @@ const Enc6 = {
     hideDialog(); Stage.hide(true);
   },
   async play(e) {
+    // 第十二批：健身房-Kieran-交往，没过考验演的是替代版：替代版单独记一次，正文版以后还能抽
+    if (e.id === "enc10_gym_otaku_dating" && S.flags.trial_otaku !== 1) {
+      if (S.flags.enc_gym_otaku_alt) return;
+      S.flags.enc_gym_otaku_alt = 1; markMet(e.who); S.affCtx = "small";
+      try { await runEvent(e.id); } finally { S.affCtx = null; }
+      return;
+    }
     S.loveEncSeen[e.id] = 1;
     markMet(e.who);
     S.affCtx = "small";

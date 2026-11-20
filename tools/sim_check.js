@@ -132,9 +132,9 @@ const run = vm.runInContext(`(function (cfg) {
       S.week = cal.week;
       const plan = year === 1 ? cfg.y1 : cfg.later || cfg.y1;
       doWeek(plan, cfg.weekend, cal);
-      if (cal.close && S.yearMarks[year] === undefined) S.yearMarks[year] = Rules.yearMark(year);
+      if (cal.close && S.yearMarks[year] === undefined) { S.yearMarks[year] = Rules.yearMark(year); if (Rules.needResit(year)) Rules.resitYear(year, false); }
     }
-    if (S.yearMarks[year] === undefined) S.yearMarks[year] = Rules.yearMark(year);
+    if (S.yearMarks[year] === undefined) { S.yearMarks[year] = Rules.yearMark(year); if (Rules.needResit(year)) Rules.resitYear(year, year === 1); }   // 第十二批：补考（大一暑假复习 +6）
     if (year === 1) for (let k = 0; k < 13; k++) { S.week++; Rules.weekStart(); }   // 暑假
   }
   if (cfg.stay) S.flags.stay_uk = 1;

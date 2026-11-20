@@ -80,7 +80,7 @@ Object.assign(DATA.events, {
       { text: "“不会，但你可以教我。”", fx: { aff_local: 2 }, then: [
         { say: "他教了你副歌。你们两个一起跑调。街头艺人看了你们一眼，换了一首。" },
       ] },
-      { text: "跟着节奏拍手", fx: { aff_local: 2, belonging: 1 } },   // 缺反应，见文件末尾
+      { text: "跟着节奏拍手", fx: { aff_local: 2, belonging: 1 }, then: [ { say: "街头艺人冲你点了点头。" }, { say: "See, you're a natural.", name: "local", tr: "看吧，你天生就会。" } ] },   // 缺反应，见文件末尾
     ] },
     { hide: true },
   ],
@@ -168,7 +168,7 @@ Object.assign(DATA.events, {
       { text: "拍一张照片，发 Ins", fx: { aff_groupmate: 3 }, then: [
         { say: "那条 Ins 下面，她妈妈点了一个赞。她看着那个赞，看了很久。" },
       ] },
-      { text: "“我每天路过都来看一眼。”", fx: { aff_groupmate: 3 } },   // 缺反应
+      { text: "“我每天路过都来看一眼。”", fx: { aff_groupmate: 3 }, then: [ { say: "她说你太夸张了。第二天你路过的时候，橱窗玻璃上贴了一张便利贴，朝外，写着“hi babe ♡”。" } ] },   // 缺反应
     ] },
     { hide: true },
   ],
@@ -216,7 +216,7 @@ Object.assign(DATA.events, {
     { say: "It's — it helps. With the crowds. That's the only reason.", name: "otaku", tr: "这——有帮助。人多的时候。这是唯一的原因。" },
     { say: "（街上人不多了，他也没松手。）" },
     { free: "Kieran 在人多的步行街牵住了你的手。", freeWho: "otaku", choice: [
-      { text: "握紧一点", fx: { aff_otaku: 3 } },   // 缺反应
+      { text: "握紧一点", fx: { aff_otaku: 3 }, then: [ { say: "他低头看了一眼你们的手，没说话，也握紧了一点。" } ] },   // 缺反应
       { text: "“唯一的原因？”", fx: { aff_otaku: 3 }, then: [
         { say: "…Ninety percent of the reason.", name: "otaku", tr: "……百分之九十的原因。" },
         { say: "过了一会儿：“Sixty.”「六十。」又过了一会儿：“Stop looking at me like that.”「别这样看我。」" },
@@ -255,7 +255,7 @@ Object.assign(DATA.events, {
     { say: "……今天不想接电话。", name: "senior" },
     { say: "他跑完以后坐在长凳上，跟你说了很多话，大部分都是关于他小时候在老家的事。" },
     { free: "学长早上跑步没戴耳机，说今天不想接电话。", freeWho: "senior", choice: [
-      { text: "听他说完", fx: { aff_senior: 3, loneliness: -2 } },   // 缺反应
+      { text: "听他说完", fx: { aff_senior: 3, loneliness: -2 }, then: [ { say: "他说完以后，看了看时间：" }, { say: "……说了四十分钟。我从来没跟人说过这么多不赚钱的话。", name: "senior" } ] },   // 缺反应
       { text: "“以后早上我也来。”", fx: { aff_senior: 2 }, then: [
         { say: "后来你来了两次，起不来了。他没提，但有一天早上给你发了一张窗外日出的照片。" },
       ] },
@@ -489,7 +489,7 @@ Object.assign(DATA.events, {
       { text: "“灯是关着的。”", fx: { aff_senior: 3 }, then: [
         { say: "他瞪了你一眼，然后笑了。“你这个人。”" },
       ] },
-      { text: "递他一张纸巾，什么都不说", fx: { aff_senior: 3 } },   // 缺反应
+      { text: "递他一张纸巾，什么都不说", fx: { aff_senior: 3 }, then: [ { say: "他接过去，擦了一下，把纸巾折得很整齐，放进口袋里。" }, { say: "……谢了。", name: "senior" } ] },   // 缺反应
     ] },
     { hide: true },
   ],
@@ -522,7 +522,7 @@ Object.assign(DATA.events, {
       { text: "“一起看？”", fx: { aff_local: 2 }, then: [
         { say: "他放下衣架，坐了二十分钟。走的时候说：“I understood nothing but the outfits were incredible.”「我什么都没看懂，但服装太棒了。」" },
       ] },
-      { text: "“时尚社在隔壁。”", fx: { aff_local: 1 } },   // 缺反应
+      { text: "“时尚社在隔壁。”", fx: { aff_local: 1 }, then: [ { say: "Right. Yes. Next door. Obviously.", name: "local", tr: "对。是。隔壁。当然。" }, { say: "他抱着衣架退了出去，又探头回来：" }, { say: "What were you watching though?", name: "local", tr: "不过你们在看什么？" } ] },   // 缺反应
     ] },
     { hide: true },
   ],
@@ -553,8 +553,8 @@ Object.assign(DATA.events, {
     { say: "全场安静了一秒，然后所有人都鼓掌了。" },
     { say: "I practised for a week. Was it right? Please say it was right.", name: "local", tr: "我练了一周。对吗？求你说对。" },
     { free: "Ollie 在动漫社门口说了一句你最喜欢的番里的台词。", freeWho: "local", choice: [
-      { text: "“对。”", fx: { aff_local: 3 } },   // 缺反应
-      { text: "“错了两个音，但我很感动。”", fx: { aff_local: 3 } },   // 缺反应
+      { text: "“对。”", fx: { aff_local: 3 }, then: [ { say: "他松了一口气，整个人靠在门框上：" }, { say: "Thank god. I've been saying it in the shower for seven days.", name: "local", tr: "谢天谢地。我在浴室里念了七天。" } ] },   // 缺反应
+      { text: "“错了两个音，但我很感动。”", fx: { aff_local: 3 }, then: [ { say: "Which two? Tell me. No — tell me later. Let me have this.", name: "local", tr: "哪两个？告诉我。不——晚点再说。让我先高兴一会儿。" } ] },   // 缺反应
     ] },
     { hide: true },
   ],
@@ -572,7 +572,7 @@ Object.assign(DATA.events, {
           { say: "Watched 8 episodes. I hate you.", name: "groupmate", tr: "看了八集。我恨你。" },
         ] },
       ] },
-      { text: "“你朋友也可以下周来。”", fx: { aff_groupmate: 2 } },   // 缺反应
+      { text: "“你朋友也可以下周来。”", fx: { aff_groupmate: 2 }, then: [ { say: "她翻了个白眼：" }, { say: "My friend is busy.", name: "groupmate", tr: "我朋友很忙。" }, { say: "下周她自己来了，坐在第一排。" } ] },   // 缺反应
     ] },
     { hide: true },
   ],
@@ -604,7 +604,7 @@ Object.assign(DATA.events, {
       { text: "“好。”", fx: { aff_groupmate: 3 }, then: [
         { say: "漫展那天，你们的照片被三个不认识的人发到了网上。" },
       ] },
-      { text: "“我看了，我还是要说……好。”", fx: { aff_groupmate: 3 } },   // 缺反应
+      { text: "“我看了，我还是要说……好。”", fx: { aff_groupmate: 3 }, then: [ { say: "她尖叫了一声，抱住你，然后马上松开：" }, { say: "okay but you have to wear the wig.", name: "groupmate", tr: "好但你得戴假发。" } ] },   // 缺反应
     ] },
     { hide: true },
   ],
@@ -691,7 +691,7 @@ Object.assign(DATA.events, {
     { show: "senior" },
     { say: "我爷爷以前每次见我都给我一颗。……他前年走了。那会儿正好考试周，机票三千多镑，我没回去。", name: "senior" },
     { free: "学长拿着一包大白兔，说他爷爷走的时候他没回去。", freeWho: "senior", choice: [
-      { text: "什么都不说，陪他站一会儿", fx: { aff_senior: 3 } },   // 缺反应
+      { text: "什么都不说，陪他站一会儿", fx: { aff_senior: 3 }, then: [ { say: "过了很久，他把那包大白兔放进了购物车。" }, { say: "……就这一包。", name: "senior" } ] },   // 缺反应
       { text: "买下来，塞一颗给他", fx: { money: -3, aff_senior: 3 }, then: [
         { say: "他剥开吃了，嚼了很久。“……跟以前的味道一样。”" },
       ] },
@@ -777,7 +777,7 @@ Object.assign(DATA.events, {
       { text: "“那你也教我分辨一下中国的。”", fx: { aff_groupmate: 2 }, then: [
         { say: "你们在中超转了一圈，互相讲了半个小时“这个正宗、这个不正宗”。" },
       ] },
-      { text: "“那买正宗的。”", fx: { aff_groupmate: 1 } },   // 缺反应
+      { text: "“那买正宗的。”", fx: { aff_groupmate: 1 }, then: [ { say: "她把“给西方人的”那瓶放回去：" }, { say: "Good. You pass.", name: "groupmate", tr: "好。你合格了。" } ] },   // 缺反应
     ] },
     { hide: true },
   ],
@@ -1032,7 +1032,7 @@ Object.assign(DATA.events, {
     { say: "她尝了，五官皱成一团。" },
     { say: "Still wet bread. But apple wet bread. I wanted to know what you're tasting.", name: "groupmate", tr: "还是泡湿的面包。只不过是苹果味的。我就是想知道你在喝的是什么味道。" },
     { free: "Ploy 尝了一口你的苹果酒。", freeWho: "groupmate", choice: [
-      { text: "“那下次我陪你喝好看的。”", fx: { aff_groupmate: 3 } },   // 缺反应
+      { text: "“那下次我陪你喝好看的。”", fx: { aff_groupmate: 3 }, then: [ { say: "Deal. You're buying.", name: "groupmate", tr: "成交。你请。" } ] },   // 缺反应
       { text: "把你杯子里的柠檬片放进她的杯子", fx: { aff_groupmate: 2 }, then: [
         { say: "…That's the most romantic thing anyone's done in a pub.", name: "groupmate", tr: "……这是有人在 pub 里做过最浪漫的事。" },
       ] },
@@ -1052,7 +1052,7 @@ Object.assign(DATA.events, {
         { say: "…Episode 11. Not 12. It's — it matters.", name: "otaku", tr: "……第 11 集。不是 12。这——这很重要。" },
         { say: "你们小声聊了一个晚上。" },
       ] },
-      { text: "坐到他旁边", fx: { aff_otaku: 2 } },   // 缺反应
+      { text: "坐到他旁边", fx: { aff_otaku: 2 }, then: [ { say: "他往旁边挪了挪，把他那杯可乐往你那边推了推，好像在说“一起喝”，又好像只是挪个位置。" } ] },   // 缺反应
     ] },
     { hide: true },
   ],
@@ -1144,7 +1144,7 @@ Object.assign(DATA.events, {
       { text: "“你今天怎么了？”", fx: { aff_senior: 2 }, then: [
         { say: "没怎么。就是……今天不想赚钱。想坐一会儿。", name: "senior" },
       ] },
-      { text: "把你盘子里的一半分给他", fx: { aff_senior: 3 } },   // 缺反应
+      { text: "把你盘子里的一半分给他", fx: { aff_senior: 3 }, then: [ { say: "他看着那半盘，没推辞，吃完了。“……下次我请。”（他每次都这么说，每次都是真的。）" } ] },   // 缺反应
     ] },
     { hide: true },
   ],
@@ -1300,7 +1300,7 @@ Object.assign(DATA.events, {
     { show: "otaku" },
     { say: "I wanted to see you walking in. From the window. That's all.", name: "otaku", tr: "我想从窗户看着你走进来。就这样。" },
     { free: "Kieran 第一次坐在 brunch 店窗边的位置。", freeWho: "otaku", choice: [
-      { text: "“那以后都坐这里。”", fx: { aff_otaku: 3 } },   // 缺反应
+      { text: "“那以后都坐这里。”", fx: { aff_otaku: 3 }, then: [ { say: "他点点头。后来那张桌子，店员看到你们进门就会把“Reserved”的牌子拿走。" } ] },   // 缺反应
       { text: "“你不怕被别人看到了？”", fx: { aff_otaku: 3 }, then: [
         { say: "他想了想。“…No. Not anymore.”「……不怕了。现在不怕了。」" },
       ] },

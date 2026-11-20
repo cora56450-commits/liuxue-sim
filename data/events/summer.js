@@ -48,19 +48,35 @@ Object.assign(DATA.events, {
     ] },
     { if: "好感('local') >= 40", then: [
       { msg: { from: "local", text: "Safe flight!! Bring me back something weird. Not a fridge magnet.", tr: "一路平安！！给我带个奇怪的东西回来。不要冰箱贴。" } },
-      { choice: [{ text: "认真回", fx: { aff_local: 3, flag_summer_reply_local: 1 } }, { text: "到了说！" }] },
+      { choice: [{ text: "认真回", fx: { aff_local: 3, flag_summer_reply_local: 1 }, then: [
+        { say: "你说给他带了一样很奇怪的东西（先不告诉他）。他回：" },
+        { msg: { from: "local", text: "I'm going to think about this all summer.", tr: "我整个暑假都会想这件事。" } },
+      ] }, { text: "到了说！", then: [
+        { msg: { from: "local", text: "Text me when you land!", tr: "落地给我发消息！" } },
+      ] }] },
     ] },
     { if: "好感('groupmate') >= 40", then: [
       { say: "一张她在曼谷机场的自拍，跟你几乎同时起飞。" },
       { msg: { from: "groupmate", text: "we're both in the sky at the same time!!", tr: "我们同时在天上！！" } },
-      { choice: [{ text: "认真回", fx: { aff_groupmate: 3, flag_summer_reply_groupmate: 1 } }, { text: "到了说！" }] },
+      { choice: [{ text: "认真回", fx: { aff_groupmate: 3, flag_summer_reply_groupmate: 1 }, then: [
+        { say: "你们在机场同时发了一张登机口的照片。她回：" },
+        { msg: { from: "groupmate", text: "same time same sky 🥺", tr: "同一时间同一片天🥺" } },
+      ] }, { text: "到了说！", then: [
+        { msg: { from: "groupmate", text: "see you in september babe 💕", tr: "九月见宝贝💕" } },
+      ] }] },
     ] },
     { if: "好感('otaku') >= 40", then: [
       { msg: { from: "otaku", text: "have a good summer.", tr: "暑假愉快。" } },
       { say: "过了十分钟：" },
       { msg: { from: "otaku", text: "I'll miss the club room being… you know.", tr: "我会想活动室……你懂的。" } },
       { say: "他没说完。" },
-      { choice: [{ text: "认真回", fx: { aff_otaku: 3, flag_summer_reply_otaku: 1 } }, { text: "到了说！" }] },
+      { choice: [{ text: "认真回", fx: { aff_otaku: 3, flag_summer_reply_otaku: 1 }, then: [
+        { say: "你说你也会想活动室。他回：" },
+        { msg: { from: "otaku", text: "…Okay. Good. I mean — okay.", tr: "……好。很好。我是说——好的。" } },
+      ] }, { text: "到了说！", then: [
+        { msg: { from: "otaku", text: "have a good summer.", tr: "暑假愉快。" } },
+        { say: "（和刚才那条一模一样。）" },
+      ] }] },
     ] },
     { if: "(标记('summer_reply_senior') && 好感('senior') >= 50) + (标记('summer_reply_local') && 好感('local') >= 50) + (标记('summer_reply_groupmate') && 好感('groupmate') >= 50) + (标记('summer_reply_otaku') && 好感('otaku') >= 50) >= 2",
       then: [{ fx: { pond: 1 } }] },

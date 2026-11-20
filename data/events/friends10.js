@@ -187,7 +187,9 @@ Object.assign(DATA.events, {
       { text: "“你怎么什么口音都听得懂？”", fx: { fr_mei: 3 }, then: [
         { say: "“在吉隆坡长大，什么口音都听过啦。英国人的口音算简单的。”" },
       ] },
-      { text: "请她喝奶茶", fx: { money: -5, fr_mei: 3 } },   // 缺反应（剧本只写了数值）
+      { text: "请她喝奶茶", fx: { money: -5, fr_mei: 3 }, then: [
+        { say: "Mei 点了全糖：“今天你请客，我就要最甜的 lah。”" },
+      ] },
     ] },
     { hide: true },
   ],

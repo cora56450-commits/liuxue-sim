@@ -5,9 +5,19 @@
 const Bag = {
   list() { return Object.entries(S.items || {}).filter(([id]) => DATA.items[id]).map(([id, n]) => ({ id, n, ...DATA.items[id] })); },
   has(id) { return !!(S.items || {})[id]; },
+  // 第十一批：有图的物品（tools/import_batch11.py 切到 assets/ui/items/{id}.png）；没图的照旧用名字第一个字
+  ICON_IDS: ["milk_tea", "laoganma", "white_rabbit", "hotpot_base", "mooncake", "pocky", "tulips", "meal_deal", "dark_choc", "tea_box", "film_roll", "lipstick",
+    "notebook", "blind_box", "jam", "vintage_scarf", "candle", "protein_bar", "retro_cart", "hand_cream", "wilted_flowers", "old_weicheng", "digestives",
+    "hometown_postcard", "queen_teacup", "bicester_ticket", "heater_key", "sophie_postcard", "saturn_necklace", "kieran_figure", "vintage_jacket", "postcard_self"],
+  icon(id) { return Bag.ICON_IDS.includes(id) || (DATA.items[id] || {}).icon ? `assets/ui/${(DATA.items[id] || {}).icon || "items/" + id + ".png"}` : ""; },
+  // 背包一行左边的方块：有图放图，没图放名字第一个字（scenes.js “带回国的东西”也可以用：Bag.ico(it.id)）
+  ico(id) {
+    const src = Bag.icon(id), first = Gloss.escape(fillText((DATA.items[id] || {}).name || "?"))[0];
+    return src ? `<div class="bag-ico has-pic"><img src="${src}" alt="${first}"></div>` : `<div class="bag-ico">${first}</div>`;
+  },
   // 手机 App：每样东西的名字、描述、哪里来的；能戴的（项链）点一下“戴上”
   open() {
-    const rows = Bag.list().map((it) => `<div class="bag-row" data-id="${it.id}"><div class="bag-ico">${Gloss.escape(fillText(it.name))[0]}</div>
+    const rows = Bag.list().map((it) => `<div class="bag-row" data-id="${it.id}">${Bag.ico(it.id)}
       <div><b>${Gloss.escape(fillText(it.name))}${it.n > 1 ? ` ×${it.n}` : ""}${S.wearing === it.id ? `<i class="bag-on">佩戴中</i>` : ""}</b><p>${Gloss.escape(fillText(it.desc || ""))}</p>
       <small>${Gloss.escape(fillText(it.from || (S.itemFrom || {})[it.id] || ""))}${it.gift ? "　· 可以送人" : ""}</small></div>${it.wear ? `<button class="hud-btn bag-wear">${S.wearing === it.id ? "摘下" : "戴上"}</button>` : ""}</div>`).join("");
     const o = Phone.frame(`<div class="bag-list">${rows || `<div class="note-empty">背包是空的。剧情里拿到的东西、商店买的东西会放在这里。</div>`}</div>`, { title: "背包", back: () => Phone.home() });
@@ -45,7 +55,7 @@ const Gift = {
   canGive(c) { return !(S.giftWeek && S.giftWeek[c] === absWeek()) && Bag.list().some((it) => it.gift); },
   pick(c, back) {
     const items = Bag.list().filter((it) => it.gift);
-    const o = Phone.frame(`<div class="bag-list">${items.map((it) => `<div class="bag-row pick" data-id="${it.id}"><div class="bag-ico">${Gloss.escape(fillText(it.name))[0]}</div><div><b>${Gloss.escape(fillText(it.name))}</b><p>${Gloss.escape(fillText(it.desc || ""))}</p></div></div>`).join("")}</div>`,
+    const o = Phone.frame(`<div class="bag-list">${items.map((it) => `<div class="bag-row pick" data-id="${it.id}">${Bag.ico(it.id)}<div><b>${Gloss.escape(fillText(it.name))}</b><p>${Gloss.escape(fillText(it.desc || ""))}</p></div></div>`).join("")}</div>`,
       { title: `送给 ${charName(c)}`, back });
     o.querySelectorAll(".bag-row.pick").forEach((el) => el.onclick = () => { FX.float(Gift.give(c, el.dataset.id)); playSfx("phone_send"); back(); });
   },
@@ -332,7 +342,8 @@ const Shop = {
     let list = Shop.list(loc);
     while (list.length) {
       sayStatic("顺便买点什么？");
-      const opts = list.map((x) => ({ text: fillText(DATA.items[x.id].name), sub: `£${x.price}`, disabled: S.stats.money < x.price }));
+      // 第十一批：货架上有图的物品，价格前面放小图（choose 的 sub 原样插 HTML）
+      const opts = list.map((x) => { const ic = Bag.icon(x.id); return { text: fillText(DATA.items[x.id].name), sub: `${ic ? `<img class="shop-ico" src="${ic}" alt="">` : ""}£${x.price}`, disabled: S.stats.money < x.price }; });
       const i = await choose([...opts, { text: "不买了" }]);
       hideDialog();
       if (i >= list.length) return;

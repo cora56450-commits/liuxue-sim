@@ -102,60 +102,60 @@ DATA.momentsPool = DATA.momentsPool || {};
 
 // ---------- 1. 学长朋友圈（补 14 条）----------
 (DATA.momentsPool.senior = DATA.momentsPool.senior || []).push(
-  { text: "【开学季】接机 £35 起，三人拼车 £25，提前一周预约。", tr: "", img: "机场到达口的接机牌", stage: [0], hook: "周数 == 1" },   // 1 剧本：学年任意。hook 只发一次，所以只在第一次碰到的第 1 周发
-  { text: "中超团购：螺蛳粉整箱到了，学生会群里接龙。", tr: "", img: "一摞纸箱", stage: [0, 1], when: "周数 >= 3 && 周数 <= 5" },   // 2
-  { text: "租房避坑：签约前一定要拍视频，每个角落。第一年我被扣了 £300。", tr: "", img: "", stage: [0, 1], when: "周数 == 14" },   // 3 找房那周
-  { text: "回国机票比价表更新了，私聊拿。", tr: "", img: "Excel 截图", stage: [0, 1], when: "假期前" },   // 4 剧本：假期前四周（没有这个条件，先用“假期前”＝下周放假）
-  { text: "今天收到一个阿姨的感谢信，说她女儿收到包的时候哭了。", tr: "", img: "手写字条的照片（看不清字）", stage: [1, 2] },   // 5
-  { text: "凌晨三点，伦敦希思罗。", tr: "", img: "空荡荡的到达大厅", stage: [2, 3] },   // 6
-  { text: "圣诞节不放假，代购照接。", tr: "", img: "", stage: [0, 1, 2], when: "周数 == 12" },   // 7
-  { text: "我妈说我瘦了。视频里看不出来的，她就是这么说。", tr: "", img: "", stage: [2, 3] },   // 8 随机，周日
+  { text: "【开学季】接机 £35 起，三人拼车 £25，提前一周预约。", tr: "", img: "机场到达口的接机牌", pic: "moments/S-1-3.jpg", stage: [0], hook: "周数 == 1" },   // 1 剧本：学年任意。hook 只发一次，所以只在第一次碰到的第 1 周发
+  { text: "中超团购：螺蛳粉整箱到了，学生会群里接龙。", tr: "", img: "一摞纸箱", pic: "moments/S-1-4.jpg", stage: [0, 1], when: "周数 >= 3 && 周数 <= 5" },   // 2
+  { text: "租房避坑：签约前一定要拍视频，每个角落。第一年我被扣了 £300。", tr: "", img: "", pic: "moments/S-1-5.jpg", stage: [0, 1], when: "周数 == 14" },   // 3 找房那周
+  { text: "回国机票比价表更新了，私聊拿。", tr: "", img: "Excel 截图", pic: "moments/S-1-6.jpg", stage: [0, 1], when: "假期前" },   // 4 剧本：假期前四周（没有这个条件，先用“假期前”＝下周放假）
+  { text: "今天收到一个阿姨的感谢信，说她女儿收到包的时候哭了。", tr: "", img: "手写字条的照片（看不清字）", pic: "moments/S-1-7.jpg", stage: [1, 2] },   // 5
+  { text: "凌晨三点，伦敦希思罗。", tr: "", img: "空荡荡的到达大厅", pic: "moments/S-1-8.jpg", stage: [2, 3] },   // 6
+  { text: "圣诞节不放假，代购照接。", tr: "", img: "", pic: "moments/S-1-9.jpg", stage: [0, 1, 2], when: "周数 == 12" },   // 7
+  { text: "我妈说我瘦了。视频里看不出来的，她就是这么说。", tr: "", img: "", pic: "moments/S-2-1.jpg", stage: [2, 3] },   // 8 随机，周日
   { text: "毕业了。", tr: "", img: "学士服背影，旁边没有人", hook: "学年 == 1 && 周数 == 28" },   // 9 剧本：大一第 30 周（大一只有 28 周，先放最后一周）
-  { text: "新工作第一天。工牌上的名字拼错了。", tr: "", img: "工牌：Lin Zihang 写成了 Lin Zihan", hook: "学年 == 2 && 周数 == 1" },   // 10
-  { text: "公司注册下来了。", tr: "", img: "营业执照的一角", stage: [2, 3, 4], when: "学年 == 2 && 学期 == '春' && 好感('senior') >= 50" },   // 11 大二下学期
-  { text: "今天有人说我“不像做生意的”。不知道是不是夸我。", tr: "", img: "", stage: [3] },   // 12
-  { text: "下周回泉州。三年没回了。", tr: "", img: "登机牌，遮住了名字", stage: [3, 4], when: "学年 == 2 && 周数 >= 21" },   // 13 大二暑假前（先按大二最后四周）
-  { text: "", tr: "", img: "两碗泡面，摆在纸箱上", stage: [4], when: "交往中('senior') && 标记('actn_senior_packing') >= 3" },   // 14（没有字）
+  { text: "新工作第一天。工牌上的名字拼错了。", tr: "", img: "工牌：Lin Zihang 写成了 Lin Zihan", pic: "moments/S-2-2.jpg", hook: "学年 == 2 && 周数 == 1" },   // 10
+  { text: "公司注册下来了。", tr: "", img: "营业执照的一角", pic: "moments/S-2-3.jpg", stage: [2, 3, 4], when: "学年 == 2 && 学期 == '春' && 好感('senior') >= 50" },   // 11 大二下学期
+  { text: "今天有人说我“不像做生意的”。不知道是不是夸我。", tr: "", img: "", pic: "moments/S-2-4.jpg", stage: [3] },   // 12
+  { text: "下周回泉州。三年没回了。", tr: "", img: "登机牌，遮住了名字", pic: "moments/S-2-5.jpg", stage: [3, 4], when: "学年 == 2 && 周数 >= 21" },   // 13 大二暑假前（先按大二最后四周）
+  { text: "", tr: "", img: "两碗泡面，摆在纸箱上", pic: "moments/S-2-6.jpg", stage: [4], when: "交往中('senior') && 标记('actn_senior_packing') >= 3" },   // 14（没有字）
 );
 
 // ---------- 2. Ollie 的 Ins（补 14 条）----------
 (DATA.momentsPool.local = DATA.momentsPool.local || []).push(
   { text: "freshers week survived (barely)", tr: "新生周活下来了（勉强）", img: "宿舍走廊，五个男生瘫在地上", stage: [0], when: "学年 == 1 && 周数 <= 2" },   // 1
-  { text: "home for the weekend 🐶", tr: "回家过周末", img: "Biscuit 趴在沙发上，老了的可卡犬", stage: [0, 1, 2] },   // 2 随机，周五
+  { text: "home for the weekend 🐶", tr: "回家过周末", img: "Biscuit 趴在沙发上，老了的可卡犬", pic: "moments/O-1-1.jpg", stage: [0, 1, 2] },   // 2 随机，周五
   { text: "new fit who dis", tr: "新衣服，你谁", img: "镜子自拍，复古皮夹克", stage: [0, 1] },   // 3
-  { text: "Lottie came to visit and roasted every item in my wardrobe", tr: "Lottie 来看我，把我衣柜里每一件都吐槽了一遍", img: "他姐姐举着一件花衬衫在笑", stage: [1, 2] },   // 4
-  { text: "5-a-side champions (we were the only team)", tr: "五人足球冠军（只有我们一个队）", img: "球场，所有人举着一个塑料奖杯", stage: [0, 1, 2] },   // 5
-  { text: "你好 👋 (my teacher says my tones are \"improving\")", tr: "你好👋（我老师说我的声调“在进步”）", img: "一个写满拼音的本子", stage: [2, 3], when: "标记('ollie_exchange')",   // 6 你可以评论
+  { text: "Lottie came to visit and roasted every item in my wardrobe", tr: "Lottie 来看我，把我衣柜里每一件都吐槽了一遍", img: "他姐姐举着一件花衬衫在笑", pic: "moments/O-1-2.jpg", stage: [1, 2] },   // 4
+  { text: "5-a-side champions (we were the only team)", tr: "五人足球冠军（只有我们一个队）", img: "球场，所有人举着一个塑料奖杯", pic: "moments/O-1-3.jpg", stage: [0, 1, 2] },   // 5
+  { text: "你好 👋 (my teacher says my tones are \"improving\")", tr: "你好👋（我老师说我的声调“在进步”）", img: "一个写满拼音的本子", pic: "moments/O-1-4.jpg", stage: [2, 3], when: "标记('ollie_exchange')",   // 6 你可以评论
     reply: { text: "teacher is very strict. 10/10 would recommend", tr: "老师很严格。满分推荐" } },
-  { text: "rain. again.", tr: "下雨。又是。", img: "窗户上的雨水，焦点不在外面", stage: [0, 1, 2, 3] },   // 7
-  { text: "fashion soc show in 3 weeks. send help", tr: "时尚社走秀还有三周。救命", img: "一堆衣架和布料", stage: [1, 2, 3], when: "学年 == 2 && 周数 == 14" },   // 8
+  { text: "rain. again.", tr: "下雨。又是。", img: "窗户上的雨水，焦点不在外面", pic: "moments/O-1-5.jpg", stage: [0, 1, 2, 3] },   // 7
+  { text: "fashion soc show in 3 weeks. send help", tr: "时尚社走秀还有三周。救命", img: "一堆衣架和布料", pic: "moments/O-1-6.jpg", stage: [1, 2, 3], when: "学年 == 2 && 周数 == 14" },   // 8
   // 9 走秀（大二第 17 周）之后；【如果：gala_model】你在第二排。帖子是每周开头发的，所以写成第 18 周起
   { text: "post-show. everyone was incredible.", tr: "走秀结束。每个人都太棒了。", img: "后台合照，你在第二排", hook: "学年 == 2 && 周数 >= 18 && 阶段('local') >= 1", if: "标记('gala_model')" },
   { text: "post-show. everyone was incredible.", tr: "走秀结束。每个人都太棒了。", img: "后台合照", hook: "学年 == 2 && 周数 >= 18 && 阶段('local') >= 1", if: "!标记('gala_model')" },
-  { text: "mum asked if I'm \"seeing anyone\". changed the subject to the weather. classic.", tr: "我妈问我是不是“在跟谁约会”。我把话题换到了天气。经典。", img: "", stage: [3],   // 10 暧昧期
+  { text: "mum asked if I'm \"seeing anyone\". changed the subject to the weather. classic.", tr: "我妈问我是不是“在跟谁约会”。我把话题换到了天气。经典。", img: "", pic: "moments/O-1-7.jpg", stage: [3],   // 10 暧昧期
     afterSay: "（……他换到天气上去的那个话题，是我吗？）" },
-  { text: "sunday roast at Mum's. she made enough for twelve. there were four of us.", tr: "在我妈家吃周日烤肉。她做了十二个人的量。我们只有四个人。", img: "一桌菜", stage: [0, 1, 2, 3] },   // 11 随机，周日
+  { text: "sunday roast at Mum's. she made enough for twelve. there were four of us.", tr: "在我妈家吃周日烤肉。她做了十二个人的量。我们只有四个人。", img: "一桌菜", pic: "moments/O-1-8.jpg", stage: [0, 1, 2, 3] },   // 11 随机，周日
   { text: "film photos from this term", tr: "这学期的胶片照", img: "九宫格：pub、草坪、车站、你的背影（只有一张，很小，不仔细看看不出来）", stage: [4], when: "交往中('local') && !标记('local_asked')" },   // 12
   { text: "❤️", tr: "", img: "你在 brunch 店笑的照片，正脸", stage: [4], hook: "交往中('local') && 标记('local_asked')", delay: 2, withMe: true },   // 13 local_asked 之后第 2 周
   // 14 大三最后一周；【交往中且 local_asked】第二张图是你们俩的合照
-  { text: "three years.", tr: "三年。", img: "毕业礼帽扔在空中", hook: "学年 == 3 && 周数 == 24", if: "!(交往中('local') && 标记('local_asked'))" },
-  { text: "three years.", tr: "三年。", img: "毕业礼帽扔在空中；第二张是你们俩的合照", hook: "学年 == 3 && 周数 == 24", if: "交往中('local') && 标记('local_asked')", withMe: true },
+  { text: "three years.", tr: "三年。", img: "毕业礼帽扔在空中", pic: "moments/O-1-9.jpg", hook: "学年 == 3 && 周数 == 24", if: "!(交往中('local') && 标记('local_asked'))" },
+  { text: "three years.", tr: "三年。", img: "毕业礼帽扔在空中；第二张是你们俩的合照", pic: "moments/O-1-9.jpg", hook: "学年 == 3 && 周数 == 24", if: "交往中('local') && 标记('local_asked')", withMe: true },
 );
 
 // ---------- 3. Kieran 的 Ins（补 12 条；account：kieran 主号 / silentmoon 小号）----------
 (DATA.momentsPool.otaku = DATA.momentsPool.otaku || []).push(
   { account: "kieran", text: "Morning session ✅", tr: "早上练完", img: "健身房的镜子，没拍脸", stage: [0, 1] },   // 1
-  { account: "kieran", text: "Meal prep Sunday", tr: "周日备餐", img: "十个保温盒，全是鸡胸肉和西兰花", stage: [0, 1, 2] },   // 2 随机，周日
-  { account: "kieran", text: "100kg.", tr: "100 公斤。", img: "杠铃", stage: [1, 2] },   // 3
-  { account: "silentmoon", text: "first time going to a con with someone", tr: "第一次跟人一起去漫展", img: "两张门票", stage: [2, 3], when: "演过('enc_station_otaku_acquaint') || 标记('advance_otaku')" },   // 4 车站-Kieran-相识 或 漫展（推进）
-  { account: "silentmoon", text: "800 → 1000 hours.", tr: "800 小时 → 1000 小时。", img: "游戏时长截图", stage: [1, 2, 3] },   // 5
-  { account: "silentmoon", text: "someone said \"your drawing is good\" today. i've been thinking about it for 6 hours.", tr: "今天有人说“你画得很好”。我想了 6 个小时。", img: "健身计划表角落里的小人", stage: [3], when: "演过('small_otaku_1')" },   // 6 Kieran-小1
-  { account: "silentmoon", text: "mum found my figure shelf. she said \"they're lovely, love\". i'm moving out.", tr: "我妈发现了我的手办架。她说“好可爱呀宝贝”。我要搬出去住。", img: "一个玻璃柜", stage: [1, 2, 3] },   // 7
-  { account: "kieran", text: "Leg day with a spotter for once.", tr: "难得有人帮我保护着练腿。", img: "两瓶水", stage: [3, 4], when: "演过('enc_gym_otaku_dating') || 阶段('otaku') == 3" },   // 8 健身房-Kieran-交往 或 暧昧期
-  { account: "silentmoon", text: "japan fund: 520/680", tr: "日本基金：520/680", img: "存钱 App 截图", stage: [3, 4], when: "学年 == 3 && !标记('otaku_japan_promise')" },   // 9
-  { account: "silentmoon", text: "japan fund (x2): 520/1360", tr: "日本基金（x2）：520/1360", img: "存钱 App 截图", stage: [3, 4], when: "学年 == 3 && 标记('otaku_japan_promise')" },   //   有 otaku_japan_promise 时换这条
-  { account: "silentmoon", text: "(´・ω・`)", tr: "", img: "雨天的窗户", stage: [2, 3] },   // 10 “想见你又不敢说”的那种周
-  { account: "silentmoon", text: "she beat me at my own game. i'm proud and devastated.", tr: "她在我最擅长的游戏里赢了我。我又骄傲又崩溃。", img: "游戏结算画面", stage: [4], when: "交往中('otaku') && 标记('actn_kieran_online') >= 5" },   // 11
+  { account: "kieran", text: "Meal prep Sunday", tr: "周日备餐", img: "十个保温盒，全是鸡胸肉和西兰花", pic: "moments/K-1-7.jpg", stage: [0, 1, 2] },   // 2 随机，周日
+  { account: "kieran", text: "100kg.", tr: "100 公斤。", img: "杠铃", pic: "moments/K-1-2.jpg", stage: [1, 2] },   // 3
+  { account: "silentmoon", text: "first time going to a con with someone", tr: "第一次跟人一起去漫展", img: "两张门票", pic: "moments/K-1-9.jpg", stage: [2, 3], when: "演过('enc_station_otaku_acquaint') || 标记('advance_otaku')" },   // 4 车站-Kieran-相识 或 漫展（推进）
+  { account: "silentmoon", text: "800 → 1000 hours.", tr: "800 小时 → 1000 小时。", img: "游戏时长截图", pic: "moments/K-1-3.jpg", stage: [1, 2, 3] },   // 5
+  { account: "silentmoon", text: "someone said \"your drawing is good\" today. i've been thinking about it for 6 hours.", tr: "今天有人说“你画得很好”。我想了 6 个小时。", img: "健身计划表角落里的小人", pic: "moments/K-2-2.jpg", stage: [3], when: "演过('small_otaku_1')" },   // 6 Kieran-小1
+  { account: "silentmoon", text: "mum found my figure shelf. she said \"they're lovely, love\". i'm moving out.", tr: "我妈发现了我的手办架。她说“好可爱呀宝贝”。我要搬出去住。", img: "一个玻璃柜", pic: "moments/K-2-3.jpg", stage: [1, 2, 3] },   // 7
+  { account: "kieran", text: "Leg day with a spotter for once.", tr: "难得有人帮我保护着练腿。", img: "两瓶水", pic: "moments/K-2-4.jpg", stage: [3, 4], when: "演过('enc_gym_otaku_dating') || 阶段('otaku') == 3" },   // 8 健身房-Kieran-交往 或 暧昧期
+  { account: "silentmoon", text: "japan fund: 520/680", tr: "日本基金：520/680", img: "存钱 App 截图", pic: "moments/K-2-5.jpg", stage: [3, 4], when: "学年 == 3 && !标记('otaku_japan_promise')" },   // 9
+  { account: "silentmoon", text: "japan fund (x2): 520/1360", tr: "日本基金（x2）：520/1360", img: "存钱 App 截图", pic: "moments/K-2-5.jpg", stage: [3, 4], when: "学年 == 3 && 标记('otaku_japan_promise')" },   //   有 otaku_japan_promise 时换这条
+  { account: "silentmoon", text: "(´・ω・`)", tr: "", img: "雨天的窗户", pic: "moments/K-2-6.jpg", stage: [2, 3] },   // 10 “想见你又不敢说”的那种周
+  { account: "silentmoon", text: "she beat me at my own game. i'm proud and devastated.", tr: "她在我最擅长的游戏里赢了我。我又骄傲又崩溃。", img: "游戏结算画面", pic: "moments/K-2-7.jpg", stage: [4], when: "交往中('otaku') && 标记('actn_kieran_online') >= 5" },   // 11
   // 12 大三最后一周；【交往中且 考验('otaku') == 1】主号这张里有你
   { account: "kieran", text: "Graduated. Mum cried. Nan cried. I didn't (I did).", tr: "毕业了。妈妈哭了。外婆哭了。我没哭（我哭了）。", img: "毕业照，Siobhan 和 Maureen 站两边", hook: "学年 == 3 && 周数 == 24", if: "!(交往中('otaku') && 考验('otaku') == 1)" },
   { account: "kieran", text: "Graduated. Mum cried. Nan cried. I didn't (I did).", tr: "毕业了。妈妈哭了。外婆哭了。我没哭（我哭了）。", img: "毕业照，Siobhan 和 Maureen 站两边，你也在", hook: "学年 == 3 && 周数 == 24", if: "交往中('otaku') && 考验('otaku') == 1", withMe: true },
@@ -165,27 +165,50 @@ DATA.momentsPool = DATA.momentsPool || {};
 // 剧本的 story 英文没有给中文翻译，tr 先空着（待策划）。
 // reply：在 story 上点“回复”时对方立刻回的那句（phone6.js storyView；只有暧昧期有“回复”按钮）。
 DATA.momentsPool.groupmate.push(
-  { story: true, text: "3am and still editing 🫠", tr: "", img: "电脑屏幕上的设计稿", when: "距截止() == 0" },   // ddl 前一晚
-  { story: true, text: "guess who's back in bangkok", tr: "", img: "曼谷的机场", when: "!!(Rules.cal() || {}).vacation" },   // 假期回国那周
-  { story: true, text: "(投票) this or this?", tr: "", img: "两件裙子" },   // 随机；“你回复了选哪件，她下一条 story 穿的就是那件”没做（待策划）
-  { story: true, text: "🥺", tr: "", img: "Pa Nok 做的一碗粥（视频截图）", when: "学年 >= 2" },   // 大二以后，周日
-  { story: true, text: "she's so annoying (affectionate)", tr: "", img: "你的手拿着一杯奶茶", when: "交往中('groupmate')", withMe: true },
-  { story: true, text: "…", tr: "", img: "一张黑图，只有一行字：“bad day”", stage: [3] },   // 暧昧期；回复她会立刻回你（剧本没写那句，待策划）
+  { story: true, text: "3am and still editing 🫠", tr: "", img: "电脑屏幕上的设计稿", pic: "moments/P-3-9.jpg", when: "距截止() == 0" },   // ddl 前一晚
+  { story: true, text: "guess who's back in bangkok", tr: "", img: "曼谷的机场", pic: "moments/P-4-1.jpg", when: "!!(Rules.cal() || {}).vacation" },   // 假期回国那周
+  { story: true, text: "(投票) this or this?", tr: "", img: "两件裙子", pic: "moments/P-4-2.jpg" },   // 随机；“你回复了选哪件，她下一条 story 穿的就是那件”没做（待策划）
+  { story: true, text: "🥺", tr: "", img: "Pa Nok 做的一碗粥（视频截图）", pic: "moments/P-4-3.jpg", when: "学年 >= 2" },   // 大二以后，周日
+  { story: true, text: "she's so annoying (affectionate)", tr: "", img: "你的手拿着一杯奶茶", pic: "moments/P-4-4.jpg", when: "交往中('groupmate')", withMe: true },
+  { story: true, text: "…", tr: "", img: "一张黑图，只有一行字：“bad day”", pic: "moments/P-4-5.jpg", stage: [3] },   // 暧昧期；回复她会立刻回你（剧本没写那句，待策划）
 );
 DATA.momentsPool.local.push(
-  { story: true, text: "pub quiz night 🧠 (we came 7th out of 8)", tr: "", img: "答题纸" },   // 随机，周二
-  { story: true, text: "Biscuit says hi", tr: "", img: "狗的鼻子特写", when: "!!(Rules.cal() || {}).vacation" },   // 回家那周
-  { story: true, text: "guess the song 🎸", tr: "", img: "街头艺人" },
-  { story: true, text: "", tr: "", img: "华夫饼（定位：brunch 店）" },   // 周日；“你那周也去了 brunch 加一句内心”没做（待策划）
+  { story: true, text: "pub quiz night 🧠 (we came 7th out of 8)", tr: "", img: "答题纸", pic: "moments/O-2-1.jpg" },   // 随机，周二
+  { story: true, text: "Biscuit says hi", tr: "", img: "狗的鼻子特写", pic: "moments/O-2-2.jpg", when: "!!(Rules.cal() || {}).vacation" },   // 回家那周
+  { story: true, text: "guess the song 🎸", tr: "", img: "街头艺人", pic: "moments/O-2-3.jpg" },
+  { story: true, text: "", tr: "", img: "华夫饼（定位：brunch 店）", pic: "moments/O-2-4.jpg" },   // 周日；“你那周也去了 brunch 加一句内心”没做（待策划）
   { story: true, text: "outfit check", tr: "", img: "镜子自拍" },
-  { story: true, text: "你好吗？", tr: "", img: "写着拼音的便利贴", when: "标记('ollie_exchange')" },   // 回复“我很好”他回一串感叹号（没写具体文字，待策划）
+  { story: true, text: "你好吗？", tr: "", img: "写着拼音的便利贴", pic: "moments/O-2-5.jpg", when: "标记('ollie_exchange')" },   // 回复“我很好”他回一串感叹号（没写具体文字，待策划）
 );
 DATA.momentsPool.otaku.push(
-  { story: true, account: "silentmoon", text: "boss down", tr: "", img: "游戏截图", when: "标记('kieran_boss_down')" },   // 联机结算句第 7 条出现过（phone6.js 设 kieran_boss_down）
-  { story: true, account: "silentmoon", text: "", tr: "", img: "窗外的雨" },
-  { story: true, account: "silentmoon", text: "new figure 🥹", tr: "", img: "手办盒子", when: "演过('enc_indoor_market_otaku_acquaint') || 演过('enc_indoor_market_otaku_flirt') || 演过('enc_indoor_market_otaku_dating')" },
-  { story: true, account: "silentmoon", text: "can't sleep", tr: "", img: "天花板", stage: [3], reply: { text: "…you're awake too?", tr: "……你也醒着？" } },   // 暧昧期
+  { story: true, account: "silentmoon", text: "boss down", tr: "", img: "游戏截图", pic: "moments/K-2-8.jpg", when: "标记('kieran_boss_down')" },   // 联机结算句第 7 条出现过（phone6.js 设 kieran_boss_down）
+  { story: true, account: "silentmoon", text: "", tr: "", img: "窗外的雨", pic: "moments/K-2-9.jpg" },
+  { story: true, account: "silentmoon", text: "new figure 🥹", tr: "", img: "手办盒子", pic: "moments/K-3-1.jpg", when: "演过('enc_indoor_market_otaku_acquaint') || 演过('enc_indoor_market_otaku_flirt') || 演过('enc_indoor_market_otaku_dating')" },
+  { story: true, account: "silentmoon", text: "can't sleep", tr: "", img: "天花板", pic: "moments/K-3-2.jpg", stage: [3], reply: { text: "…you're awake too?", tr: "……你也醒着？" } },   // 暧昧期
 );
+
+// ---------- 5. 第十一批：配图（tools/import_batch11.py 切到 assets/ui/moments/）----------
+// 上面各条直接写了 pic。别的文件里的帖子（data/events/ext_kieran.js、ext_senior.js，不在这里改）按“人|img 描述”对上；
+// 没有 img 描述的写成“人|#text”。js/phone6.js 的 Phone6.picOf 读这张表，也会扫所有池子里写了 pic 的条目，所以旧存档里已经发出的帖子也能出图。
+DATA.momentPics = Object.assign(DATA.momentPics || {}, {
+  "senior|火车窗外的田野": "moments/S-1-1.jpg",
+  "senior|免税店的货架，没有文字说明在哪": "moments/S-1-2.jpg",
+  "senior|#今天不接单。": "moments/S-2-7.jpg",   // 茶叶罐（猜的：S-2 第 7 格提示词没写帖子编号）
+  "otaku|深蹲架": "moments/K-1-1.jpg",
+  "otaku|#3 stars in 胡闹客厅. finally. had help.": "moments/K-1-4.jpg",
+  "otaku|两个手柄的照片": "moments/K-1-5.jpg",
+  "otaku|两个手柄的照片（和 SilentMoon_77 那张同一张）": "moments/K-1-6.jpg",
+  "otaku|#PB today 💪": "moments/K-1-8.jpg",
+  "otaku|#800 hours. still not bored.": "moments/K-2-1.jpg",
+  "otaku|你们的手": "moments/K-3-7.jpg",   // ext_kieran.js 圣诞那段 { moment } 小号发的
+});
+// 备用图：AI 生成（或没 Key 时兜底）的帖子、story 有图的描述但对不上配图时，按配文稳定地挑一张同一个人的备用图
+DATA.momentSpares = Object.assign(DATA.momentSpares || {}, {
+  groupmate: ["moments/spare-P-4-6.jpg", "moments/spare-P-4-7.jpg", "moments/spare-P-4-8.jpg", "moments/spare-P-4-9.jpg"],
+  local: ["moments/spare-O-2-6.jpg", "moments/spare-O-2-7.jpg", "moments/spare-O-2-8.jpg"],
+  otaku: ["moments/spare-K-3-3.jpg", "moments/spare-K-3-4.jpg", "moments/spare-K-3-5.jpg", "moments/spare-K-3-6.jpg", "moments/spare-K-3-8.jpg", "moments/spare-K-3-9.jpg"],
+  senior: ["moments/spare-S-2-8.jpg", "moments/spare-S-2-9.jpg"],
+});
 
 // ===================== 三、商店货架（#11 第一节，20 样，都能送人）=====================
 Object.assign(DATA.items = DATA.items || {}, {

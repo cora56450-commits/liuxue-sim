@@ -78,3 +78,22 @@
 .plat-pick button[data-pl=wc].on { background: var(--wc-soft); border-color: var(--wc-deep); }
 .plat-pick button[data-pl=ig].on { background: var(--ig-soft); border-color: var(--ig-deep); }
 .plat-hint { font-size: 17px !important; color: var(--navy) !important; }
+
+/* 第十一批：动态配图（有图显示照片；没图显示文字卡：1:1 纯色底＋一行描述＋左上角小相机）*/
+.p6-photo { position: relative; aspect-ratio: 1 / 1; border-radius: 12px; overflow: hidden; }
+.p6-photo.ig { width: 100%; margin: 10px 0 6px; }
+.p6-photo.wc { width: 58%; max-width: 300px; margin-top: 8px; border-radius: 8px; }
+.p6-photo.sty { width: 88%; border-radius: 14px; }
+.p6-photo.has-pic img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.p6-card { display: flex; align-items: center; justify-content: center; padding: 14%; text-align: center; }
+.p6-card span { font-size: 17px; line-height: 1.5; color: #2A3150; }
+.p6-photo.wc.p6-card span { font-size: 15px; }
+.p6-photo.sty.p6-card span { font-size: 19px; }
+.p6-cam { position: absolute; left: 8px; top: 8px; width: 30px; height: auto; opacity: .75; }
+.p6-photo.wc .p6-cam { width: 24px; left: 6px; top: 6px; }
+
+/* 第十一批：物品图标（背包、送礼、商店）*/
+.bag-ico.has-pic { background: #FFF9F0; padding: 3px; }
+.bag-ico.has-pic img { width: 100%; height: 100%; object-fit: contain; }
+.shop-ico { width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin-right: 8px; }
+.ticket .sub:has(.shop-ico) { opacity: 1; display: flex; align-items: center; }

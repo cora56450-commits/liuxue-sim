@@ -15,7 +15,7 @@ async function runScript(steps) {
     if (st.cg !== undefined) showCg(st.cg);
     if (st.sfx) playSfx(st.sfx);
     if (st.alarm !== undefined) FX.alarm(st.alarm);     // { alarm: true } 火警红灯开始闪；{ alarm: false } 停
-    if (st.bgm !== undefined) { BGM.play(st.bgm); BGM.story.fixed = true; }   // { bgm: "comedy" } 切歌；{ bgm: null } 停。写了就不再按背景换
+    if (st.bgm !== undefined) { if (st.bgm === "auto") { BGM.story.fixed = false; BGM.onBg(currentBg); } else { BGM.play(st.bgm); BGM.story.fixed = st.bgm === null ? "silent" : true; } }   // bgm: null 静音以后，下一个背景恢复按背景配乐（亲密关系黑屏后的早上）   // { bgm: "comedy" } 切歌；{ bgm: null } 停。写了就不再按背景换
     if (st.mail) await showMail(st.mail);                // { mail: { from, title, body } } 邮件卡片，看完就关
     if (st.msg) await showMsg(st.msg);                   // { msg: { from, text, tr } } 手机消息：弹一条通知，同时存进聊天记录
     if (st.invite) await Invites.offer({ source: "story", ...st.invite });   // { invite: { who, day, place, text, tr, festival } } 剧情固定邀约
@@ -150,6 +150,7 @@ async function runEventNow(id) {
   try { await runScript(ev); }
   catch (e) { console.error("剧情出错：", id, e); toast(`这段剧情出了点问题（${id}），已跳过`, 2600); }
   BGM.storyEnd();
+  if (id === "acq_senior_1" && S) S.flags.senior_fullname = 1;   // 第十二批：学长-识1 的消息里报了全名，之后名牌写“林子航”
   // 第七批 #17 恋爱脑：记下这次“感情事件”的人（攻略线、相识／暧昧／吃醋／交往后小事件、约会、爽约、鱼塘、BE 暗示……），下一次工作日结算 ×0.8
   if (S && S.tags.includes("lovebrain")) { const who = loveEventWho(id); if (who) S.loveEvtWho = who; }
   if (gen !== Story.gen) return STALE();

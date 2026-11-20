@@ -84,8 +84,8 @@ DATA.events = DATA.events || {};
       { say: "他拿起笔，在最下面写了一个“0”，又划掉了。" },
       { say: "算不出来。你走吧。我送你到楼下。……这次不收车费。", name: "senior" },
       { free: "分手：学长拿出账本，写你名字那一栏没有总数，他写了个0又划掉，说算不出来，送你到楼下", freeWho: "senior", choice: [
-        { text: "“对不起。”" },
-        { text: "“谢谢你，学长。”" },
+        { text: "“对不起。”", then: [ { say: "不用说对不起。", name: "senior" }, { say: "他合上账本：“这笔不是你欠的。”" } ] },
+        { text: "“谢谢你，学长。”", then: [ { say: "他愣了一下，笑了，眼睛有点红：“……好久没听你叫学长了。”" } ] },
       ] },
       { hide: true },
       { run: "breakup_fx_senior" },
@@ -96,7 +96,7 @@ DATA.events = DATA.events || {};
       { say: "他低头看着手里的相机。" },
       { say: "Can I ask one thing? Was it — was it something I did? Or something I am?", name: "local", tr: "我能问一件事吗？是——是因为我做了什么？还是因为我是什么样的人？" },
       { free: "分手：Ollie 说他早就猜到了，问是因为他做了什么，还是因为他是什么样的人", freeWho: "local", choice: [
-        { text: "“是我的问题。”" },
+        { text: "“是我的问题。”", then: [ { say: "他点点头，像是信了，又像是没信。" }, { say: "…Okay. Thanks for saying that, even if it's not true.", name: "local", tr: "……好。谢谢你这么说，就算不是真的。" } ] },
         { text: "“你从来不让我进你的照片。”", then: [
           { say: "他闭上眼睛，点了点头。" },
           { say: "…Fair. That's fair.", name: "local", tr: "……对。说得对。" },
@@ -112,7 +112,7 @@ DATA.events = DATA.events || {};
       { say: "她站起来，去冰箱里拿了两瓶水，递给你一瓶，手在抖。" },
       { say: "Just — don't be nice to me for like a month. It makes it worse.", name: "groupmate", tr: "就是——这一个月别对我好。那样更难受。" },
       { free: "分手：Ploy 先笑了，说她没事、练习过，递给你一瓶水手在抖，说这一个月别对她好", freeWho: "groupmate", choice: [
-        { text: "“好。”" },
+        { text: "“好。”", then: [ { say: "你没再说话。她送你到门口，关门之前说了一句“get home safe”，声音很正常。门关上以后，你听到里面有东西摔在地上。" } ] },
         { text: "抱她一下", then: [
           { say: "她僵住了，然后推开你。" },
           { say: "I said don't be nice.", name: "groupmate", tr: "我说了别对我好。" },
@@ -128,8 +128,8 @@ DATA.events = DATA.events || {};
       { say: "…Okay.", name: "otaku", tr: "……好。" },
       { say: "Can you — can you just not leave the club? I don't want you to stop coming because of me. It's yours too.", name: "otaku", tr: "你能——你能不退社吗？我不想你因为我不来了。那里也是你的地方。" },
       { free: "分手：Kieran 很久没说话，最后只求你别退出动漫社，说那里也是你的地方", freeWho: "otaku", choice: [
-        { text: "“我不会退的。”" },
-        { text: "“我需要一段时间。”" },
+        { text: "“我不会退的。”", then: [ { say: "他点了一下头，很轻：" }, { say: "…Thanks.", name: "otaku", tr: "……谢谢。" }, { say: "他起身去关电脑，背对着你，站了很久。" } ] },
+        { text: "“我需要一段时间。”", then: [ { say: "Okay. Take it. Your seat's still there.", name: "otaku", tr: "好。你慢慢来。你的位置还在。" } ] },
       ] },
       { hide: true },
       { run: "breakup_fx_otaku" },
@@ -514,7 +514,7 @@ DATA.events = DATA.events || {};
       { say: "他伸手，像谈生意。" },
       { say: "Jake 拍着你的肩膀大声说：“best flatmate ever!「史上最好的室友！」”学长在跑步机上，速度从 10 调到了 14。" },
       { choice: [
-        { text: "走过去跟学长说话", fx: { aff_senior: 3 } },
+        { text: "走过去跟学长说话", fx: { aff_senior: 3 }, then: [ { say: "学长把跑步机调回了 10。“……他是你室友？”“前室友。”“嗯。”" } ] },
         { text: "不过去", fx: { aff_senior: 1 }, then: [   // 待策划：这个选项的字剧本没写
           { say: "下来以后他说：" },
           { say: "……他是你室友？", name: "senior" },
@@ -543,7 +543,7 @@ DATA.events = DATA.events || {};
         { text: "跟 Ollie 解释“他对谁都这样”", fx: { aff_local: 2 }, then: [
           { say: "Cool. Cool cool cool.", name: "local", tr: "好。好的好的好的。" },
         ] },
-        { text: "握住 Ollie 的手", fx: { aff_local: 4 } },
+        { text: "握住 Ollie 的手", fx: { aff_local: 4 }, then: [ { say: "Ollie 低头看了一眼，手指慢慢扣紧了。学长看到了，笑了一下，把咖啡糖放在了桌上，走了。" } ] },
       ] },
       { hide: true },
     ],
@@ -558,7 +558,7 @@ DATA.events = DATA.events || {};
           { say: "I'm fine. I'm FINE.", name: "local", tr: "我没事。我没事！" },
           { say: "（他不 fine。）" },
         ] },
-        { text: "继续让 Kieran 教", fx: { aff_local: -2 } },
+        { text: "继续让 Kieran 教", fx: { aff_local: -2 }, then: [ { say: "Ollie 在旁边继续拉伸，拉得更用力了。回去的路上他一瘸一拐，一句话都没说。" } ] },
       ] },
       { hide: true },
     ],
@@ -576,7 +576,7 @@ DATA.events = DATA.events || {};
       { bg: "pub_street" }, { show: "groupmate" }, { show: "local" },
       { say: "Ollie 跟你们俩坐一桌，跟你聊得很开心。Ploy 一直在刷手机，然后发了一条 story：一杯酒，配文“third wheel energy 🙂「电灯泡的感觉🙂」”。" },
       { choice: [
-        { text: "把 Ploy 拉进话题", fx: { aff_groupmate: 3 } },
+        { text: "把 Ploy 拉进话题", fx: { aff_groupmate: 3 }, then: [ { say: "你问 Ploy 那件新外套是在哪买的。她放下手机，讲了十分钟。Ollie 听得很认真，最后两个人约了一起去逛古着市场。" } ] },
         { text: "“你是不是吃醋了？”", fx: { aff_groupmate: 2 }, then: [
           { say: "no.", name: "groupmate", tr: "没有。" },
           { say: "a little.", name: "groupmate", tr: "有一点。" },
@@ -618,7 +618,7 @@ DATA.events = DATA.events || {};
         { text: "“嗯，有。”", fx: { aff_otaku: 3 }, then: [
           { say: "Jake 问是谁，你看了 Kieran 一眼。Kieran 把杠铃放下了，什么都没说，但耳朵红了。" },
         ] },
-        { text: "“没有。”", fx: { aff_otaku: -3, flag_kieran_denied_jake: 1 } },   // 剧本：如果没过考验，这一句会被他记很久（记了标记，暂时没人读）
+        { text: "“没有。”", fx: { aff_otaku: -3, flag_kieran_denied_jake: 1 }, then: [ { say: "Kieran 的手停了一下，然后继续做他的那一组。那天晚上他没给你发消息。" } ] },   // 剧本：如果没过考验，这一句会被他记很久（记了标记，暂时没人读）
       ] },
       { hide: true },
     ],
@@ -630,7 +630,7 @@ DATA.events = DATA.events || {};
       { say: "他站到你身后半步。" },
       { say: "Ollie 来借 cos 服，跟你聊得很开心，还给你拍了一张照片。Kieran 在角落收拾手办，收拾了三遍同一个。" },
       { choice: [
-        { text: "走到 Kieran 旁边帮他一起收", fx: { aff_otaku: 3 } },
+        { text: "走到 Kieran 旁边帮他一起收", fx: { aff_otaku: 3 }, then: [ { say: "他把一个手办递给你，手指碰到了你的手。他小声说：" }, { say: "…That one's yours. I mean — put it on the left.", name: "otaku", tr: "……那个是你的。我是说——放左边。" } ] },
         { text: "让 Ollie 也给你们俩拍一张", fx: { aff_otaku: 4 }, then: [{ say: "Kieran 僵着站在你旁边，照片里他在看你。" }] },
       ] },
       { hide: true },
@@ -639,7 +639,7 @@ DATA.events = DATA.events || {};
       { bg: "chinese_market" }, { show: "otaku" }, { show: "senior" },
       { if: "省份 == '福建'", then: [{ say: "学长跟你用家乡话聊天，聊得很快。Kieran 一句都听不懂。" }], else: [{ say: "学长跟你用普通话聊天，聊得很快。Kieran 一句都听不懂。" }] },
       { choice: [
-        { text: "翻译给 Kieran 听", fx: { aff_otaku: 3 } },
+        { text: "翻译给 Kieran 听", fx: { aff_otaku: 3 }, then: [ { say: "Kieran 听完，认真地点头，然后对学长说了一句“cheers mate”。学长回了一句“不客气”。两个人都不知道对方在说什么，但都很满意。" } ] },
         { text: "用英语接着说", fx: { aff_otaku: 2 }, then: [
           { say: "学长看了 Kieran 一眼，也换成英语了。三个人站在大米货架前面，很奇怪地聊了五分钟。" },
         ] },
@@ -652,8 +652,8 @@ DATA.events = DATA.events || {};
       { bg: "club_room" }, { show: "local" }, { show: "groupmate" },
       { say: "时尚社和动漫社搞联名活动，你是唯一同时认识两边的人。两个人都想跟你一组。" },
       { choice: [
-        { text: "选 Ollie" },        // 待策划：反应、数值
-        { text: "选 Ploy" },         // 待策划：反应、数值
+        { text: "选 Ollie", fx: { aff_local: 3, aff_groupmate: -2 }, then: [ { say: "Ollie 笑得像拿了奖。Ploy 在旁边发了一条 story：一杯冰美式，配文“fine 🙂”。" } ] },        // 待策划：反应、数值
+        { text: "选 Ploy", fx: { aff_groupmate: 3, aff_local: -2 }, then: [ { say: "Ploy 挽住你的手：“obviously.「显然。」”Ollie 冲你们比了个大拇指，比得有点僵。" } ] },         // 待策划：反应、数值
         { text: "“我当中间人。”", fx: { aff_local: 1, aff_groupmate: 1 }, then: [
           { say: "两个人在 Ins 上互相取关了一周。" },
         ] },
@@ -669,9 +669,9 @@ DATA.events = DATA.events || {};
       { say: "so YOU'RE the one she talks about.", name: "groupmate", tr: "所以你就是她总提的那个人。" },
       { say: "…She talks about me?", name: "otaku", tr: "……她提起过我？" },
       { free: "回国那天 Ploy 和 Kieran 都来车站送你，在站台上碰到了，Ploy 说“所以你就是她总提的那个人”", freeWho: "groupmate", choice: [
-        { text: "两个人都抱一下" },                                  // 待策划：反应、数值
-        { text: "只跟 Ploy 说再见", fx: { aff_otaku: -3 } },         // 待策划：反应
-        { text: "只跟 Kieran 说再见", fx: { aff_groupmate: -3 } },   // 待策划：反应
+        { text: "两个人都抱一下", fx: { aff_groupmate: 2, aff_otaku: 2 }, then: [ { say: "你抱了 Ploy，又抱了 Kieran。车开动的时候你回头，看到他们俩站在站台上，隔着一个人的距离，都在挥手。" } ] },                                  // 待策划：反应、数值
+        { text: "只跟 Ploy 说再见", fx: { aff_otaku: -3, aff_groupmate: 3 }, then: [ { say: "Kieran 往后退了半步，说了一句“have a good trip”，然后走了，走得很快。" } ] },         // 待策划：反应
+        { text: "只跟 Kieran 说再见", fx: { aff_groupmate: -3, aff_otaku: 3 }, then: [ { say: "Ploy 的表情没变，转身去买咖啡了。车开动的时候，你看到她没回来。" } ] },   // 待策划：反应
       ] },
       { hide: true },
     ],
@@ -707,17 +707,34 @@ DATA.events = DATA.events || {};
       { fx: { ["affcap_" + c]: 59 } },   // 之后封顶 59
       { if: `标记('cohab_${c}')`, then: [{ fx: { ["flag_cohab_" + c]: 0, ["flag_cohab_ended_" + c]: 1 } }] },   // 待策划：搬走那天“多一句内心”剧本没写
     ];
+    // 不说的话，过一两周从别人那里知道（缺反应第二轮 96–103）
+    const NEWS_LATE = {
+      first: {
+        senior: { say: "一等？你怎么不说。", name: "senior" },
+        local: { say: "You got a FIRST and didn't tell me?!", name: "local", tr: "你拿了一等都不告诉我？！" },
+        groupmate: { say: "excuse me??? first class??? and I find out from INSTAGRAM???", name: "groupmate", tr: "请问？？？一等？？？我是从 Ins 上知道的？？？" },
+        otaku: { say: "…Congratulations. I found out from Hannah. That's fine. It's fine.", name: "otaku", tr: "……恭喜。我是从 Hannah 那知道的。没关系。没关系的。" },
+      },
+      sick: {
+        senior: { say: "病了为什么不说。下次说。", name: "senior" },
+        local: { say: "You were SICK? For a WEEK? I would've brought soup!", name: "local", tr: "你病了？一整周？我可以给你送汤的！" },
+        groupmate: { say: "you were dying and you didn't tell me. I'm offended. are you ok now", name: "groupmate", tr: "你都快不行了也不告诉我。我生气了。你现在好了吗" },
+        otaku: { say: "…Mum says next time I should just come over. If that's okay.", name: "otaku", tr: "……我妈说下次我应该直接过去。如果可以的话。" },
+      },
+    };
     // 暧昧期：要不要告诉他／她（生病、拿 First）
     for (const k of ["sick", "first"]) {
       DATA.events[`news_ask_${k}_${c}`] = [
         { choice: [
           { text: "发消息", then: [{ run: `news_${k}_${c}_flirt` }] },
-          { text: "不说", fx: { [`flag_news_untold_${k}_${c}`]: 1, [`flag_wk_news_untold_${k}_${c}`]: 1 } },
+          { text: "不说", fx: { [`flag_news_untold_${k}_${c}`]: 1, [`flag_wk_news_untold_${k}_${c}`]: 1 }, then: [   // 缺反应第二轮 96–103
+            { say: k === "first" ? `你没说。（等${c === "groupmate" ? "她" : "他"}自己发现吧。）` : `你没说，把手机扣在枕头边。（不想让${c === "groupmate" ? "她" : "他"}担心。）` },
+          ] },
         ] },
       ];
       // 不说的话，过一两周从别人那里知道，发一句（不扣好感）
       DATA.events[`news_late_${k}_${c}`] = [
-        { phone: c, steps: [c === "senior" ? { say: "你怎么不跟我说", name: c } : { say: "Why didn't you tell me?", name: c, tr: "你怎么不跟我说" }] },
+        { phone: c, steps: [NEWS_LATE[k][c]] },   // 缺反应第二轮 96–103：按人的那句
         { fx: { [`flag_news_untold_${k}_${c}`]: 0 } },
       ];
     }

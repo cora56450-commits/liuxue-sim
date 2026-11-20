@@ -48,14 +48,16 @@ Object.assign(DATA.events, {
           { say: "你在门口站了五分钟，回房间了。", fx: { loneliness: 3 } },
         ] },
       ] },
-      { text: "算了", fx: { loneliness: 1 } },   // 缺反应（剧本只写了数值）
+      { text: "算了", fx: { loneliness: 1 }, then: [
+        { say: "你戴上耳机，把音量调大。（反正大三就搬走了。）" },
+      ] },
     ] },
   ],
 
   mid_w04: [
     { say: "室友过生日，厨房贴满了气球。她问你要不要一起去 club。" },
     { choice: [
-      { text: "去", fx: { belonging: 3, loneliness: -5, money: -20 }, then: [
+      { text: "去", fx: { belonging: 3, loneliness: -5, money: -20, weekend_skip: 1 }, then: [   // 第十二批：周六上午睡过头（引擎接了）
         { say: "你凌晨两点回来，耳朵嗡嗡响，但跟她们拍了一张很好看的合照。" },
         // 〔日程：周六上午睡过头〕：引擎没有，见给引擎 2
       ] },
@@ -71,7 +73,9 @@ Object.assign(DATA.events, {
       { text: "在冰箱上贴一张纸：“饺子是我包的，想吃可以问我”", fx: { belonging: 2 }, then: [
         { say: "第二天纸上多了一行字：“they were AMAZING, can you teach me?”", tr: "太好吃了，能教我吗？" },
       ] },
-      { text: "买个带锁的冰箱盒", fx: { money: -8, loneliness: 2 } },   // 缺反应（剧本只写了数值）
+      { text: "买个带锁的冰箱盒", fx: { money: -8, loneliness: 2 }, then: [
+        { say: "盒子到了。你把剩下的饺子锁进去，钥匙挂在了你的钥匙圈上。冰箱上那张“谁吃了我的饺子”的纸没有人回。" },
+      ] },
     ] },
   ],
 
@@ -116,7 +120,9 @@ Object.assign(DATA.events, {
   mid_w09: [
     { say: "你写完了作业，最后检查的时候发现：学校要求 Harvard 格式，你用的是 APA。四十个引用。" },
     { choice: [
-      { text: "一个一个改", fx: { energy: -8, study: 1 } },   // 缺反应（剧本只写了数值）
+      { text: "一个一个改", fx: { energy: -8, study: 1 }, then: [
+        { say: "改到第二十个的时候，你发现了三处原来就错的引用。（也算没白改。）" },
+      ] },
       { text: "去问陈思琪", if: "友情档('chen_siqi') != ''", fx: { fr_chen_siqi: 2 }, then: [
         { say: "她发了一个工具给你，五分钟搞定。" },
         { say: "你不知道这个？", name: "chen_siqi" },
@@ -131,8 +137,12 @@ Object.assign(DATA.events, {
     { say: "你冒雨走了二十分钟到教室，门上贴着一张纸：“Lecture cancelled — staff illness. Apologies.”", tr: "讲座取消——老师生病。抱歉。" },
     { say: "邮件是早上七点发的，你没看。" },
     { choice: [
-      { text: "去图书馆，反正都来了", fx: { study: 2 } },   // 缺反应（剧本只写了数值）
-      { text: "回去睡觉", fx: { energy: 8 } },   // 缺反应（剧本只写了数值）
+      { text: "去图书馆，反正都来了", fx: { study: 2 }, then: [
+        { say: "图书馆很空。你占到了靠窗的位置，一直坐到下午。" },
+      ] },
+      { text: "回去睡觉", fx: { energy: 8 }, then: [
+        { say: "你走回去的时候，雨停了。（早知道不出门。）" },
+      ] },
       { text: "去楼下咖啡店坐一会儿", fx: { loneliness: -3 }, then: [
         { say: "遇到了同样没看邮件的同学，你们一起吐槽了半小时。" },
       ] },
@@ -146,7 +156,9 @@ Object.assign(DATA.events, {
       { text: "立刻预约 office hour", fx: { study: 3, belonging: 1 }, then: [
         { say: "他跟你聊了四十分钟，最后说“you should think about a master's”。", tr: "你应该考虑读研" },
       ] },
-      { text: "紧张，拖到下周", fx: { study: 1 } },   // 缺反应（剧本只写了数值）
+      { text: "紧张，拖到下周", fx: { study: 1 }, then: [
+        { say: "下周你去了。他说：“I was starting to think you'd changed your mind.「我还以为你改主意了。」”" },
+      ] },
     ] },
   ],
 
@@ -166,7 +178,9 @@ Object.assign(DATA.events, {
   mid_w13: [
     { say: "妈妈发来一条 59 秒的语音。你点开：前 40 秒是她在跟楼下阿姨说话，后 19 秒是“……你那边冷不冷”。" },
     { choice: [
-      { text: "回一个 59 秒的语音", fx: { loneliness: -3 } },   // 缺反应（剧本只写了数值）
+      { text: "回一个 59 秒的语音", fx: { loneliness: -3 }, then: [
+        { say: "你讲了这边的天气、今天吃了什么、楼下有只猫。妈妈回了一个字：“好。”然后又一条 59 秒的语音，前 40 秒还是在跟楼下阿姨说话。" },
+      ] },
       { text: "回“不冷”", then: [
         { say: "你坐在暖气坏了的房间里，裹着两条被子。" },
       ] },
@@ -211,7 +225,9 @@ Object.assign(DATA.events, {
       { text: "发一张你做的饭", if: "!标签('厨房杀手')", fx: { loneliness: -3 }, then: [
         { say: "群里一片“厉害”，奶奶发了一个大拇指。" },
       ] },
-      { text: "装没看到" },   // 缺反应（剧本没写）
+      { text: "装没看到", then: [
+        { say: "晚上妈妈私聊你：“你三姑那个你别理她。”" },
+      ] },
     ] },
   ],
 
@@ -261,14 +277,18 @@ Object.assign(DATA.events, {
         { say: "你在空荡荡的校园里走了一圈，脚印是第一串。" },
         // （衔接打雪仗事件）：见待策划
       ] },
-      { text: "在被子里上网课", fx: { energy: 5 } },   // 缺反应（剧本只写了数值）
+      { text: "在被子里上网课", fx: { energy: 5 }, then: [
+        { say: "网课老师在镜头里裹着围巾，说他家的暖气也坏了。" },
+      ] },
     ] },
   ],
 
   mid_w21: [
     { say: "气象局发了黄色预警，风暴有名字，叫 Agnes。你的伞在出门第三分钟就翻了。" },
     { choice: [
-      { text: "回去", fx: { rest_days: 1 } },   // 〔日程：今天宅家〕；缺反应（剧本只写了日程）。rest_days 现在是从明天算，见给引擎 4
+      { text: "回去", fx: { rest_days: 1 }, then: [
+        { say: "你湿着回到宿舍，煮了一壶热水，在窗边看着外面的树被风吹弯。" },
+      ] },   // 〔日程：今天宅家〕。rest_days 现在是从明天算，见给引擎 4
       { text: "硬撑到教室", fx: { energy: -8, belonging: 1 }, then: [
         { say: "你湿透了，坐在教室里一直滴水。旁边的英国同学说“lovely weather”。", tr: "天气真好" },
       ] },
@@ -279,7 +299,9 @@ Object.assign(DATA.events, {
     { say: "连续阴了三周之后，今天出太阳了。草坪上一下子坐满了人，有人光着上身。" },
     { choice: [
       // 翘课：固定课表（docs/固定课表.md）说这条算缺勤 → skip_class
-      { text: "翘一节课去晒太阳", fx: { study: -1, loneliness: -5, energy: 5, skip_class: 1 } },   // 缺反应（剧本只写了数值）
+      { text: "翘一节课去晒太阳", fx: { study: -1, loneliness: -5, energy: 5, skip_class: 1 }, then: [
+        { say: "你躺在草坪上，太阳很暖。四十分钟以后，云来了。（值了。）" },
+      ] },
       { text: "在教室窗户边看", then: [
         { say: "下课的时候太阳没了。" },
       ] },
@@ -289,11 +311,15 @@ Object.assign(DATA.events, {
   mid_w23: [
     { say: "暖气坏了。房东说“周五之前派人来”。" },
     { choice: [
-      { text: "穿着羽绒服睡三天", fx: { energy: -10 } },   // 缺反应（剧本只写了数值）
+      { text: "穿着羽绒服睡三天", fx: { energy: -10 }, then: [
+        { say: "第三天早上，你醒来发现自己在被子里出汗了——暖气修好了，没人告诉你。" },
+      ] },
       { text: "去朋友家借住", if: "Object.values(S.fr || {}).some((v) => v >= 40)", fx: { loneliness: -6 }, then: [
         { say: "你们三个晚上都聊到很晚。" },
       ] },
-      { text: "买一个电暖器", fx: { money: -25 } },   // 缺反应（剧本只写了数值）
+      { text: "买一个电暖器", fx: { money: -25 }, then: [
+        { say: "电暖器到了，只有一个巴掌大，吹出来的风是温的。你抱着它睡了三天。" },
+      ] },
     ] },
   ],
 
@@ -322,7 +348,9 @@ Object.assign(DATA.events, {
       { text: "认真填", fx: { belonging: 1, money: 5 }, then: [
         { say: "最后一栏“还有什么想说的”，你写了三行。" },
       ] },
-      { text: "全选“同意”", fx: { money: 5 } },   // 缺反应（剧本只写了数值）
+      { text: "全选“同意”", fx: { money: 5 }, then: [
+        { say: "你三十秒填完了。代金券到账的时候，你用它买了一杯咖啡。" },
+      ] },
     ] },
   ],
 
@@ -332,7 +360,9 @@ Object.assign(DATA.events, {
       { text: "去摸小狗", fx: { loneliness: -6 }, then: [
         { say: "一只金毛趴在你腿上睡着了。你在那坐了半个小时。" },
       ] },
-      { text: "删了邮件" },   // 缺反应（剧本没写）
+      { text: "删了邮件", then: [
+        { say: "那天晚上你刷到同学发的照片，一只金毛趴在她腿上。（……下次去。）" },
+      ] },
     ] },
   ],
 
@@ -401,7 +431,7 @@ Object.assign(DATA.events, {
     { id: "mid_w18", day: "fri", time: "晚上", line: "高中同学结婚了", prio: 3, cond: "学年 == 3" },
     { id: "mid_w19", day: "thu", line: "寄来的包裹", prio: 3 },
     { id: "mid_w20", day: "tue", time: "早上", line: "下雪了", prio: 3, cond: "学年 >= 2 && 季节 == '冬'" },
-    { id: "mid_w21", day: "wed", line: "风暴", prio: 3, cond: "季节 == '秋' || 季节 == '冬'" },
+    { id: "mid_w21", day: "wed", line: "风暴", prio: 3, before: true, cond: "季节 == '秋' || 季节 == '冬'" },   // 第十二批：before＝在当天活动之前演，“今天宅家”就是这一天
     { id: "mid_w22", day: "thu", line: "出太阳了", prio: 3, cond: "季节 == '春'" },
     { id: "mid_w23", day: "tue", time: "晚上", line: "暖气坏了", prio: 3, cond: "季节 == '冬'" },
     { id: "mid_w24", day: "mon", time: "早上", line: "夏令时", prio: 3, cond: "Rules.month() == 3" },

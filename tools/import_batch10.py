@@ -13,3 +13,23 @@ MAP = {
 }
 for k, v in MAP.items():
     shutil.copyfile(os.path.join(SRC, k + ".png"), os.path.join(A, v + ".png")); print("→ chara/%s.png" % v)
+
+# 第十二批：夏装、学位服的对话头像。照秋装头像的框（import_assets.py：头顶往上留一点、头顶到胸口），
+# 新图取景比秋装近，所以框按脸的大小缩放：秋装脸占 0.3135 图高时框是 0.47 图高
+import numpy as np
+from PIL import Image
+CAL = {"summer": (0.02, 0.29), "gown": (0.10, 0.352)}
+for key, (top_r, chin_r) in CAL.items():
+    im = Image.open(os.path.join(A, "me", key + ".png")).convert("RGBA")
+    a = np.asarray(im.getchannel("A")) > 40
+    face = (chin_r - top_r) * im.height
+    side = int(face * 0.47 / 0.3135)
+    top = int(top_r * im.height)
+    head = a[top: top + int(face)]
+    cols = np.where(head.sum(axis=0) > 0)[0]
+    cx = int((cols[0] + cols[-1]) / 2)
+    rows = np.where(a.sum(axis=1) > 3)[0]
+    y0 = max(0, min(top, int(rows[0])) - int(side * 0.03))   # 学位帽比头顶高：从图里最上面开始框，帽子不切掉
+    x0 = max(0, min(im.width - side, cx - side // 2))
+    av = im.crop((x0, y0, x0 + side, y0 + side)).resize((541, 541), Image.LANCZOS)
+    av.save(os.path.join(A, "me", key + "_avatar.png")); print("→ chara/me/%s_avatar.png" % key)

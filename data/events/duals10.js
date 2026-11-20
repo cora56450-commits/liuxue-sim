@@ -123,7 +123,7 @@ Object.assign(DATA.events, {
     { bg: "dorm_night" },
     { say: "凌晨两点，你在给{A}写消息。写了删，删了写。草稿箱里有十一条。" },
     { free: "凌晨两点，主角在给暧昧对象写消息，草稿箱里有十一条，想自己写一条发出去", freeWho: "{A}", choice: [
-      { text: "发最短的那条：“睡了吗”", fx: { "aff_{A}": 2, energy: -8 }, then: [   // 〔下周学业 ×0.8〕：引擎没有，见给引擎 4
+      { text: "发最短的那条：“睡了吗”", fx: { "aff_{A}": 2, energy: -8, study_mult_next: 0.8 }, then: [   // 〔下周学业 ×0.8〕：引擎没有，见给引擎 4
         { say: "他／她秒回：“没。你呢？”你们聊到四点。" },
       ] },
       { text: "一条都不发，睡觉", fx: { energy: -4 }, then: [

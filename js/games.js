@@ -196,7 +196,9 @@ const Games = {
           return res(await Games.done(o, hi, hi ? (E.hi || "爸妈很有面子。家里多打了一点生活费。") : face < 40 ? (E.lo || "你妈在厨房叹了口气。") : (E.mid || "过关了，不好不坏。")));
         }
         const q = qs[k++];
-        o.querySelector(".rl-q").innerHTML = `<b>${Gloss.escape(q.who)}</b><p>${Gloss.escape(fill(q.q))}</p>`;
+        // 第十二批：亲戚头像（assets/ui/relative_N.png；图集顺序和问题库那张表不一样，按图对的；第 6 张是老爷爷，不像表哥，先不放）
+        const RFACE = { "二姨": 1, "大舅": 2, "表姐": 3, "奶奶": 4, "三姑": 5 };
+        o.querySelector(".rl-q").innerHTML = `${RFACE[q.who] ? `<img class="rl-face" src="assets/ui/relative_${RFACE[q.who]}.png" alt="">` : ""}<b>${Gloss.escape(q.who)}</b><p>${Gloss.escape(fill(q.q))}</p>`;
         const keys = Games.shuffle(["honest", "taichi", "counter"]).filter((x) => q.a[x]);
         o.querySelector(".rl-a").innerHTML = keys.map((x) => `<button class="hud-btn" data-s="${x}">${Gloss.escape(ans(q, x))}</button>`).join("");
         o.querySelectorAll(".rl-a button").forEach((b) => b.onclick = async () => {

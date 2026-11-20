@@ -301,7 +301,7 @@ Object.assign(DATA.events, {
 
     // 春节消息（好感≥40、而且没有和你一起过的每个人都会发）
     // 每条都能选“认真回”〔好感+3〕或“新年快乐！”；同时认真回了2个及以上好感≥50的人〔鱼塘值+1〕
-    { if: "好感('senior') >= 40 && 标记('cny_with') != 'senior'", then: [
+    { if: "好感('senior') >= (标签('天生丽质') ? 30 : 40) && 标记('cny_with') != 'senior'", then: [
       { msg: { from: "senior", text: "新年快乐。中超明天饺子皮打折，别买贵了。" } },
       { choice: [{ text: "认真回", fx: { aff_senior: 3, flag_cny_reply_senior: 1 }, then: [
         { say: "你写了一段话。他看了很久才回：“……你也是。新的一年，好好的。”" },
@@ -309,21 +309,34 @@ Object.assign(DATA.events, {
         { say: "学长回：“新年快乐。”后面多了一个红包，£8.88，备注“汇率按今天算的”。" },
       ] }] },
     ] },
-    { if: "好感('local') >= 40 && 标记('cny_with') != 'local'", then: [
+    { if: "好感('local') >= (标签('天生丽质') ? 30 : 40) && 标记('cny_with') != 'local'", then: [
       { msg: { from: "local", text: "Happy Chinese New Year!! Is it the year of the… no, I'll get it wrong. Happy New Year x", tr: "春节快乐！！今年是……算了我会说错。新年快乐" } },
-      { choice: [{ text: "认真回", fx: { aff_local: 3, flag_cny_reply_local: 1 } }, { text: "新年快乐！" }] },
+      { choice: [{ text: "认真回", fx: { aff_local: 3, flag_cny_reply_local: 1 }, then: [
+        { say: "你教了他“恭喜发财”。他回了一条语音，念了四遍，第四遍对了，他自己在语音里欢呼。" },
+      ] }, { text: "新年快乐！", then: [
+        { msg: { from: "local", text: "Is 'xin nian kuai le' right? I practised.", tr: "‘新年快乐’对吗？我练了。" } },
+      ] }] },
     ] },
-    { if: "好感('groupmate') >= 40 && 标记('cny_with') != 'groupmate'", then: [
+    { if: "好感('groupmate') >= (标签('天生丽质') ? 30 : 40) && 标记('cny_with') != 'groupmate'", then: [
       { msg: { from: "groupmate", text: "新年快乐！！" } },
       { say: "后面是一串泰语。翻译过来也是新年快乐。" },
-      { choice: [{ text: "认真回", fx: { aff_groupmate: 3, flag_cny_reply_groupmate: 1 } }, { text: "新年快乐！" }] },
+      { choice: [{ text: "认真回", fx: { aff_groupmate: 3, flag_cny_reply_groupmate: 1 }, then: [
+        { say: "她回了一段很长的语音，一半泰语一半英语，最后用中文说“我想吃饺子”。" },
+      ] }, { text: "新年快乐！", then: [
+        { say: "“新年快乐宝宝！！🧧”——她发了一个微信红包，£1.88。（她不知道英国的红包要怎么领，你也不知道。）" },
+      ] }] },
     ] },
-    { if: "好感('otaku') >= 40 && 标记('cny_with') != 'otaku'", then: [
+    { if: "好感('otaku') >= (标签('天生丽质') ? 30 : 40) && 标记('cny_with') != 'otaku'", then: [
       { say: "一张照片，他自己写的一个“福”字，贴倒了。" },
       { msg: { from: "otaku", text: "read online it's supposed to be upside down??", tr: "网上说要倒着贴的？？" } },
       { say: "五分钟后：" },
       { msg: { from: "otaku", text: "took me 40 mins", tr: "写了四十分钟" } },
-      { choice: [{ text: "认真回", fx: { aff_otaku: 3, flag_cny_reply_otaku: 1 } }, { text: "新年快乐！" }] },
+      { choice: [{ text: "认真回", fx: { aff_otaku: 3, flag_cny_reply_otaku: 1 }, then: [
+        { say: "你说那个“福”字写得很好，倒着贴是对的。他回：" },
+        { msg: { from: "otaku", text: "…Really? I thought I messed it up. Mum says it looks like a hat.", tr: "……真的？我以为我搞砸了。我妈说它像一顶帽子。" } },
+      ] }, { text: "新年快乐！", then: [
+        { say: "他回：“新年快乐”——四个字，用的是谷歌翻译，没打错。" },
+      ] }] },
     ] },
     { if: "(标记('cny_reply_senior') && 好感('senior') >= 50) + (标记('cny_reply_local') && 好感('local') >= 50) + (标记('cny_reply_groupmate') && 好感('groupmate') >= 50) + (标记('cny_reply_otaku') && 好感('otaku') >= 50) >= 2",
       then: [{ fx: { pond: 1 } }] },
@@ -660,7 +673,7 @@ Object.assign(DATA.events, {
     ] },
 
     // 复活节消息（好感≥40的每个人都会发）
-    { if: "好感('senior') >= 40", then: [
+    { if: "好感('senior') >= (标签('天生丽质') ? 30 : 40)", then: [
       { say: "一张照片，机场的行李推车上摞着六个纸箱。" },
       { msg: { from: "senior", text: "回国一趟，帮人带东西。你要什么？" } },
       { choice: [{ text: "认真回", fx: { aff_senior: 3, flag_easter_reply_senior: 1 }, then: [
@@ -671,21 +684,38 @@ Object.assign(DATA.events, {
         { msg: { from: "senior", text: "你什么都不要？那我随便带了。" } },
       ] }] },
     ] },
-    { if: "好感('local') >= 40", then: [
+    { if: "好感('local') >= (标签('天生丽质') ? 30 : 40)", then: [
       { say: "一张视频。他家的花园，一群小孩在草丛里找彩蛋，他是负责藏的那个。" },
       { msg: { from: "local", text: "Mum made me do this. I'm 21.", tr: "我妈让我干的。我21岁了。" } },
-      { choice: [{ text: "认真回", fx: { aff_local: 3, flag_easter_reply_local: 1 } }, { text: "Happy Easter！" }] },
+      { choice: [{ text: "认真回", fx: { aff_local: 3, flag_easter_reply_local: 1 }, then: [
+        { say: "你问他藏了几个彩蛋。他回：" },
+        { msg: { from: "local", text: "Forty. They found thirty-eight. Two are still out there. It's been three days.", tr: "四十个。他们找到了三十八个。还有两个在外面。已经三天了。" } },
+      ] }, { text: "Happy Easter！", then: [
+        { say: "他回了一个兔子表情。" },
+      ] }] },
     ] },
-    { if: "好感('groupmate') >= 40", then: [
+    { if: "好感('groupmate') >= (标签('天生丽质') ? 30 : 40)", then: [
       { msg: { from: "groupmate", text: "bangkok is 38 degrees. I'm melting. send me some of your rain pls", tr: "曼谷38度。我化了。寄点你那边的雨给我" } },
-      { choice: [{ text: "认真回", fx: { aff_groupmate: 3, flag_easter_reply_groupmate: 1 } }, { text: "Happy Easter！" }] },
+      { choice: [{ text: "认真回", fx: { aff_groupmate: 3, flag_easter_reply_groupmate: 1 }, then: [
+        { say: "你给她发了一张窗外下雨的照片：“给你寄雨。”她回：" },
+        { msg: { from: "groupmate", text: "omg it worked. it's raining here now. you're a witch", tr: "天哪有用。这里现在下雨了。你是女巫" } },
+      ] }, { text: "Happy Easter！", then: [
+        { say: "“Happy Easter 🐣”——她回：" },
+        { msg: { from: "groupmate", text: "we don't even do easter here lol but happy easter", tr: "我们这边根本不过复活节哈哈但是复活节快乐" } },
+      ] }] },
     ] },
-    { if: "好感('otaku') >= 40", then: [
+    { if: "好感('otaku') >= (标签('天生丽质') ? 30 : 40)", then: [
       { say: "一个巧克力蛋的照片，蛋壳上用奶油画了一个歪歪扭扭的角色脸。" },
-      { msg: { from: "otaku", text: "sister did it. I helped.", tr: "我妹画的。我帮了一下。" } },
+      { msg: { from: "otaku", text: "Mum did it. I helped.", tr: "我妈画的。我帮了一下。" } },   // 第十二批：Kieran 没有妹妹
       { say: "一分钟后：" },
       { msg: { from: "otaku", text: "I did it.", tr: "是我画的。" } },
-      { choice: [{ text: "认真回", fx: { aff_otaku: 3, flag_easter_reply_otaku: 1 } }, { text: "Happy Easter！" }] },
+      { choice: [{ text: "认真回", fx: { aff_otaku: 3, flag_easter_reply_otaku: 1 }, then: [
+        { say: "你说那个角色脸画得很像。他沉默了一会儿：" },
+        { msg: { from: "otaku", text: "…You knew which one it was?", tr: "……你认出来是哪个了？" } },
+        { say: "后面跟了三个感叹号，他从来不用感叹号。" },
+      ] }, { text: "Happy Easter！", then: [
+        { say: "他回了一个“🙂”。" },
+      ] }] },
     ] },
     { if: "(标记('easter_reply_senior') && 好感('senior') >= 50) + (标记('easter_reply_local') && 好感('local') >= 50) + (标记('easter_reply_groupmate') && 好感('groupmate') >= 50) + (标记('easter_reply_otaku') && 好感('otaku') >= 50) >= 2",
       then: [{ fx: { pond: 1 } }] },
@@ -933,3 +963,4 @@ Object.assign(DATA.events, {
 // 第十批 #2 缺反应补全（11/20）待策划：
 //   · easter_break、spring_festival 的「认真回／Happy Easter！／新年快乐！」：剧本只写了学长的反应，只加在学长那条；Ollie、Ploy、Kieran 还缺。
 //   · spring_festival「都答应」、valentines「都答应」：反应包在 !标记('pond_blown') 里（翻车了不演）。
+// 第十二批（11/20 晚）：春节、复活节 Ollie／Ploy／Kieran 的节日消息反应已补；复活节 Kieran "sister did it" → "Mum did it."（他没有妹妹）。

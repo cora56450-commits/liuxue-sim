@@ -273,6 +273,7 @@ function speakerName(nameId) {
   if (!nameId) return "";
   if (nameId === "me") return (S && S.name) || "我";
   const c = DATA.characters[nameId];
+  if (c && c.plateBefore && S && !S.flags[c.plateFlag]) return c.plateBefore;   // 第十二批：学长在微信里告诉你全名之前，名牌写 Leo
   return c ? (c.plate || c.short) : nameId;   // plate：对话名牌（第十批：学长的名牌写名字，正文里大家照样叫他学长）
 }
 

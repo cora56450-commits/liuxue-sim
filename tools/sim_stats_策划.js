@@ -36,6 +36,8 @@ const run = vm.runInContext(`(function (cfg) {
     if (cal.vacation) { S.stats.energy = energyMax(); applyFx({ loneliness: -5 }); S.schedule = []; Rules.weekEnd(cal); return; }
     let p = cfg.plan(S.stats, S.year, Math.random);
     if (Rules.needRush()) { S.rushWeek = true; rush++; p = Array(5).fill("homework"); S.stats.energy = Math.max(0, S.stats.energy + Rules.rushEnergy()); }
+    const fixed = Rules.fixedDays();   // 第十二批：套上固定课表（锁住的是上课，其余按原计划去掉“上课”后依次填）
+    if (fixed.length && !S.rushWeek) { const rest = p.filter((x) => x !== "class"); let k = 0; p = [0, 1, 2, 3, 4].map((i) => fixed.includes(i) ? "class" : (rest.length ? rest[k++ % rest.length] : "home")); }
     S.schedule = p;
     p.forEach((a) => Rules.doActivity(a, {}));
     if (S.stats.energy <= 0) zeroE++;
@@ -52,8 +54,8 @@ const run = vm.runInContext(`(function (cfg) {
   const snap = {};
   for (const year of [1, 2, 3]) {
     if (year > 1) { S.year = year; S.week = 1; S.stats.energy = energyMax(); S.stats.study = r1(S.stats.study * DATA.tuning.newYearStudy); }
-    for (const cal of Rules.calList(year)) { S.week = cal.week; doWeek(cal); if (cal.close && S.yearMarks[year] === undefined) S.yearMarks[year] = Rules.yearMark(year); }
-    if (S.yearMarks[year] === undefined) S.yearMarks[year] = Rules.yearMark(year);
+    for (const cal of Rules.calList(year)) { S.week = cal.week; doWeek(cal); if (cal.close && S.yearMarks[year] === undefined) { S.yearMarks[year] = Rules.yearMark(year); if (Rules.needResit(year)) Rules.resitYear(year, false); } }
+    if (S.yearMarks[year] === undefined) { S.yearMarks[year] = Rules.yearMark(year); if (Rules.needResit(year)) Rules.resitYear(year, year === 1); }   // 第十二批：补考（大一暑假复习 +6）
     snap["y"+year] = { lone: Math.round(S.stats.loneliness), bel: Math.round(S.stats.belonging), study: Math.round(S.stats.study), money: Math.round(S.stats.money) };
     if (year === 1) for (let k = 0; k < 13; k++) { S.week++; Rules.weekStart(); }
   }

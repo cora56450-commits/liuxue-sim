@@ -161,7 +161,9 @@ Object.assign(DATA.events, {
             else: [{ say: "群里在拼桌，有人问你要不要一起坐。" }] }] }] },
     ] },
     { choice: [
-      { text: "买票", fx: { money: -45 } },   // 待策划：这个选项的字剧本没写（剧本只写了“买票：钱−£45”）
+      { text: "买票", fx: { money: -45 }, then: [
+        { say: "你付了钱。票是电子的，但你还是截了图存起来。" },
+      ] },   // 选项文字剧本没写，暂写“买票”
       { text: "不去了", if: "家境 == '拮据'", fx: { flag_gala_ball_skip: 1 } },
     ] },
   ],
@@ -189,8 +191,12 @@ Object.assign(DATA.events, {
       { text: "借 Ploy 的一条裙子", if: "knows('groupmate')", fx: { aff_groupmate: 2 }, then: [
         { say: "It looks better on you. I hate it. Keep it.", name: "groupmate", tr: "你穿比我好看。烦死了。送你了。" },
       ] },
-      { text: "自己网购的，£29，到了才发现有点短", fx: { loneliness: -2 } },
-      { text: "你妈从国内寄来的一条，标签都没拆", if: "家境 == '富裕'" },
+      { text: "自己网购的，£29，到了才发现有点短", fx: { loneliness: -2 }, then: [
+        { say: "你拿别针别了一下。进场的时候没人注意到，你自己一晚上都在往下拉。" },
+      ] },
+      { text: "你妈从国内寄来的一条，标签都没拆", if: "家境 == '富裕'", fx: { loneliness: -2 }, then: [
+        { say: "你拆了标签。尺码刚好。（她连我瘦了都知道。）" },
+      ] },
       { text: "西装", fx: { belonging: 1 }, then: [
         { say: "你走进去的时候，有三个人问你在哪买的。" },
       ] },
@@ -252,7 +258,9 @@ Object.assign(DATA.events, {
       { say: "你们在舞池中间，谁都没说话。（这首歌我以后在哪里听到，都会想起这个礼堂。）" },
     ], else: [
       { free: "毕业舞会最后一支舞，灯暗下来只剩灯串，你没有舞伴", choice: [
-        { text: "和朋友们手拉手围成一圈", fx: { loneliness: -5 } },
+        { text: "和朋友们手拉手围成一圈", fx: { loneliness: -5 }, then: [
+        { say: "圈越来越大，最后半个舞池的人都拉在了一起。你不认识你左手边的人，但你们都在笑。" },
+      ] },
         { text: "一个人走到礼堂外面透口气", fx: { loneliness: -2 }, then: [
           { say: "外面在下小雨，有个你只见过两次的人也在，你们站着听完了这首歌。" },
         ] },

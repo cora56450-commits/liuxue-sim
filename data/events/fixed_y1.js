@@ -39,7 +39,9 @@
     { say: "你注册了一个 Instagran。" },
     { choice: [
       ...INS_AVATAR,
-      { text: "头像用一张{家乡食物}", fx: { flag_ins_food: 1 } },   // 待策划：完整版这个选项的反应是 Ollie 的台词，这里没人在旁边，剧本没写反应
+      { text: "头像用一张{家乡食物}", fx: { flag_ins_food: 1 }, then: [   // 缺反应第二轮 69
+        { say: "你选了一张{家乡食物}的照片。第一个点赞的是一个你不认识的老乡，评论：“饿了。”" },
+      ] },
     ] },
   ];
   const FRESHERS_OLLIE = (pre) => [
@@ -170,8 +172,12 @@
         { say: "我第一年一个人来的，站在这个位置，烟花放了十五分钟，我给家里连线了十五分钟。家里那边已经是凌晨四点了。", name: "senior" },
         { say: "他说完就笑了，好像这是一件很好笑的事。" },
         { free: "篝火节一起看烟花，学长说他第一年一个人来，烟花放了十五分钟，他给家里连线了十五分钟，家里那边是凌晨。你怎么接", freeWho: "senior", choice: [
-          { text: "“今年不用连线了。”", fx: { aff_senior: 5 * k } },
-          { text: "“你家里人一定很想你。”", fx: { aff_senior: 3 * k } },
+          { text: "“今年不用连线了。”", fx: { aff_senior: 5 * k }, then: [
+            { say: "妈妈在视频里笑了：“那明年呢？”你说明年再说。烟花在你身后炸开，你把手机转过去让她看。" },
+          ] },
+          { text: "“你家里人一定很想你。”", fx: { aff_senior: 3 * k }, then: [
+            { say: "对方愣了一下：“Yeah. Probably. I should call them.「嗯。可能吧。我该给他们打个电话。」”他走到一边去打电话了。" },
+          ] },
         ] },
         { hide: true },
       ],
@@ -233,8 +239,12 @@
   const DARK_MSG = (c, steps) => ({ if: `好感('${c}') >= 30`, then: [
     ...steps,
     { choice: [
-      { text: "认真回", fx: { ["aff_" + c]: 2, ["flag_dark4_reply_" + c]: 1 } },
-      { text: "简单回" },
+      { text: "认真回", fx: { ["aff_" + c]: 2, ["flag_dark4_reply_" + c]: 1 }, then: [
+        { say: "你讲了下午四点天黑、出门要戴围巾、图书馆的灯很亮。妈妈回了一条语音，说她今天也早早开了灯。" },
+      ] },
+      { text: "简单回", then: [
+        { say: "妈妈回：“那么早天黑？开灯，别伤眼睛。”" },
+      ] },
       { text: "已读，晚点回", if: "标签('手机成瘾')", then: [{ say: "选了以后，你刷了两个小时别的。" }] },
     ] },
   ] });
@@ -1518,19 +1528,40 @@
         { msg: { from: "local", text: "Merry Christmas!! Mum's made way too much food lol 🎄 x", tr: "圣诞快乐！！我妈做了太多吃的哈哈" } },
         { say: "配了一张照片，桌上很多菜，但拍不到任何人。" },
         { say: "（……拍不到任何人。）", fx: { flag_ollie_doubt_3: 1 } },
-      ]),
+      ], null, {
+        serious: [
+          { say: "你讲了你一个人过圣诞，吃了什么、看了什么。他回：" },
+          { msg: { from: "local", text: "Next year you're coming to Guildford. I'm telling Mum now.", tr: "明年你来吉尔福德。我现在就告诉我妈。" } },
+          { say: "（他真的告诉了。）" },
+        ],
+        merry: [
+          { say: "“Merry Christmas x”——他回了一张狗戴圣诞帽的照片。" },
+        ],
+      }),
       XMAS_MSG("groupmate", [
         { say: "一段语音。背景音是曼谷的热带雨和很多人的笑声。" },
         { msg: { from: "groupmate", text: "Merry Christmas babe!! It's 30 degrees here, I miss the cold, isn't that crazy?", tr: "圣诞快乐宝！！这里30度，我居然想念冷天了，疯了吗？" } },
         { say: "停了一下。" },
         { msg: { from: "groupmate", text: "…I miss you too.", tr: "……也想你。" } },
-      ]),
+      ], null, {
+        // 认真回：剧本【接】（前面“…I miss you too.”就是她的回复），不加
+        merry: [
+          { say: "她回了三个圣诞树表情，然后：" },
+          { msg: { from: "groupmate", text: "call me later? it's lonely being hot", tr: "晚点打给我？热着很寂寞" } },
+        ],
+      }),
       XMAS_MSG("otaku", [
         { say: "一张照片。他家的圣诞树，树顶上不是星星，是一个小小的手办。" },
         { msg: { from: "otaku", text: "mum put it there. not me.", tr: "我妈放的。不是我。" } },
         { say: "五分钟后：" },
         { msg: { from: "otaku", text: "ok it was me", tr: "好吧是我" } },
-      ]),
+      ], null, {
+        serious: [
+          { say: "你说那个小玩意儿很好看。他回：" },
+          { msg: { from: "otaku", text: "…It took three tries. Don't tell anyone.", tr: "……试了三次。别告诉别人。" } },
+        ],
+        // “圣诞快乐！”：剧本【接】（前面“ok it was me”就是他的回复），不加
+      }),
       // 同时认真回了2个及以上好感≥50的人〔鱼塘值+1〕
       { if: "['senior', 'local', 'groupmate', 'otaku'].filter((c) => 标记('xmas_reply_' + c) && 好感(c) >= 50).length >= 2", then: [
         { fx: { pond: 1 } },
@@ -1564,3 +1595,5 @@
 //   · term_end XMAS_MSG：剧本只写了学长的「认真回／“圣诞快乐！”」反应，Ollie、Ploy、Kieran 三条还缺。
 //   · freshers 回宿舍注册 Instagran（INS_HOME）的「头像用一张{家乡食物}」：完整版的反应是 Ollie 的台词，这里没人在旁边，剧本没写反应（check_content 第 1 条会报错，更新 baseline 前要策划补）。
 //   · 缺反应补全里的〔〕数值：原来选项上已经有数值的没再加（first_presentation、first_sick 等）。
+// 第十二批（11/20 晚）缺反应第二轮：上面四条已按 剧本_缺反应补全_2.md 补上（dark_at_four、bonfire_night 按策划“两个分支都贴同一句”照贴）；
+//   term_end Ollie／Ploy／Kieran 节日反应已补。Ploy「认真回」、Kieran「“圣诞快乐！”」剧本标【接】（回复在选项前面），没加，进 check_allow。

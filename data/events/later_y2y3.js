@@ -400,7 +400,7 @@ Object.assign(DATA.events, {
         { say: "第三天凌晨四点，你点了提交。网页没有转圈，一秒就好了。你反而不习惯。" },
       ] },
       // 接 Essay 学姐线，大二版价格 £320（价格见“给引擎”）
-      { text: "找代写", if: "数值('作业') < 40", fx: { ghost_buy: 1, flag_ghost_y2: 1 } },
+      { text: "找代写", if: "数值('作业') < 40", fx: { ghost_buy: 1, flag_ghost_y2: 1 }, then: [ { run: "ghost_offer_done" } ] },   // 接代写线正文（misc10.js）
     ] },
     { if: "标签('厨房杀手')", then: [
       { say: "ddl 周你靠泡面活了五天。第五天，你想煮一锅真正的饭庆祝，把锅烧穿了。烟雾报警器响的时候，你甚至没有惊讶。" },
@@ -710,7 +710,7 @@ Object.assign(DATA.events, {
       { text: "最后两天爆肝", fx: { homework: 4, energy: -20 }, then: [
         { say: "交上去的时候是凌晨三点五十八分。你趴在桌上睡着了，醒来已经中午。" },
       ] },
-      { text: "找代写", if: "数值('作业') < 40", fx: { ghost_buy: 1, flag_ghost_y2: 1 } },   // Essay 学姐，大二价格 £350
+      { text: "找代写", if: "数值('作业') < 40", fx: { ghost_buy: 1, flag_ghost_y2: 1 }, then: [ { run: "ghost_offer_done" } ] },   // Essay 学姐，大二价格 £350；接代写线正文（misc10.js）
     ] },
     { if: KNOWS("chen_siqi"), then: [
       { show: "chen_siqi" },
@@ -1113,7 +1113,7 @@ Object.assign(DATA.events, {
         { say: "你在平安夜交了。窗外有人在唱圣诞歌。你关上电脑，躺在床上听完了一整首。" },
       ] },
       // Essay 学姐，大三价格 £500；大三的代写判定见第 20 周
-      { text: "找代写", if: "数值('作业') < 40", fx: { ghost_buy: 1, flag_ghost_y3: 1 } },
+      { text: "找代写", if: "数值('作业') < 40", fx: { ghost_buy: 1, flag_ghost_y3: 1 }, then: [ { run: "ghost_offer_done" } ] },   // 接代写线正文（misc10.js）
     ] },
     { bg: "pub" },
     { say: "ddl 交完的那天晚上，城里所有的 pub 都在放同一首圣诞歌。" },

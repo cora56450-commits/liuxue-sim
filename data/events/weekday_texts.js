@@ -195,7 +195,7 @@ DATA.actLines = {
   // 和 Kieran 联机
   kieran_online: [
     { text: "你们打了三局，死了七次。他说是你的错，后来复盘发现是他的。" },   // 1
-    { text: "他的麦里传来他妈妈的声音：\"Kieran, love, it's two in the morning.\"「Kieran，宝贝，凌晨两点了。」他说\"five more minutes\"，说了四次。" },   // 2
+    { text: "他的麦里传来他妈妈的声音：\"Kez, love, it's two in the morning.\"「Kez，宝贝，凌晨两点了。」他说\"five more minutes\"，说了四次。" },   // 2
     { text: "你们什么怪都没打，在游戏里钓了一个小时鱼。" },   // 3
     { text: "他教你一个连招，教了二十分钟。你按出来的时候，他比你还高兴。" },   // 4
     { text: "你们在游戏里挂机，聊天聊了一个小时。" },   // 5

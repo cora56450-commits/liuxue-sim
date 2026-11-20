@@ -5,14 +5,14 @@
    "name": "认真玩：每周聊＋三周一约＋周末出门（Ollie）",
    "goal": "告白中位大二第18–24周，HE 70–85%",
    "confessRate": "100%",
-   "confessMedian": "大二第22周",
-   "he": "77%",
-   "be": "22%",
+   "confessMedian": "大二第20周",
+   "he": "84%",
+   "be": "16%",
    "dated": "100%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
-   "small": "35.3",
+   "small": "34.6",
    "smallAff": "10.5",
    "degree": "69.7"
   },
@@ -20,61 +20,61 @@
    "name": "认真玩（学长）",
    "goal": "同上",
    "confessRate": "100%",
-   "confessMedian": "大二第20周",
-   "he": "77%",
-   "be": "23%",
+   "confessMedian": "大二第22周",
+   "he": "82%",
+   "be": "18%",
    "dated": "100%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
-   "small": "43.9",
-   "smallAff": "15.1",
+   "small": "44.0",
+   "smallAff": "15.0",
    "degree": "69.5"
   },
   {
    "name": "认真玩（Ploy）",
    "goal": "同上",
-   "confessRate": "76%",
+   "confessRate": "74%",
    "confessMedian": "大二第22周",
-   "he": "61%",
-   "be": "15%",
-   "dated": "76%",
+   "he": "55%",
+   "be": "19%",
+   "dated": "74%",
    "trial": "0%",
    "pond1": "0%",
-   "aff": "98.1",
-   "small": "41.2",
-   "smallAff": "16.1",
-   "degree": "69.7"
+   "aff": "97.3",
+   "small": "41.6",
+   "smallAff": "16.3",
+   "degree": "69.8"
   },
   {
    "name": "认真玩（Kieran）",
    "goal": "同上",
    "confessRate": "100%",
-   "confessMedian": "大二第22周",
-   "he": "76%",
-   "be": "24%",
+   "confessMedian": "大二第20周",
+   "he": "81%",
+   "be": "19%",
    "dated": "100%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
-   "small": "42.9",
-   "smallAff": "15.6",
-   "degree": "69.5"
+   "small": "43.6",
+   "smallAff": "15.8",
+   "degree": "69.4"
   },
   {
    "name": "一周聊一次＋周末偶遇（不约会）",
    "goal": "告白 ≥80%",
    "confessRate": "98%",
    "confessMedian": "大二第23周",
-   "he": "79%",
-   "be": "19%",
+   "he": "75%",
+   "be": "23%",
    "dated": "98%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
-   "small": "31.1",
-   "smallAff": "17.9",
-   "degree": "69.8"
+   "small": "31.2",
+   "smallAff": "17.8",
+   "degree": "69.7"
   },
   {
    "name": "刷聊天、不出门",
@@ -89,7 +89,7 @@
    "aff": "59.0",
    "small": "1.0",
    "smallAff": "1.2",
-   "degree": "69.9"
+   "degree": "70.0"
   },
   {
    "name": "大二大三一直卷（大一正常谈）",
@@ -101,24 +101,24 @@
    "dated": "0%",
    "trial": "0%",
    "pond1": "0%",
-   "aff": "79.0",
-   "small": "16.8",
-   "smallAff": "9.0",
+   "aff": "78.9",
+   "small": "16.6",
+   "smallAff": "8.7",
    "degree": "70.2"
   },
   {
    "name": "同时对三个人都热情",
    "goal": "鱼塘翻车 ≥50%",
-   "confessRate": "16%",
+   "confessRate": "15%",
    "confessMedian": "大三第4周",
    "he": "0%",
-   "be": "90%",
-   "dated": "16%",
+   "be": "88%",
+   "dated": "15%",
    "trial": "100%",
    "pond1": "100%",
-   "aff": "56.2",
-   "small": "89.8",
-   "smallAff": "56.3",
+   "aff": "55.9",
+   "small": "90.3",
+   "smallAff": "56.9",
    "degree": "69.9"
   },
   {
@@ -126,14 +126,14 @@
    "goal": "走得通",
    "confessRate": "73%",
    "confessMedian": "大二第22周",
-   "he": "56%",
-   "be": "16%",
+   "he": "59%",
+   "be": "14%",
    "dated": "73%",
    "trial": "0%",
    "pond1": "0%",
-   "aff": "97.8",
-   "small": "40.7",
-   "smallAff": "15.9",
+   "aff": "98.0",
+   "small": "41.6",
+   "smallAff": "16.7",
    "degree": "69.8"
   },
   {
@@ -141,15 +141,15 @@
    "goal": "走得通",
    "confessRate": "100%",
    "confessMedian": "大二第22周",
-   "he": "80%",
-   "be": "20%",
+   "he": "83%",
+   "be": "17%",
    "dated": "100%",
    "trial": "0%",
    "pond1": "0%",
    "aff": "100.0",
-   "small": "35.2",
-   "smallAff": "10.5",
-   "degree": "69.8"
+   "small": "34.3",
+   "smallAff": "10.3",
+   "degree": "69.6"
   }
  ],
  "mains": {
@@ -166,10 +166,12 @@
    "lonely": 300
   },
   "摆烂·关": {
-   "home": 300
+   "brain_girl": 124,
+   "home": 176
   },
   "摆烂·开": {
-   "home": 300
+   "home": 169,
+   "brain_girl": 131
   },
   "老鼠·关": {
    "lonely": 300

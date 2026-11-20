@@ -87,9 +87,10 @@ const Phone = {
     const head = () => Phone.relLabel(cur).replace(/<\/?em[^>]*>/g, "");
     S.unreadChat = 0; renderPhoneDot();
     if (!Phone6.inApp(cur, Phone.curApp)) Phone.curApp = Phone6.platOf(cur);   // 从 story 的“回复”、剧情里进来：回到对的 App
-    const o = Phone.frame(`<div class="phone-log"></div>${Phone.canAsk(cur) ? `<button class="hud-btn ask-btn">约</button>` : ""}${Gift.canGive(cur) && cur !== "essay_senior" ? `<button class="hud-btn gift-btn">送东西</button>` : ""}`, { title: c.name, right: head(), back: () => Phone.chatList(), input: "说点什么……", cls: "app-" + Phone.curApp });
+    const o = Phone.frame(`<div class="phone-log"></div>${Phone.canAsk(cur) ? `<button class="hud-btn ask-btn">约</button>` : ""}${Gift.canGive(cur) && cur !== "essay_senior" ? `<button class="hud-btn gift-btn">送东西</button>` : ""}${Phone.moreOk(cur) ? `<button class="hud-btn more-btn">……</button>` : ""}`, { title: c.name, right: head(), back: () => Phone.chatList(), input: "说点什么……", cls: "app-" + Phone.curApp });
     if (Phone.canAsk(cur)) o.querySelector(".ask-btn").onclick = () => Phone.askFlow(cur);
     if (o.querySelector(".gift-btn")) o.querySelector(".gift-btn").onclick = () => Gift.pick(cur, () => Phone.chat(cur));
+    if (o.querySelector(".more-btn")) o.querySelector(".more-btn").onclick = () => Phone.more(cur);
     const log = o.querySelector(".phone-log");
     let busy = false;
     const render = () => {
@@ -103,6 +104,9 @@ const Phone = {
     const send = async () => {
       const text = input.value.trim(); if (!text || busy) return; playSfx("phone_send");
       input.value = ""; S.chats[cur].push({ role: "user", content: text }); Birthday.noteChat(cur, text);
+      // 第十二批：第一次在聊天里打出对方的全名 → 演 fullname_{id}（每人一次）
+      const full = (DATA.fullNames || {})[cur];
+      if (full && text.includes(full) && !S.flags["fullname_seen_" + cur] && DATA.events["fullname_" + cur] && S.flags["confessed_" + cur]) { S.flags["fullname_seen_" + cur] = 1; return Phone.playNow("fullname_" + cur, cur); }
       // 消息不秒回（决定记录第五节）：对方忙或睡了，先显示“已送达”，之后再回
       if (Reply.status(cur) !== "online" && !S.replyQueue?.some((q) => q.who === cur)) { S.chats[cur].push({ role: "divider", content: "已送达", kind: "divider" }); Reply.queue(cur); S.lastMet[cur] = absWeek(); return render(); }
       if (S.replyQueue?.some((q) => q.who === cur)) return render();
@@ -120,6 +124,45 @@ const Phone = {
     o.querySelector(".phone-input button").onclick = send;
     input.onkeydown = (e) => { if (e.key === "Enter") send(); };
     input.focus();
+  },
+
+  // ===== 第十二批：交往中聊天右上“……”：改备注（一次）、我们谈谈（分手，告白后 ≥ 4 周）=====
+  moreOk(c) { return DATA.loveIds.includes(c) && !!S.flags["confessed_" + c] && !S.flags["broke_up_" + c]; },
+  more(c) {
+    const can = { nick: !(S.nick || {})[c] && (DATA.petNames || {})[c], talk: !!DATA.events["breakup_" + c] && condCtx()["告白后"](c) >= 4 };
+    const o = Phone.frame(`<div class="ask-box"><div class="ask-list">
+      ${can.nick ? `<button class="hud-btn" data-m="nick">改备注</button>` : `<p class="fb-done">备注已经改过了${(S.nick || {})[c] ? `：${Gloss.escape(S.nick[c])}` : ""}</p>`}
+      ${can.talk ? `<button class="hud-btn" data-m="talk">我们谈谈</button>` : `<p class="fb-done">（交往四周以后，这里可以“谈谈”）</p>`}</div></div>`, { title: DATA.characters[c].name, back: () => Phone.chat(c) });
+    const b = (k) => o.querySelector(`[data-m="${k}"]`);
+    if (b("nick")) b("nick").onclick = () => Phone.nickPick(c);
+    if (b("talk")) b("talk").onclick = () => {
+      if (!confirm("真的要谈吗？这个选择不能撤回。")) return;
+      Phone.playNow("breakup_" + c, null);
+    };
+  },
+  nickPick(c) {
+    const P = DATA.petNames[c];
+    const o = Phone.frame(`<div class="ask-box"><div class="ask-list">${P.options.map((x, i) => `<button class="hud-btn" data-i="${i}">${Gloss.escape(x.text)}</button>`).join("")}
+      ${P.free ? `<div class="nick-free"><input maxlength="8" placeholder="✎ 自己写（最多 8 个字）"><button class="hud-btn" data-free>好</button></div>` : ""}</div></div>`, { title: "改备注", back: () => Phone.more(c) });
+    const done = (text, react) => {
+      S.nick = S.nick || {}; S.nick[c] = text;
+      if (!react && (DATA.fullNames || {})[c] && text.includes(DATA.fullNames[c].split(" ")[0]) && text === DATA.fullNames[c]) react = "fullname_" + c;
+      if (react === "fullname_" + c) { if (S.flags["fullname_seen_" + c]) react = null; else S.flags["fullname_seen_" + c] = 1; }
+      toast(`备注改成了“${text}”`);
+      if (react && DATA.events[react]) return Phone.playNow(react, c);
+      Phone.chat(c);
+    };
+    o.querySelectorAll("[data-i]").forEach((el) => el.onclick = () => { const x = P.options[+el.dataset.i]; done(x.text, x.react); });
+    const f = o.querySelector("[data-free]");
+    if (f) f.onclick = () => { const v = o.querySelector(".nick-free input").value.trim().replace(/[<>{}]/g, ""); if (v) done(v, null); };
+  },
+  // 关掉手机，马上演一段剧情，演完回到原来的画面（日程／周末地图），back 给了就再打开这个人的聊天
+  async playNow(id, back) {
+    closeOverlay(); hideAll(); Stage.hide(true);
+    await runEvent(id);
+    hideAll(); Stage.hide(true); showCg(null);
+    await Scenes.resume();
+    if (back) Phone.chat(back);
   },
 
   // 没有 API Key 时的聊天：每人每周一次，三选一固定回复（文本在 data/notes.js 的 DATA.chatFallback，策划这边写）
@@ -146,12 +189,13 @@ const Phone = {
   canAsk(c) { return S.year === 1 && !["sophie", "khan", "essay_senior"].includes(c) && Invites.rel(c) >= Invites.T.askMin; },
   askFlow(c) {
     const days = [...(S.resume && S.resume.scene === "schedule" ? DAY_KEYS : []), "WEEKEND"].filter((d) => d === "WEEKEND" || !Invites.on(d));
-    const places = DATA.mapCity.filter((l) => !l.travel && l.id !== "dorm_room" && (!l.needTag || S.tags.includes(l.needTag))).map((l) => l.id).concat(["travel"]);
+    const places = DATA.mapCity.filter((l) => !l.travel && l.id !== "dorm_room" && (!l.needTag || S.tags.includes(l.needTag))).map((l) => l.id).concat(["travel"])
+      .concat(DATA.loveIds.includes(c) && (S.aff[c] || 0) >= 40 && !S.flags["cohab_" + c] ? ["their_home"] : []);   // 第十二批：“他／她家”（只有周末）
     let day = null;
     const draw = () => {
       const body = !day
         ? `<h4 class="ask-h">哪天？</h4>${days.map((d) => `<button class="ask-opt" data-d="${d}">${DAY_CN[d]}</button>`).join("") || "<p>这周没有空的时间了</p>"}`
-        : `<h4 class="ask-h">去哪？（${DAY_CN[day]}）</h4>${places.filter((p) => (day === "WEEKEND") || p !== "travel").map((p) => `<button class="ask-opt" data-p="${p}">${Invites.placeName(p)}</button>`).join("")}`;
+        : `<h4 class="ask-h">去哪？（${DAY_CN[day]}）</h4>${places.filter((p) => (day === "WEEKEND") || (p !== "travel" && p !== "their_home")).map((p) => `<button class="ask-opt" data-p="${p}">${Invites.placeName(p, c)}</button>`).join("")}`;
       const o = Phone.frame(`<div class="ask-box">${body}</div>`, { title: `约 ${DATA.characters[c].name}`, back: () => (day ? (day = null, draw()) : Phone.chat(c)) });
       o.querySelectorAll("[data-d]").forEach((b) => b.onclick = () => { day = b.dataset.d; draw(); });
       o.querySelectorAll("[data-p]").forEach((b) => b.onclick = async () => {

@@ -65,7 +65,7 @@ for (const [id, steps] of Object.entries(D.events || {})) {
     if (st.choice) {
       for (const o of st.choice) {
         if (hasReaction(o.then)) continue;
-        if (allowed(1, id, o.text)) continue;
+        if (allowed(1, id, o.text, id + "|" + o.text)) continue;   // 第十二批：也可以写“事件id|选项开头”，只放这一个事件里的这个选项
         const key = `${id}｜${o.text}`;
         newBaseline.push(key);
         if (baseline.has(key)) warn(1, id, `（待补）选项「${short(o.text, 24)}」后面没有专属反应`);

@@ -147,6 +147,7 @@ BGM.storyStart = (id) => {
 };
 BGM.storyEnd = () => { BGM.story = { id: null, fixed: false }; };
 BGM.onBg = (bg) => {
+  if (BGM.story.fixed === "silent" && bg) BGM.story.fixed = false;   // 黑屏静音之后，有新背景就恢复
   if (!BGM.story.id || BGM.story.fixed || BGM.saved !== null) return;
   const id = bgBgm(bg);
   if (id) BGM.play(id === "schedule" ? weekBgm("schedule") : id);   // 平常的歌在 ddl 周、春节周换成 ddl／spring

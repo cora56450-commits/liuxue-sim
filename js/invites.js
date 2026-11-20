@@ -14,12 +14,13 @@ const Invites = {
     if (["campus", "library", "supermarket", "chinese_market", "indoor_market", "gym", "club_room"].includes(place)) return 20;
     if (["brunch", "pub_street"].includes(place)) return love ? 40 : 30;
     if (place === "travel" || place === "station") return 60;
+    if (place === "their_home") return 40;   // 第十二批：“他／她家”，好感 ≥ 40
     return 20;
   },
   isLove(c) { return DATA.loveIds.includes(c); },
   rel(c) { return Invites.isLove(c) ? (S.aff[c] || 0) : (S.fr[c] || 0); },
   name(c) { return charName(c); },
-  placeName(p) { const l = DATA.mapCity.find((x) => x.id === p); return p === "travel" ? "出城" : l ? l.name : p; },
+  placeName(p, who) { const l = DATA.mapCity.find((x) => x.id === p); return p === "travel" ? "出城" : p === "their_home" ? (who ? charName(who) + "家" : "他／她家") : l ? l.name : p; },
   normDay(d) { return !d || d === "SAT" || d === "SUN" || d === "WEEKEND" ? "WEEKEND" : d; },
   list() { S.appointments = S.appointments || []; return S.appointments; },
   thisWeek() { return Invites.list().filter((a) => a.week === absWeek() && a.status === "accepted"); },

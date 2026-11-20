@@ -29,7 +29,7 @@ for (const k of ["kieran_room", "ploy_flat", "ollie_house", "bicester", "senior_
 const cgs = new Set((DATA.cgList || []).map((c) => c.id));
 for (const k of ["senior_confess", "local_confess", "groupmate_confess", "otaku_confess"]) cgs.add(k);
 const chars = new Set(Object.keys(DATA.characters || {}));
-const FX_SPECIAL = new Set(["skip_class", "followers", "allowance_half", "ghost_buy", "pond_pair", "pond_count", "pond", "pond_trigger", "date_promise", "skip_week", "extend", "homework",
+const FX_SPECIAL = new Set(["weekend_skip", "study_mult_next", "skip_class", "followers", "allowance_half", "ghost_buy", "pond_pair", "pond_count", "pond", "pond_trigger", "date_promise", "skip_week", "extend", "homework",
   "rest_days", "energy_max"]);
 const STAT = new Set(["money", "energy", "study", "loneliness", "belonging", "adapt", "english"]);
 const CJK = /[一-鿿]/;

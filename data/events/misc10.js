@@ -344,7 +344,9 @@ Object.assign(DATA.events, {
         { say: "文档里有一句话，用的是你从来没用过的词。你查了字典，查完以后，你把那个词记在了手机里。" },
         { say: "（下次见到这个词，你会想起这一晚。）" },
       ] },
-      { text: "不看了", fx: { loneliness: 3 } },
+      { text: "不看了", fx: { loneliness: 3 }, then: [
+        { say: "你直接点了提交。屏幕上弹出那行字：By submitting, you confirm this is your own work. 你没读完就点了确认。" },
+      ] },
     ] },
     { if: "标记('ploy_ghostwrite') > 0", then: [
       { say: "（我帮 Ploy 写作业的时候，心里想的是她不该这样。现在我在做一样的事。）" },
@@ -378,28 +380,28 @@ Object.assign(DATA.events, {
     { show: "senior" },
     { say: "（他在算一笔账，算到一半，笔停了。）" },
     { say: "有时候我觉得我们……算了。没什么。账算错了。", name: "senior" },
-    { free: FADE_FREE, freeWho: "senior", choice: [ { text: "……嗯" } ] },
+    { free: FADE_FREE, freeWho: "senior", choice: [ { text: "……嗯", then: [ { say: "他把那一页撕下来，揉成一团，又展开，压平，夹回了账本里。" } ] } ] },
     { hide: true },
   ],
   be_fade_local: [
     { show: "local" },
     { say: "（他举着相机，没按快门，放下了。）" },
     { say: "Sometimes I think we… nah. Never mind. Light's wrong.", name: "local", tr: "有时候我觉得我们……算了。没什么。光线不对。" },
-    { free: FADE_FREE, freeWho: "local", choice: [ { text: "……嗯" } ] },
+    { free: FADE_FREE, freeWho: "local", choice: [ { text: "……嗯", then: [ { say: "他把相机收进包里，拉上拉链，拉得很慢。" } ] } ] },
     { hide: true },
   ],
   be_fade_groupmate: [
     { show: "groupmate" },
     { say: "（她在刷手机，没抬头。）" },
     { say: "sometimes I feel like we're… ugh, forget it. I'm tired.", name: "groupmate", tr: "有时候我觉得我们……唉，算了。我累了。" },
-    { free: FADE_FREE, freeWho: "groupmate", choice: [ { text: "……嗯" } ] },
+    { free: FADE_FREE, freeWho: "groupmate", choice: [ { text: "……嗯", then: [ { say: "她“嗯”了一声，继续刷手机。屏幕上是你们去年的照片，她没往下滑。" } ] } ] },
     { hide: true },
   ],
   be_fade_otaku: [
     { show: "otaku" },
     { say: "（游戏暂停了，他没按继续。）" },
     { say: "Sometimes I think we're… …Nothing. Your turn.", name: "otaku", tr: "有时候我觉得我们……没什么。该你了。" },
-    { free: FADE_FREE, freeWho: "otaku", choice: [ { text: "……嗯" } ] },
+    { free: FADE_FREE, freeWho: "otaku", choice: [ { text: "……嗯", then: [ { say: "他按了继续。那一局你们输了，谁都没说话。" } ] } ] },
     { hide: true },
   ],
 });
@@ -454,3 +456,19 @@ DATA.whyPostscript = {
 // - 生日：家里（妈妈）的“明年”那句在 bd_family 剧情里，交往中的“明年也在一起吧”英文版没给；学长寄的家乡特产没有物品 id。
 // - 代写：{作业名} 要引擎替换；被查前一周那段要引擎提前一周判定。
 // - BE 暗示 2：剧本说“结局前”，先放大三第 20 周周三晚上的周中插播，没换背景；✎ 的场景说明是按剧本那段说明写的。
+
+// 第十二批第五节：上面没自动插的 no_sorry 选项，加在那个事件“第一个选项组”的末尾（策划定）。crit_pike 找不到对应事件，没插（见问题记录）
+(function addNoSorryRest() {
+  const MAP = { tutor_meeting_2: "tutor_meeting_2", y2_first_rejection: "y2_first_rejection", house_hunting: "house_hunting", results_day: "results_day", y3_job_hunt: "y3_job_hunt", w03: "mid_w03" };
+  const firstChoice = (steps) => {
+    for (const st of steps || []) {
+      if (st.choice) return st;
+      for (const k of ["then", "else", "steps"]) { const r = firstChoice(st[k]); if (r) return r; }
+    }
+    return null;
+  };
+  for (const [key, ev] of Object.entries(MAP)) {
+    const o = (DATA.noSorryOptions[key] || {}).opt, grp = firstChoice(DATA.events[ev]);
+    if (o && grp && !grp.choice.includes(o)) grp.choice.push(o);
+  }
+})();
