@@ -12,7 +12,7 @@ async function runScript(steps) {
     if (st.timed) { await Story5.timed(st.timed); continue; }
     if (st.game) { const r = await Games.play(st.game); await runScript(r === "win" ? st.win : st.lose); continue; }
     if (st.bg !== undefined) setBg(st.bg);
-    if (st.cg !== undefined) { if (st.cg === null) await cgLinger(); showCg(st.cg); }
+    if (st.cg !== undefined) showCg(st.cg);
     if (st.sfx) playSfx(st.sfx);
     if (st.alarm !== undefined) FX.alarm(st.alarm);     // { alarm: true } 火警红灯开始闪；{ alarm: false } 停
     if (st.bgm !== undefined) { if (st.bgm === "auto") { BGM.story.fixed = false; BGM.onBg(currentBg); } else { BGM.play(st.bgm); BGM.story.fixed = st.bgm === null ? "silent" : true; } }   // bgm: null 静音以后，下一个背景恢复按背景配乐（亲密关系黑屏后的早上）   // { bgm: "comedy" } 切歌；{ bgm: null } 停。写了就不再按背景换
@@ -159,19 +159,5 @@ async function runEventNow(id) {
   // 第七批 #17 恋爱脑：记下这次“感情事件”的人（攻略线、相识／暧昧／吃醋／交往后小事件、约会、爽约、鱼塘、BE 暗示……），下一次工作日结算 ×0.8
   if (S && S.tags.includes("lovebrain")) { const who = loveEventWho(id); if (who) S.loveEvtWho = who; }
   if (gen !== Story.gen) return STALE();
-  await cgLinger();
   hideDialog(); Stage.hide(true); showCg(null);
-}
-// Cora 11/21：CG 收起之前，先把对话框藏起来让玩家单独看一会儿 CG，点一下（或空格／回车）再收
-async function cgLinger() {
-  const el = document.getElementById("cg");
-  if (!el || el.classList.contains("hidden") || (typeof Flow !== "undefined" && Flow.skip) || (S && S.replay === "fast")) return;
-  hideDialog();
-  const tip = document.createElement("div"); tip.className = "cg-linger-tip"; tip.textContent = "点击继续";
-  document.getElementById("stage").appendChild(tip);
-  await new Promise((res) => {
-    let done = false;
-    const fin = (e) => { if (done) return; if (e && e.type === "keydown" && ![" ", "Enter"].includes(e.key)) return; done = true; document.removeEventListener("keydown", fin); el.removeEventListener("click", fin); tip.removeEventListener("click", fin); tip.remove(); res(); };
-    setTimeout(() => { el.addEventListener("click", fin); tip.addEventListener("click", fin); document.addEventListener("keydown", fin); }, 250);
-  });
 }
