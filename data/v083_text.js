@@ -258,5 +258,5 @@
     { id: "senior_tension_5", who: SN, kind: "small", small: true, place: "_home_senior", cond: "交往中('senior') && V083.weeksDating('senior') >= 3" },
     { id: "senior_tension_2", who: SN, kind: "small", small: true, place: ["pub_street", "city_centre", "station", "brunch", "campus", "chinese_market", "supermarket"], cond: "好感('senior') >= 50 && !交往中('senior') && 下雨 && 时段 == '晚上'" },
   );
-  DATA.bgFallback = Object.assign(DATA.bgFallback || {}, { car_night: "bus_stop_night" });
+  DATA.bgFallback = Object.assign(DATA.bgFallback || {}, { car_night: "bus_stop_night" });   // 11/21 car_night 图已入库，回退只在缺图时用
 })();

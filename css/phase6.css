@@ -89,3 +89,6 @@
 @keyframes rainfall { from { background-position: 0 0; } to { background-position: -60px 240px; } }
 .rain-mk { color: #3F6FB0 !important; margin-left: 6px; }
 .rain-tag { font-size: 22px; color: #3F6FB0; font-weight: bold; margin-bottom: 6px; }
+/* CG 单独看 */
+.cg-linger-tip { position: absolute; right: 60px; bottom: 40px; z-index: 40; font-size: 24px; color: #fff; background: rgba(30,40,70,.55); padding: 8px 20px; border-radius: 20px; cursor: pointer; animation: cgtip 1.6s ease-in-out infinite; }
+@keyframes cgtip { 0%,100% { opacity: .5 } 50% { opacity: 1 } }
