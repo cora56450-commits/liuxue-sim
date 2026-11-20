@@ -170,3 +170,43 @@ CG id（文件改名用）：
 ## 完成记录（2026-11-20，Claude Code）：第九批＋第十批（v0.7.0，已部署）
 
 第九批和第十批一起做完（第九批之前没做）。剧本文本 6 个 agent 并行转成数据，引擎和整合测试在主线。新文件：`data/events/{enc10_a,enc10_b,midweek10,friends10,endings10,duals10,valentine10,gala10,intimacy10,love10,misc10}.js`、`data/{relatives,daily10,gallery}.js`、`js/{gallery10,love10}.js`、`tools/{import_batch10.py,build_gallery.js}`。结果、sim、待策划和没接的流程都在 `docs/问题记录.md` 最后一节。
+
+---
+
+## 完成记录（2026-11-20 晚，Claude Code）：第十一、十二批（v0.7.1，已部署）
+
+物品图、动态配图入库；缺反应补完（剩 2 条要策划定）；补考按单门挂科算；接上了告白前消息、分手、改备注、叫全名、“他／她家”邀约、“今晚……”；学长名牌先 Leo 后林子航。结果和要策划定的事在 `docs/问题记录.md` 最后一节。
+
+## 存档点（2026-11-20 晚）：下一个 AI 从这里接着做
+
+**现在的状态**
+- 线上 v0.7.1（提交 812c43b），https://cora56450-commits.github.io/liuxue-sim/ 。`game/` 就是 git 仓库，推 main 就是部署；提交者用 cora56450-commits 的 noreply 邮箱。Cora 今晚和朋友人工试玩，**试玩问题之后会另开一批**（`给ClaudeCode_第十三批.md` 之类）。
+- 工作区是干净的，没有做到一半的改动。所有批次（第三阶段到第十二批）都做完了，没做的都列在 `docs/问题记录.md` 各批的“没做的”里。
+
+**接手先读**
+1. 这份文件开头的分工规则（编程不改文本和数值；问题写进 `docs/问题记录.md`；做完在这里追加完成记录）。
+2. `docs/问题记录.md` 最后三节（第十批、第十一十二批）：要策划定的、没做的、有 Key 时 Cora 自己测的步骤。
+3. 新的一批：`给ClaudeCode_第N批.md`，按里面的顺序做，最后一节写着部不部署、版本号多少。
+
+**每次都要做**
+- 部署前：`bash tools/predeploy.sh` 全过才部署；`index.html` 里所有 `?v=` 和 `js/version.js` 改成新版本号（不改浏览器会用旧缓存）；推完用 `curl .../js/version.js` 确认线上版本号，再在问题记录写一行。
+- 剧本转数据以后：`node tools/validate_events.js`、`node tools/check_content.js`（剧本没写反应的用 `--update-baseline` 登记成待补；有意这么写的进 `tools/check_allow.json` 并写原因，可以写“事件id|选项开头”）。
+- 新事件进了 `index.html` 以后：`node tools/build_gallery.js` 重新生成回忆图鉴的事件表 `data/gallery.js`。
+- 改数值以后：`node tools/sim_check.js`、`node tools/sim_stats_策划.js "$PWD" 200`（会改写 `sim_stats_out.json`，不想提交就 `git checkout -- sim_stats_out.json`）。
+- 新立绘：校准值（头顶／下巴比例）写进 `data/characters.js`，跑 `python3 tools/check_sprites.py` 和 `python3 tools/lineup_pairs.py`。
+
+**测试办法**（这台机器没装 Playwright，`preview_start` 起不了 Desktop 下的服务器）
+- Bash 后台跑 `python3 -m http.server 8765 --bind 127.0.0.1`（在 `game/` 下），内置浏览器打开 `http://localhost:8765/`。
+- 页面里加载 `tools/test_bot.js` 自动玩：`Bot.start({ name, bg: {wealth, english, abroad, personality, accommodation, major}, home, bd: {m, d}, tags, prefer: [正则], plan: [五个活动], visit: /地点/, untilWeek, stopAt: [事件id] })`，`Bot.report()` 看进度和问题。浏览器面板在后台时计时器会被限速，偶尔“10 秒不动”不是游戏卡住。
+- 测之前备份 localStorage，测完恢复（Cora 的 Key 存在她自己的浏览器里，不要碰）。
+- 设置里有“全开（测试用）·解锁全部回忆”，回忆图鉴在标题画面可以重看任意事件。
+
+**大批量剧本转数据**：第十、十二批是派多个 agent 并行转的，每个只写自己的新文件，引擎改动由主线统一做，分工规则在 `docs/第十批分工.md`（可以照着用）。
+
+**引擎里比较新的几处**（第八到十二批）
+- 剧情里的菜单、每段固定剧情前自动存档、剧情中途回标题／读档会 `Story.abort()`（`js/script.js`、`js/system.js`、`js/scenes.js` 的 `segSave`）。
+- BGM 按背景／事件类型自动选（`js/audio.js` 的 `BG_BGM`、`eventBgm`）。
+- 固定课表、翘课、考勤（`Rules.fixedDays`、`Rules.truant`）；补考（`Rules.needResit`、`Rules.resitYear`）。
+- 恋爱线流程：`js/story6.js` 的 `Love6`（告白前消息、`blocked`、`news`）、`Enc6`（地点偶遇，含车站）；`js/phone.js` 的 `Phone.more`／`nickPick`／`playNow`；`js/scenes.js` 的 `visitHome`、`tonight`、`pathEvent`。
+- 文本变量 `{名后两字}` `{全名}` `{我叫他}`、记周数 `flag_wk_xxx`／`过了几周()`：`js/love10.js`。
+- 回忆图鉴：`js/gallery10.js`。
