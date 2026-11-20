@@ -81,7 +81,7 @@ FOCUS={ # 和 DATA.focusPlans 一致：工作日5格 + 周末
  "balanced":(["class","class","homework","social","library"],["home","social"]),
  "social":(["class","social","home","social","home"],["social","brunch"]),
  "work":(["class","homework","work","work","home"],["home","chinese"])}
-WEIGHT={1:0.1,2:0.3,3:0.6}
+WEIGHT={1:0,2:0.3,3:0.7}   # 第十六批 Q13
 def later(y1,focus):
     s=dict(y1["state"]); R=s["R"]; e,study,lon,bel,cash,eng=s["e"],s["study"],s["lon"],s["bel"],s["cash"],s["eng"]
     introvert=s["introvert"]; week_plan,wk=FOCUS[focus]; ym={1:y1["avg"]}

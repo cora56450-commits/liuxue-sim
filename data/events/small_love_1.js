@@ -537,7 +537,7 @@ Object.assign(DATA.events, {
         { say: "What is that. What IS that. Where can I get it.", name: "otaku", expr: "sparkle", tr: "这是什么。这到底是什么。哪里能买到。" },
         { say: "第二周，他的七盒备餐里，每一盒都有一点红色。" },
         { if: "友情('陈建国') > 0", then: [
-          { say: "有个红头发的英国小伙子，每个月来买两瓶老干妈。是你介绍的吧？", name: "chen_jianguo" },
+          { say: "有个姜红色头发的英国小伙子，每个月来买两瓶老干妈。是你介绍的吧？", name: "chen_jianguo" },
         ] },
       ] },
       { text: "“谢谢，很健康。”", sub: "（吃完）", fx: { aff_otaku: 2 }, then: [

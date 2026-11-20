@@ -446,7 +446,7 @@ DATA.gallery = {
   cross_scene_1: {"cat":"love","who":"senior","stage":2,"title":"中超里的声调课","bg":"chinese_market","order":564},
   cross_scene_2: {"cat":"love","who":"senior","stage":2,"title":"礼物比较","bg":"cn_restaurant","order":565},
   cross_scene_3: {"cat":"love","who":"senior","stage":2,"title":"代购包裹送到了谁家","bg":"kieran_room","order":566},
-  cross_scene_4: {"cat":"love","who":"local","stage":2,"title":"派对上的金发和红发","bg":"ollie_house","order":567},
+  cross_scene_4: {"cat":"love","who":"local","stage":2,"title":"派对上的金发和姜红发","bg":"ollie_house","order":567},
   cohab_senior_1: {"cat":"love","who":"senior","stage":3,"title":"他做了一张表","bg":"senior_room","order":570},
   cohab_senior_2: {"cat":"love","who":"senior","stage":3,"title":"搬家那天","bg":"cohab_senior","order":571},
   cohab_senior_3: {"cat":"love","who":"senior","stage":3,"title":"第一次小矛盾：客厅里的纸箱","bg":"cohab_senior","order":572},
@@ -806,4 +806,8 @@ DATA.gallery = {
   end_lonely_1: {"cat":"main","who":"","stage":0,"title":"end_lonely_1","bg":"dorm_room","order":99999},
   end_lonely_2: {"cat":"main","who":"","stage":0,"title":"end_lonely_2","bg":"dorm_night","order":99999},
   end_lonely_3: {"cat":"main","who":"","stage":0,"title":"end_lonely_3","bg":"dorm_room","order":99999},
+  summer_9_house_khan: {"cat":"friend","who":"khan","stage":2,"title":"summer_9_house_khan","bg":"","order":99999},
+  senior_graduation: {"cat":"love","who":"senior","stage":4,"title":"senior_graduation","bg":"","order":99999},
+  fishpond_big: {"cat":"shura","who":"","stage":0,"title":"fishpond_big","bg":"brunch","order":99999},
+  fishpond_pair: {"cat":"shura","who":"","stage":0,"title":"fishpond_pair","bg":"pub_street","order":99999},
 };

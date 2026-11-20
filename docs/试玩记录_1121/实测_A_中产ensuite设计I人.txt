@@ -1,0 +1,1289 @@
+[Y1W0] 〔背景 home_china〕
+[Y1W0|prologue_depart] 旁白：你爸妈为出国这件事开了四次家庭会议。第一次说“太贵了”，第二次说“别人家孩子都去了”，第三次你没参加，第四次的结论是：“去吧，回来考个公务员也不亏。”
+[Y1W0|prologue_depart] 旁白：（他们算了很久。我知道他们算了很久。）
+[Y1W0|prologue_depart] 旁白：你读的是国际高中的 A-level 课程，高一暑假去英国参加过三周夏校，住过寄宿家庭。
+[Y1W0|prologue_depart] 旁白：所以申请的时候，你没怎么犹豫。（那三周，我以为我已经了解英国了。）
+[Y1W0|prologue_depart] 旁白：那你自己呢？为什么是英国？
+[Y1W0|prologue_depart] 〔选项〕“本科三年就毕业，比别的地方快一年。” ／ “我从小就想看看英剧里的那种红砖房子。” ／ “其实是爸妈选的。我只是没反对。”
+[Y1W0|prologue_depart] 旁白：▶ “本科三年就毕业，比别的地方快一年。”
+[Y1W0|prologue_depart] 旁白：（快一年，就省一年的钱。这句话我没跟别人说过。）
+[Y1W0] 〔背景 airport〕
+[Y1W0|prologue_depart] 旁白：出发那天，你家来了五个人送机。值机柜台的阿姨看了一眼你的箱子，按了一下秤。
+[Y1W0|prologue_depart] 值机阿姨：超重七公斤。
+[Y1W0|prologue_depart] 旁白：一个箱子里是衣服，另一个是你妈塞的：电饭煲、三包火锅底料、一整盒布洛芬、十个转换插头，还有一整套真空压缩的床单被套。
+[Y1W0|prologue_depart] 旁白：拿出来哪样？
+[Y1W0|prologue_depart] 〔选项〕交超重费，什么都不拿出来 ／ 把床品掏出来，塞给送机的爸爸 ／ 把电饭煲拿出来
+[Y1W0|prologue_depart] 旁白：▶ 交超重费，什么都不拿出来
+[Y1W0|prologue_depart] 旁白：你妈说：“带着！英国的被子不知道干不干净。”
+[Y1W0|prologue_depart] 旁白：安检口，你回头看了一眼。你妈在哭，你爸在拍她的背，另外三个亲戚在拍照。
+[Y1W0|prologue_depart] 旁白：（我会好好的。）
+[Y1W0] 〔背景 airport〕
+[Y1W0|prologue] 旁白：飞机落地的时候，窗外是灰的。不是阴天，就是灰。
+[Y1W0|prologue] 旁白：排队过关花了四十分钟。前面的人在答“What's the purpose of your visit?「来英国做什么？」”，你在心里排练了三遍，轮到你的时候，工作人员只看了一眼护照就让你走了。
+[Y1W0|prologue] 旁白：（白练了。）
+[Y1W0|prologue] 旁白：两个28寸的箱子，一个装着一年的衣服，另一个装着妈妈觉得“英国肯定买不到”的东西：电饭煲、三包红油火锅底料、一整盒布洛芬、十双转换插头。
+[Y1W0|prologue] 旁白：还有一包茶叶，爸爸特意塞的。
+[Y1W0|prologue] 旁白：手机连上机场wifi，家里的消息一下子弹出十几条。最后一条是妈妈发的：“到了吗到了吗到了吗”。
+[Y1W0|prologue] 〔选项〕“到了，放心。” ／ 发一张机场的自拍，配一个大拇指
+[Y1W0|prologue] 旁白：▶ “到了，放心。”
+[Y1W0|prologue] 旁白：妈妈回了一个大哭的表情，然后：“好。吃饭了吗？”（我在机场。她问我吃饭了吗。）
+[Y1W0|prologue] 旁白：到达口挤满了举牌子的人。你一眼就看到了那张白色的纸板，上面用马克笔写着你的名字，后面还画了一个笑脸。
+[Y1W0|prologue] Leo：何心妍是吧？我是群里那个接机的，叫我Leo就行。
+[Y1W0|prologue] 旁白：你点了点头，把准备好的“学长好”咽了回去，最后只说出一个“嗯”。
+[Y1W0|prologue] Leo：房子找好没？
+[Y1W0|prologue] 旁白：（第一句话就问房子。这人是不是中介啊。）
+[Y1W0|prologue] 〔选项〕“找好了，谢谢学长。” ／ “还在看，学长有推荐吗？”
+[Y1W0|prologue] 旁白：▶ “找好了，谢谢学长。”
+[Y1W0|prologue] Leo：那就好。大二要找房的时候记得找我。
+[Y1W0|prologue] 旁白：（他递过来一张名片。一个留学生，有名片。）
+[Y1W0|prologue] 旁白：他一手接过你一个箱子，轮子在地上哔哔响。
+[Y1W0|prologue] Leo：你这箱子里装的是砖吗。
+[Y1W0|prologue] 旁白：（是电饭煲。）
+[Y1W0] 〔背景 station〕
+[Y1W0|prologue] 旁白：学长没往大巴站走，拐进了停车场。
+[Y1W0|prologue] 旁白：他的车是一辆银色的二手丰田，后座已经塞了两个别人的箱子，副驾上放着一沓接机牌。
+[Y1W0|prologue] 旁白：你看了一眼方向盘——在右边。（留学生……有车？）
+[Y1W0|prologue] Leo：他好像看出来了：“二手的。接机、代购，没车干不了。英国驾照考了三次。”
+[Y1W0|prologue] 旁白：（中国驾照在这边只能开一年。他是真的打算留下来的那种人。）
+[Y1W0|prologue] 旁白：上车之前，你在停车场的自动售货机买了一瓶水。£1.85。
+[Y1W0|prologue] 旁白：（十七块钱一瓶水。……他们的水是从阿尔卑斯山上弄下来的吗。）
+[Y1W0|prologue] Leo：别换算了。第一年大家都这样，过两个月你就麻了。
+[Y1W0|prologue] 旁白：学长把你送到学校门口就走了，他下午还要接三个人。
+[Y1W0|prologue] 旁白：学校的门口离你的宿舍楼，地图上写着步行九分钟。你拖着两个箱子走了四十分钟。
+[Y1W0|prologue] 旁白：Google Map让你向左，你向左了；它又让你向左，你又向左了；第三次它还让你向左，你发现自己回到了起点。
+[Y1W0] 〔背景 dorm_room〕
+[Y1W0|prologue] 旁白：不管怎么样，从今天开始，你就是一个留子了。
+[Y1W0] 〔背景 dorm_night〕
+[Y1W0|first_night] 旁白：房间比照片上小。照片是广角镜头拍的。
+[Y1W0|first_night] 旁白：一张床，一张桌子，一个暗红色的衣柜，窗户下面一个将会在未来一年里决定你生死的暖气片。
+[Y1W0|first_night] 旁白：床垫上什么都没有。
+[Y1W0|first_night] 旁白：你拉开箱子，把那袋真空压缩的床品拆开。它“呼”地一下膨胀起来，像松了一口气。
+[Y1W0|first_night] 旁白：床单上还有家里洗衣液的味道。
+[Y1W0|first_night] 旁白：（这是这个房间里，唯一一样认识我的东西。）
+[Y1W0|first_night] 旁白：走廊里传来拖箱子的声音和另一种语言的笑声。有人在放音乐。你的室友们应该到了，但你还没勇气开门。
+[Y1W0|first_night] 旁白：窗外开始下雨了。学长说过，这里的雨不用打伞，因为它每天都下。
+[Y1W0|first_night] 旁白：你从箱子里翻出一桶泡面。是在国内机场便利店临时买的，当时觉得自己很有先见之明。
+[Y1W0|first_night] 旁白：热水壶是学校配的，里面有一层白色的水垢。你盯着它看了很久，最后还是用了。
+[Y1W0|first_night] 旁白：你坐在地上，靠着床。泡面是这一整天里第一个有味道的东西。
+[Y1W0|first_night] 旁白：手机响了。是视频电话。
+[Y1W0|first_night] 妈妈：给我看看房间。
+[Y1W0|first_night] 旁白：你转着手机拍了一圈。
+[Y1W0|first_night] 妈妈：这么小啊？……被子铺好了？铺好了就好。
+[Y1W0|first_night] 旁白：妈妈最后说：“回来给你做青菜年糕。”你说好。你在心里算了一下，距离圣诞假还有十一周。
+[Y1W0|first_night] 旁白：泡面凉了。你还是把它吃完了。
+[Y1W0|first_night] 旁白：睡前你刷到一篇笔记：《新生第一晚必做的10件事》。第一条是“提前买好床品”。
+[Y1W1] 〔背景 campus〕
+[Y1W1|freshers] 旁白：迎新周。学生会大楼前面的草坪上摆满了摆位，每个摆位前面都站着一个笑得很用力的人。
+!!BOT PAUSED stuck ["[W1 null] 画面 10 秒没变化（可能卡住）：睡前你刷到一篇笔记：《新生第一晚必做的10件事》。第一条是“提前买好床品”。|0|false||310|1|"]
+[Y1W1|freshers] 旁白：你在门口站了三分钟，做了三次深呼吸，然后假装在看手机走了进去。
+[Y1W1|freshers] 旁白：到处都是免费的东西。银行送笔，外卖平台送优惠券，健身房送体验卡，还有一家实在想不出送什么的保险公司，送了你一颗草莓。
+[Y1W1|freshers] 旁白：（一颗。）
+[Y1W1|freshers] 旁白：先去哪？
+[Y1W1|freshers] 〔选项〕时尚社的摆位（摆位前面有一个金发卷毛） ／ 有人在用中文喊“新生群扫码拉你”
+[Y1W1|freshers] 旁白：▶ 时尚社的摆位（摆位前面有一个金发卷毛）
+[Y1W1|freshers] 旁白：你走到时尚社的摆位前面。一个金发卷毛的男生在给一群女生发传单。
+[Y1W1|freshers] 旁白：他发完一抬头，正好看到你。
+[Y1W1|freshers] 时尚社的金发男生：Hey! You look like you've got good taste. Fashion society? We do vintage swaps, and the socials are actually fun, I promise.「嘿！你看起来品味很好。来时尚社吗？我们有二手交换，聚会也真的很好玩，我保证。」
+[Y1W1|freshers] 旁白：（他刚才对上一个女生也是这么说的。我听见了。）
+[Y1W1|freshers] 时尚社的金发男生：What's your name?「你叫什么名字？」
+[Y1W1|freshers] 旁白：你说了。他跟着念了一遍，念得很认真，念得完全不对。
+[Y1W1|freshers] 〔选项〕“Close enough!” ／ 临时编一个英文名
+[Y1W1|freshers] 旁白：▶ “Close enough!”
+[Y1W1|freshers] 时尚社的金发男生：No, no — say it again. I want to get it right.「不行不行，再说一遍。我想念对。」
+[Y1W1|freshers] 旁白：（他又念了三遍。一遍比一遍离谱。但他是认真的。）
+[Y1W1|freshers] 旁白：他在报名表上写你的名字，拼错了一个字母。你没有纠正。
+[Y1W1|freshers] Ollie：What's your Insta? I'll add you.「你 Ins 是什么？我加你。」
+[Y1W1|freshers] 旁白：你掏出手机，打开 WeChap，给他看二维码。
+[Y1W1|freshers] Ollie：…What's that? Is that a — is that a barcode?「……这是什么？这是——条形码？」
+[Y1W1|freshers] 旁白：（……好的。原来这里大家都用 Ins。）
+[Y1W1|freshers] 旁白：你翻出那个很久没发过东西的 Instagran，follow 了时尚社，顺手把头像换了。
+[Y1W1|freshers] 〔选项〕认真选一张好看的头像 ／ 就用机场那张 ／ 头像用一张{家乡食物}
+[Y1W1|freshers] 旁白：▶ 认真选一张好看的头像
+[Y1W1|freshers] 旁白：你挑了十五分钟，最后用了高中毕业旅行在海边拍的那张。（那时候我还不知道我会在这里。）
+[Y1W1|freshers] 旁白：你从人堆里挤出来，手里的传单又多了两张。
+[Y1W1|freshers] 旁白：路过健身社摆位时，只看到一个姜红色头发的背影在帮忙搬哑铃。
+[Y1W1|freshers] 旁白：快到出口的时候，“同学中国人吧？”一张彩色传单塞进了你手里，正面是“中秋晚会·新生联谊”，反面一行小字：“论文润色，100%通过率，详询Essay学姐”。递传单的人已经在喊下一个了。
+[Y1W1|freshers] 〔选项〕扫码进群 ／ 把传单塞进包里
+[Y1W1|freshers] 旁白：▶ 扫码进群
+[Y1W1|freshers] 旁白：手机震了一下，群里正好有人在发：浙江的在吗？杭州的、宁波的、温州的，口音互相听不懂的那种，都欢迎。
+[Y1W1|freshers] 旁白：（……五百个人。我认识零个。但他们都说我家那边的话。）
+[Y1W1|freshers] 旁白：回宿舍的路上，你数了一下：三个帆布包、五支笔、一张健身房体验卡，和一颗草莓。
+[Y1W1|freshers] 旁白：草莓已经吃了。
+[Y1W1|freshers] 旁白：迎新集市那天晚上，厨房里有人在煎东西，烟雾报警器“滴”了一声，又停了。
+[Y1W1] 〔背景 dorm_night〕
+[Y1W1|fire_alarm] 旁白：凌晨三点零七分。
+[Y1W1|fire_alarm] 旁白：你从床上弹了起来，心跳快得像刚跑完八百米。你的第一反应是拿手机，第二反应是拿护照。
+[Y1W1|fire_alarm] 旁白：（护照在哪。护照在哪。护照在——我为什么要拿护照？）
+[Y1W1|fire_alarm] 旁白：出门前抓起了什么？
+[Y1W1|fire_alarm] 〔选项〕羽绒服 ／ 护照和BRP ／ 电饭煲
+[Y1W1|fire_alarm] 旁白：▶ 羽绒服
+[Y1W1|fire_alarm] 旁白：你是楼下唯一一个不冷的人。旁边穿短袖的英国男生看着你：“Smart.「聪明。」”
+[Y1W1] 〔背景 fire_alarm〕
+[Y1W1|fire_alarm] 旁白：楼下已经站满了人。有人披着被子，有人只围了一条浴巾，有个男生手里还举着一口锅，锅里有半个煎蛋。
+[Y1W1|fire_alarm] 旁白：（知道是谁响的火警了。）
+[Y1W1|fire_alarm] 旁白：你找了一个离人群最远的角落站着，假装在看手机。手机没有信号。
+[Y1W1|fire_alarm] Dave：Right, love, name and flat number. Don't worry, it's just someone's toast. It's always someone's toast.「好了亲爱的，名字和房号。别担心，就是有人烤糊了面包。永远都是有人烤糊了面包。」
+[Y1W1|fire_alarm] 旁白：（他叫我love。……英国人都这么叫吗？）
+[Y1W1|fire_alarm] 旁白：一个高马尾的女生抱着一叠书站在寒风里。
+[Y1W1|fire_alarm] 陈思琪：你就是群里那个浙江的吧？我陈思琪。……我也没想拿书，就是顺手。
+[Y1W1|fire_alarm] 旁白：（半夜三点顺手拿了三本教材。这是一个很危险的人。）
+[Y1W1|fire_alarm] 周可欣：我在群里发了个定位，你们快看，我在拍什么。
+[Y1W1|fire_alarm] 旁白：她在拍一个只围了浴巾的男生。群名已经被她改成“三点火警幸存者”。
+[Y1W1|fire_alarm] 吴桐：（打了个哈欠）没事，反正明天也没课。
+[Y1W1|fire_alarm] 旁白：（最情绪稳定的人出现了。）
+[Y1W1] 〔背景 dorm_night〕
+[Y1W1|fire_alarm] 旁白：四点半，火警停了。你回到房间，发现自己完全睡不着了。
+[Y1W1|fire_alarm] 旁白：你发了第一篇笔记：《到英国第三天，凌晨三点被火警叫醒》。十分钟后有一条评论：“欢迎来到英国，这才第一次。”
+[Y1W1|acq_senior_1] Leo（手机）：王雨萱你好！我是林子航，大家叫我 Leo。房子找好没？没找好的话我这边有几个房源，学校步行十分钟，包水电。接机、代购、找房都可以找我～
+[Y1W1|acq_senior_1] 旁白：两分钟后：
+[Y1W1|acq_senior_1] Leo（手机）：不好意思，上面名字打错了。
+[Y1W1] 📱senior｜senior：王雨萱你好！我是林子航，大家叫我 Leo。房子找好没？没找好的话我这边有几个房源，学校步行十分钟，包水电。接机、代购、找房都可以找我～
+[Y1W1] 📱senior｜senior：不好意思，上面名字打错了。
+[Y1W1|acq_senior_1] Leo（手机）：我金融大三，明年夏天毕业。毕业前这一年，有事都能找我。
+[Y1W1|acq_senior_1] 旁白：（昨天在到达口举牌子接我的，就是这个人。他群发的时候没认出我。）
+[Y1W1|acq_senior_1] 旁白：（我往上翻了一下。他打的是“王雨萱”。……我不叫王雨萱。他是复制粘贴的，这条消息今天至少发了三十个人。）
+[Y1W1|acq_senior_1] 旁白：▶ “没关系，王雨萱也是个好名字。”
+[Y1W1|acq_senior_1] 旁白：很久没有回复。然后：
+[Y1W1|acq_senior_1] Leo（手机）：……哈哈。
+[Y1W1] 📱senior｜senior：我金融大三，明年夏天毕业。毕业前这一年，有事都能找我。
+[Y1W1] 📱senior｜我：没关系，王雨萱也是个好名字。
+[Y1W1] 📱senior｜senior：……哈哈。
+[Y1W1|acq_senior_1] Leo（手机）：你这个人，挺好玩的。
+[Y1W1] 〔背景 dorm_room〕
+[Y1W1] 〔背景 dorm_room〕
+[Y1W1] 〔背景 dorm_room〕
+[Y1W1] 〔背景 dorm_room〕
+[Y1W1|arrival_admin] 旁白：落地第三天。你在备忘录里列了一张单子：
+[Y1W1|arrival_admin] 旁白：① 电话卡　② 银行卡　③ 注册 GP（家庭医生）
+[Y1W1] 📱senior｜senior：你这个人，挺好玩的。
+[Y1W1|arrival_admin] 旁白：（这些以前都有人替我办过。夏校的时候是带队老师，寄宿的时候是学校。这次没有。）
+[Y1W1|arrival_admin] 旁白：先办哪个？
+[Y1W1|arrival_admin] 〔选项〕电话卡 ／ 银行卡 ／ GP
+[Y1W1|arrival_admin] 旁白：▶ 电话卡
+[Y1W1|arrival_admin] 旁白：你直接在手机上办了 eSIM，五分钟。上次夏校带队老师发的那张卡，你还留在钱包里当纪念。
+[Y1W1|arrival_admin] 旁白：你选了一个月 £12 的套餐。（中间那个。永远是中间那个。）
+[Y1W1|arrival_admin] 旁白：你知道大银行要地址证明，直接在手机上开了网银卡，珊瑚色的，十分钟。
+[Y1W1|arrival_admin] 旁白：隔壁桌一个新生在跟银行柜员解释什么是“户口本”，你在心里给他点了一根蜡烛。
+[Y1W1|arrival_admin] 旁白：注册 GP 的表有四页。“NHS number「医保号」”那一栏，你不知道有没有。
+[Y1W1|arrival_admin] 旁白：你在网上搜了二十分钟，最后决定空着。没人说什么。
+[Y1W1|arrival_admin] 旁白：你想起寄宿那两年，生病都是学校护士管。这是你第一次自己给自己找医生。
+[Y1W1|arrival_admin] 旁白：三件事办完，你在单子上画了三个勾。（来英国以后，第一次觉得自己是个大人。）
+[Y1W1|] 〔选项〕去半小时 ／ 说明天有课
+[Y1W1|] 旁白：▶ 去半小时
+[Y1W1] 〔背景 map_city〕
+[Y1W1] 〔背景 dorm_room〕
+[Y1W1|] Ollie（手机）：Hey, you okay? Waited a bit. Hope everything's fine x「嘿，你还好吗？等了一会儿。希望一切都好 x」
+[Y1W1] 📱local｜local：Hey, you okay? Waited a bit. Hope everything's fine x「嘿，你还好吗？等了一会儿。希望一切都好 x」
+[Y1W1|] 旁白：▶ “对不起，我忘了。”
+[Y1W2] 📱local｜我：对不起，我忘了。
+[Y1W2] 〔背景 crit_room〕
+[Y1W2|first_lecture] 旁白：第一节课，全院大一的必修课，三个专业一起上。
+!!BOT PAUSED stuck ["[W1 null] 画面 10 秒没变化（可能卡住）：睡前你刷到一篇笔记：《新生第一晚必做的10件事》。第一条是“提前买好床品”。|0|false||310|1|","[W2 null] 画面 10 秒没变化（可能卡住）：室友在厨房开派对，敲你的门问你要不要来。你明天早九。|0|false||295|2|"]
+[Y1W2|first_lecture] 旁白：你提前十五分钟到，坐在第二排。
+[Y1W2|first_lecture] 旁白：五分钟后，你发现第一排、第二排、第三排坐的全是中国人。本地学生坐在最后三排，中间空了两排，像一条边境线。
+[Y1W2|first_lecture] 旁白：第一个进来的是一个端着咖啡的中年男人。他说他在希腊出生，在法国长大，在加拿大读的博士，所以“my accent is a crime scene, I apologise in advance”。「我的口音是一个犯罪现场，提前道歉。」
+[Y1W2|first_lecture] 旁白：全场笑了。
+[Y1W2|first_lecture] 旁白：你听懂了七成，剩下三成靠PPT和旁边同学的笔记。
+[Y1W2|first_lecture] Nikos：And remember — there are no stupid questions here. Any questions?「记住，这里没有蠢问题。有问题吗？」
+[Y1W2|first_lecture] 旁白：全场沉默。前三排的中国人集体低头看笔记本，后三排的本地人集体看手机。
+[Y1W2|first_lecture] 〔选项〕举手提问 ／ 低头看笔记本
+[Y1W2|first_lecture] 旁白：▶ 举手提问
+[Y1W2|first_lecture] 旁白：你举手的那一秒，前三排所有人都回头看你。
+[Y1W2|first_lecture] Nikos：Brilliant question! Lovely.「好问题！很棒。」
+[Y1W2|first_lecture] 旁白：（下课后我在厕所里坐了五分钟缓一缓。）
+[Y1W2|first_lecture] 旁白：下午是第二节课。教室门一开，前三排的人都下意识地坐直了。
+[Y1W2|first_lecture] 旁白：他没有自我介绍。他把课程大纲放在投影上，用红笔在“Assessment”那一栏圈了一下。
+[Y1W2|first_lecture] Pike：I'll be honest with you. Most of you will not get above sixty in this module. Some of you will not pass. Read everything on the list.「我就直说了。你们大多数人这门课上不了60分，有些人会挂。书单上的全部读完。」
+[Y1W2|first_lecture] 旁白：书单有四页。
+[Y1W2|first_lecture] 旁白：（……英国人不是说话很委婉吗？）
+[Y1W2|first_lecture] 旁白：旁边的中国同学小声告诉你：“他去年给了一个人39.2。就差0.8。”
+[Y1W2] 〔背景 campus〕
+[Y1W2|tutor_meeting_1] 旁白：下课以后，你的邮箱里多了一封邮件，标题是“Personal tutor meeting – Week 2「个人导师见面——第2周」”。
+[Y1W2|tutor_meeting_1] 旁白：（入学材料里写过，每个学生都有一位personal tutor「个人导师」。具体是干什么的，材料写得很英国：礼貌、模糊、三页。）
+[Y1W2] 〔背景 tutor_office〕
+[Y1W2|tutor_meeting_1] 旁白：社会学楼三楼，门上贴着一张手写的纸：Door's open. Kettle's on.「门开着，水烧着。」
+[Y1W2|tutor_meeting_1] Marcia：Come in, come in. Have you eaten today?「进来进来。你今天吃饭了吗？」
+[Y1W2|tutor_meeting_1] 旁白：（……她比我妈还像我妈。）
+[Y1W2|tutor_meeting_1] 旁白：桌上有两个盒子，一盒姜汁饼干，一盒纸巾。两个都开过了。
+[Y1W2|tutor_meeting_1] Marcia：I'm your personal tutor, which means: not your lecturer, not your mum. I'm the person you come to when things go wrong. Illness, family, deadlines, anything. Yes?「我是你的personal tutor，意思是：不是你的任课老师，也不是你妈。出事的时候来找我。生病、家里的事、截止日期，什么都行。好吗？」
+[Y1W2|tutor_meeting_1] Marcia：One more thing. If you need an extension, you bring me the paperwork. All of it. I send back the ones that aren't complete.「还有一件事。要延期的话，材料带齐。我会把不齐的退回去。」
+[Y1W2|tutor_meeting_1] 旁白：（前半段很温柔，后半段突然变成了教务处。）
+[Y1W2|tutor_meeting_1] 〔选项〕拿一块姜汁饼干 ／ “我吃过了，谢谢。”
+[Y1W2|tutor_meeting_1] 旁白：▶ 拿一块姜汁饼干
+[Y1W2|tutor_meeting_1] 旁白：很辣。你被呛得咳了两声。她把纸巾盒推了过来。
+[Y1W2|tutor_meeting_1] 旁白：（原来纸巾是干这个用的。——后来我知道了，不是。）
+[Y1W2|tutor_meeting_1] 旁白：从这周开始，工作日由你来排。五个格子，每格选一个：上课、图书馆、做作业、社交、宅家。上课不是强制的，但学校会记出勤。
+[Y1W2|] 邮件：Student Records｜Your timetable for Year One「Dear 何心妍, your timetable is now available. Your first class is on Monday at 9am. Your compulsory sessions are on Monday and Wednesday. Attendance at these sessions is monitored.」
+[Y1W2] 〔背景 dorm_room〕
+[Y1W2|ep_fox] 旁白：窗外有小孩在哭，哭得很惨。你趴在窗边看了半天，是一只狐狸，在翻垃圾桶。
+[Y1W2|ep_fox] 〔选项〕拍下来发小红书 ／ 关窗睡觉
+[Y1W2|ep_fox] 旁白：▶ 拍下来发小红书
+[Y1W2|ep_fox] 旁白：评论：“英国特产”
+[Y1W2] 〔背景 dorm_room〕
+[Y1W2] 〔背景 dorm_room〕
+[Y1W2] 〔背景 dorm_night〕
+[Y1W2|acq_senior_2] 旁白：晚上十一点，群里有人问：“请问 GP 怎么注册？”
+[Y1W2|acq_senior_2] 旁白：三十秒后，学长回了一段话：去哪个网站、要什么证件、填表时“NHS number”「医保号」那一栏怎么写、注册完多久能约到医生。
+[Y1W2|acq_senior_2] 旁白：又有人问：“请问学校附近哪里能买到电饭煲？”
+[Y1W2|acq_senior_2] 旁白：三十秒后，学长又回了：三个地方，各多少钱，哪个能送货上门。最后一行：“我这也有二手的，£15，九成新。”
+[Y1W2|acq_senior_2] 旁白：（他像一个二十四小时在线的客服。）
+[Y1W2|acq_senior_2] 〔选项〕私聊问他：“学长你都不睡觉的吗？” ／ 在群里也问一个问题
+[Y1W2|acq_senior_2] 旁白：▶ 私聊问他：“学长你都不睡觉的吗？”
+[Y1W2|acq_senior_2] 何心妍（手机）：学长你都不睡觉的吗？
+[Y1W2|acq_senior_2] 林子航（手机）：睡啊。手机放枕头边上。
+[Y1W2] 📱senior｜我：学长你都不睡觉的吗？
+[Y1W2] 📱senior｜senior：睡啊。手机放枕头边上。
+[Y1W2|acq_senior_2] 林子航（手机）：新生九月最需要人。过了十月就好了。
+[Y1W2] 〔背景 map_city〕
+[Y1W2] 📱senior｜senior：新生九月最需要人。过了十月就好了。
+[Y1W2|] 邮件：Dr. Nikos Lambert｜Elective groups「Groups for the elective will be announced on Monday. Be nice to each other.」
+[Y1W2|] 浙江老乡群（消息）：赵子豪：中秋晚会·新生联谊·有月饼有抽奖
+!!BOT PAUSED stuck ["[W1 null] 画面 10 秒没变化（可能卡住）：睡前你刷到一篇笔记：《新生第一晚必做的10件事》。第一条是“提前买好床品”。|0|false||310|1|","[W2 null] 画面 10 秒没变化（可能卡住）：室友在厨房开派对，敲你的门问你要不要来。你明天早九。|0|false||295|2|","[W3 null] 画面 10 秒没变化（可能卡住）：评论：“英国特产”|0|false||312|3|"]
+[Y1W3|group_project] 旁白：第一节专业课的老师姓于，叫于晓。名单上写着 Dr. Xiao Yu。
+[Y1W3] 〔背景 crit_room〕
+[Y1W3|group_project] 旁白：设计专业的教室没有讲台，只有几张大桌子、一面贴满图钉的软木墙，和一台永远在卡纸的打印机。
+[Y1W3|group_project] 于晓：Welcome to your first project. The theme is "Identity". Next week, bring one object that represents you. One. Not five.「欢迎来到你们的第一个项目，主题是‘身份’。下周每人带一件代表你的东西。一件，不是五件。」
+[Y1W3|group_project] 旁白：旁边的英国同学已经在讨论带黑胶唱片还是带祖母的手织毛衣了。
+[Y1W3|group_project] 旁白：你打算带什么？
+[Y1W3|group_project] 〔选项〕一瓶老干妈 ／ 一张家乡的照片
+[Y1W3|group_project] 旁白：▶ 一瓶老干妈
+[Y1W3|group_project] 旁白：（它跟着我飞了一万公里，它比我更有身份。）
+[Y1W3|group_project] 旁白：下课后，教室里只剩几个中国学生。于晓收拾着电脑，突然换了一口东北话：
+[Y1W3|group_project] 于晓：都别慌啊。crit 就是大家把东西挂墙上，挨个挑毛病。挑你毛病不是讨厌你，是这儿的规矩。脸皮练厚点就行。
+[Y1W3|group_project] 旁白：（她说“练厚点”的时候，像在说“多穿点”。）
+[Y1W3] 〔背景 crit_room〕
+[Y1W3|group_project] 旁白：选修课的老师在屏幕上放出了分组名单。你在第七组，一共四个名字。
+[Y1W3|group_project] 旁白：你的名字；一个叫Ben的；一个叫Hannah的；还有一个长到屏幕显示不全、后面变成了省略号的名字。
+[Y1W3|group_project] 旁白：老师念到那个名字的时候停了三秒。“Pim… Pimcha…”
+[Y1W3|group_project] Ploy：It's Ploy! Just Ploy. Nobody can say the rest, it's fine, my own grandma couldn't say it.「叫 Ploy 就行！后面的没人念得出来，没关系，我外婆以前都念不出来。」
+[Y1W3|group_project] 旁白：她走过来坐在你旁边。一种很贵的香水味。金色的大圈耳环。一个粉色的菱格小包，金链子。
+[Y1W3|group_project] 旁白：（这个包。……我一年的生活费。）
+[Y1W3|group_project] Ploy：Oh my god, wait — you're Chinese? My grandma was from Guangdong! I know a tiny bit — "sik zo faan mei"?「天哪，等等——你是中国人？我外婆是广东人！我会一点点——'食咗饭未'？」
+[Y1W3|group_project] Ploy：fashion marketing, first year. this is just my elective. don't ask why.「时尚营销，大一。这只是我的选修。别问为什么。」
+[Y1W3|group_project] 旁白：你听懂了一半。你说你吃过了。她很开心。
+[Y1W3|group_project] Hannah：Right! So I've already made a shared doc, a group chat, and a Gantt chart. I've assigned sections, but feel free to swap — actually, don't swap, I've colour-coded it.「好！我已经建了共享文档、群聊和一张甘特图。分工我也分好了，想换可以换——算了别换，我已经按颜色标好了。」
+[Y1W3|group_project] 旁白：（分组名单是五分钟前才公布的。）
+[Y1W3|group_project] 旁白：（太好了，有人什么都安排好了。我只需要按颜色做事。）
+[Y1W3|group_project] Ben：Sounds good. I'm… yeah. Sounds good.「听起来不错。我……嗯。不错。」
+[Y1W3|group_project] 旁白：他说完这句话，在之后的八周里只又说过两句话。
+[Y1W3|group_project] 旁白：下课后，Ploy拉住了你的胳膊。
+[Y1W3|group_project] Ploy：Okay, real talk. I'm terrible at essays. Like, terrible. But I'm amazing at presenting. So… what if you do the writing part, and I make us look incredible on the day?「好，说实话。我写essay特别烂，烂到离谱。但我presentation超强。所以……要不你来写，上台那天我让我们马翻全场？」
+[Y1W3|group_project] 旁白：（她说“我们”的时候，一点都不心虚。）
+[Y1W3|group_project] 〔选项〕“行，我来写。” ／ “我们各写各的，但我可以帮你改。” ／ “……我英语也不好。”
+[Y1W3|group_project] 旁白：▶ “行，我来写。”
+[Y1W3|group_project] Ploy：You're an angel. I'm buying you bubble tea. Every week. Forever.「你是天使。我请你喝奶茶，每周。一辈子。」
+[Y1W3|group_project] 旁白：（她后来确实请了。请了两次。）
+[Y1W3|group_project] 旁白：屏幕右上角多了一个进度条：作业1，截止第8周，0%。做不做、什么时候做，你自己决定。
+[Y1W3|group_project] 旁白：当晚，小组群里的第一条消息是Hannah发的一张甘特图。第二条是Ploy发的一个爱心。Ben已读。
+[Y1W3|] 邮件：Module Leader｜Assignment brief released「Dear students,
+
+The brief for 作业1：概念板＋草图本 is now available on the module page. Please read it carefully, including the marking criteria.
+
+Deadline: Friday of Week 8, 12:00 noon, via the online submission portal. Late submissions will be capped at 40 unless an extension has been approved.
+
+Good luck,
+Module Leader」
+[Y1W3] 〔背景 library〕
+[Y1W3|acq_groupmate_1] 旁白：小组第一次开会。Hannah 已经打印好了议程，Ben 还没来，Ploy 迟到了十五分钟，手里拿着一杯冰美式，墨镜架在头上。
+[Y1W3|acq_groupmate_1] 旁白：她坐下来，第一句话不是道歉，是看着你的包：
+[Y1W3|acq_groupmate_1] Ploy：Oh my god, where did you get that bag? It's so cute.「天哪，你这个包哪买的？好可爱。」
+[Y1W3|acq_groupmate_1] 旁白：（……淘宝，¥59。）
+[Y1W3|acq_groupmate_1] 〔选项〕说实话：“淘宝，大概六英镑。” ／ “国内买的，忘了哪家了。”
+[Y1W3|acq_groupmate_1] 旁白：▶ 说实话：“淘宝，大概六英镑。”
+[Y1W3|acq_groupmate_1] 旁白：她愣了一下，然后笑出声：“Six pounds?? Send me the link. I'm serious.「六英镑？？发我链接。我是认真的。」”
+[Y1W3|acq_groupmate_1] 旁白：一周以后，她背着一个一模一样的包来上课。
+[Y1W3] 〔背景 library〕
+[Y1W3|acq_groupmate_1] 旁白：散会的时候，Ploy 拿出手机要加你。
+[Y1W3|acq_groupmate_1] 旁白：她看着你的名字，念了一遍，念错了。
+[Y1W3|acq_groupmate_1] Ploy：Can I call you something easier? Like — Lily? You look like a Lily.「我能叫你一个简单点的名字吗？比如——Lily？你看起来像个 Lily。」
+[Y1W3|acq_groupmate_1] 旁白：（……这是第一个，想直接给我换个名字的人。）
+[Y1W3|acq_groupmate_1] 〔选项〕“我叫{名字}。你可以慢慢学。” ／ “行啊，Lily 也可以。”
+[Y1W3|acq_groupmate_1] 旁白：▶ “我叫何心妍。你可以慢慢学。”
+[Y1W3|acq_groupmate_1] 旁白：她愣了一下，然后认真地看着你：“Okay. Say it again. Slowly.「好。再说一遍。慢一点。」”
+[Y1W3|acq_groupmate_1] 旁白：她念了三遍。第三遍对了一半。
+[Y1W3|acq_groupmate_1] Ploy：Nobody's ever said no to me about a name before. I kind of like it.「从来没人在名字这件事上拒绝过我。我有点喜欢。」
+[Y1W3] 〔背景 dorm_room〕
+[Y1W3|ep_vpn] 旁白：你想看一个国内的综艺，视频平台说“该内容仅限中国大陆地区”。
+[Y1W3|ep_vpn] 〔选项〕开加速器，看完 ／ 放弃，看英国电视
+[Y1W3|ep_vpn] 旁白：▶ 开加速器，看完
+[Y1W3|ep_vpn] 旁白：加速器时快时慢，你看了一集，卡了十一次。但你看完了。（三个小时的综艺，我看了五个小时。）
+[Y1W3|] 林子航（手机）：学生会那个活动我得去，赵子豪拉的。你要是去，坐我旁边，省得他拉你发传单。
+[Y1W3|] 旁白：▶ 好，到时候见
+[Y1W3] 〔背景 dorm_room〕
+[Y1W3] 〔背景 dorm_room〕
+[Y1W3] 〔背景 dorm_night〕
+[Y1W3] 📱senior｜senior：学生会那个活动我得去，赵子豪拉的。你要是去，坐我旁边，省得他拉你发传单。
+[Y1W3] 📱senior｜我：[好，到时候见]
+[Y1W3|gala_host_ask] 赵子豪（手机）：学妹，晚会缺一个串场主持，你普通话标准吗？
+[Y1W3|gala_host_ask] 旁白：▶ “我试试。”
+[Y1W3|] 〔选项〕去 ／ 改天
+[Y1W3|] 旁白：▶ 去
+[Y1W3] 📱zhao_zihao｜zhao_zihao：学妹，晚会缺一个串场主持，你普通话标准吗？
+[Y1W3] 📱zhao_zihao｜我：我试试。
+[Y1W3] 〔背景 map_city〕
+[Y1W3|] 浙江老乡群（消息）：城中心那家中超周四到货，有新鲜豆腐！
+[Y1W4] 〔背景 chinese_market〕
+[Y1W4|chinese_shop] 旁白：中超的位置你第一周就存进了地图。迎新、分组、火警，一直没空去。第四周，你终于受不了了。
+!!BOT PAUSED stuck ["[W2 null] 画面 10 秒没变化（可能卡住）：室友在厨房开派对，敲你的门问你要不要来。你明天早九。|0|false||295|2|","[W3 null] 画面 10 秒没变化（可能卡住）：评论：“英国特产”|0|false||312|3|","[W4 null] 画面 10 秒没变化（可能卡住）：有个同学说他周三去健身房，问你要不要一起。|0|false||289|4|"]
+[Y1W4|chinese_shop] 旁白：三周的meal deal。三周的三明治。你已经能闭着眼睛分辨出这家超市的鸡肉蘑菇和另一家的鸡肉蘑菇。
+[Y1W4|chinese_shop] 旁白：中超在市中心一条小巷子里，门口挂着一个已经褪色的红灯笼。推开门的一瞬间，你闻到了八角、酱油和干货的味道。
+[Y1W4|chinese_shop] 旁白：（……我好像要哭了。）
+[Y1W4|chinese_shop] 旁白：货架上摆着老干妈、火锅底料、速冻汤圆和五个牌子的方便面。你在青菜年糕的同款调料前面站了很久。
+[Y1W4|chinese_shop] 旁白：然后你看了一眼价签。
+[Y1W4|chinese_shop] 旁白：一瓶老干妈 £3.49（≈¥32）
+[Y1W4|chinese_shop] 旁白：（在家里九块五。……买。买两瓶。）
+[Y1W4|chinese_shop] 旁白：结账的时候，老板抬头看了你一眼。
+[Y1W4|chinese_shop] 陈老板：新来的吧？这礼拜第三个了，一买就买两瓶老干妈。
+[Y1W4|chinese_shop] 陈老板：哪里人？
+[Y1W4|chinese_shop] 旁白：你说了。
+[Y1W4|chinese_shop] 陈老板：哦哟，老乡！我温州的。——不过温州话你肯定听不懂。
+[Y1W4|chinese_shop] 旁白：他从柜台下面摸出一袋冻饺子，放进你的袋子里。
+[Y1W4|chinese_shop] 陈老板：这个快过期了，不要钱。烧的时候水开了再下，点三次凉水。
+[Y1W4|chinese_shop] 旁白：（这是我妈会说的话。）
+[Y1W4|chinese_shop] 〔选项〕“谢谢叔叔。” ／ “老板，你们这招人吗？”
+[Y1W4|chinese_shop] 旁白：▶ “谢谢叔叔。”
+[Y1W4|chinese_shop] 旁白：〔友情·陈老板+1〕
+[Y1W4|chinese_shop] 旁白：陈叔摆摆手：
+[Y1W4|chinese_shop] 陈老板：叫什么叔叔，叫陈老板。……算了，叫叔叔也行。
+[Y1W4] 〔背景 flat_kitchen〕
+[Y1W4|chinese_shop] 旁白：那天晚上你煮了饺子。水开了再下，点了三次凉水。
+[Y1W4] 〔背景 hall_stage〕
+[Y1W4|y1_midautumn] 旁白：学生会租的礼堂，舞台上方挂着一条红色横幅，上面的字是打印的，贴歪了。台下两百多个人，月饼一人一个，豆沙和五仁，抽到五仁的人表情都很复杂。
+[Y1W4|y1_midautumn] 旁白：你站在侧幕，手里的台本被汗浸湿了一个角。赵子豪拍拍你：“别紧张，就念名字。念错了就说‘欢迎热烈掌声’。”
+[Y1W4|y1_midautumn] 旁白：你上台了。追光灯打过来的一瞬间，你什么都看不见。
+[Y1W4|y1_midautumn] 〔选项〕照着台本念 ／ 念得很小声
+[Y1W4|y1_midautumn] 旁白：▶ 照着台本念
+[Y1W4|y1_midautumn] 旁白：你念完了。只念错了一个节目名：《茉莉花》你念成了《茉莉奶绿》。台下笑成一片，赵子豪在侧幕给你竖大拇指。
+[Y1W4|y1_midautumn] 旁白：节目单：古筝独奏、相声（讲的是“留学生回国被亲戚盘问”）、四个男生跳的女团舞、抽奖。
+[Y1W4|y1_midautumn] 旁白：相声讲到“你一个月花多少钱”那句，全场笑得最大声，笑完了又安静了一下。
+[Y1W4|y1_midautumn] 旁白：（因为每个人都被问过。）
+[Y1W4|y1_midautumn] 旁白：学长在门口摆了一张桌子卖月饼礼盒，“晚会价 £12，外面 £18”。他冲你招手，塞给你一个：“不收钱。别跟别人说。”
+[Y1W4|y1_midautumn] 旁白：吴桐把她那个五仁月饼掰了一半给你：“我不爱吃，但我妈说过节得吃。”
+[Y1W4|y1_midautumn] 旁白：〔友情·吴桐+2〕
+[Y1W4|y1_midautumn] 旁白：陈思琪坐在最后一排，膝盖上摊着笔记本电脑。“我听着呢。”她说，眼睛没离开屏幕。
+[Y1W4|y1_midautumn] 旁白：周可欣在后台帮忙化妆，给四个跳女团舞的男生每人画了眼线。
+[Y1W4|y1_midautumn] 旁白：Ploy 也来了。她的生日派对是周六，中秋晚会是周五，她说“double celebration week「双倍庆祝周」”。
+[Y1W4|y1_midautumn] Ploy：Mum's family is Chinese. She'd kill me if I skipped mid-autumn.「我妈那边是华人。我要是不过中秋她会杀了我。」
+[Y1W4|y1_midautumn] 旁白：她抽中了二等奖：一个电饭煲。她看着电饭煲，像看着一个外星人，然后送给了你。
+[Y1W4|y1_midautumn] 旁白：你已经有一个了，是你妈塞进箱子的那个。你转手送给了陈思琪。她说她只用来煮方便面。
+[Y1W4|y1_midautumn] 旁白：陈叔赞助了抽奖的一等奖：中超全年八折卡。抽中的人尖叫了。
+[Y1W4|y1_midautumn] 旁白：抽奖。你的号是 47。
+[Y1W4|y1_midautumn] 旁白：中了：三等奖，一盒老干妈。
+[Y1W4|y1_midautumn] 旁白：散场的时候，有人在礼堂外面放了一盏孔明灯，被保安叫停了。灯飞到一半，挂在了树上，一直亮着。
+[Y1W4|y1_midautumn] 旁白：（我在一个看不到月亮的城市，过了一个很像样的中秋。）
+[Y1W4] 〔背景 dorm_room〕
+[Y1W4|ep_emails] 旁白：邮箱里有 47 封未读邮件。
+[Y1W4|ep_emails] 〔选项〕一封一封看 ／ 全部标记为已读
+[Y1W4|ep_emails] 旁白：▶ 一封一封看
+[Y1W4|ep_emails] 旁白：第 31 封是“延期申请截止日期变更”，你差点错过。
+[Y1W4|] Ploy（手机）：going to the big tesko Saturday morning. i don't know how to buy vegetables. help 🥺「周六上午去大 Tesko。我不会买菜。救命🥺」
+[Y1W4|] 旁白：▶ 好，到时候见
+[Y1W4] 〔背景 dorm_room〕
+[Y1W4] 〔背景 dorm_room〕
+[Y1W4] 〔背景 dorm_night〕
+[Y1W4|acq_local_2] 旁白：凌晨一点，你收到一条通知：Ollie Bennett 赞了你的帖子。
+[Y1W4|acq_local_2] 旁白：那是你三年前发的一张照片。初中毕业那年夏天，你在海边，头发还是长的。
+[Y1W4|acq_local_2] 旁白：（……三年前？他翻到三年前去了？）
+[Y1W4|acq_local_2] 旁白：一分钟后：
+[Y1W4] 📱groupmate｜groupmate：going to the big tesko Saturday morning. i don't know how to buy vegetables. help 🥺「周六上午去大 Tesko。我不会买菜。救命🥺」
+[Y1W4] 📱groupmate｜我：[好，到时候见]
+[Y1W4|acq_local_2] Ollie（手机）：sorry. thumb slipped. very embarrassing. carry on「抱歉。手滑了。非常尴尬。请继续」
+[Y1W4|acq_local_2] 旁白：▶ 去他的主页，也赞一张他三年前的照片
+[Y1W4|acq_local_2] 旁白：一分钟后：
+[Y1W4|acq_local_2] Ollie（手机）：touché「扯平」
+[Y1W4|acq_local_2] 旁白：你盯着那条通知看了很久，最后什么都没回，关了手机。（但我睡不着了。）
+[Y1W4] 📱local｜local：sorry. thumb slipped. very embarrassing. carry on「抱歉。手滑了。非常尴尬。请继续」
+[Y1W4] 📱local｜local：touché「扯平」
+[Y1W4] 〔背景 map_city〕
+[Y1W4] 〔背景 dorm_night〕
+[Y1W4|] 旁白：楼里开始有人咳嗽。
+[Y1W5] 〔背景 dorm_room〕
+[Y1W5|first_sick] 旁白：第五周，整栋楼都在咳嗽。
+!!BOT PAUSED stuck ["[W3 null] 画面 10 秒没变化（可能卡住）：评论：“英国特产”|0|false||312|3|","[W4 null] 画面 10 秒没变化（可能卡住）：有个同学说他周三去健身房，问你要不要一起。|0|false||289|4|","[W5 null] 画面 10 秒没变化（可能卡住）：楼里开始有人咳嗽。|0|false||298|5|"]
+[Y1W5|first_sick] 旁白：迎新周的那些派对、那些两百个人挤在一个房间里的晚上，结算了。一封学校邮件的标题是“Looking after yourself during Freshers' Flu season「新生流感季，请照顾好自己」”。
+[Y1W5|first_sick] 旁白：（这个病有自己的名字。还有自己的季节。）
+[Y1W5|first_sick] 旁白：你没病。你是整栋楼少数几个没病的人。
+[Y1W5|first_sick] 旁白：你在楼道里听到五种不同的咳嗽声。你买了口罩。没有人戴。你戴了。
+[Y1W5] 〔背景 dorm_room〕
+[Y1W5|ep_pot] 旁白：你的锅在水槽里泡了三天。不是你泡的。
+[Y1W5|ep_pot] 〔选项〕洗了 ／ 在群里问 ／ 换个锅用
+[Y1W5|ep_pot] 旁白：▶ 洗了
+[Y1W5|ep_pot] 旁白：你洗了。第二天水槽里又出现了一个泡着的锅。不是你的，也不是之前那个人的。
+[Y1W5|ep_pot] 旁白：〔友情·陈思琪+1〕
+[Y1W5|ep_pot] 旁白：〔友情·周可欣+1〕
+[Y1W5|ep_pot] 旁白：〔友情·吴桐+1〕
+[Y1W5|] 林子航（手机）：周六晚上我在社团活动室附近办事，你在的话说一声。
+[Y1W5|] 旁白：▶ 好，到时候见
+[Y1W5] 〔背景 dorm_room〕
+[Y1W5] 〔背景 dorm_room〕
+[Y1W5] 📱senior｜senior：周六晚上我在社团活动室附近办事，你在的话说一声。
+[Y1W5] 📱senior｜我：[好，到时候见]
+[Y1W5] 〔背景 dorm_night〕
+[Y1W5|acq_groupmate_3] 旁白：凌晨两点零七分。
+[Y1W5|acq_groupmate_3] Ploy（手机）：@何心妍 babe are the slides done?? hannah's meeting is in 7 hours「@何心妍 宝 幻灯片做好了吗？？Hannah 的会七个小时以后就开了」
+[Y1W5|acq_groupmate_3] 旁白：（……什么幻灯片？分工的时候说好她做幻灯片的。）
+[Y1W5|acq_groupmate_3] 旁白：▶ “分工表上写的是你做幻灯片。”
+[Y1W5] 👥group｜Ploy：@何心妍 babe are the slides done?? hannah's meeting is in 7 hours
+[Y1W5] 👥group｜me：分工表上写的是你做幻灯片。
+[Y1W5|acq_groupmate_3] Ploy（手机）：…omg. omg you're right「……天哪。天哪你说得对」
+[Y1W5|acq_groupmate_3] Ploy（手机）：ok. ok i'm doing it. don't tell Hannah「好。好我在做。别告诉 Hannah」
+[Y1W5|acq_groupmate_3] 旁白：早上八点，幻灯片发出来了。每一页都很好看，内容少得可怜。
+[Y1W5|] 〔选项〕填 ／ 说赶时间
+[Y1W5] 👥group｜Ploy：…omg. omg you're right
+[Y1W5] 👥group｜Ploy：ok. ok i'm doing it. don't tell Hannah
+[Y1W5|] 旁白：▶ 填
+[Y1W5] 〔背景 map_city〕
+[Y1W5|] 邮件：School Office｜Reading Week reminder「下周没有课。」
+[Y1W6] 〔背景 dorm_room〕
+[Y1W6|reading_week] 旁白：Reading week。名义上是用来读书的一周。
+!!BOT PAUSED stuck ["[W4 null] 画面 10 秒没变化（可能卡住）：有个同学说他周三去健身房，问你要不要一起。|0|false||289|4|","[W5 null] 画面 10 秒没变化（可能卡住）：楼里开始有人咳嗽。|0|false||298|5|","[W6 null] 画面 10 秒没变化（可能卡住）：一个学生拦住你：\"Can you fill in a survey? Two minutes.\"|0|false||291|6|"]
+[Y1W6|reading_week] 旁白：实际上，一半的本地同学回家了，另一半去了西班牙。小红书上全是《一周穷游欧洲五国》。
+[Y1W6|reading_week] 旁白：你看了一眼作业进度条。
+[Y1W6|reading_week] 旁白：（……第八周截止。现在第六周。我还剩两周。两周很长。……两周很长吗？）
+[Y1W6|reading_week] 〔选项〕真的去读书 ／ 出城玩一趟 ／ 躺一周
+[Y1W6|reading_week] 旁白：▶ 真的去读书
+[Y1W6] 〔背景 library〕
+[Y1W6|reading_week] 旁白：图书馆空了一半。空出来的那一半座位上，坐的全是中国人。
+[Y1W6|reading_week] 旁白：你和对面的女生对视了一眼，彼此都懂了。
+[Y1W6|reading_week] 旁白：对面的女生就是陈思琪。她的桌上已经有三个空咖啡杯了。“我也刚来。”她说。
+[Y1W6|reading_week] 旁白：以后一起来？
+[Y1W6|reading_week] 旁白：〔友情·陈思琪+3〕
+[Y1W6|reading_week] 旁白：她想了一下：“行。我早上八点到，你迟到我不等。”
+[Y1W6] 〔背景 dorm_room〕
+[Y1W6|reading_week] 旁白：周日晚上，小组群里Hannah发了一句：“Hope everyone had a productive reading week! Reminder: draft due Friday :)「希望大家这周读书周都很有收获！提醒：初稿周五交 :)」”
+[Y1W6|reading_week] 旁白：你翻了一遍课程手册，又翻了一遍邮件。哪里都没写要交初稿。
+[Y1W6|reading_week] Hannah：Oh, it's not official! It's a group deadline. I set it. It's in the Gantt chart :)「哦，不是官方的！是小组的截止日期，我定的。在甘特图里 :)」
+[Y1W6|reading_week] 旁白：（甘特图有十一页。）
+[Y1W6|] 〔选项〕看看地图 ／ 不了
+[Y1W6|] 旁白：▶ 看看地图
+[Y1W6] 〔背景 world_map〕
+[Y1W6] 〔背景 library〕
+[Y1W6|acq_groupmate_5] 旁白：小组会上，Ploy 的手机没电了，借走了你的充电器。一根很旧的线，接口有点松。
+[Y1W6|acq_groupmate_5] 旁白：一周以后，她还给你了。
+[Y1W6|acq_groupmate_5] 旁白：是一根新的。原装的，包装都没拆。旁边还放了一个充电宝。
+[Y1W6|acq_groupmate_5] Ploy：Yours broke. I mean — I broke it. I think. Anyway, here.「你那根坏了。我是说——我弄坏的。应该是。总之，给你。」
+[Y1W6|acq_groupmate_5] 旁白：（我那根，本来就是坏的。）
+[Y1W6|acq_groupmate_5] 〔选项〕“我那根本来就松了，你不用赔的。” ／ “谢谢！”
+[Y1W6|acq_groupmate_5] 旁白：▶ “我那根本来就松了，你不用赔的。”
+[Y1W6|acq_groupmate_5] 旁白：她看了你一会儿，好像没听懂你为什么要说这个。
+[Y1W6|acq_groupmate_5] Ploy：…You're weird. Most people just say thanks.「……你好奇怪。大部分人就说谢谢。」
+[Y1W6|acq_groupmate_5] 旁白：她说“奇怪”的时候是笑着的。
+[Y1W6] 〔背景 dorm_room〕
+[Y1W6|ep_parcel] 旁白：快递显示已送达，门口没有。
+[Y1W6|ep_parcel] 〔选项〕问 Dave ／ 给快递公司打电话 ／ 算了
+[Y1W6|ep_parcel] 旁白：▶ 问 Dave
+[Y1W6|ep_parcel] 旁白：它在 Dave 的办公室，他还帮你挡住了一只想咬箱子的狗。
+[Y1W6|] Ollie（手机）：Library Saturday morning? Not to study. To sit near people who study. It's motivating.「周六上午图书馆？不是去学习。是坐在学习的人旁边。很励志。」
+[Y1W6|] 旁白：▶ 好，到时候见
+[Y1W6] 〔背景 dorm_room〕
+[Y1W6] 〔背景 dorm_room〕
+[Y1W6] 📱local｜local：Library Saturday morning? Not to study. To sit near people who study. It's motivating.「周六上午图书馆？不是去学习。是坐在学习的人旁边。很励志。」
+[Y1W6] 📱local｜我：[好，到时候见]
+[Y1W6] 〔背景 dorm_night〕
+[Y1W6] 〔背景 chinese_market〕
+[Y1W6|acq_senior_3] 旁白：你在找老干妈。货架的另一边，有人在往上码货，一箱一箱的方便面，码得整整齐齐，每一包的商标都朝外。
+[Y1W6|acq_senior_3] 旁白：是学长。他穿着一件旧 T 恤，袖子卷着。
+[Y1W6|acq_senior_3] 林子航：……哟。
+[Y1W6|acq_senior_3] 陈叔：Leo 帮我理货，我给他进货价。互相帮忙。
+[Y1W6|acq_senior_3] 旁白：（他连理货都是谈好条件的。）
+[Y1W6|acq_senior_3] 〔选项〕“学长，我帮你一起码？” ／ “学长你什么都干啊。”
+[Y1W6|acq_senior_3] 旁白：▶ “学长，我帮你一起码？”
+[Y1W6|acq_senior_3] 旁白：〔友情·陈老板+1〕
+[Y1W6|acq_senior_3] 旁白：你们码了二十分钟。他码得比你快三倍，最后把你码歪的那几包又重新摆了一遍。
+[Y1W6|acq_senior_3] 林子航：……你码的也挺好。就是商标朝里了。
+[Y1W6] 〔背景 map_city〕
+[Y1W6|] 小红书推送（消息）：《下周日英国调钟，你准备好了吗》
+[Y1W7] 〔背景 dorm_room〕
+[Y1W7|dark_at_four] 旁白：周日早上，你醒来的时候手机上的时间是七点。床头闹钟上的时间是八点。
+!!BOT PAUSED stuck ["[W5 null] 画面 10 秒没变化（可能卡住）：楼里开始有人咳嗽。|0|false||298|5|","[W6 null] 画面 10 秒没变化（可能卡住）：一个学生拦住你：\"Can you fill in a survey? Two minutes.\"|0|false||291|6|","[W7 null] 画面 10 秒没变化（可能卡住）：……你码的也挺好。就是商标朝里了。|0|false||309|7|"]
+[Y1W7|dark_at_four] 〔选项〕（今天冬令时。我上周就在日历上标了。） ／ （……我的闹钟坏了？）
+[Y1W7|dark_at_four] 旁白：▶ （今天冬令时。我上周就在日历上标了。）
+[Y1W7|dark_at_four] 旁白：你把闹钟拨回去，心安理得地又睡了一个小时。
+[Y1W7|dark_at_four] 旁白：白赚了一小时。你很开心。
+[Y1W7|dark_at_four] 旁白：不过这一小时，是要还的。
+[Y1W7] 〔背景 library〕
+[Y1W7|dark_at_four] 旁白：你在图书馆坐了一下午。作业1下周截止，你终于写到了一个还算满意的段落。
+[Y1W7|dark_at_four] 旁白：你收拾书包，推开图书馆的玻璃门。
+[Y1W7|dark_at_four] 旁白：天黑了。
+[Y1W7|dark_at_four] 旁白：不是傍晚。是黑了。路灯已经亮了。天是深蓝色的，和半夜一样。
+[Y1W7|dark_at_four] 旁白：你看了一眼手机。
+[Y1W7|dark_at_four] 旁白：下午四点零二分。
+[Y1W7|dark_at_four] 旁白：（……）
+[Y1W7|dark_at_four] 旁白：你在台阶上站了一会儿。呼出来的气变成了白色的。
+[Y1W7|dark_at_four] 旁白：家里现在是晚上十二点。家里人应该已经睡了。
+[Y1W7|dark_at_four] 〔选项〕给家里发一条“睡了吗” ／ 拍一张天空发小红书 ／ 什么也不做，走回宿舍
+[Y1W7|dark_at_four] 旁白：▶ 给家里发一条“睡了吗”
+[Y1W7|dark_at_four] 旁白：已读。三分钟后，爸爸回了：“没。你那几点？”
+[Y1W7|dark_at_four] 旁白：你说四点。他说：“哦，那还早。”
+[Y1W7|dark_at_four] 旁白：（对。还早。）
+[Y1W7] 〔背景 dorm_room〕
+[Y1W7|dark_at_four] 旁白：冬天到了。少出门的日子里，孤独感会涨得更快。
+[Y1W7|] 邮件：Module Leader｜Assignment brief released「Dear students,
+
+The brief for 作业2：第一个完整项目“身份” is now available on the module page. Please read it carefully, including the marking criteria.
+
+Deadline: Friday of Week 11, 12:00 noon, via the online submission portal. Late submissions will be capped at 40 unless an extension has been approved.
+
+Good luck,
+Module Leader」
+[Y1W7|] Ploy（手机）：i'll be at the supermarket Saturday morning. come find me x「周六上午我在超市。来找我 x」
+[Y1W7|] 旁白：▶ 好，到时候见
+[Y1W7] 〔背景 dorm_room〕
+[Y1W7] 〔背景 dorm_room〕
+[Y1W7] 📱groupmate｜groupmate：i'll be at the supermarket Saturday morning. come find me x「周六上午我在超市。来找我 x」
+[Y1W7] 📱groupmate｜我：[好，到时候见]
+[Y1W7] 〔背景 dorm_night〕
+[Y1W7|acq_senior_4] 林子航（手机）：奶粉 6 罐，£138，含邮费，下周三到。转账备注写名字。
+[Y1W7|acq_senior_4] 旁白：（……？）
+[Y1W7] 📱senior｜senior：奶粉 6 罐，£138，含邮费，下周三到。转账备注写名字。
+[Y1W7|acq_senior_4] 林子航（手机）：发错了。
+[Y1W7|acq_senior_4] 林子航（手机）：……你别转。
+[Y1W7|acq_senior_4] 旁白：▶ “好的，转了 £138。”
+[Y1W7|acq_senior_4] 旁白：一分钟没有回复。然后：
+[Y1W7|acq_senior_4] 林子航（手机）：？？？
+[Y1W7] 📱senior｜senior：发错了。
+[Y1W7] 📱senior｜senior：……你别转。
+[Y1W7] 📱senior｜我：好的，转了 £138。
+[Y1W7] 📱senior｜senior：？？？
+[Y1W7|acq_senior_4] 林子航（手机）：……你没转。我看了。
+[Y1W7|acq_senior_4] 林子航（手机）：你吓我。
+[Y1W7|acq_senior_4] 旁白：（第一次看到他发三个问号。）
+[Y1W7|] 〔选项〕让她先上 ／ 上车
+[Y1W7|] 旁白：▶ 让她先上
+[Y1W7] 📱senior｜senior：……你没转。我看了。
+[Y1W7] 📱senior｜senior：你吓我。
+[Y1W7] 〔背景 map_city〕
+[Y1W7] 〔背景 dorm_night〕
+[Y1W7|] 旁白：超市门口摆出了烟花，一箱一箱的。
+[Y1W8] 〔背景 dorm_room〕
+[Y1W8|ep_haircut] 旁白：头发长到遮眼睛了。附近的理发店一次 £25；中超门口贴着一张手写广告：“中国师傅，£12。”
+!!BOT PAUSED stuck ["[W6 null] 画面 10 秒没变化（可能卡住）：一个学生拦住你：\"Can you fill in a survey? Two minutes.\"|0|false||291|6|","[W7 null] 画面 10 秒没变化（可能卡住）：……你码的也挺好。就是商标朝里了。|0|false||309|7|","[W8 null] 画面 10 秒没变化（可能卡住）：超市门口摆出了烟花，一箱一箱的。|0|false||292|8|"]
+[Y1W8|ep_haircut] 〔选项〕去理发店 ／ 找中国师傅 ／ 自己剪
+[Y1W8|ep_haircut] 旁白：▶ 去理发店
+[Y1W8|ep_haircut] 旁白：理发师一直跟你聊天，你一半听不懂，只会说“yeah”。剪出来比你想的短。
+[Y1W8] 〔背景 dorm_room〕
+[Y1W8] 〔背景 library〕
+[Y1W8|rush_week] 旁白：ddl 就在这周，进度条还差一大截。这一周只能全部用来赶作业了。
+[Y1W8|] 〔选项〕这周什么都不干，只写作业（会很累） ／ 找代写（£250，有风险）
+[Y1W8|] 旁白：▶ 这周什么都不干，只写作业（会很累）
+[Y1W8] 〔背景 dorm_room〕
+[Y1W8] 〔背景 campus〕
+[Y1W8] 〔背景 club_room〕
+[Y1W8|acq_senior_5] 旁白：学生会的新生见面会，赵子豪讲完了，请“赞助商代表”上台讲两句。
+[Y1W8|acq_senior_5] 旁白：上去的是学长。他讲了五分钟：租房怎么避坑、押金怎么拍照、什么时候开始找大二的房子。
+[Y1W8|acq_senior_5] 旁白：讲得很清楚，很专业。最后一张幻灯片是他的二维码。
+[Y1W8|acq_senior_5] 旁白：（……他是来打广告的。但他讲的东西，是真的有用。）
+[Y1W8|acq_senior_5] 旁白：认真记笔记
+[Y1W8|acq_senior_5] 旁白：散场的时候，他从你身边走过，看了一眼你的笔记本：“……记得挺全。”
+[Y1W8] 〔背景 map_city〕
+[Y1W8] 〔背景 crit_room〕
+[Y1W8] 〔背景 park_night〕
+[Y1W8|bonfire_night] 旁白：英国人在十一月五号点烟花，是为了纪念四百年前一个没炸成议会大厦的人。你听了三遍都没搞懂他们到底是在庆祝他失败，还是在庆祝他尝试。
+[Y1W8|bonfire_night] 旁白：（算了。有烟花就行。）
+[Y1W8|bonfire_night] 旁白：周可欣去了伦敦。陈思琪说要复习。你和吴桐两个人去了。吴桐看完说：“没有我们那的好看。”然后又看了半小时。
+[Y1W8|bonfire_night] 旁白：烟花结束后，空气里全是火药味。
+[Y1W8|bonfire_night] 旁白：（和我们那过年的味道一样。）
+[Y1W8] 〔背景 dorm_night〕
+[Y1W8|] 旁白：Hannah 在小组群里发了一张倒计时：“Presentation in 7 days!「离展示还有7天！」”
+!!BOT PAUSED stuck ["[W7 null] 画面 10 秒没变化（可能卡住）：……你码的也挺好。就是商标朝里了。|0|false||309|7|","[W8 null] 画面 10 秒没变化（可能卡住）：超市门口摆出了烟花，一箱一箱的。|0|false||292|8|","[W9 null] 画面 10 秒没变化（可能卡住）：Hannah 在小组群里发了一张倒计时：“Presentation in 7 days!「离展示还有7天！」”|0|false||346|9|"]
+[Y1W9] 〔背景 dorm_night〕
+[Y1W9|first_presentation] 旁白：晚上十一点，小组群：
+[Y1W9|first_presentation] Hannah：Final check! Slides are done, everyone knows their part? We're on at 9 sharp.「最后确认！幻灯片做好了，大家都知道自己讲哪部分吧？九点整开始。」
+[Y1W9|first_presentation] Ben：（已读）
+[Y1W9|first_presentation] 旁白：Ploy 发了一段十秒的视频。画面全是紫色的光，音乐很响，听不清她在喊什么。
+[Y1W9|first_presentation] Ploy：OOPS wrong chat「哎呀发错群了」
+[Y1W9|first_presentation] Ploy：don't worry I'll be there!! ❤️「别担心我会到的！！」
+[Y1W9|first_presentation] 〔选项〕私聊Ploy：“你部分的稿子写了吗？” ／ 不管她，睡觉
+[Y1W9|first_presentation] 旁白：▶ 私聊Ploy：“你部分的稿子写了吗？”
+[Y1W9|first_presentation] 旁白：凌晨一点，她回了：“babe… can u send me ur notes「宝……能把你的笔记发我吗」”
+[Y1W9|first_presentation] 〔选项〕发给她 ／ “你自己写，我等你。”
+[Y1W9|first_presentation] 旁白：▶ 发给她
+[Y1W9|first_presentation] 旁白：她回：“you're a lifesaver 🥺”然后在她的部分里，有三段和你的笔记一字不差。
+[Y1W9] 〔背景 crit_room〕
+[Y1W9|first_presentation] 旁白：早上八点五十九分，Ploy还没到。Hannah已经看了第六次表。
+[Y1W9|first_presentation] 旁白：九点零一分，门开了。
+[Y1W9|first_presentation] 旁白：她妆容完美，头发卷得一丝不乱，粉色西装外套一个褶都没有。她手里端着四杯咖啡。
+[Y1W9|first_presentation] Ploy：Morning team! Oat latte for Hannah, flat white for Ben, and — （她把最后一杯递给你）— caramel for my favourite person.「早呀！Hannah的燕麦拿铁，Ben的马卡奇朵，还有——焦糖的，给我最喜欢的人。」
+[Y1W9|first_presentation] 旁白：（她几点睡的？她睡了吗？）
+[Y1W9|first_presentation] 旁白：轮到你了。你站起来的时候，腿在发抖。你背了一个星期的稿子，开口的一瞬间忘了第一句。
+[Y1W9|first_presentation] 〔选项〕低头念稿 ／ 看一眼Ploy
+[Y1W9|first_presentation] 旁白：▶ 低头念稿
+[Y1W9|first_presentation] 旁白：你念完了。全程没有抬头。老师说：“Good content. Try to look up next time.「内容不错。下次试着抬头。」”
+[Y1W9|first_presentation] 旁白：最后是Ploy。
+[Y1W9|first_presentation] 旁白：她讲的内容，就是你的笔记。
+[Y1W9|first_presentation] 旁白：但她讲得太好了。她会停顿，会看着观众的眼睛，会在合适的地方笑。老师在她讲完之后带头鼓掌。
+[Y1W9|first_presentation] 老师：Now THAT is how you present. Group seven, lovely work.「这才叫presentation。第七组，做得很好。」
+[Y1W9|first_presentation] 旁白：Hannah的表情很复杂。她的部分做了三周，老师只说了一句“thorough「很全面」”。
+[Y1W9|first_presentation] 旁白：Ben的部分只有一页，他讲了四十秒。
+[Y1W9|first_presentation] 旁白：下课后，Ploy一把搂住你的脖子。
+[Y1W9|first_presentation] Ploy：We KILLED it. Brunch. My treat. Now.「我们杀疯了。brunch，我请。现在就去。」
+[Y1W9|first_presentation] 〔选项〕去 ／ “我下午还有课。”
+[Y1W9|first_presentation] 旁白：▶ 去
+[Y1W9] 〔背景 brunch〕
+[Y1W9|first_presentation] 旁白：她点了炸鸡华夫饼，吃了两口就躺在沙发上睡着了。
+[Y1W9|first_presentation] 旁白：（果然没睡。）
+[Y1W9|first_presentation] 旁白：你把她的外套盖在了她身上，把剩下的华夫饼吃完了。
+[Y1W9|] 林子航（手机）：周六上午我在中超帮陈叔卸货。你要买什么提前说，我给你留。
+[Y1W9|] 旁白：▶ 好，到时候见
+[Y1W9] 〔背景 dorm_room〕
+[Y1W9] 〔背景 dorm_room〕
+[Y1W9] 📱senior｜senior：周六上午我在中超帮陈叔卸货。你要买什么提前说，我给你留。
+[Y1W9] 📱senior｜我：[好，到时候见]
+[Y1W9] 〔背景 dorm_night〕
+[Y1W9] 〔背景 lecture_hall〕
+[Y1W9|acq_groupmate_6] 旁白：选修课，老师在讲市场营销的案例。你旁边的 Ploy 撑着脸，眼睛闭上了。
+[Y1W9|acq_groupmate_6] 老师：Ploy, what do you think?「Ploy，你怎么看？」
+[Y1W9|acq_groupmate_6] 〔选项〕在桌子下面踢她一下，小声说：“他问你这个品牌为什么失败。” ／ 不管她
+[Y1W9|acq_groupmate_6] 旁白：▶ 在桌子下面踢她一下，小声说：“他问你这个品牌为什么失败。”
+[Y1W9|acq_groupmate_6] 旁白：她睁开眼睛，零点五秒以后，笑着、很自信地说了一大段。内容和问题一半有关，一半无关，但她说得太好听了，老师点了点头。
+[Y1W9|acq_groupmate_6] 旁白：下课以后，她把她的冰美式推给你：“You saved my life. This is my life. Take it.「你救了我的命。这是我的命。拿去。」”
+[Y1W9|acq_groupmate_6] 旁白：你直接在她的本子上写了三个关键词。她照着念，念得像她自己想的。
+[Y1W9|] 〔选项〕纠正他 ／ 算了
+[Y1W9|] 旁白：▶ 纠正他
+[Y1W9] 〔背景 map_city〕
+[Y1W9] 〔背景 dorm_room〕
+[Y1W9|] Ollie（手机）：Hey, you okay? Waited a bit. Hope everything's fine x「嘿，你还好吗？等了一会儿。希望一切都好 x」
+[Y1W9|] 旁白：▶ “对不起，我忘了。”
+[Y1W9] 〔背景 dorm_night〕
+[Y1W9|] 旁白：市中心广场开始搭小木屋，有人在挂灯串。
+[Y1W10] 📱local｜local：Hey, you okay? Waited a bit. Hope everything's fine x「嘿，你还好吗？等了一会儿。希望一切都好 x」
+[Y1W10] 📱local｜我：对不起，我忘了。
+[Y1W10] 〔背景 dorm_room〕
+[Y1W10|essay_senior_offer] 旁白：第十周周一，一条好友申请。头像是一只戴学士帽的卡通兔子。备注：“华人学生会学姐推荐”
+!!BOT PAUSED stuck ["[W8 null] 画面 10 秒没变化（可能卡住）：超市门口摆出了烟花，一箱一箱的。|0|false||292|8|","[W9 null] 画面 10 秒没变化（可能卡住）：Hannah 在小组群里发了一张倒计时：“Presentation in 7 days!「离展示还有7天！」”|0|false||346|9|","[W10 null] 画面 10 秒没变化（可能卡住）：市中心广场开始搭小木屋，有人在挂灯串。|0|false||291|10|"]
+[Y1W10|essay_senior_offer] 〔选项〕通过 ／ 忽略
+[Y1W10|essay_senior_offer] 旁白：▶ 通过
+[Y1W10|essay_senior_offer] Essay学姐：亲～看到你是设计的新生呢，第一学期的大作业是不是快截止啦？
+[Y1W10|essay_senior_offer] Essay学姐：我们这边做留学辅导六年啦，师资都是英国名校硕博，保通过，不过全退～
+[Y1W10|essay_senior_offer] Essay学姐：设计作品集我们也接哦～手绘、建模、排版都可以～
+[Y1W10|essay_senior_offer] 旁白：（手绘也能代？那画的到底是谁的手？）
+[Y1W10|essay_senior_offer] Essay学姐：你们那个Pike老师的课我们做过好多了，去年的学姐拿了68哦～
+[Y1W10|essay_senior_offer] 旁白：（……她怎么知道我上谁的课。）
+[Y1W10|essay_senior_offer] 旁白：你看了一眼进度条。你又看了一眼她的消息。
+[Y1W10|essay_senior_offer] 〔选项〕“多少钱？” ／ “不用了，谢谢。” ／ 举报给学校
+[Y1W10|essay_senior_offer] 旁白：▶ “多少钱？”
+[Y1W10|essay_senior_offer] Essay学姐：亲你发一下brief，我给你估个价～一般三千字的话在£250左右哦～新生有优惠呢～
+[Y1W10|essay_senior_offer] 〔选项〕付钱 ／ “我再想想。”
+[Y1W10|essay_senior_offer] 旁白：▶ 付钱
+[Y1W10|essay_senior_offer] 旁白：你转账的时候手在抖。她回了一个“收到啦亲～～”，配了一个比心的兔子表情。
+[Y1W10|essay_senior_offer] 旁白：（不会被发现的。大家都这样。……大家都这样吗？）
+[Y1W10|essay_senior_offer] 旁白：你在厨房里碰到陈思琪。她看了一眼你的手机屏幕，什么也没说，第二天你的门缝里多了一份她自己整理的参考文献格式表。
+[Y1W10] 〔背景 dorm_room〕
+[Y1W10|ep_linxiao] 旁白：国内的闺蜜林晓发来：“在吗？想你了。”你看了一眼时间，这边是下午，那边是凌晨一点。
+[Y1W10|ep_linxiao] 〔选项〕打视频 ／ 回一句“我也是”，然后去上课
+[Y1W10|ep_linxiao] 旁白：▶ 回一句“我也是”，然后去上课
+[Y1W10|ep_linxiao] 旁白：林晓回了一个抱抱的表情。下课以后你再看手机，她已经睡了。（时差就是这样的：我想她的时候，她在睡觉。）
+[Y1W10|] Ollie（手机）：I'll be around the library Saturday morning. Just saying.「周六上午我在图书馆附近。随口说一下。」
+[Y1W10|] 旁白：▶ 好，到时候见
+[Y1W10] 〔背景 dorm_room〕
+[Y1W10] 〔背景 dorm_room〕
+[Y1W10] 📱local｜local：I'll be around the library Saturday morning. Just saying.「周六上午我在图书馆附近。随口说一下。」
+[Y1W10] 📱local｜我：[好，到时候见]
+[Y1W10] 〔背景 campus〕
+[Y1W10|pb_07] 旁白：校门口一个拿着平板的年轻人拦住你：
+[Y1W10|pb_07] 推销员：Got a minute to talk about saving the planet?「有空聊聊拯救地球吗？」
+[Y1W10|pb_07] 〔选项〕“Sorry, I'm late for class.” ／ 停下来听
+[Y1W10|pb_07] 旁白：▶ “Sorry, I'm late for class.”
+[Y1W10|pb_07] 旁白：他马上让开：
+[Y1W10|pb_07] 推销员：No worries! Save the planet later!「没事！晚点再拯救地球！」
+[Y1W10|pb_07] 旁白：你走过去以后才想起来今天没课。
+[Y1W10] 〔背景 map_city〕
+[Y1W10] 〔背景 dorm_room〕
+[Y1W10|] Ploy（手机）：…did you forget me?「……你是不是把我忘了？」
+[Y1W10|] 旁白：▶ “对不起，我忘了。”
+[Y1W10|] 相亲相爱一家人（消息）：圣诞放假回不回来？机票看了没？
+[Y1W10] 📱groupmate｜groupmate：…did you forget me?「……你是不是把我忘了？」
+[Y1W10] 📱groupmate｜我：对不起，我忘了。
+!!BOT PAUSED stuck ["[W9 null] 画面 10 秒没变化（可能卡住）：Hannah 在小组群里发了一张倒计时：“Presentation in 7 days!「离展示还有7天！」”|0|false||346|9|","[W10 null] 画面 10 秒没变化（可能卡住）：市中心广场开始搭小木屋，有人在挂灯串。|0|false||291|10|","[W11 null] 画面 10 秒没变化（可能卡住）：你走过去以后才想起来今天没课。|0|false||353|11|"]
+[Y1W11] 〔背景 dorm_room〕
+[Y1W11|a1_results_mail] 邮件：Module Leader｜Your mark for 作业1 is now available.「Dear students,
+
+Your mark and feedback for 作业1 are now available on the module page.」
+[Y1W11|a1_results_mail] 旁白：作业 1：55.3（2:2）。
+[Y1W11|a1_results_mail] 旁白：（2:2。……及格了，对吧？是及格了。）
+[Y1W11|] 旁白：周三，学姐发来一个文件：“亲～稿子好啦～记得自己改改格式哦～”
+[Y1W11|] 〔选项〕直接交 ／ 自己从头改一遍再交
+[Y1W11|] 旁白：▶ 直接交
+[Y1W11] 〔背景 library〕
+[Y1W11|ddl_before_xmas] 旁白：周四。你发现自己在引用里写了一个不存在的作者。你不记得他是哪里来的。
+[Y1W11] 〔背景 studio_night〕
+[Y1W11|ddl_before_xmas] 旁白：你不在图书馆，在工作室。凌晨两点，全年级只剩打印机在响。排在你前面的人打印了四十页，卡纸三次。
+[Y1W11|ddl_before_xmas] 旁白：凌晨两点，排在你前面打印的女生回头看了一眼你的图纸。
+[Y1W11|ddl_before_xmas] 建筑系的女生：Architecture?「建筑的？」
+[Y1W11|ddl_before_xmas] 旁白：你说设计。她点点头，把自己排的位置让给你：
+[Y1W11|ddl_before_xmas] 旁白：〔友情·Giulia+3〕
+[Y1W11|ddl_before_xmas] 建筑系的女生：You look more desperate than me.「你看起来比我更绝望。」
+[Y1W11|ddl_before_xmas] 旁白：周五晚上十一点五十八分，你点了提交。网页转了九秒。
+[Y1W11|ddl_before_xmas] 旁白：【提交成功】
+[Y1W11|ddl_before_xmas] 旁白：（…………）
+[Y1W11] 〔背景 xmas_market〕
+[Y1W11|xmas_market] 旁白：市中心的广场上搭起了一排排小木屋。热红酒、德国香肠、姜饼、一个大的旋转木马。空气里是肉桂和烤肉的味道。
+[Y1W11|xmas_market] 旁白：一根德国香肠 £7.50（≈¥70）
+[Y1W11|xmas_market] 旁白：（七十块。一根香肠。……但它是圣诞的香肠。）
+[Y1W11|xmas_market] 〔选项〕买一根 ／ 买一杯热红酒，捂手 ／ 什么都不买，就闻一闻
+[Y1W11|xmas_market] 旁白：▶ 买一根
+[Y1W11|xmas_market] 旁白：香肠烫得拿不住，你站在小木屋旁边，一口一口吃完了。
+[Y1W11|xmas_market] 旁白：（七十块。但它是热的。）
+[Y1W11] 〔背景 dorm_room〕
+[Y1W11] 〔背景 dorm_room〕
+[Y1W11] 〔背景 dorm_night〕
+[Y1W11] 〔背景 campus〕
+[Y1W11|acq_local_1] Ollie：Hey! Freshers' Fair! You're — wait, don't tell me — Chowming?「嘿！迎新集市！你是——等等，别告诉我——Chowming？」
+[Y1W11|acq_local_1] 旁白：（……差得很远。）
+[Y1W11|acq_local_1] 旁白：你纠正了他。他认真地听，念了一遍，还是错的。又念了一遍，好一点了。
+[Y1W11|acq_local_1] Ollie：Sorry. I'll get it. Give me a week.「抱歉。我会学会的。给我一周。」
+[Y1W11|acq_local_1] Ollie：Ollie, by the way. Fashion Marketing, first year. I took a gap year, so I'm the old one.「对了，我叫 Ollie。时尚营销，大一。我 gap 了一年，所以我是老的那个。」
+[Y1W11|acq_local_1] 旁白：（他说“给我一周”。好像我们一周以后还会见面一样。）
+[Y1W11|acq_local_1] 何心妍：一周以后我考你。
+[Y1W11|acq_local_1] Ollie：Deal. If I get it right, you buy me a coffee. If I get it wrong, I buy you one.「成交。我念对了你请我喝咖啡，念错了我请你。」
+[Y1W11|acq_local_1] 旁白：（……这个赌，怎么算他都不亏。）
+[Y1W11|] 〔选项〕接 ／ 发消息说在图书馆，明天打
+[Y1W11|] 旁白：▶ 接
+[Y1W11] 〔背景 map_city〕
+[Y1W11] 〔背景 dorm_room〕
+[Y1W11|] 林子航（手机）：等了你四十分钟。没事，下次提前说一声。
+[Y1W11|] 旁白：▶ “对不起，我忘了。”
+[Y1W11] 〔背景 crit_room〕
+[Y1W11] 📱senior｜senior：等了你四十分钟。没事，下次提前说一声。
+[Y1W11] 📱senior｜我：对不起，我忘了。
+!!BOT PAUSED stuck ["[W10 null] 画面 10 秒没变化（可能卡住）：市中心广场开始搭小木屋，有人在挂灯串。|0|false||291|10|","[W11 null] 画面 10 秒没变化（可能卡住）：你走过去以后才想起来今天没课。|0|false||353|11|","[W12 null] 画面 10 秒没变化（可能卡住）：晚上九点，家里打来视频，你正在写作业。|0|false||299|12|"]
+[Y1W12] 〔背景 dorm_room〕
+[Y1W12|term_end] 旁白：最后一节课上，Nikos说：“Have a lovely Christmas, everyone. Rest. Please actually rest.「祝大家圣诞快乐。休息一下。请真的休息一下。」”
+!!BOT PAUSED stuck ["[W11 null] 画面 10 秒没变化（可能卡住）：你走过去以后才想起来今天没课。|0|false||353|11|","[W12 null] 画面 10 秒没变化（可能卡住）：晚上九点，家里打来视频，你正在写作业。|0|false||299|12|","[W12 null] 画面 10 秒没变化（可能卡住）：晚上九点，家里打来视频，你正在写作业。|0|false||299|12|"]
+[Y1W12|term_end] 旁白：Pike说：“The reading list for next term is on the portal.「下学期的书单在系统上。」”
+[Y1W12|term_end] 旁白：周可欣三天前就飞回上海了。陈思琪说她不回去，要在图书馆过圣诞。吴桐问你：“你回吗？不回的话我们吃火锅。”
+[Y1W12|term_end] 旁白：你看了一眼机票。你看了一眼余额。
+[Y1W12|term_end] 旁白：往返机票 £680（≈¥6,300）
+[Y1W12|term_end] 旁白：圣诞假怎么过？
+[Y1W12|term_end] 〔选项〕回国 ／ 出去玩 ／ 宅着
+[Y1W12|term_end] 旁白：▶ 出去玩
+[Y1W12|term_end] 旁白：你买了去欧洲的特价机票。登机口在最远的那一端，行李只允许一个背包。
+[Y1W12|term_end] 旁白：你在订机票前发现自己没有申根签证。你在小红书上搜了申根的材料清单，有十七项。最后你去了爱丁堡。
+[Y1W12|] 〔选项〕看看地图 ／ 不了
+[Y1W12|] 旁白：▶ 看看地图
+[Y1W12] 〔背景 world_map〕
+[Y1W12|] 邮件：Student Records｜Results release date「成绩下周三公布。」
+!!BOT PAUSED stuck ["[W12 null] 画面 10 秒没变化（可能卡住）：晚上九点，家里打来视频，你正在写作业。|0|false||299|12|","[W12 null] 画面 10 秒没变化（可能卡住）：晚上九点，家里打来视频，你正在写作业。|0|false||299|12|","[W13 null] 画面 10 秒没变化（可能卡住）：放假了。出去旅行吗？|0|false||292|13|"]
+!!BOT PAUSED stuck ["[W12 null] 画面 10 秒没变化（可能卡住）：晚上九点，家里打来视频，你正在写作业。|0|false||299|12|","[W13 null] 画面 10 秒没变化（可能卡住）：放假了。出去旅行吗？|0|false||292|13|","[W13 null] 画面 10 秒没变化（可能卡住）：放假了。出去旅行吗？|0|false||292|13|"]
+[Y1W13] 〔背景 dorm_room〕
+[Y1W13|results_day] 旁白：开学第一周的周三，邮件弹出来：Your provisional marks are now available.「你的暂定成绩已经可以查看。」
+[Y1W13|results_day] 旁白：你盯着这行字看了十秒才点进去。
+[Y1W13|results_day] 旁白：Pike那门：39.2。
+[Y1W13|results_day] 旁白：你想起第一节课旁边同学说的那个数字。原来不是传说，原来是你。
+[Y1W13|results_day] 旁白：课程群里，这门课有六个人是39.2。
+[Y1W13|results_day] 旁白：（他是不是只会打这一个分。）
+[Y1W13|results_day] 旁白：单科不影响升级，按年均分算。你还活着。
+[Y1W13|results_day] 旁白：家庭群里，你妈发来：“出分了吗？多少分？”
+[Y1W13|results_day] 〔选项〕截图发群里 ／ 只回一句“过了，挺好的”
+[Y1W13|results_day] 旁白：▶ 截图发群里
+[Y1W13|results_day] 旁白：三十秒后，你爸回：“满分多少？”
+[Y1W13|results_day] 旁白：你解释了一大段英国的分数制度，附了一张网上找的表格，说明70就是最高档。
+[Y1W13|results_day] 旁白：你妈回了一个大拇指，然后把截图转给了你小姨。
+[Y1W13|results_day] 旁白：你小姨问：“这门是不是没及格？”（你小姨怎么什么都知道。）
+[Y1W13|] 邮件：Module Leader｜Assignment brief released「Dear students,
+
+The brief for 作业3：小组展示 is now available on the module page. Please read it carefully, including the marking criteria.
+
+Deadline: Friday of Week 17, 12:00 noon, via the online submission portal. Late submissions will be capped at 40 unless an extension has been approved.
+
+Good luck,
+Module Leader」
+[Y1W13|] 林子航（手机）：周六上午我去车站接个新生。天气预报说要下雨，你出门带伞。
+[Y1W13|] 旁白：▶ 好，到时候见
+[Y1W13] 〔背景 dorm_room〕
+[Y1W13] 〔背景 dorm_room〕
+[Y1W13] 📱senior｜senior：周六上午我去车站接个新生。天气预报说要下雨，你出门带伞。
+[Y1W13] 📱senior｜我：[好，到时候见]
+[Y1W13] 〔背景 campus〕
+[Y1W13] 〔背景 library〕
+[Y1W13|acq_local_3] 旁白：图书馆的打印机前面，一个金发的背影对着屏幕骂了一句很英式的脏话。
+[Y1W13|acq_local_3] 旁白：是 Ollie。
+[Y1W13|acq_local_3] Ollie：It says I have no credit. I have credit. I topped up. I'm a paying customer of this printer.「它说我没余额。我有余额。我充了。我是这台打印机的付费客户。」
+[Y1W13|acq_local_3] 旁白：你看了一眼屏幕：他选的是彩色双面 A3，一共 48 页。
+[Y1W13|acq_local_3] 〔选项〕帮他改成黑白单面 ／ “你的余额够打 4 页彩色的。”
+[Y1W13|acq_local_3] 旁白：▶ 帮他改成黑白单面
+[Y1W13|acq_local_3] 旁白：打出来了。他看着那一摞纸，像看着一个奇迹。
+[Y1W13|acq_local_3] Ollie：You're a genius. I owe you. Coffee. Name a day.「你是天才。我欠你一次。咖啡。你挑个日子。」
+[Y1W13|] 〔选项〕"我来吧" ／ 也不回
+[Y1W13|] 旁白：▶ "我来吧"
+[Y1W13] 〔背景 pub_street〕
+[Y1W13|stage_local_20] 旁白：他把你介绍给他的朋友们，然后突然转过来问你：
+[Y1W13|stage_local_20] Ollie：Okay, teach me something. What do you call it when you're so tired you're not even tired anymore?「好，教我一个词。累到已经不觉得累了，你们管这个叫什么？」
+[Y1W13|stage_local_20] 〔选项〕“麻了。” ／ “摆烂。”
+[Y1W13|stage_local_20] 旁白：▶ “麻了。”
+[Y1W13|stage_local_20] 旁白：他练了十遍“麻了”，然后用了一整晚，每次都用错地方。
+[Y1W13|stage_local_20] 旁白：他也教了你一个：“knackered「累瘫了」”。他说你念得比他念你的名字准多了。
+[Y1W13] 〔背景 map_city〕
+[Y1W13] 〔背景 campus〕
+[Y1W13|] 旁白：校园地图上写着“Main Building”，你找到了三栋都叫 Main Building 的楼。
+[Y1W13|] 旁白：周末的草坪上有人在晒太阳，难得出太阳。
+[Y1W13] 〔背景 campus〕
+[Y1W13|small_local_2] 旁白：Ollie 迟到了五分钟，下巴上贴着一小块纸巾，上面有一个小红点。
+[Y1W13|small_local_2] Ollie：Don't. Don't say anything.「别。什么都别说。」
+[Y1W13|small_local_2] Ollie：New razor. Five blades. Five! Who needs five blades.「新剃须刀。五片刀片。五片！谁需要五片刀片。」
+[Y1W13|small_local_2] 旁白：（他刮得非常干净，干净到刮破了。）
+[Y1W13|small_local_2] 〔选项〕从包里拿出一张创可贴 ／ “胡子留一点也挺好看的。”
+[Y1W13|small_local_2] 旁白：▶ 从包里拿出一张创可贴
+[Y1W13|small_local_2] 旁白：你没说话，只是把创可贴递过去，手伸得很直，眼睛看着别处。
+[Y1W13|small_local_2] 旁白：你帮他把纸巾换成了创可贴。创可贴上印着小熊。
+[Y1W13|small_local_2] 旁白：他照了一下手机屏幕，没撕。一整天都没撕。
+[Y1W13|small_local_2] 旁白：第二天他发来一张照片：创可贴贴在他的镜子上。“Keeping this.「留着了。」”
+[Y1W13] 〔背景 map_city〕
+[Y1W13] 〔背景 dorm_night〕
+[Y1W13|] 旁白：楼道里有人在打电话：“……对，大二那套，押金已经交了。”
+[Y1W13|] 邮件：Dr. Marcia Campbell｜Week 2 meeting「下周二下午两点，办公室见。」
+!!BOT PAUSED stuck ["[W13 null] 画面 10 秒没变化（可能卡住）：放假了。出去旅行吗？|0|false||292|13|","[W13 null] 画面 10 秒没变化（可能卡住）：放假了。出去旅行吗？|0|false||292|13|","[W14 null] 画面 10 秒没变化（可能卡住）：楼道里有人在打电话：“……对，大二那套，押金已经交了。”|0|false||309|14|"]
+[Y1W14] 〔背景 dorm_room〕
+[Y1W14|house_hunting] 旁白：一月底，楼道里开始流行一句话：“你大二房子找好了吗？”
+[Y1W14|house_hunting] 旁白：英国学生找第二年的房子，是从大一十一月就开始的。
+[Y1W14|house_hunting] 旁白：（这事我知道。知道和抢得到是两回事。）
+[Y1W14|house_hunting] 旁白：你的房子找得怎么样了？
+[Y1W14|house_hunting] 〔选项〕早就在看了 ／ 在看，但是作业太多了 ／ ……房子？
+[Y1W14|house_hunting] 旁白：▶ 早就在看了
+[Y1W14|house_hunting] 旁白：十一月你就把学生租房网站设成了浏览器首页，收藏了二十几套。
+[Y1W14|house_hunting] 旁白：问题是，每一套的申请表最后一栏都写着：UK-based guarantor required「需要英国担保人」。
+[Y1W14|house_hunting] 旁白：（我在英国认识的人里，最有可能给我当担保人的是Dave。我不能让Dave给我当担保人。）
+[Y1W14|house_hunting] 陈思琪：我十一月就签了，帮我表姐也签了一套。你那边要是缺信息，我把我的表格发你。
+[Y1W14|house_hunting] 旁白：（她做了一张Excel，按通勤时间、霉菌风险、房东回复速度打分。）
+[Y1W14] 〔背景 chinese_market〕
+[Y1W14|house_hunting] 旁白：学长在中超门口，两只手各拎一袋米。
+[Y1W14|house_hunting] 林子航：房子找好没？
+[Y1W14|house_hunting] 旁白：（这次我听懂了，他是认真在问。）
+[Y1W14|house_hunting] 林子航：……还没找啊。我认识一个房东，不要担保人的。要不要看看？
+[Y1W14|house_hunting] 〔选项〕“好，麻烦学长了。” ／ “我先自己看看。”
+[Y1W14|house_hunting] 旁白：▶ “好，麻烦学长了。”
+[Y1W14|house_hunting] 林子航：不麻烦。看房那天我开车带你去。
+[Y1W14|house_hunting] 旁白：（又是那辆丰田。副驾的储物格里塞满了快递单。）
+[Y1W14] 〔背景 shared_house〕
+[Y1W14|house_hunting] 旁白：Mr. Khan比你想象的高很多，很热情，从进门开始就没停过嘴。
+[Y1W14|house_hunting] Mr. Khan：Lovely house, this. Very popular with Chinese students. Very quiet. Very clean.「好房子。中国学生最喜欢。很安静，很干净。」
+[Y1W14|house_hunting] 旁白：浴室天花板的角上有一片黑点。
+[Y1W14|house_hunting] 〔选项〕问他那是什么 ／ 什么都不问
+[Y1W14|house_hunting] 旁白：▶ 问他那是什么
+[Y1W14|house_hunting] Mr. Khan：That? Bit of condensation, love. Just open the window.「那个？一点水汽，开开窗就好。」
+[Y1W14|house_hunting] 旁白：（一月。开窗。）
+[Y1W14|house_hunting] Mr. Khan：Holding deposit's two-fifty. Cash is fine.「定金250，现金也行。」
+[Y1W14|house_hunting] 旁白：学长站在门口打电话，用的是你没听过的、很客气的语气。
+[Y1W14|house_hunting] 旁白：半年房租 £2,700（≈¥25,000）
+[Y1W14|house_hunting] 旁白：你把这个数字截图发给了家里。你爸打来电话，问了三遍“为什么要先交钱”。
+[Y1W14|house_hunting] 旁白：大二住哪里？
+[Y1W14|house_hunting] 〔选项〕Mr. Khan的房子 ／ 网站上的学生房 ／ 一个人住studio
+[Y1W14|house_hunting] 旁白：▶ Mr. Khan的房子
+[Y1W14|house_hunting] 旁白：便宜，近，不要担保人。黑点的事以后再说。
+[Y1W14|house_hunting] 旁白：吴桐跟你一起。陈思琪已经签了别处，周可欣说她大二要搬去伦敦。（周可欣一直都在去伦敦。）
+[Y1W14|house_hunting] 旁白：（明年一定早点……不对，我已经很早了。明年一定早点找个担保人。）
+[Y1W14] 〔背景 campus〕
+[Y1W14|tutor_meeting_2] Marcia：Have you eaten today?「今天吃饭了吗？」
+[Y1W14|tutor_meeting_2] 旁白：（每次都是这句。我开始提前想答案了。）
+[Y1W14|tutor_meeting_2] 旁白：她把你的成绩单翻到你那一页，看了很久，手指停在Pike那一行。
+[Y1W14|tutor_meeting_2] Marcia：Ah. Geoffrey. Don't take it personally, he gave me a 41 in 1998.「啊，Geoffrey。别往心里去，1998年他给了我41分。」
+[Y1W14|tutor_meeting_2] 旁白：（她是他的学生？那他到底教了多少年。）
+[Y1W14|tutor_meeting_2] Marcia：Now. Not the grades. How are you actually doing?「好了，不说成绩。你到底过得怎么样？」
+[Y1W14|tutor_meeting_2] 旁白：你说还行，就是在找房子。
+[Y1W14|tutor_meeting_2] 旁白：她听到Mr. Khan这个名字，挑了一下眉毛。
+[Y1W14|tutor_meeting_2] Marcia：Get everything in writing. Your deposit goes into a protection scheme. If it doesn't, you come and tell me.「所有东西都要白纸黑字。押金必须放进保护计划。没放的话，来告诉我。」
+[Y1W14|] Ollie（手机）：Pub Saturday night, the usual lot. Come be the smart one at our table.「周六晚上 pub，老几个人。来当我们这桌聪明的那个。」
+[Y1W14|] 旁白：▶ 好，到时候见
+[Y1W14] 〔背景 dorm_room〕
+[Y1W14] 〔背景 dorm_room〕
+[Y1W14] 📱local｜local：Pub Saturday night, the usual lot. Come be the smart one at our table.「周六晚上 pub，老几个人。来当我们这桌聪明的那个。」
+[Y1W14] 📱local｜我：[好，到时候见]
+[Y1W14] 〔背景 campus〕
+[Y1W14] 〔背景 supermarket〕
+[Y1W14|acq_groupmate_4] 旁白：你在鸡蛋货架前面看到 Ploy。她拿着手机在打电话，用泰语，表情很困惑。挂了以后，她看到你，像看到了救星。
+[Y1W14|acq_groupmate_4] Ploy：Babe. Help. Free range, organic, barn, large, medium. Which one is the normal egg?「宝贝。救命。散养、有机、谷仓、大号、中号。哪个是正常的鸡蛋？」
+[Y1W14|acq_groupmate_4] 旁白：（……她没自己买过鸡蛋。）
+[Y1W14|acq_groupmate_4] Ploy：Pa Nok always — I mean. I usually order online.「Pa Nok 总是——我是说。我一般网上买。」
+[Y1W14|acq_groupmate_4] 〔选项〕认真给她讲每一种的区别 ／ 直接拿一盒最便宜的塞给她 ／ “Pa Nok 是谁？”
+[Y1W14|acq_groupmate_4] 旁白：▶ 认真给她讲每一种的区别
+[Y1W14|acq_groupmate_4] 旁白：她听完，拿了最贵的那盒有机散养的。“If I'm doing this, I'm doing it properly.「既然要买，就买好的。」”
+[Y1W14] 〔背景 map_city〕
+[Y1W14] 〔背景 dorm_room〕
+[Y1W14|] 林子航（手机）：等了你四十分钟。没事，下次提前说一声。
+[Y1W14|] 旁白：▶ “对不起，我忘了。”
+[Y1W14] 〔背景 dorm_night〕
+[Y1W14|] 旁白：中超门口挂出了红灯笼，货架上多了春联和汤圆。
+[Y1W14|] 相亲相爱一家人（消息）：今年春节你怎么过？
+[Y1W15] 📱senior｜senior：等了你四十分钟。没事，下次提前说一声。
+[Y1W15] 📱senior｜我：对不起，我忘了。
+[Y1W15] 〔背景 flat_kitchen〕
+[Y1W15|spring_festival] 旁白：今天是除夕。国内已经过了零点，家庭群里的红包一个接一个。
+!!BOT PAUSED stuck ["[W13 null] 画面 10 秒没变化（可能卡住）：放假了。出去旅行吗？|0|false||292|13|","[W14 null] 画面 10 秒没变化（可能卡住）：楼道里有人在打电话：“……对，大二那套，押金已经交了。”|0|false||309|14|","[W15 null] 画面 10 秒没变化（可能卡住）：中超门口挂出了红灯笼，货架上多了春联和汤圆。|0|false||464|15|"]
+[Y1W15|spring_festival] 旁白：这边是下午四点，天快黑了。明天早上九点有课。
+[Y1W15|spring_festival] 旁白：今年怎么过？
+[Y1W15|spring_festival] 〔选项〕{和谁过春节} ／ 自己过 ／ 翻课回国
+[Y1W15|spring_festival] 旁白：▶ 和室友一起过
+[Y1W15|spring_festival] 旁白：你在中超买齐了东西，提前一天把香菇泡上了。
+[Y1W15|spring_festival] 旁白：你只叫了最熟的那几个人。一张小桌，刚刚好。
+[Y1W15|spring_festival] 旁白：陈思琪难得没去图书馆，负责剥蒜。吴桐负责火锅底料。周可欣从伦敦赶回来，带了一盒蛋挞。
+[Y1W15|spring_festival] 旁白：桌上有青菜年糕，做得不太像，但所有人都说像。
+[Y1W15|spring_festival] 旁白：八点，大家把手机架在调料瓶上一起看春晚。信号卡了，画面停在一个主持人张着嘴的样子。没有人在意。
+[Y1W15] 〔背景 dorm_room〕
+[Y1W15] 〔背景 dorm_room〕
+[Y1W15] 〔背景 campus〕
+[Y1W15] 〔背景 pub〕
+[Y1W15|acq_local_4] 旁白：Ollie 和他朋友坐在你旁边那桌。他探过身来：
+[Y1W15|acq_local_4] Ollie：Where are you from? Like, originally?「你是哪里人？我是说，原本？」
+[Y1W15|acq_local_4] 旁白：你说了浙江。
+[Y1W15|acq_local_4] Ollie：Oh nice! I've been to Asia. Vietnam, Thailand. Loved it. The food, the people. Everyone's so — nice.「哦不错！我去过亚洲。越南、泰国。超喜欢。吃的，人。大家都好——好。」
+[Y1W15|acq_local_4] 旁白：（……“亚洲”。他说的是“亚洲”。我说的是浙江。）
+[Y1W15|acq_local_4] 〔选项〕“{家乡}和越南、泰国不太一样哦。” ／ 笑一下，不说什么
+[Y1W15|acq_local_4] 旁白：▶ “浙江和越南、泰国不太一样哦。”
+[Y1W15|acq_local_4] 旁白：他愣了一下，然后笑着点头：“Yeah, yeah, of course. Sorry. Tell me about 浙江 then.「对对，当然。抱歉。那给我讲讲浙江。」”
+[Y1W15|acq_local_4] 旁白：你讲了一点。他听得很认真，但你说到一半，他的朋友叫他去打桌球，他就走了。
+[Y1W15|] 〔选项〕在 App 上申请退款 ／ 算了，煮一包泡面配着吃
+[Y1W15|] 旁白：▶ 在 App 上申请退款
+[Y1W15] 〔背景 map_city〕
+[Y1W15] 〔背景 dorm_room〕
+[Y1W15|] Ploy（手机）：…did you forget me?「……你是不是把我忘了？」
+[Y1W15|] 旁白：▶ “对不起，我忘了。”
+[Y1W15] 〔背景 dorm_night〕
+[Y1W15|] 旁白：Tesco 一夜之间变成了粉红色。
+[Y1W16] 📱groupmate｜groupmate：…did you forget me?「……你是不是把我忘了？」
+[Y1W16] 📱groupmate｜我：对不起，我忘了。
+[Y1W16] 〔背景 dorm_room〕
+[Y1W16|valentines] 旁白：二月十四号，全城的店一夜之间都变成了粉红色。
+!!BOT PAUSED stuck ["[W14 null] 画面 10 秒没变化（可能卡住）：楼道里有人在打电话：“……对，大二那套，押金已经交了。”|0|false||309|14|","[W15 null] 画面 10 秒没变化（可能卡住）：中超门口挂出了红灯笼，货架上多了春联和汤圆。|0|false||464|15|","[W16 null] 画面 10 秒没变化（可能卡住）：Tesco 一夜之间变成了粉红色。|0|false||308|16|"]
+[Y1W16] 〔背景 supermarket〕
+[Y1W16|valentines] 旁白：晚上八点，你去Tesco买第二天的早饭。
+[Y1W16|valentines] 旁白：门口那一桶玫瑰贴上了黄色标签：£1.50。花瓣有点蔫，但还是红的。
+[Y1W16|valentines] 旁白：（打印机前面让位置给我的那个建筑系女生。）
+[Y1W16|valentines] Giulia：Don't look at me like that. They're for me. From me.「别这么看我。是送给我的。我送的。」
+[Y1W16|valentines] Giulia：Take one. Two is cheaper.「拿一束吧。两束更便宜。」
+[Y1W16|valentines] Giulia：I'm Giulia, by the way. We've met. At 2am.「对了，我叫 Giulia。我们见过。凌晨两点。」
+[Y1W16|valentines] 旁白：你说了声谢谢，拿了一束，然后发现你们住同一个方向，又一起走了十分钟。谁都没说话，但不尴尬。
+[Y1W16|valentines] 〔选项〕买一束 ／ 不买，买个meal deal
+[Y1W16|valentines] 旁白：▶ 买一束
+[Y1W16|valentines] 旁白：回到房间你找不到花瓶，最后插进了一个洗干净的老干妈瓶子里。
+[Y1W16|valentines] 旁白：（挺好看的。）
+[Y1W16|] Ollie（手机）：Brunch Saturday morning. Sophie's on shift. I bet you a coffee she spells your name wrong again.「周六上午 brunch。Sophie 当班。赌一杯咖啡，她又会把你名字写错。」
+[Y1W16|] 旁白：▶ 好，到时候见
+[Y1W16] 〔背景 dorm_room〕
+[Y1W16] 〔背景 dorm_room〕
+[Y1W16] 📱local｜local：Brunch Saturday morning. Sophie's on shift. I bet you a coffee she spells your name wrong again.「周六上午 brunch。Sophie 当班。赌一杯咖啡，她又会把你名字写错。」
+[Y1W16] 📱local｜我：[好，到时候见]
+[Y1W16] 〔背景 campus〕
+[Y1W16] 〔背景 pub〕
+[Y1W16|acq_local_5] 旁白：pub quiz。你在一桌，Ollie 在隔壁一桌。
+[Y1W16|acq_local_5] 主持人：Question five. What's the capital of China?「第五题。中国的首都是哪里？」
+[Y1W16|acq_local_5] 旁白：Ollie 转过身来，用口型问你：“Shanghai?”
+[Y1W16|acq_local_5] 旁白：（……）
+[Y1W16|acq_local_5] 〔选项〕用口型说：“Beijing.” ／ 用口型说：“Shanghai.”
+[Y1W16|acq_local_5] 旁白：▶ 用口型说：“Beijing.”
+[Y1W16|acq_local_5] 旁白：他们那桌答对了。你们这桌也答对了。最后，他们比你们多一分。
+[Y1W16|acq_local_5] 旁白：散场的时候，他走过来：“Technically, you won us that. I owe you two coffees now.「严格来说，那分是你帮我们赢的。我现在欠你两杯咖啡了。」”
+[Y1W16] 〔背景 map_city〕
+[Y1W16] 〔背景 dorm_night〕
+[Y1W16|] 旁白：Hannah 在群里发了更新版的甘特图，第十一页。
+[Y1W17] 〔背景 crit_room〕
+[Y1W17|group_presentation] 旁白：这次presentation占这门课的40%。
+!!BOT PAUSED stuck ["[W15 null] 画面 10 秒没变化（可能卡住）：中超门口挂出了红灯笼，货架上多了春联和汤圆。|0|false||464|15|","[W16 null] 画面 10 秒没变化（可能卡住）：Tesco 一夜之间变成了粉红色。|0|false||308|16|","[W17 null] 画面 10 秒没变化（可能卡住）：Hannah 在群里发了更新版的甘特图，第十一页。|0|false||340|17|"]
+[Y1W17|group_presentation] 旁白：小组群里，Ben上一次发言是三周前，内容是一个大拇指。
+[Y1W17|group_presentation] Hannah：So I've gone through everyone's slides and just… tidied them up a little.「我把大家的PPT都过了一遍，就……稍微整理了一下。」
+[Y1W17|group_presentation] 旁白：你点开。你那部分十张PPT，现在剩三张，标题也换了。
+[Y1W17|group_presentation] 〔选项〕据理力争 ／ 算了，随她
+[Y1W17|group_presentation] 旁白：▶ 据理力争
+[Y1W17|group_presentation] 旁白：你把原版发回群里，一条一条说为什么这么写。
+[Y1W17|group_presentation] 旁白：群里安静了十分钟。
+[Y1W17|group_presentation] Hannah：Okay. Fair. Yours stays.「好吧。有道理。你的不动了。」
+[Y1W17|group_presentation] 旁白：（第一次在英国吵架，吵赢了。手还在抖。）
+[Y1W17] 〔背景 dorm_night〕
+[Y1W17|group_presentation] 旁白：presentation前一天晚上十一点。
+[Y1W17|group_presentation] 旁白：Ploy发来消息：
+[Y1W17|group_presentation] Ploy（消息）：babe… I haven't started my part. Could you just write it? I'll pay you in bubble tea. Forever.「宝……我那部分还没开始。你能帮我写一下吗？我用奶茶还你。一辈子。」
+[Y1W17|group_presentation] 〔选项〕帮她写 ／ 陪她一起写 ／ 拒绝
+[Y1W17|group_presentation] 旁白：▶ 陪她一起写
+[Y1W17|group_presentation] 旁白：你们开着视频，各写各的。凌晨一点她写完了。写得不太好，但是她自己写的。
+[Y1W17] 〔背景 crit_room〕
+[Y1W17|group_presentation] 旁白：第二天上午十点，Ben出现了。皱巴巴的卫衣，一杯咖啡。
+[Y1W17|group_presentation] Ben：Sorry guys, been mad busy. What am I presenting?「不好意思各位，最近忙疯了。我讲哪部分？」
+[Y1W17|group_presentation] 旁白：没有人回答他。
+[Y1W17|group_presentation] 旁白：轮到你上台。
+[Y1W17|group_presentation] 旁白：这次你没有忘第一句。你在前一天晚上对着镜子讲了七遍，第七遍的时候吴桐在门外说了一句“可以了，真的可以了”。
+[Y1W17] 〔背景 dorm_room〕
+[Y1W17] 〔背景 library〕
+[Y1W17|rush_week] 旁白：ddl 就在这周，进度条还差一大截。这一周只能全部用来赶作业了。
+[Y1W17|] 〔选项〕这周什么都不干，只写作业（会很累） ／ 找代写（£250，有风险）
+[Y1W17] 📱groupmate｜groupmate：babe… I haven't started my part. Could you just write it? I'll pay you in bubble tea. Forever.「宝……我那部分还没开始。你能帮我写一下吗？我用奶茶还你。一辈子。」
+[Y1W17|] 旁白：▶ 这周什么都不干，只写作业（会很累）
+[Y1W17] 〔背景 dorm_room〕
+[Y1W17] 〔背景 campus〕
+[Y1W17|pb_06] 旁白：一只鸽子挡在人行道中间，一动不动地看着你。你往左，它往左。你往右，它往右。
+[Y1W17|pb_06] 〔选项〕绕开它 ／ 跺一下脚
+[Y1W17|pb_06] 旁白：▶ 绕开它
+[Y1W17|pb_06] 旁白：你说了一句 sorry。对着一只鸽子。
+[Y1W17] 〔背景 dorm_room〕
+[Y1W17|got_sick] 旁白：你醒来的时候嗓子像吞了一把沙子。体温计显示 38.4。你给小组群发了一句“今天来不了”，然后又睡了过去。
+[Y1W17] 〔背景 map_city〕
+[Y1W17] 〔背景 crit_room〕
+[Y1W17|] 天气 App（消息）：下周三，小雪。
+[Y1W17] 〔背景 dorm_night〕
+[Y1W17|] 旁白：英国同学在群里发了五个感叹号。
+[Y1W18] 〔背景 dorm_room〕
+[Y1W18|first_snow] 旁白：早上拉开窗帘，外面是白的。
+!!BOT PAUSED stuck ["[W16 null] 画面 10 秒没变化（可能卡住）：Tesco 一夜之间变成了粉红色。|0|false||308|16|","[W17 null] 画面 10 秒没变化（可能卡住）：Hannah 在群里发了更新版的甘特图，第十一页。|0|false||340|17|","[W18 null] 画面 10 秒没变化（可能卡住）：英国同学在群里发了五个感叹号。|0|false||293|18|"]
+[Y1W18|first_snow] 旁白：学校邮件：Due to adverse weather conditions, all teaching today is cancelled.「由于恶劣天气，今天所有课程取消。」
+[Y1W18|first_snow] 旁白：（……就这？）
+[Y1W18] 〔背景 campus〕
+[Y1W18|first_snow] 旁白：整个校园的人都跑出来了。几个英国学生在草坪上堆了一个膝盖高的雪人，围着它拍了二十分钟照片。
+[Y1W18|first_snow] 〔选项〕加入打雪仗 ／ 站在旁边拍视频
+[Y1W18|first_snow] 旁白：▶ 加入打雪仗
+[Y1W18|first_snow] 旁白：雪太薄，捏出来的雪球一半是草。
+[Y1W18|first_snow] 旁白：你被砸中了三次，砸中别人一次。被你砸中的人宣布你是他的nemesis「宿敌」。
+[Y1W18|first_snow] 旁白：半小时后，雪就化完了。
+[Y1W18|first_snow] 旁白：课没有补。
+[Y1W18] 〔背景 pub_street〕
+[Y1W18|end_belong_1] 旁白：公交上，一个老太太问你某个站怎么走。你告诉她了，还告诉她换哪一路。
+[Y1W18|end_belong_1] 老太太：Thank you, love. Are you from round here?「谢谢你，亲爱的。你是本地人吗？」
+[Y1W18|end_belong_1] 旁白：（她问的不是“你从哪里来”，是“你是本地的吗”。）
+[Y1W18|end_belong_1] 〔选项〕“Sort of.” ／ “No, I'm from China.”
+[Y1W18|end_belong_1] 旁白：▶ “Sort of.”
+[Y1W18|end_belong_1] 旁白：老太太点点头，好像这是世界上最正常的回答：“Well, welcome home then, love.「那欢迎回家，亲爱的。」”
+[Y1W18] 〔背景 dorm_room〕
+[Y1W18] 〔背景 dorm_room〕
+[Y1W18] 〔背景 campus〕
+[Y1W18|pb_13] 旁白：路边的栏杆上插着一只手套，是有人捡到了挂上去的。旁边的树枝上还挂着一顶毛线帽和一个婴儿袜子。
+[Y1W18|pb_13] 旁白：（英国人捡到东西，不送失物招领，挂在最近的高处。）
+[Y1W18] 〔背景 map_city〕
+!!BOT PAUSED stuck ["[W17 null] 画面 10 秒没变化（可能卡住）：Hannah 在群里发了更新版的甘特图，第十一页。|0|false||340|17|","[W18 null] 画面 10 秒没变化（可能卡住）：英国同学在群里发了五个感叹号。|0|false||293|18|","[W19 null] 画面 10 秒没变化（可能卡住）：（英国人捡到东西，不送失物招领，挂在最近的高处。）|0|false||377|19|"]
+[Y1W19] 〔背景 dorm_room〕
+[Y1W19] 〔背景 dorm_room〕
+[Y1W19] 〔背景 campus〕
+[Y1W19|pb_09] 旁白：市中心有一个人在弹吉他唱歌，唱的是一首你在国内也听过的老歌。你站在旁边听完了。
+[Y1W19|pb_09] 〔选项〕扔一镑 ／ 听完就走
+[Y1W19|pb_09] 旁白：▶ 扔一镑
+[Y1W19|pb_09] 旁白：他冲你点点头，下一首换成了另一首中文歌，唱得很不标准。（他是专门为我唱的吗？）
+[Y1W19] 〔背景 map_city〕
+[Y1W19] 〔背景 dorm_room〕
+[Y1W19|] Ploy（手机）：…did you forget me?「……你是不是把我忘了？」
+[Y1W19|] 旁白：▶ “对不起，我忘了。”
+[Y1W19|] 邮件：University Communications｜Possible industrial action「部分老师可能罢工。」
+[Y1W20] 📱groupmate｜groupmate：…did you forget me?「……你是不是把我忘了？」
+[Y1W20] 📱groupmate｜我：对不起，我忘了。
+!!BOT PAUSED stuck ["[W18 null] 画面 10 秒没变化（可能卡住）：英国同学在群里发了五个感叹号。|0|false||293|18|","[W19 null] 画面 10 秒没变化（可能卡住）：（英国人捡到东西，不送失物招领，挂在最近的高处。）|0|false||377|19|","[W20 null] 画面 10 秒没变化（可能卡住）：他冲你点点头，下一首换成了另一首中文歌，唱得很不标准。（他是专门为我唱的吗？）|0|false||293|20|"]
+[Y1W20] 〔背景 dorm_room〕
+[Y1W20|strike] 邮件：University Communications｜Industrial Action: Information for Students「Dear Student, members of staff will be taking industrial action over the coming weeks. Some teaching may not take place. We apologise for any disruption.」
+[Y1W20|strike] 旁白：（老师罢工。在国内我只听过学生逃课。）
+[Y1W20|strike] 旁白：那一周你的课表空了一半。
+[Y1W20|strike] 旁白：Nikos发了一封很长的邮件，最后一句是“I'm sorry. I'd rather be teaching you. Please read chapter four, and please look after yourselves.「抱歉，我宁愿在给你们上课。请读第四章，也请照顾好自己。」”
+[Y1W20|strike] 旁白：Pike照常上课。全系只有他一个。
+[Y1W20|strike] 旁白：老乡群里有人算了一笔账：一年学费除以课时，一节课 ≈ £45（≈¥410）。
+[Y1W20|strike] 旁白：（这一周我损失了¥2,460。没有人退钱。）
+[Y1W20] 〔背景 campus〕
+[Y1W20|strike] 旁白：周三早上你路过社会学楼。门口站着一排老师，举着牌子，有人在发传单。
+[Y1W20|strike] 旁白：Marcia站在最前面，戴着一顶毛线帽，手里拿着一个保温壶，正在给旁边的人倒茶。
+[Y1W20|strike] 旁白：她看到你，招了招手。
+[Y1W20|strike] Marcia：Have you eaten today?「今天吃饭了吗？」
+[Y1W20|strike] 旁白：（罢工的时候也问。）
+[Y1W20|strike] Marcia：It's not against you lot, you know. It's about pay, and pensions, and people on contracts that end every nine months. Some of the PhDs teaching you are on less than you'd think.「不是针对你们的。是工资、养老金，还有那些九个月一签的合同。给你们上课的一些博士，拿的钱比你想的少。」
+[Y1W20|strike] 〔选项〕去附近买一杯热茶给她 ／ “那我这周在家自学。” ／ “那我们这周可以出去玩吗？”
+[Y1W20|strike] 旁白：▶ 去附近买一杯热茶给她
+[Y1W20|strike] 旁白：她接过去，捂了一会儿手，没有马上喝。
+[Y1W20|strike] Marcia：Right. You're getting a very good reference one day.「好。总有一天你会拿到一封很好的推荐信。」
+[Y1W20|strike] 旁白：（她是在开玩笑吧。……她是在开玩笑吧？）
+[Y1W20|strike] 旁白：陈思琪那一周去了四次Pike的课，因为那是唯一还在上的课。她说：“我不是喜欢他，我是不想浪费钱。”
+[Y1W20|] 邮件：Module Leader｜Assignment brief released「Dear students,
+
+The brief for 作业4：第二个项目＋作品集 is now available on the module page. Please read it carefully, including the marking criteria.
+
+Deadline: Friday of Week 22, 12:00 noon, via the online submission portal. Late submissions will be capped at 40 unless an extension has been approved.
+
+Good luck,
+Module Leader」
+[Y1W20] 〔背景 dorm_room〕
+[Y1W20] 〔背景 dorm_room〕
+[Y1W20] 〔背景 campus〕
+[Y1W20|mid_w24] 旁白：手机自动调了时间，你的闹钟没有。你迟到了一个小时，以为自己睡过了。
+[Y1W20|mid_w24] 旁白：结果：整个教室只来了一半的人。老师也迟到了。
+[Y1W20] 〔背景 map_city〕
+!!BOT PAUSED stuck ["[W19 null] 画面 10 秒没变化（可能卡住）：（英国人捡到东西，不送失物招领，挂在最近的高处。）|0|false||377|19|","[W20 null] 画面 10 秒没变化（可能卡住）：他冲你点点头，下一首换成了另一首中文歌，唱得很不标准。（他是专门为我唱的吗？）|0|false||293|20|","[W21 null] 画面 10 秒没变化（可能卡住）：结果：整个教室只来了一半的人。老师也迟到了。|0|false||464|21|"]
+[Y1W21] 〔背景 dorm_room〕
+[Y1W21] 〔背景 dorm_room〕
+[Y1W21] 〔背景 map_city〕
+[Y1W21] 〔背景 dorm_room〕
+[Y1W21|] 林子航（手机）：等了你四十分钟。没事，下次提前说一声。
+[Y1W21|] 旁白：▶ “对不起，我忘了。”
+[Y1W22] 📱senior｜senior：等了你四十分钟。没事，下次提前说一声。
+[Y1W22] 📱senior｜我：对不起，我忘了。
+!!BOT PAUSED stuck ["[W20 null] 画面 10 秒没变化（可能卡住）：他冲你点点头，下一首换成了另一首中文歌，唱得很不标准。（他是专门为我唱的吗？）|0|false||293|20|","[W21 null] 画面 10 秒没变化（可能卡住）：结果：整个教室只来了一半的人。老师也迟到了。|0|false||464|21|","[W22 null] 画面 10 秒没变化（可能卡住）：结果：整个教室只来了一半的人。老师也迟到了。|0|false||464|22|"]
+[Y1W22|] 〔选项〕这周什么都不干，只写作业（会很累） ／ 找代写（£250，有风险）
+[Y1W22|] 旁白：▶ 这周什么都不干，只写作业（会很累）
+[Y1W22] 〔背景 library〕
+[Y1W22|final_assignment] 旁白：第二次赶ddl。
+[Y1W22|final_assignment] 旁白：这次你知道了：四楼靠窗那排有插座；凌晨两点自动贩卖机会补货；楼下那家咖啡店十点关门，十点前要囤两杯。
+[Y1W22|final_assignment] 旁白：（攻略我已经做好了。我只是没有做作业。）
+[Y1W22|final_assignment] 旁白：这次你提前三天打印。打印店老板认出了你：“Back again, love?「又来了，亲爱的？」”
+[Y1W22|final_assignment] 旁白：周五晚上十一点五十一分，你点了提交。比上次早了七分钟。
+[Y1W22] 〔背景 dorm_room〕
+[Y1W22] 〔背景 dorm_room〕
+[Y1W22] 〔背景 dorm_night〕
+[Y1W22|be_ploy_ddl_y1_22] Ploy（手机）：babe u got this right? 🙏「宝你搞得定的吧🙏」
+[Y1W22] 📱groupmate｜groupmate：babe u got this right? 🙏「宝你搞得定的吧🙏」
+[Y1W22] 〔背景 map_city〕
+[Y1W22] 〔背景 dorm_room〕
+[Y1W22|] Ollie（手机）：Hey, you okay? Waited a bit. Hope everything's fine x「嘿，你还好吗？等了一会儿。希望一切都好 x」
+[Y1W22] 📱local｜local：Hey, you okay? Waited a bit. Hope everything's fine x「嘿，你还好吗？等了一会儿。希望一切都好 x」
+[Y1W22|] 旁白：▶ “对不起，我忘了。”
+[Y1W22] 〔背景 crit_room〕
+[Y1W22] 〔背景 dorm_night〕
+[Y1W22|] 旁白：超市的巧克力蛋堆成了一座山。
+[Y1W23] 📱local｜我：对不起，我忘了。
+!!BOT PAUSED stuck ["[W21 null] 画面 10 秒没变化（可能卡住）：结果：整个教室只来了一半的人。老师也迟到了。|0|false||464|21|","[W22 null] 画面 10 秒没变化（可能卡住）：结果：整个教室只来了一半的人。老师也迟到了。|0|false||464|22|","[W23 null] 画面 10 秒没变化（可能卡住）：超市的巧克力蛋堆成了一座山。|0|false||346|23|"]
+[Y1W23] 〔背景 dorm_room〕
+[Y1W23|easter_break] 旁白：学校放三周的假。英国同学都回家了，走廊里一下子安静下来。
+[Y1W23|easter_break] 旁白：往返机票 £720（≈¥6,600）。比圣诞节还贵。
+[Y1W23|easter_break] 旁白：复活节怎么过？
+[Y1W23|easter_break] 〔选项〕回国 ／ 出去玩 ／ 宅着
+[Y1W23|easter_break] 旁白：▶ 出去玩
+[Y1W23|easter_break] 旁白：这次你提前两个月就办好了申根。十七项材料，一项都没少。
+[Y1W23|easter_break] 旁白：你去了一个圣诞节就想去的地方。三天，走了六万步，拍了四百张照片，其中三百张是吃的。
+[Y1W23|easter_break] 旁白：第一天你坐反了地铁，坐到了终点站。终点站旁边有一家很好吃的面包店。（我管这个叫随机探索。）
+[Y1W23|] 〔选项〕看看地图 ／ 不了
+[Y1W23|] 旁白：▶ 看看地图
+[Y1W23] 〔背景 world_map〕
+[Y1W23|] 小红书推送（消息）：《本周日调钟，少睡一小时》
+!!BOT PAUSED stuck ["[W22 null] 画面 10 秒没变化（可能卡住）：结果：整个教室只来了一半的人。老师也迟到了。|0|false||464|22|","[W23 null] 画面 10 秒没变化（可能卡住）：超市的巧克力蛋堆成了一座山。|0|false||346|23|","[W24 null] 画面 10 秒没变化（可能卡住）：放假了。出去旅行吗？|0|false||292|24|"]
+[Y1W24] 〔背景 dorm_room〕
+[Y1W24|term3_start] 旁白：周日早上，手机上的时间是八点，床头闹钟上是七点。
+[Y1W24|term3_start] 〔选项〕（夏令时。冬令时借的那一小时，今天还。） ／ （……闹钟又坏了？）
+[Y1W24|term3_start] 旁白：▶ （夏令时。冬令时借的那一小时，今天还。）
+[Y1W24|term3_start] 旁白：不过从今天开始，天会一直亮到晚上八点。到了六月，是九点半。
+[Y1W24|term3_start] 旁白：（四点天黑的那个冬天，好像是很久以前的事了。）
+[Y1W24] 〔背景 flat_kitchen〕
+[Y1W24|term3_start] 旁白：你回来的那天晚上，厨房里传来一声很短的、你从没听过的声音。
+[Y1W24|term3_start] 旁白：吴桐站在灶台前，手里拿着她的电饭煲内胆。里面有半锅饭，长出了一层白毛，边上一圈绿的。
+[Y1W24|term3_start] 旁白：她走之前把电饭煲放在厨房，没想到有人用了，又没洗。
+[Y1W24|term3_start] 旁白：她没说话，眼眶红了。
+[Y1W24|term3_start] 旁白：（吴桐。全楼情绪最稳定的人。火警凌晨三点她都在打哈欠。）
+[Y1W24|term3_start] 吴桐：……这是我外婆给我买的。她说英国的锅煮不好饭。
+[Y1W24|term3_start] 〔选项〕“我来洗。你去坐着。” ／ 在群里问是谁用的
+[Y1W24|term3_start] 旁白：▶ “我来洗。你去坐着。”
+[Y1W24|term3_start] 旁白：〔友情·吴桐+6〕
+[Y1W24|term3_start] 旁白：你用开水烫了三遍，又用醋泡了一晚。第二天早上，你把干干净净的内胆放回她门口。
+[Y1W24|term3_start] 旁白：她发来一条消息：“谢谢。”过了一会儿又发：“明天火锅，你必须来。”
+[Y1W24] 〔背景 dorm_room〕
+[Y1W24] 〔背景 dorm_room〕
+[Y1W24|] 旁白：〔友情·吴桐-4〕
+[Y1W24] 〔背景 dorm_night〕
+[Y1W24|mid_w09] 旁白：你写完了作业，最后检查的时候发现：学校要求 Harvard 格式，你用的是 APA。四十个引用。
+[Y1W24|mid_w09] 〔选项〕一个一个改 ／ 去问陈思琪 ／ 不改了
+[Y1W24|mid_w09] 旁白：▶ 去问陈思琪
+[Y1W24|mid_w09] 旁白：〔友情·陈思琪+2〕
+[Y1W24|mid_w09] 旁白：她发了一个工具给你，五分钟搞定。
+[Y1W24|mid_w09] 陈思琪：你不知道这个？
+[Y1W24] 〔背景 indoor_market〕
+[Y1W24|stage_groupmate_20] 旁白：Ploy 把你拉进了 Boots，说要教你“英国最好用的东西”。
+[Y1W24|stage_groupmate_20] 旁白：半小时后，你的篮子里多了七样东西：一管护手霜、三种你不知道用途的面膜、一支她说“你一定适合”的口红。
+[Y1W24|stage_groupmate_20] Ploy：Trust me. I have a PhD in this.「相信我。我在这方面是博士。」
+[Y1W24|stage_groupmate_20] 旁白：（她的包比她的笔记本贵。）
+[Y1W24|stage_groupmate_20] 〔选项〕全买了 ／ 只买口红
+[Y1W24|stage_groupmate_20] 旁白：▶ 全买了
+[Y1W24|stage_groupmate_20] 旁白：收银员报价的时候你脸都白了。Ploy 在旁边鼓掌：
+[Y1W24|stage_groupmate_20] Ploy：Self-care! That's self-care!「这叫爱自己！」
+[Y1W24] 〔背景 map_city〕
+[Y1W24] 〔背景 gym〕
+[Y1W24|] 旁白：Google Map 带你到了一个停车场。健身房在停车场下面。
+[Y1W24|] 旁白：跑步机上跑了二十分钟，你觉得自己又行了。
+[Y1W24] 〔背景 gym〕
+[Y1W24|meet_jake] 旁白：跑步机上，一个棕发男生跑着跑着回头跟人说话，然后被跑步机甩了下来。
+[Y1W24|meet_jake] 跑步机上的男生：I'm fine! I'm fine. That happens a lot.「我没事！没事。这种事经常发生。」
+[Y1W24|meet_jake] 旁白：他爬起来，看到你在笑，也笑了。
+[Y1W24|meet_jake] 跑步机上的男生：You new? I'm Jake. Five-a-side on Saturdays if you fancy it.「新来的？我是Jake。周六踢五人足球，有兴趣可以来。」
+[Y1W24] 〔背景 map_city〕
+[Y1W24|] 邮件：Dr. Marcia Campbell｜Week 2 meeting「老时间，老地方。」
+[Y1W25] 〔背景 campus〕
+[Y1W25|tutor_meeting_3] Marcia：Have you eaten today?「今天吃饭了吗？」
+!!BOT PAUSED stuck ["[W23 null] 画面 10 秒没变化（可能卡住）：超市的巧克力蛋堆成了一座山。|0|false||346|23|","[W24 null] 画面 10 秒没变化（可能卡住）：放假了。出去旅行吗？|0|false||292|24|","[W25 null] 画面 10 秒没变化（可能卡住）：You new? I'm Jake. Five-a-side on Saturdays if you fancy it.|0|false||293|25|"]
+[Y1W25|tutor_meeting_3] 旁白：你说吃了。这次是真的。
+[Y1W25|tutor_meeting_3] 旁白：她问你暑假怎么过，明年住哪里。你说了。
+[Y1W25|tutor_meeting_3] Marcia：Second year counts, you know. Thirty percent. It's not the end of the world, but it's not nothing.「大二开始算分了，百分之三十。不是世界末日，但也不是小事。」
+[Y1W25|tutor_meeting_3] 旁白：然后她压低了声音，好像要说什么秘密。
+[Y1W25|tutor_meeting_3] Marcia：I've put my application in for professor. Don't tell Geoffrey. He'll write me a reference that says "Adequate."「我申请升教授了。别告诉Geoffrey。他会给我写一封推荐信，上面写“尚可”。」
+[Y1W25|tutor_meeting_3] 旁白：（她在跟我讲八卦。我的tutor在跟我讲八卦。）
+[Y1W25|tutor_meeting_3] Marcia：And if you're around in August — Carnival. Chapeltown. I'll be the one in yellow feathers. Come and find me.「还有，八月你要是在的话，来狂欢节。Chapeltown。黄色羽毛那个就是我。来找我。」
+[Y1W25] 〔背景 dorm_room〕
+[Y1W25] 〔背景 dorm_room〕
+[Y1W25] 〔背景 dorm_night〕
+[Y1W25|senior_graduation] 旁白：学长发了一条朋友圈。
+[Y1W25|senior_graduation] 旁白：“毕业了。三年，搬了四次家，接了一百二十个新生，卖了不知道多少罐茶。下个月开始上班，人还在这个城市，代购照做。”
+[Y1W25|senior_graduation] 旁白：照片是文字卡：学位服、一只手拿着帽子，另一只手拿着一罐茶。
+[Y1W25|senior_graduation] 〔选项〕点赞，评论“恭喜学长！” ／ 私聊：“学长，你找到工作了？”
+[Y1W25|senior_graduation] 旁白：▶ 点赞，评论“恭喜学长！”
+[Y1W25|senior_graduation] 旁白：过了一会儿，他回了一个抱拳。
+[Y1W25] 〔背景 map_city〕
+[Y1W25] 〔背景 dorm_room〕
+[Y1W25|] Ollie（手机）：Hey, you okay? Waited a bit. Hope everything's fine x「嘿，你还好吗？等了一会儿。希望一切都好 x」
+[Y1W25|] 旁白：▶ “对不起，我忘了。”
+[Y1W25|] 天气 App（消息）：周三，17度，晴。
+[Y1W25] 📱local｜local：Hey, you okay? Waited a bit. Hope everything's fine x「嘿，你还好吗？等了一会儿。希望一切都好 x」
+[Y1W25] 📱local｜我：对不起，我忘了。
+[Y1W25|] 吴桐（消息）：周三谁都别找我。
+!!BOT PAUSED stuck ["[W24 null] 画面 10 秒没变化（可能卡住）：放假了。出去旅行吗？|0|false||292|24|","[W25 null] 画面 10 秒没变化（可能卡住）：You new? I'm Jake. Five-a-side on Saturdays if you fancy it.|0|false||293|25|","[W26 null] 画面 10 秒没变化（可能卡住）：过了一会儿，他回了一个抱拳。|0|false||313|26|"]
+[Y1W26] 〔背景 campus〕
+[Y1W26|first_sunny_day] 旁白：周三下午，17度，出太阳了。
+[Y1W26|first_sunny_day] 旁白：整个校园在二十分钟之内变了样：草坪上全是人，有人光着上身，有人在烤肠，有人在草上睡着了。图书馆门口的长椅一个空位都没有。
+[Y1W26|first_sunny_day] 旁白：你穿着一件薄外套，是全场穿得最多的人之一。
+[Y1W26|first_sunny_day] 旁白：（17度，在我们那叫“春秋”。在这里叫“夏天”。）
+[Y1W26|first_sunny_day] 旁白：（这么多人。我能不能找个树荫，假装自己是一棵树。）
+[Y1W26|first_sunny_day] 〔选项〕找个草坪坐下 ／ 趁人都在外面，去图书馆占座
+[Y1W26|first_sunny_day] 旁白：▶ 趁人都在外面，去图书馆占座
+[Y1W26] 〔背景 library〕
+[Y1W26|first_sunny_day] 旁白：你在四楼靠窗的位置坐了一下午。窗外的草坪上全是人，图书馆里只有你和七个中国学生。
+[Y1W26|first_sunny_day] 旁白：你们互相点了点头。
+[Y1W26|first_sunny_day] 旁白：其中一个是陈思琪。
+[Y1W26|first_sunny_day] 旁白：〔友情·陈思琪+2〕
+[Y1W26|first_sunny_day] 旁白：这天的推荐页全是《英国人一出太阳就疯了》。
+[Y1W26] 〔背景 dorm_room〕
+[Y1W26] 〔背景 dorm_room〕
+[Y1W26] 〔背景 dorm_night〕
+[Y1W26|ploy_jiaren] Ploy（手机）：家人们谁懂啊
+[Y1W26|ploy_jiaren] Ploy（手机）：我妈妈让我学中文
+[Y1W26|ploy_jiaren] Ploy（手机）：绝绝子
+[Y1W26|ploy_jiaren] 旁白：（……这三句话，没有一句用对了。）
+[Y1W26] 📱groupmate｜groupmate：家人们谁懂啊
+[Y1W26] 📱groupmate｜groupmate：我妈妈让我学中文
+[Y1W26] 📱groupmate｜groupmate：绝绝子
+[Y1W26|ploy_jiaren] Ploy（手机）：ok switching to english bc my brain hurts. mum signed me up for online mandarin class. HSK3. there's homework every week and she CHECKS. on video. every sunday「好，换英文，脑子疼。我妈给我报了网课，HSK3。每周都有作业，她还会检查。视频检查。每个周日」
+[Y1W26|ploy_jiaren] Ploy（手机）：[图片]
+[Y1W26|ploy_jiaren] 旁白：是一张作业截图：用"虽然……但是……"造三个句子。她写了一个："虽然我很漂亮，但是。"
+[Y1W26|ploy_jiaren] Ploy（手机）：can u help 🥺 just this once「能帮我吗🥺 就这一次」
+[Y1W26] 📱groupmate｜groupmate：ok switching to english bc my brain hurts. mum signed me up for online mandarin class. HSK3. there's homework every week and she CHECKS. on video. every sunday「好，换英文，脑子疼。我妈给我报了网课，HSK3。每周都有作业，她还会检查。视频检查。每个周日」
+[Y1W26] 📱groupmate｜groupmate：[图片]
+[Y1W26] 📱groupmate｜groupmate：can u help 🥺 just this once「能帮我吗🥺 就这一次」
+[Y1W26|ploy_jiaren] 旁白：▶ “我教你，你自己写。”
+[Y1W26|ploy_jiaren] Ploy（手机）：ugh. fine. ur so strict「烦。行吧。你好严格」
+[Y1W26|ploy_jiaren] 旁白：你们视频了四十分钟。她第三个句子写的是："虽然中文很难，但是我的老师很漂亮。"
+[Y1W26|ploy_jiaren] Ploy（手机）：that one's for u. is it right?「这句是写给你的。对吗？」
+[Y1W26|ploy_jiaren] 旁白：（对。而且是这节课里她唯一一个自己想出来的句子。）
+[Y1W26|] 旁白：〔友情·陈思琪-4〕
+[Y1W26] 📱groupmate｜我：我教你，你自己写。
+[Y1W26] 📱groupmate｜groupmate：ugh. fine. ur so strict「烦。行吧。你好严格」
+[Y1W26] 📱groupmate｜groupmate：that one's for u. is it right?「这句是写给你的。对吗？」
+[Y1W26] 〔背景 map_city〕
+[Y1W26|] 邮件：Library｜24/7 opening for exams「考试期间图书馆24小时开放。」
+[Y1W27] 〔背景 library〕
+[Y1W27|exam_week] 旁白：考试周的图书馆，二十四小时都坐满了人。
+!!BOT PAUSED stuck ["[W25 null] 画面 10 秒没变化（可能卡住）：You new? I'm Jake. Five-a-side on Saturdays if you fancy it.|0|false||293|25|","[W26 null] 画面 10 秒没变化（可能卡住）：过了一会儿，他回了一个抱拳。|0|false||313|26|","[W27 null] 画面 10 秒没变化（可能卡住）：这天的推荐页全是《英国人一出太阳就疯了》。|0|false||305|27|"]
+[Y1W27|exam_week] 旁白：座位上放着外套、水杯、一本书，人不在。（这叫占座。英国图书馆写着禁止占座，大家都看到了。）
+[Y1W27|exam_week] 旁白：凌晨三点，你抬起头。
+[Y1W27|exam_week] 旁白：桌上有四个能量饮料的罐子，两个是你的，两个不知道是谁的。对面的人趴在书上睡着了，手里还握着荧光笔。
+[Y1W27|exam_week] 旁白：窗外开始发白。五月的天，四点就亮了。
+[Y1W27|exam_week] 旁白：（冬天四点天黑，夏天四点天亮。这个国家的天，从来不在正常的时间做事。）
+[Y1W27|exam_week] 〔选项〕再撑一会儿 ／ 回去睡三个小时
+[Y1W27|exam_week] 旁白：▶ 回去睡三个小时
+[Y1W27|exam_week] 旁白：你睡了三个小时，醒来的时候脑子很清楚。评审的时候，你脑子很清楚。
+[Y1W27] 〔背景 crit_room〕
+[Y1W27|exam_week] 旁白：设计专业没有笔试，期末是作品集评审。你的作品挂在软木墙上，一整面墙，一年的东西。
+[Y1W27|exam_week] 旁白：于晓和一位校外考官站在墙前面，看了很久。
+[Y1W27|exam_week] 校外考官：Talk me through this one.「讲讲这一张。」
+[Y1W27|exam_week] 旁白：那是你“身份”项目的那张。
+[Y1W27|exam_week] 〔选项〕用准备好的稿子讲 ／ 不看稿，直接讲{身份物件}
+[Y1W27|exam_week] 旁白：▶ 用准备好的稿子讲
+[Y1W27|exam_week] 旁白：你讲完了。考官点点头，在本子上写了一行字。你后来在反馈里看到了：“Well-prepared. Would like to hear more of her own voice.”「准备充分。希望多听到她自己的声音。」
+[Y1W27] 〔背景 dorm_room〕
+[Y1W27] 〔背景 dorm_room〕
+[Y1W27] 〔背景 map_city〕
+[Y1W27] 〔背景 crit_room〕
+[Y1W27|] 邮件：Accommodation Office｜Moving out「退宿检查安排在下周。」
+!!BOT PAUSED stuck ["[W26 null] 画面 10 秒没变化（可能卡住）：过了一会儿，他回了一个抱拳。|0|false||313|26|","[W27 null] 画面 10 秒没变化（可能卡住）：这天的推荐页全是《英国人一出太阳就疯了》。|0|false||305|27|","[W28 null] 画面 10 秒没变化（可能卡住）：你讲完了。考官点点头，在本子上写了一行字。你后来在反馈里看到了：“Well-prepared. Would like to hear more of her own voice.”「准备充分。希望多听到她自己的声音。」|0|false||306|28|"]
+== END {"y":1,"w":28,"aff":{"senior":19,"local":17,"groupmate":25.4,"otaku":0},"money":1235.5,"flags":177}

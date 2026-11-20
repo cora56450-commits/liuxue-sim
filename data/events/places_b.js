@@ -83,7 +83,7 @@ Object.assign(DATA.events, {
   // 中超-4 · 日本零食区（Kieran）
   place_chinese_market_4: [
     { bg: "chinese_market" },
-    { say: "中超最里面有一小排日本零食。一个很高的红头发男生蹲在那里，戴着口罩和帽子，篮子里已经放了八包。" },
+    { say: "中超最里面有一小排日本零食。一个很高的姜红色头发男生蹲在那里，戴着口罩和帽子，篮子里已经放了八包。" },
     { show: "otaku" },
     { say: "是 Kieran。" },
     { say: "…This is the only place in the city that has these. Don't judge me.", name: "otaku", tr: "……这是全城唯一能买到这些的地方。别评判我。" },

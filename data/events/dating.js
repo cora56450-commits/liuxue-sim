@@ -771,7 +771,7 @@ Object.assign(DATA.events, {
     { hide: true },
   ],
 
-  // 修罗场-4 · 派对上的金发和红发（Ollie × Kieran）
+  // 修罗场-4 · 派对上的金发和姜红发（Ollie × Kieran）
   cross_scene_4: [
     { bg: "ollie_house" },
     { show: "local" },

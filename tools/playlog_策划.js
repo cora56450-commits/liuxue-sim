@@ -40,7 +40,8 @@ const CFGS = {
       for (const [g, list] of Object.entries(S.groupChats || {})) { const n = seen["g" + g] || 0; for (let i = n; i < list.length; i++) { const m = list[i]; if (m.kind === "divider") continue; L(`[${wk()}] 👥${g}｜${m.who}：${m.text}`); } seen["g" + g] = list.length; }
     }, 1500);
     let pi = 0;
-    const visit = { test: (t) => { const want = C.places[pi % C.places.length]; if (t.includes(want)) { pi++; return true; } return false; } };
+    // 按地点轮流去：这周想去的没开就顺延到下一个开着的
+    const visit = { pick: (ms) => { for (let k = 0; k < C.places.length; k++) { const want = C.places[(pi + k) % C.places.length]; const m = ms.find((x) => x.textContent.includes(want)); if (m) { pi = pi + k + 1; return m; } } return null; } };
     const origNote = Bot.report;
     Bot.start({ name: C.name, bg: C.bg, home: C.home, bd: C.bd, tags: C.tags, plan: C.plan, visit, untilWeek: 99, ms: 40,
       prefer: [/好，到时候见/, /^好$/, /答应/, /认真回/, /一起/, /去/] });

@@ -107,9 +107,11 @@ window.Bot = (function () {
       p.querySelector(".receipt").click(); return;
     }
     if (p.querySelector(".map-layer") && p.querySelector(".wk-btns")) {
-      const slot = S.resume && S.resume.slot;
-      if (slot === 0 && C.visit) {
-        const m = [...p.querySelectorAll(".marker:not(.locked)")].find((x) => C.visit.test(x.textContent)) || p.querySelector(".marker:not(.locked)");
+      // 每个周末出门一次（原来按 S.resume.slot 判断，S.resume 在地图上常常是空的，机器人一直躺平）
+      if (C.visit && B.visitWk !== absWeek()) {
+        B.visitWk = absWeek();
+        const ms = [...p.querySelectorAll(".marker:not(.locked)")];
+        const m = (C.visit.pick ? C.visit.pick(ms) : ms.find((x) => C.visit.test(x.textContent))) || ms[0];
         if (m) { note("周末去 " + m.textContent); m.click(); return; }
       }
       const r = [...p.querySelectorAll(".receipt")].find((x) => /结束这周/.test(x.textContent)); if (r) { r.click(); return; }

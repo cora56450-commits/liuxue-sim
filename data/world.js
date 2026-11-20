@@ -152,7 +152,7 @@ DATA.laterYears = [
     { id: "y2_exam",        label: "期末",       event: "y2_exam",        span: 6, mark: true, exam: true, trials: [{ who: "groupmate" }] },
     { id: "y2_summer",      label: "暑假",       event: "y2_summer",      span: 0, close: true },
   ] },
-  { year: 3, name: "大三", weight: 0.6, periods: [
+  { year: 3, name: "大三", weight: 0.7, periods: [
     { id: "y3_proposal",    label: "毕设开题",   event: "y3_proposal",    span: 4, bg: "studio_night" },
     { id: "y3_stay_or_go",  label: "去留焦虑",   event: "y3_stay_or_go",  span: 5 },
     { id: "y3_last_xmas",   label: "最后一个圣诞", event: "y3_last_xmas", span: 3, mark: true, trials: [{ who: "otaku" }] },
@@ -163,7 +163,7 @@ DATA.laterYears = [
     { id: "y3_after",       label: "典礼之后",   event: "y3_after",       span: 0 },   // Kieran 的 pub 公开事件；之后结局判定
   ] },
 ];
-DATA.year1Weight = 0.1;
+DATA.year1Weight = 0;   // 第十六批 Q13：大一不计入学位（过 40 升级），大二 30%，大三 70%
 
 // 浓缩章节里“这段时间怎么过”的日程模板（和 balance_sim.py 里的玩法一致）
 DATA.focusPlans = [

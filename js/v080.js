@@ -222,8 +222,9 @@
       return _fb.apply(this, arguments);
     }
     // 两周内对方已经主动问过：这周由你打个招呼，对方一句收尾，好感／友情 +1（算进聊天上限）
-    const lang = AI.lang ? AI.lang(cur) : "zh", L = HELLO[lang === "en" ? "en" : "zh"];
+    const lang = AI.lang ? AI.lang(cur) : "zh", L = ((DATA.helloLines || {})[cur]) || HELLO[lang === "en" ? "en" : "zh"];   // 十六批 R2：每人 6 句
     const pair = L[Math.abs(absWeek()) % L.length];
+    if (pair[2]) HELLO_TR[pair[1]] = pair[2];
     if (!box) return;
     box.innerHTML = `<div class="fb-opts"><button>${Gloss.escape(pair[0])}</button></div>`;
     box.querySelector("button").onclick = () => {

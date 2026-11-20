@@ -281,8 +281,8 @@ const Scenes = {
     const EN = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], ZH = ["周一", "周二", "周三", "周四", "周五"];
     const yr = ["", "Year One", "Year Two", "Year Three"][S.year];
     await showMail({ from: "Student Records", title: `Your timetable for ${yr}`, tr: "你的课表出来了",
-      body: `Dear ${S.enName || S.name}, your timetable is now available. Your compulsory sessions are on ${days.map((d) => EN[d]).join(" and ")}. Attendance at these sessions is monitored.`,
-      bodyTr: `你的课表出来了。${days.map((d) => ZH[d]).join("、")}固定有课，会记考勤。` });
+      body: `Dear ${S.enName || S.name}, your timetable is now available.${S.year === 1 ? " Your first class is on Monday at 9am." : ""} Your compulsory sessions are on ${days.map((d) => EN[d]).join(" and ")}. Attendance at these sessions is monitored.`,
+      bodyTr: `你的课表出来了。${S.year === 1 ? "周一上午九点，第一节课。" : ""}${days.map((d) => ZH[d]).join("、")}固定有课，会记考勤。` });
   },
 
   // 每周开头、固定事件之后：朋友事件、Marcia 主动约见、告白
@@ -642,8 +642,8 @@ const Scenes = {
     setTimeout(() => Guide.seq([["map", p.querySelector(".wk-board")], ["map_people", p.querySelector(".marker:not(.locked)")]]), 1100);
     const nb = p.querySelector(".next-btn");
     // 第十三批 A8：周末宅家的时段也回精力（和工作日宅家一样 +15），结算单写出来
-    nb.appendChild(receipt(slot % 3 === 2 ? "回家睡觉" : "待在家，等到" + DATA.todName[DATA.weekendSlots[slot + 1].tod], 3, () => { const ch = applyFx({ energy: Rules.homeEnergy ? Rules.homeEnergy(15) : 15 }); showFx(ch); toast(`待在家：${fxText(ch)}`, 1600); FX.tear(() => Scenes.weekend(slot + 1)); }));
-    nb.appendChild(receipt("结束这周", 4, () => FX.tear(() => Scenes.endWeek())));
+    nb.appendChild(receipt(slot % 3 === 2 ? "回家睡觉" : "待在家，等到" + DATA.todName[DATA.weekendSlots[slot + 1].tod], 3, () => { if (layer._go) return; layer._go = 1; const ch = applyFx({ energy: Rules.homeEnergy ? Rules.homeEnergy(15) : 15 }); showFx(ch); toast(`待在家：${fxText(ch)}`, 1600); FX.tear(() => Scenes.weekend(slot + 1)); }));
+    nb.appendChild(receipt("结束这周", 4, () => { if (layer._go) return; layer._go = 1; FX.tear(() => Scenes.endWeek()); }));   // 十六批：点了地点以后转场中再点“结束这周”会两条流程同时跑，卡死
   },
 
   // 第十二批：去他／她家（邀约地点 their_home）。挂在这里的小事件按顺序演一段；没有就演普通约会。
@@ -803,13 +803,15 @@ const Scenes = {
     const meetList = (loc.meet || []).flatMap((c) => (c === "roommates" ? roommates() : [c]));
     const who = meetList.filter((c) => DATA.characters[c] && (DATA.loveIds.includes(c)
       ? (!DATA.characters[c].hidden || S.tags.includes(DATA.characters[c].hidden))
-      : c in S.fr));
+      : c in S.fr)).filter((c) => DATA.loveIds.includes(c) || !(S.lastMeetWk && S.lastMeetWk[c] === absWeek() - 1));   // 十六批 R4：同一个朋友连续两周不出现
     if (who.length && Math.random() < DATA.tuning.meetChance) {
       const c = who[Math.floor(Math.random() * who.length)];
+      (S.lastMeetWk = S.lastMeetWk || {})[c] = absWeek();
+      const meetSay = DATA.events.weekend_meet.map((x) => (x.say ? { ...x, say: x.say.replace(/\{对方\}/g, charName(c)).replace(/\{地点\}/g, loc.name === "住处" ? "楼里" : loc.name) } : x));
       const firstTime = !S.flags["met_" + c];
       Stage.show(c);
       if (!DATA.loveIds.includes(c)) {
-        await runScript(DATA.events.weekend_meet);
+        await runScript(meetSay);
         await Scenes.stageGreet(c);
         showFx(applyFx({ ["fr_" + c]: DATA.tuning.frWeekendMeet }));
       } else if (firstTime) {
@@ -818,7 +820,7 @@ const Scenes = {
         showFx(meetChar(c));
       } else {
         markMet(c);
-        await runScript(DATA.events.weekend_meet);
+        await runScript(meetSay);
         await Scenes.stageGreet(c);
         const i = await choose([{ text: "聊两句" }, { text: "假装没看见" }]);
         if (i === 0) {
