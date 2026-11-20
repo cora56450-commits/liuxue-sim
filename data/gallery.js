@@ -810,4 +810,13 @@ DATA.gallery = {
   senior_graduation: {"cat":"love","who":"senior","stage":4,"title":"senior_graduation","bg":"","order":99999},
   fishpond_big: {"cat":"shura","who":"","stage":0,"title":"fishpond_big","bg":"brunch","order":99999},
   fishpond_pair: {"cat":"shura","who":"","stage":0,"title":"fishpond_pair","bg":"pub_street","order":99999},
+  ploy_rosa_1: {"cat":"love","who":"groupmate","stage":2,"title":"ploy_rosa_1","bg":"ploy_flat","order":99999},
+  ploy_rosa_2: {"cat":"love","who":"groupmate","stage":2,"title":"ploy_rosa_2","bg":"ploy_flat","order":99999},
+  ploy_rosa_3: {"cat":"love","who":"groupmate","stage":2,"title":"ploy_rosa_3","bg":"ploy_flat","order":99999},
+  trip_flight_groupmate: {"cat":"love","who":"groupmate","stage":2,"title":"trip_flight_groupmate","bg":"airport","order":99999},
+  senior_tension_1: {"cat":"love","who":"senior","stage":2,"title":"senior_tension_1","bg":"senior_room","order":99999},
+  senior_tension_2: {"cat":"love","who":"senior","stage":2,"title":"senior_tension_2","bg":"car_night","order":99999},
+  senior_tension_3: {"cat":"love","who":"senior","stage":2,"title":"senior_tension_3","bg":"chinese_market","order":99999},
+  senior_tension_4: {"cat":"love","who":"senior","stage":2,"title":"senior_tension_4","bg":"park_night","order":99999},
+  senior_tension_5: {"cat":"love","who":"senior","stage":2,"title":"senior_tension_5","bg":"senior_room","order":99999},
 };

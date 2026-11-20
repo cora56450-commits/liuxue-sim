@@ -252,6 +252,11 @@ const Travel6 = (() => {
       S.flags["trip_money_" + mate] = 1;
       await runEvent("trip_money_talk");
     }
+    // 新需求 1121：和 Ploy 第一次坐长途飞机（澳洲、美洲、东南亚）——坐哪个舱
+    if (mate === "groupmate" && ["aus", "america", "sea"].includes(r.id) && !S.flags.trip_flight_ploy && ev("trip_flight_groupmate")) {
+      S.flags.trip_flight_ploy = 1;
+      await runEvent("trip_flight_groupmate");
+    }
     const paidNow = !paidBefore && !!S.flags.paid_for_ploy;
     let share = 1;
     if (mate === "groupmate") share = paidNow ? t.sharePaidForPloy || 2 : S.flags.trip_split ? t.shareSplit || 1 : (t.share || {}).groupmate || 1;

@@ -150,7 +150,7 @@
 
 // ===== 十三批 D4／十五批补、补 2：新背景 id，图没到之前回退现有背景（不报缺图）=====
 DATA.bgFallback = Object.assign(DATA.bgFallback || {}, {
-  supermarket_premium: "supermarket_day", museum: "hall_stage",
+  supermarket_premium: "supermarket_posh", museum: "hall_stage",
   city_centre: "pub_street", city_centre_rain: "pub_street", clothes_shop: "pub_street", game_shop: "pub_street",
   bubble_tea: "brunch", campus_rain: "campus", senior_office: "pub_street", bus_stop_night: "pub_street",
 });
