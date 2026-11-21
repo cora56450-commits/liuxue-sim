@@ -618,7 +618,7 @@ const Scenes = {
       if (loc.needTag && !S.tags.includes(loc.needTag) && !(loc.id === "club_room" && (("zhao_zihao" in S.fr) || S.flags.met_local || S.flags.met_groupmate))) return;
       const can = slotOpen(loc, slot);
       const el = document.createElement("div");
-      el.className = "marker" + (can ? "" : " locked");
+      el.className = "marker" + (can ? "" : " locked") + (String(loc.name).length > 7 ? " long" : "");
       el.dataset.loc = loc.id;
       el.style.left = loc.x + "px"; el.style.top = loc.y + "px";
       el.style.animationDelay = i * 50 + "ms";

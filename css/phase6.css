@@ -120,3 +120,7 @@
 /* 小红书图标上的“新”（11/21） */
 .app { position: relative; }
 .app .app-new { position: absolute; top: -4px; right: 6px; background: #E8473B; color: #fff; font-style: normal; font-size: 13px; font-weight: 900; padding: 1px 6px; border-radius: 999px; box-shadow: 0 0 0 2px #fff; }
+/* 地图标签文字居中（11/21）：标签图左边是穿绳的孔、上面是绳子、右下角是斜纹，文字区要往右下挪
+   （按 marker.png 量的：标签主体横向 14%–95%、纵向 20%–100%，视觉中心大约在 59%／60%） */
+.map-layer > .marker:not(.train) { padding: 22px 34px 0 80px; }
+.map-layer > .marker:not(.train).long span { font-size: 21px; }
