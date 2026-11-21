@@ -288,6 +288,7 @@ const Story5 = {
     return e || null;
   },
   async runMidweek(e) {
+    S.midSeen = S.midSeen || {};   // 测试档／没走过 pickMidweek 的档没有这个表（v0.8.4 卡死）
     S.midSeen[e.id] = 1;
     S.midLog = [...(S.midLog || []).slice(-4), absWeek()];
     if (e.pick) { Story5.drawPick(e.pick); Story5.showPicked(); }
