@@ -154,3 +154,49 @@
     make() { Presets.list.forEach((o, k) => { try { localStorage.setItem(Save.key(7 + k), Presets.base(o)); } catch (e) { console.warn("preset", o.title, e); } }); },
   });
 })();
+
+// 11/21 Cora：地图上头像太多了 → 只挂“这周这里有剧情”的（橙圈），每个地点最多两个；“常来”的人写进悬停说明里
+(function () {
+  if (!window.V080 || !V080.mapDots) return;
+  const _md = V080.mapDots;
+  V080.mapDots = function () {
+    const r = _md.apply(this, arguments);
+    try {
+      document.querySelectorAll("#panel .map-layer .marker .v8-dots").forEach((box) => {
+        const imgs = [...box.querySelectorAll("img")];
+        const habit = imgs.filter((i) => !i.classList.contains("hot")).map((i) => i.title.replace(/常来$/, ""));
+        box.closest(".marker").dataset.habit = habit.join("、");
+        imgs.forEach((i, k) => { if (!i.classList.contains("hot")) i.remove(); });
+        [...box.querySelectorAll("img")].slice(2).forEach((i) => i.remove());
+        if (!box.querySelector("img")) box.remove();
+      });
+    } catch (e) { console.warn("mapDots trim", e); }
+    return r;
+  };
+  // 悬停说明里加一行“常来这里”
+  document.addEventListener("mouseover", (ev) => {
+    const m = ev.target.closest && ev.target.closest(".marker[data-loc]"); if (!m) return;
+    setTimeout(() => {
+      const t = document.getElementById("mk-tip"); if (!t || t.style.display === "none") return;
+      const hot = [...m.querySelectorAll(".v8-dots img.hot")].map((i) => i.title.replace(/：这周在这儿$/, ""));
+      const extra = [hot.length ? `这周在这儿：${hot.join("、")}` : "", m.dataset.habit ? `常来这里：${m.dataset.habit}` : ""].filter(Boolean);
+      if (extra.length && !t.querySelector(".mk-people")) { const d = document.createElement("div"); d.className = "mk-people"; d.textContent = extra.join("　"); t.appendChild(d); }
+    }, 0);
+  });
+})();
+
+// 11/21 Cora 实测“莫名其妙弹邀约”：邀约开到三年以后，一周里可能连着弹 普通邀约×2＋低门槛邀约＋随口约 → 对方主动发来的邀约卡一周最多 1 张
+(function () {
+  const _offer = Invites.offer;
+  Invites.offer = function (inv) {
+    if (inv && (inv.source === "npc" || inv.source === "ai")) {
+      if (S.npcInvWk === absWeek()) return Promise.resolve("dup");
+      const p = _offer.apply(this, arguments);
+      Promise.resolve(p).then((r) => { if (r !== "dup" && r !== "queued") S.npcInvWk = absWeek(); });
+      return p;
+    }
+    return _offer.apply(this, arguments);
+  };
+  // 地图头像：每个地点最多 1 个
+  if (window.V080 && V080.mapDots) { const _m = V080.mapDots; V080.mapDots = function () { const r = _m.apply(this, arguments); document.querySelectorAll("#panel .map-layer .v8-dots").forEach((b) => [...b.querySelectorAll("img")].slice(1).forEach((i) => i.remove())); return r; }; }
+})();
