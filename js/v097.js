@@ -13,6 +13,7 @@
         const love = L.filter((e) => DATA.loveIds.includes(e.who)); const e = (love.length ? love : L)[Math.floor(Math.random() * (love.length ? love : L).length)];
         S.actEnc[e.id] = absWeek();
         if (DATA.loveIds.includes(e.who)) { markMet(e.who); S.lastMet[e.who] = absWeek(); }
+        try { hideDialog(); Stage.hide(true); await say((window.V097 && V097.lead) ? V097.lead() : "你正准备走，看见了一个熟悉的人。"); } catch (x) {}   // 11/21：加一句过渡，不然像突然换了一段
         await runEvent(e.id);
       }
     } catch (err) { console.warn("v097 actEncounter", err); }

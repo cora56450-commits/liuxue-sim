@@ -473,7 +473,7 @@ Object.assign(DATA.events, {
   // 图书馆-Ollie-暧昧 · 小声说话
   enc_library_local_flirt: [
     { bg: "library" },
-    { say: "安静区。Ollie 坐在你对面，你们约好了“一起学习”。" },
+    { say: "安静区。你刚坐下，对面的椅子被轻轻拉开——Ollie，压低声音说：“Study buddy?”「一起学？」然后就真的坐下了。" },
     { show: "local" },
     { say: "十分钟后，他在一张便利贴上写了一句话，贴到你的电脑屏幕上：" },
     { say: "\"how do you say 'I'm bored' in Chinese\"「中文的'我好无聊'怎么说」" },

@@ -179,7 +179,7 @@
     setTimeout(() => {
       const t = document.getElementById("mk-tip"); if (!t || t.style.display === "none") return;
       const hot = [...m.querySelectorAll(".v8-dots img.hot")].map((i) => i.title.replace(/：这周在这儿$/, ""));
-      const extra = [hot.length ? `这周在这儿：${hot.join("、")}` : "", m.dataset.habit ? `常来这里：${m.dataset.habit}` : ""].filter(Boolean);
+      const extra = [m.dataset.date || "", hot.length ? `这周在这儿：${hot.join("、")}` : "", m.dataset.habit ? `常来这里：${m.dataset.habit}` : ""].filter(Boolean);
       if (extra.length && !t.querySelector(".mk-people")) { const d = document.createElement("div"); d.className = "mk-people"; d.textContent = extra.join("　"); t.appendChild(d); }
     }, 0);
   });
@@ -199,4 +199,84 @@
   };
   // 地图头像：每个地点最多 1 个
   if (window.V080 && V080.mapDots) { const _m = V080.mapDots; V080.mapDots = function () { const r = _m.apply(this, arguments); document.querySelectorAll("#panel .map-layer .v8-dots").forEach((b) => [...b.querySelectorAll("img")].slice(1).forEach((i) => i.remove())); return r; }; }
+})();
+
+// 11/21 Cora：生病（拿 First 也一样）的时候，没在交往 → 列出所有好感 ≥30 的人，选告诉谁（也可以谁都不说）。原来只问好感最高、40–79 的那一个。
+(function () {
+  const _news = Love6.news;
+  Love6.news = async function (kind) {
+    if (kind !== "sick" || !S || S.replay || DATA.loveIds.some((c) => S.flags["confessed_" + c] && !S.flags["broke_up_" + c])) return _news.apply(this, arguments);
+    const cands = DATA.loveIds.filter((c) => knows(c) && !S.flags["broke_up_" + c] && !S.flags["confess_refused_" + c] && (S.aff[c] || 0) >= 30 && (DATA.events[`news_${kind}_${c}_flirt`]));
+    if (!cands.length) return;
+    const ev = (c) => (kind === "sick" && S.sickNow && S.sickNow !== "fever" && DATA.events[`news_sick_${S.sickNow}_${c}_flirt`]) ? `news_sick_${S.sickNow}_${c}_flirt` : `news_${kind}_${c}_flirt`;
+    sayStatic(kind === "sick" ? "（要不要告诉谁一声？）" : "（要不要告诉谁？）");
+    const opts = cands.sort((a, b) => S.aff[b] - S.aff[a]).map((c) => ({ text: `发消息给${charName(c)}` })).concat([{ text: "谁都不说" }]);
+    const i = await choosePaged(kind === "sick" ? "（要不要告诉谁一声？）" : "（要不要告诉谁？）", opts);
+    hideDialog();
+    if (i >= cands.length) {
+      for (const c of cands) { S.flags[`news_untold_${kind}_${c}`] = 1; S.flags[`wk_news_untold_${kind}_${c}`] = 1; }
+      return say(kind === "sick" ? "你没说，把手机扣在枕头边。（不想让谁担心。）" : "你没说。截图存在相册里，自己看了好几遍。");
+    }
+    await runEvent(ev(cands[i]));
+  };
+})();
+
+// 11/21 Cora：“莫名其妙弹事件、没头没尾”——
+//   ① 剧情来源记录：每段剧情记下“怎么来的”（周中插播／偶遇／攻略线／阶段事件／固定剧情……），测试面板里能翻最近 30 条；勾“显示剧情来源”时，剧情开始那一下左上角写出来；
+//   ② 逛店、居民区碰到人之前加一句过渡（原来活动刚演完，下一句就直接是别的场景）。
+(function () {
+  const src = (id) => {
+    const has = (L) => (L || []).some((e) => e && (e.id === id || e.event === id));
+    if (has(DATA.midweek)) { const m = DATA.midweek.find((e) => e.id === id); return "周中插播" + (m && m.line ? "：" + m.line : ""); }
+    if (has(DATA.actEncounters)) return "逛店／居民区碰到人";
+    const le = (DATA.loveEvents || []).find((e) => e.id === id); if (le) return "攻略线事件" + (le.kind ? "（" + le.kind + "）" : "") + (le.place ? "·地点 " + le.place : "");
+    if (has(DATA.stageEvents)) return "阶段事件（好感第一次到这一档）";
+    if (has(DATA.placePool)) return "周末地点小剧情";
+    if (has(DATA.loveEncounters)) return "地点偶遇";
+    if (has(DATA.firstMeets)) return "第一次见面";
+    try { if (Rules.calList().some((c) => (c.fixed || []).includes(id) || c.event === id)) return "这周的固定剧情"; } catch (e) {}
+    if (/^date_/.test(id)) return "约会";
+    if (/^news_/.test(id)) return "消息反应";
+    if (/^(sick_|got_sick|care_)/.test(id)) return "生病";
+    if (/^dl_/.test(id)) return "地点活动";
+    if (/^epi_/.test(id)) return "后日谈";
+    return "剧情";
+  };
+  const title = (id) => ((DATA.gallery || {})[id] || {}).title || id;
+  const log = (kind, text) => {
+    try { S.evLog = (S.evLog || []).slice(-29); S.evLog.push({ w: (S.year === 1 ? "大一" : S.year === 2 ? "大二" : "大三") + "第" + S.week + "周" + (S.todNow ? "·" + S.todNow : ""), kind, text });
+      if (Settings.v.debugSrc) { let b = document.getElementById("src-badge"); if (!b) { b = document.createElement("div"); b.id = "src-badge"; (document.getElementById("stage") || document.body).appendChild(b); }
+        b.textContent = `【${kind}】${text}`; b.classList.add("show"); clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove("show"), 4500); } } catch (e) {}
+  };
+  let depth = 0;
+  const _run = runEvent;
+  runEvent = function (id) {
+    if (S && typeof id === "string" && depth === 0 && !S.replay) log(src(id), `${title(id)}（${id}）`);
+    depth++;
+    let r; try { r = _run.apply(this, arguments); } catch (e) { depth--; throw e; }
+    return Promise.resolve(r).finally(() => { depth--; });
+  };
+  const _offer = Invites.offer;
+  Invites.offer = function (inv) { try { if (inv && inv.source !== "player") log("邀约卡", `${charName(inv.who)} 约你去 ${Invites.placeName(inv.place, inv.who)}（来源：${inv.source || "?"}）`); } catch (e) {} return _offer.apply(this, arguments); };
+  window.EvLog = { src, log };
+
+  // 测试面板：最近 30 条＋开关
+  const _dbg = Sys.debug;
+  Sys.debug = function () {
+    const r = _dbg.apply(this, arguments);
+    try {
+      const box = document.querySelector(".ov-debug .dbg"); if (!box) return r;
+      const sec = document.createElement("div");
+      sec.innerHTML = `<h4>剧情来源（最近 30 条）</h4><div class="dbg-row"><label><input type="checkbox" class="dbg-src" ${Settings.v.debugSrc ? "checked" : ""}>剧情开始时在左上角显示来源</label></div>
+        <ol class="dbg-log">${(S.evLog || []).slice().reverse().map((x) => `<li><b>${x.w}</b>　【${Gloss.escape(x.kind)}】${Gloss.escape(x.text)}</li>`).join("") || "<li>还没有</li>"}</ol>`;
+      box.appendChild(sec);
+      sec.querySelector(".dbg-src").onchange = (e) => Settings.set("debugSrc", e.target.checked);
+    } catch (e) {}
+    return r;
+  };
+
+  // 碰到人之前的过渡句
+  const LEAD = ["你正准备走，看见了一个熟悉的人。", "走到门口的时候，你听见有人叫你。", "就在这时，你在人群里看见了一个熟悉的背影。", "你一抬头，正好对上一个熟悉的人的目光。"];
+  if (window.V097 === undefined) window.V097 = {};
+  V097.lead = () => LEAD[Math.floor(Math.random() * LEAD.length)];
 })();

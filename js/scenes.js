@@ -624,10 +624,11 @@ const Scenes = {
       el.style.left = loc.x + "px"; el.style.top = loc.y + "px";
       el.style.animationDelay = i * 50 + "ms";
       const date = dates.find((a) => a.place === loc.id || (loc.travel && a.place === "travel"));
+      if (date) el.dataset.date = `约了${charName(date.who)}：${Invites.slotName(date)}`;   // 11/21：标签只写“约·谁”，几点放悬停说明
       // 时段短写（试玩报告 39）：早·午·晚；室内市场“早·午（日只早）”
       const SHORT = { am: "早", pm: "午", eve: "晚" };
       const hours = loc.travel ? "早上出发" : (loc.open || []).map((t) => SHORT[t]).join("·") + ((loc.closed || []).includes("sun_pm") ? "（日只早）" : "");
-      el.innerHTML = `<span>${loc.name}<small>${can && loc.travel ? "一天／两天" : hours}</small></span>${date ? `<i class="mk-who">约·${charName(date.who)}·${Invites.slotName(date)}</i>` : ""}`;
+      el.innerHTML = `<span>${loc.name}<small>${can && loc.travel ? "一天／两天" : hours}</small></span>${date ? `<i class="mk-who">约·${charName(date.who)}</i>` : ""}`;
       if (can) el.onclick = () => { if (layer._go || receipt.locked) return; layer._go = 1; FX.tear(() => Scenes.visit(loc, slot)); };   // 防连点
       layer.appendChild(el);
     });

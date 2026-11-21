@@ -20,3 +20,10 @@
     L.splice(j, 0, { cg: null });
   }
 })();
+// 11/21 Cora：Ollie、Kieran 和常规立绘同一个姿势的表情（常态／惊讶／无语／愣住；Kieran 还有笑）换成加长版：
+// 把旧表情图的头贴到加长版常规立绘上（换脸，姿势一样所以没有接缝），尺寸和加长版常规一样 → 校准值也跟 base 一样。旧图备份在 03_美术素材/角色抠图/表情_旧版短图。
+(function () {
+  const C = DATA.characters;
+  for (const k of ["expr_normal", "expr_surprised", "expr_speechless", "expr_stunned"]) if (C.local.calib[k]) C.local.calib[k] = { ...C.local.calib.base };
+  for (const k of ["expr_normal", "expr_smile", "expr_surprised", "expr_speechless"]) if (C.otaku.calib[k]) C.otaku.calib[k] = { ...C.otaku.calib.base };
+})();

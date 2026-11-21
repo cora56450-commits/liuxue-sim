@@ -148,3 +148,12 @@
 .ov-debug .dbg-t td { padding: 3px 14px 3px 0; }
 .ov-debug .dbg-fr { white-space: nowrap; }
 #mk-tip .mk-people { margin-top: 4px; font-size: 15px; color: #C85A22; }
+/* 剧情来源（测试用，11/21） */
+#src-badge { position: absolute; left: 20px; top: 150px; z-index: 80; max-width: 900px; padding: 6px 12px; background: rgba(42,49,80,.88); color: #fff; font-size: 17px; border-radius: 8px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+#src-badge.show { opacity: 1; }
+.ov-debug .dbg-log { font-size: 16px; line-height: 1.6; padding-left: 24px; max-height: 300px; overflow-y: auto; }
+/* 11/21：有“约·谁”标签的地点，头像挪到右下角，不和标签叠在一起 */
+.map-layer .marker:has(.mk-who) .v8-dots { top: auto; bottom: -34px; right: -6px; }
+/* 日程里约好的那一天：悬停不再划线，改成提示“点一下取消约” */
+.board-row.tt.app:hover .act-name span { text-decoration: none; }
+.board-row.tt.app:hover .act-name::after { content: "点一下可以取消这个约"; display: block; font-size: 15px; font-weight: 700; color: #C85A22; margin-top: 2px; }

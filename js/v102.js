@@ -63,7 +63,8 @@
       const L = Invites.thisWeek().filter((a) => a.day === "WEEKEND" && RES.includes(a.place) && a.status === "accepted");
       if (res && L.length && !res.querySelector(".mk-who")) {
         const a = L[0]; const i = document.createElement("i"); i.className = "mk-who";
-        i.textContent = `约·${charName(a.who)}·${a.place === "their_home" ? charName(a.who) + "家" : RP()[a.place].name}·${Invites.slotName(a)}`;
+        i.textContent = `约·${charName(a.who)}·${a.place === "their_home" ? "去他家" : a.place === "park" ? "河边" : "派对"}`;   // 11/21：标签太长会挡住周末表，几点在悬停说明里
+        res.dataset.date = `约了${charName(a.who)}：${a.place === "their_home" ? charName(a.who) + "家" : RP()[a.place].name}，${Invites.slotName(a)}`;
         res.appendChild(i);
       }
     } catch (e) { console.warn("v102 map", e); }

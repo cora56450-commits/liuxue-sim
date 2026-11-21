@@ -305,11 +305,12 @@ Object.assign(DATA.events, {
   // 健身房-Ollie-暧昧 · 动感单车课（11/20 撞题替换：原来是五人足球；剧本背景：gym（团课教室））
   enc10_gym_local_flirt: [
     { bg: "gym" },
-    { say: "动感单车课，教练在台上吼。Ollie 在你旁边那辆车上，十分钟以后脸已经红得像番茄。" },
+    { say: "你刚走进健身房，团课教室的门开了，Ollie 探出头来：“Spin class, two minutes, there's a free bike — come on!”「动感单车课，还有两分钟，正好空一辆——快来！」" },
+    { say: "你还没反应过来，已经被他拉上了车。教练在台上吼。十分钟以后，他的脸红得像番茄。" },
     { show: "local" },
     { say: "(喘) Why — did I — suggest this.", name: "local", tr: "（喘）我为什么——要提议——来这个。" },
-    { say: "是他约你来的。他说“it'll be fun”「会很好玩」。" },
-    { free: "Ollie 约你来上动感单车课，十分钟后他快不行了。", freeWho: "local", choice: [
+    { say: "是他把你拉进来的。他刚才说的是“it'll be fun”「会很好玩」。" },
+    { free: "在健身房碰到 Ollie，他临时把你拉进动感单车课，十分钟后他自己先快不行了。", freeWho: "local", choice: [
       { text: "坚持到最后", fx: { aff_local: 2, energy: -8 }, then: [
         { say: "下课以后你们两个瘫在更衣室门口的长凳上，谁都说不出话。过了很久他说：“Same time next week?”「下周同一时间？」你说你恨他。他说“that's a yes”「那就是答应了」。" },
       ] },
