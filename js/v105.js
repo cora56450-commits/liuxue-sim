@@ -80,3 +80,52 @@
     return pending;
   };
 })();
+
+// 11/21 晚 Cora：去学长家帮忙打包，主角却穿着居家服（像睡衣）——居家服只按背景判断，到别人家也换上了。
+//   改：挂在地点上的剧情（陈记、居民区去别人家……）里，主角不换居家服；自己宿舍里的照旧。
+(function () {
+  if (typeof Sprites === "undefined") return;
+  let away = 0;
+  const placeOf = (id) => { const e = (DATA.loveEvents || []).find((x) => x.id === id) || (DATA.loveEncounters || []).find((x) => x.id === id) || (DATA.actEncounters || []).find((x) => x.id === id);
+    return e ? (e.place || (e.acts ? "out" : null)) : null; };
+  const own = (p) => !p || p === "dorm_room" || p === "home" || (Array.isArray(p) && p.includes("dorm_room"));
+  const _run = runEvent;
+  runEvent = function (id) {
+    const p = typeof id === "string" ? placeOf(id) : null, out = !own(p);
+    if (out) away++;
+    let r; try { r = _run.apply(this, arguments); } catch (e) { if (out) away--; throw e; }
+    if (out) { if (r && typeof r.then === "function") r.finally(() => away--); else away--; }
+    return r;
+  };
+  const _po = Sprites.playerOutfit;
+  Sprites.playerOutfit = function (week, bg) {
+    const o = _po.apply(this, arguments);
+    if (o === "home" && away > 0) return _po.call(this, week, "__out");
+    return o;
+  };
+})();
+
+// 11/21 晚 Cora：去 brunch 店老被拉去和 Ollie 语言交换，而且总像同一段
+//   ① 每次上午去都弹“要和 Ollie 语言交换吗？”→ 这周工作日已经排了语言交换、或者两周内拒绝过，就不问；问之前先有一句他在店里的铺垫。
+//   ② 文本池里 E01（You alright）、E02（Cheers）和第一次语言交换讲的是同一批词 → 第一轮先跳过。
+(function () {
+  if (typeof NewActs === "undefined") return;
+  const _be = NewActs.brunchExchange;
+  NewActs.brunchExchange = async function (slot) {
+    if (!S.flags.ollie_exchange || DATA.weekendSlots[slot].tod !== "am" || S.flags.exch_week === absWeek()) return false;
+    if ((S.schedule || []).includes("ollie_exchange") || S.flags.exch_wd_week === absWeek()) return false;
+    if (S.flags.exch_decl != null && absWeek() - S.flags.exch_decl < 3) return false;
+    if (window.V105 && V105.cooling("local")) return false;   // 这周／上周刚碰过 Ollie，就不再拉
+    const _say = window.sayStatic;
+    window.sayStatic = function (t) { return _say.call(this, t === "要和 Ollie 语言交换吗？" ? "Ollie 坐在老位置，本子摊在桌上，看见你进门就挥了挥手。要过去语言交换吗？" : t); };
+    let r; try { r = await _be.apply(this, arguments); } finally { window.sayStatic = _say; }
+    if (r) { S.encWk = S.encWk || {}; S.encWk.local = absWeek(); } else if (S.flags.exch_week !== absWeek()) S.flags.exch_decl = absWeek();
+    return r;
+  };
+  const _pick = NewActs.pickExchange;
+  NewActs.pickExchange = function () {
+    S.exchSeen = S.exchSeen || {};
+    if (!S.flags.exch_seeded && S.flags["seen_ollie_exchange_first"]) { S.exchSeen.E01 = 1; S.exchSeen.E02 = 1; S.flags.exch_seeded = 1; }
+    return _pick.apply(this, arguments);
+  };
+})();

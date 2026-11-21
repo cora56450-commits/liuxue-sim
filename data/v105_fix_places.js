@@ -33,3 +33,25 @@
     for (const k of ["then", "else", "steps"]) walk(s[k]); if (s.choice) for (const c of s.choice) walk(c.then); if (s.timed) { walk(s.timed.then); walk(s.timed.timeout); } } };
   for (const L of Object.values(DATA.events)) if (Array.isArray(L)) walk(L);
 })();
+// 11/21 晚 Cora 实测：点陈记超市，开头却是“中超已经关门了，学长给你发消息”，然后直接跳去他家 → 改成你到中超时正好碰上他。
+(function () {
+  const L = DATA.events.senior_advance; if (!L) return;
+  const i = L.findIndex((s) => s.say && /学长在门口给你发消息/.test(s.say));
+  if (i >= 0) L.splice(i, 1,
+    { say: "你到中超的时候，陈叔正在拉卷帘门。学长抱着一个纸箱站在门口，看见你，像看见了救兵。" },
+    { show: "senior" },
+    { say: "你来得正好。有空吗？帮个忙，管饭。", name: "senior" },
+    { say: "你跟着他走了十分钟，到了他住的地方。" },
+    { hide: true });
+})();
+// 11/21 晚：大二大三也会刷到“比斯特”朋友圈，这时候再问“比斯特是什么”很怪 → 改成问好不好玩（大一也说得通）
+(function () {
+  const L = DATA.events.senior_moment_bicester; if (!L) return;
+  const walk = (A) => { for (const s of A || []) { if (!s || typeof s !== "object") continue;
+    if (s.text === "私聊问他：“学长，比斯特是什么？”") s.text = "私聊问他：“学长，比斯特好玩吗？我还没去过。”";
+    if (s.say === "学长，比斯特是什么？") s.say = "学长，比斯特好玩吗？我还没去过。";
+    if (s.say === "购物村，牛津那边，名牌打折。你没去过？") s.say = "购物村，牛津那边，名牌打折。来这么久了还没去过？";
+    if (s.say === "（比斯特？）") s.say = "（比斯特……一直听人说，一直没去过。）";
+    for (const k of ["then", "else", "steps", "choice"]) walk(s[k]); } };
+  walk(L);
+})();
