@@ -124,3 +124,13 @@
    （按 marker.png 量的：标签主体横向 14%–95%、纵向 20%–100%，视觉中心大约在 59%／60%） */
 .map-layer > .marker:not(.train) { padding: 22px 34px 0 80px; }
 .map-layer > .marker:not(.train).long span { font-size: 21px; }
+/* 手机未读：和大多数 App 一样，右上角探出去一个红色圆角数字（11/21 Cora）。
+   phase5 的 #hud .hud-btn.dot::after（小橙点）优先级更高，把数字盖住了，这里用更高的选择器压回来 */
+#hud #btn-phone.dot::after, #stage #sys-phone.dot::after {
+  content: attr(data-n); position: absolute; top: -14px; right: -14px; left: auto; bottom: auto;
+  width: auto; min-width: 32px; height: 32px; padding: 0 8px; box-sizing: border-box;
+  border-radius: 16px; background: #E5352B; color: #fff; border: 3px solid #fff;
+  font: 800 18px/26px var(--en, sans-serif); text-align: center; letter-spacing: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,.25); z-index: 2; pointer-events: none;
+}
+#hud #btn-phone, #stage #sys-phone { overflow: visible; }
