@@ -182,7 +182,7 @@ const Scenes = {
     if (r.scene === "weekend") return Scenes.weekend(r.slot || 0);
     if (r.scene === "summer") return Scenes.summerMonth();
     if (r.scene === "intro") return Scenes.intro(r.i || 0);
-    return S.year === 1 ? Scenes.week() : Scenes.period();
+    return S.year === 1 || S.weekMode ? Scenes.week() : Scenes.period();   // 11/21：大二大三现在也按周走，读档别掉进旧的“关键周”流程
   },
 
   // 一段结果，点按钮继续
