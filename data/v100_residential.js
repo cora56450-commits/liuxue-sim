@@ -5,7 +5,7 @@
   DATA.mapCity.push({ id: "residential", name: "居民区", bg: "student_street", x: 250, y: 620, cost: 1, open: ["am", "pm", "eve"], fx: { loneliness: -1 },
     text: "红砖联排房一排一排，门口的垃圾桶上用白漆写着门牌号。", meet: [] });
   DATA.mapHint = Object.assign(DATA.mapHint || {}, { residential: "居民区：大学北边的红砖联排房。河边公园、学生区的 house party、Kez 家都在这" });
-  DATA.bgFallback = Object.assign(DATA.bgFallback || {}, { park: "campus", student_street: "shared_house", house_party: "flat_kitchen" });
+  DATA.bgFallback = Object.assign(DATA.bgFallback || {}, { park: "campus", student_street: "shared_house", house_party: "flat_kitchen" });   // 11/21 三张图已入库，回退只在缺图时用
 
   Object.assign(E, {
     dl_park_walk_first: [

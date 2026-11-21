@@ -52,7 +52,7 @@
   const ORDER = ["喝咖啡", "cc_heytea", "吃快餐", "逛衣服", "药妆保健", "淘便宜货", "cc_cinema", "cc_ktv", "cc_museum", "cc_explore", "cc_wander"];
   const rank = (a) => { const k = ORDER.indexOf(a.group || a.id); return k < 0 ? 99 : k; };
   C.sort((a, b) => rank(a) - rank(b));
-  DATA.bgFallback = Object.assign(DATA.bgFallback || {}, { drugstore: "city_centre", discount_store: "clothes_shop" });   // 两张图待跑（05_提示词/待跑提示词_1121c.md）
+  DATA.bgFallback = Object.assign(DATA.bgFallback || {}, { drugstore: "city_centre", discount_store: "clothes_shop" });   // 11/21 两张图已入库，回退只在缺图时用
   if (DATA.mapHint) DATA.mapHint.city_centre = "市中心步行街。咖啡、快餐、衣服、药妆、一镑店、电影院、KTV、博物馆都在这";
 
   // ===== 打工的店（Cora 11/21：起店名、写在哪）=====

@@ -9,7 +9,7 @@
   L.groupmate.ing = { id: "groupmate_ing", title: "Paper Rings",  stamp: "Ploy NE",  card: "她的 Instagram 上没有我。可是她每一张照片的角落里，都有一只我的手。" };
   L.otaku.ing     = { id: "otaku_ing",     title: "天之弱",       stamp: "Kieran NE", card: "他跟朋友介绍我，说的是“my partner”。后面那半句，他还在练。" };
   const P = DATA.endingArt.postmarks;
-  for (const c of ["senior", "local", "groupmate", "otaku"]) P[c + "_ing"] = P[c + "_ing"] || "love_ing";
+  for (const c of ["senior", "local", "groupmate", "otaku"]) P[c + "_ing"] = c + "_ing";   // 11/21 四枚 NE 邮戳已入库
   // NE 的 CG（后日谈里播；11/21 图已入库）
   const ne = [["senior_ne", "NE · 稳稳的幸福"], ["local_ne", "NE · Trouble Maker"], ["groupmate_ne", "NE · Paper Rings"], ["otaku_ne", "NE · 天之弱"]];
   for (const [id, title] of ne) if (!DATA.cgList.find((c) => c.id === id)) DATA.cgList.push({ id, title });

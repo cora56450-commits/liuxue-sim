@@ -3,7 +3,7 @@
 //   赵子豪说话：叫他“子航”（学生会的老熟人）。其他人说话照样叫“学长”。
 //   引号“……”里的话不改（那是别人当面说的）；“学长们”“学长学姐”“的学长”“那个学长”这种泛指不改。
 (function () {
-  const RX = /(^|[^的会个位些乡组系门那这群老新大])学长(?![们学姐])/g;
+  const RX = /(^|[^的会个位些乡组系门那这群老新大士生林])学长(?![们学姐])/g;
   const tier = () => {
     if (!S || !S.flags || !S.flags.met_senior) return null;
     if (S.flags.confessed_senior && !S.flags.broke_up_senior) return "子航";

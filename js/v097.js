@@ -6,7 +6,8 @@
     const r = await _play.apply(this, arguments);
     try {
       S.actEnc = S.actEnc || {};
-      const L = (DATA.actEncounters || []).filter((e) => a && e.acts.includes(a.id) && !S.actEnc[e.id] && DATA.events[e.id] && (!e.cond || evalCond(e.cond)));
+      const acqOk = (w) => !DATA.loveIds.includes(w) || !DATA.events["acq_" + w + "_1"] || evalCond(`演过('acq_${w}_1')`);   // 11/21 三年试玩：相识事件没演就碰到了，名牌还是“时尚社的金发男生”
+      const L = (DATA.actEncounters || []).filter((e) => a && e.acts.includes(a.id) && !S.actEnc[e.id] && DATA.events[e.id] && acqOk(e.who) && (!e.cond || evalCond(e.cond)));
       if (L.length && Math.random() < 0.4) {
         // 攻略对象优先
         const love = L.filter((e) => DATA.loveIds.includes(e.who)); const e = (love.length ? love : L)[Math.floor(Math.random() * (love.length ? love : L).length)];

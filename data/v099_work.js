@@ -170,10 +170,10 @@
   const WORK = "V084.days('work') > 0";
   const J = (f) => `标记('${f}')`;
   DATA.midweek.push(
-    { id: "work_visit_senior", who: "senior", day: "thu", time: "晚上", line: "打工的时候，林子航来了", prio: 3, cond: `${WORK} && knows('senior') && 好感('senior') >= 15` },
-    { id: "work_visit_local", who: "local", day: "fri", time: "晚上", line: "打工的时候，Ollie 来了", prio: 3, cond: `${WORK} && knows('local') && 好感('local') >= 15` },
-    { id: "work_visit_groupmate", who: "groupmate", day: "wed", time: "晚上", line: "打工的时候，Ploy 来了", prio: 3, cond: `${WORK} && knows('groupmate') && 好感('groupmate') >= 15` },
-    { id: "work_visit_otaku", who: "otaku", day: "tue", time: "晚上", line: "打工的时候，Kieran 来了", prio: 3, cond: `${WORK} && knows('otaku') && 好感('otaku') >= 15` },
+    { id: "work_visit_senior", who: "senior", day: "thu", time: "晚上", line: "打工的时候，林子航来了", prio: 3, cond: `${WORK} && knows('senior') && 演过('acq_senior_1') && 好感('senior') >= 15` },
+    { id: "work_visit_local", who: "local", day: "fri", time: "晚上", line: "打工的时候，Ollie 来了", prio: 3, cond: `${WORK} && knows('local') && 演过('acq_local_1') && 好感('local') >= 15` },
+    { id: "work_visit_groupmate", who: "groupmate", day: "wed", time: "晚上", line: "打工的时候，Ploy 来了", prio: 3, cond: `${WORK} && knows('groupmate') && 演过('acq_groupmate_1') && 好感('groupmate') >= 15` },
+    { id: "work_visit_otaku", who: "otaku", day: "tue", time: "晚上", line: "打工的时候，Kieran 来了", prio: 3, cond: `${WORK} && knows('otaku') && 演过('acq_otaku_1') && 好感('otaku') >= 15` },
     { id: "work_npc_laobanniang", day: "fri", time: "晚上", line: "新金龙收工以后", prio: 4, cond: `${WORK} && ${J("job_restaurant")}` },
     { id: "work_npc_sophie", who: "sophie", day: "fri", time: "下午", line: "Sunny Side 打烊以后", prio: 4, cond: `${WORK} && ${J("job_cafe")}` },
     { id: "work_npc_ben", who: "ben", day: "wed", time: "下午", line: "Tesko 员工休息室", prio: 4, cond: `${WORK} && ${J("job_supermarket")} && knows('ben')` },
