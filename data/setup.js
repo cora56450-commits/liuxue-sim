@@ -25,7 +25,7 @@ DATA.backgroundOptions = [
   { id: "accommodation", name: "住宿", options: [
     { id: "hall",    name: "学校宿舍", desc: "国际flat，室友随机",          minWealth: "poor",   effects: {} },
     { id: "ensuite", name: "学生公寓ensuite", desc: "在异乡好居拼室友",     minWealth: "middle", effects: {} },
-    { id: "studio",  name: "studio",   desc: "贵、清净、更孤独，隔音差",     minWealth: "rich",   effects: {} },
+    { id: "studio",  name: "studio",   desc: "贵、清净、更孤独，隔音差（中产选：每月生活费少 £65）", minWealth: "middle", effects: {} },   // 11/21 Cora：中产也能选，生活费少 50–80
   ]},
   { id: "major", name: "专业", options: [
     { id: "design",   name: "设计", desc: "crit地狱，向导师解释灵感", effects: {} },

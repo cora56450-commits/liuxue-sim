@@ -906,4 +906,12 @@ DATA.gallery = {
   enc_party_jake: {"cat":"friend","who":"jake","stage":2,"title":"enc_party_jake","bg":"house_party","order":99999},
   enc_party_giulia: {"cat":"friend","who":"giulia","stage":2,"title":"enc_party_giulia","bg":"house_party","order":99999},
   enc_party_kexin: {"cat":"npc","who":"","stage":0,"title":"enc_party_kexin","bg":"house_party","order":99999},
+  date_res_senior_park: {"cat":"love","who":"senior","stage":3,"title":"date_res_senior_park","bg":"park","order":99999},
+  date_res_senior_house_party: {"cat":"love","who":"senior","stage":3,"title":"date_res_senior_house_party","bg":"student_street","order":99999},
+  date_res_local_park: {"cat":"love","who":"local","stage":3,"title":"date_res_local_park","bg":"park","order":99999},
+  date_res_local_house_party: {"cat":"love","who":"local","stage":3,"title":"date_res_local_house_party","bg":"house_party","order":99999},
+  date_res_groupmate_park: {"cat":"love","who":"groupmate","stage":3,"title":"date_res_groupmate_park","bg":"park","order":99999},
+  date_res_groupmate_house_party: {"cat":"love","who":"groupmate","stage":3,"title":"date_res_groupmate_house_party","bg":"house_party","order":99999},
+  date_res_otaku_park: {"cat":"love","who":"otaku","stage":3,"title":"date_res_otaku_park","bg":"park_night","order":99999},
+  date_res_otaku_house_party: {"cat":"love","who":"otaku","stage":3,"title":"date_res_otaku_house_party","bg":"house_party","order":99999},
 };

@@ -46,3 +46,11 @@
     Object.defineProperty(Perk.text, "senior", { get: () => datingSenior() ? base + "；陈记八折、H&B 七折、UR 八折" : base, configurable: true });
   }
 })();
+// 11/21：大二中产选 studio，每月生活费少 £65（只扣一次）
+(function () {
+  const _a = applyFx;
+  applyFx = function (fx) {
+    try { if (fx && fx.flag_house_studio && S && S.bg && S.bg.wealth === "middle" && !S.flags.studio_cut_y2) { S.flags.studio_cut_y2 = 1; S.monthly -= (DATA.tuning.studioMiddleCut || 65); } } catch (e) {}
+    return _a.apply(this, arguments);
+  };
+})();

@@ -145,6 +145,7 @@ const Scenes = {
         else if (k in S.stats) S.stats[k] += v;
       }
     }
+    if (S.bg.wealth === "middle" && S.bg.accommodation === "studio") S.monthly -= (DATA.tuning.studioMiddleCut || 65);   // 11/21：中产住 studio，房租贵了，每月生活费少一截
     if (S.tags.includes("pretty")) for (const c of DATA.loveIds) S.aff[c] += DATA.tuning.prettyStart;
     for (const c of roommates()) knowFriend(c);   // 同住的室友开局就认识（在通讯录里）
     S.lastSocialWk = 0;   // 第十批：上次周末出门社交的周（学霸-3、孤独-2）
