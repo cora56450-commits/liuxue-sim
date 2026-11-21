@@ -1,4 +1,4 @@
-// 友情向 CG 8 张（Cora 11/21）：八个朋友的“成为朋友”核心事件各一张。图到之前 pending（showCg 跳过），图一到就显示。
+// 友情向 CG 8 张（Cora 11/21）：八个朋友的“成为朋友”核心事件各一张。11/21 图已入库。
 (function () {
   const E = DATA.events;
   const CG = [
@@ -12,7 +12,7 @@
     ["friend_chen_jianguo", "数硬币的晚上", "数到一半，他说起刚来英国的那年"],
   ];
   for (const [id, title, after] of CG) {
-    if (!DATA.cgList.find((c) => c.id === id)) DATA.cgList.push({ id, title, pending: true });
+    if (!DATA.cgList.find((c) => c.id === id)) DATA.cgList.push({ id, title });   // 11/21 图已入库
     const L = E[id]; if (!L || L.some((x) => x && x.cg === id)) continue;
     const i = L.findIndex((x) => x && typeof x.say === "string" && x.say.startsWith(after));
     L.splice(i < 0 ? 1 : i + 1, 0, { cg: id });
