@@ -110,3 +110,20 @@
   P("residential", "res_student_walk", { say: "你在一栋房子门口看到了 TO LET，记下了电话。大二的房子，可以开始看了。", if: "标签('完美作息') || 标签('学霸底子')" });
   P("residential", "res_party", { say: "你在派对上被拉去玩 beer pong，连赢四局。现在半个学生区都知道你了。", if: "性格 == 'E'" }, { say: "（十一点前回家。我妈的规矩，在八千公里外也有效。）", if: "标签('家教森严')" });
 })();
+// 11/21 三年试玩：主结局留在英国的存档，NE／BE 补结不能写“你回了国”
+(function () {
+  const E = DATA.events;
+  const swap = (id, find, stay) => {
+    const L = E[id]; if (!L) return; const i = L.findIndex((x) => x && typeof x.say === "string" && x.say.startsWith(find)); if (i < 0) return;
+    L[i] = { if: "标记('stay_uk')", then: stay, else: [L[i]] };
+  };
+  swap("epi_be_local", "毕业以后，他留在伦敦，你回了国。", [
+    { say: "毕业以后，你们都留在了英国。他在伦敦，你在另一座城市。火车两个小时，谁都没有坐过。" },
+  ]);
+  swap("epi_ing_groupmate", "毕业以后她回了曼谷，你回了国。", [
+    { say: "毕业以后她回了曼谷，你留在了英国。那家面料公司她接了一半，另一半她说要“自己挣来”。" },
+  ]);
+  swap("epi_be_senior", "后来你们很少联系了。", [
+    { say: "后来他回了泉州，你留在了英国。时差八个小时，你们很少联系了。逢年过节，他会群发一条“新年快乐”，你回一个“你也是”。" },
+  ]);
+})();
