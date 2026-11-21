@@ -848,4 +848,8 @@ DATA.gallery = {
   news_sick_neck_otaku_dating: {"cat":"love","who":"otaku","stage":3,"title":"news_sick_neck_otaku_dating","bg":"dorm_room","order":99999},
   news_sick_voice_otaku_flirt: {"cat":"love","who":"otaku","stage":2,"title":"news_sick_voice_otaku_flirt","bg":"","order":99999},
   local_darkroom: {"cat":"love","who":"local","stage":2,"title":"local_darkroom","bg":"campus","order":99999},
+  epi_senior: {"cat":"love","who":"senior","stage":2,"title":"epi_senior","bg":"cn_restaurant","order":99999},
+  epi_local: {"cat":"love","who":"local","stage":2,"title":"epi_local","bg":"ollie_house","order":99999},
+  epi_groupmate: {"cat":"love","who":"groupmate","stage":2,"title":"epi_groupmate","bg":"ploy_flat","order":99999},
+  epi_otaku: {"cat":"love","who":"otaku","stage":2,"title":"epi_otaku","bg":"cohab_otaku","order":99999},
 };

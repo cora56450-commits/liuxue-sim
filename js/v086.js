@@ -51,7 +51,7 @@
   V.target = () => {
     if (S.rushWeek) { const d = dueNow().filter((m) => m.kind !== "exam").sort((a, b) => prog(a) - prog(b))[0]; if (d) return d; }
     const t = S.modTarget && byId(S.modTarget); if (t && open(t) && t.kind !== "exam") return t;
-    return openWork()[0] || null;
+    const L = openWork(); return L.find((m) => prog(m) < DATA.tuning.hwDone) || L[0] || null;   // 没选的时候：先做还没完成的、最早截止的那门
   };
   const _apply = applyFx;
   applyFx = function (fx) {
@@ -106,7 +106,7 @@
   const _settle = Scenes.settle;
   Scenes.settle = async function () {
     if (on() && (S.schedule || []).includes("homework") && !S.rushWeek) {
-      const L = openWork();
+      const L = openWork().sort((a, b) => (prog(a) >= DATA.tuning.hwDone) - (prog(b) >= DATA.tuning.hwDone));
       if (L.length > 1 && S.modAsked !== absWeek()) {
         S.modAsked = absWeek();
         sayStatic("这周做作业，主要做哪一门？");
