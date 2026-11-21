@@ -87,6 +87,7 @@ DATA.characters = {
   yu_xiao:      { name: "于晓",              short: "于晓",  height: 163, color: "#B8A77A", lang: "zh", sprites: { base: "chara/npc/yu_xiao.png" },      calib: { base: { top: 0.0391, chin: 0.343 } } },
   // 2026-11-19 第七批新立绘（身高策划先定，Cora 有意见再改；下巴是在带刻度的截图上人工量的）
   pa_nok:       { name: "Pa Nok",            short: "Pa Nok", height: 155, color: "#C9A227", lang: "en", sprites: { base: "chara/npc/pa_nok.png" },     calib: { base: { top: 0.0242, chin: 0.30 } } },
+  rosa:         { name: "Rosa",              short: "Rosa",  height: 163, color: "#4FA3C7", lang: "en", sprites: { base: "chara/npc/rosa.png" },       calib: { base: { top: 0.0228, chin: 0.31 } } },   // 11/21 Ploy 家的家政阿姨（周四）
   siobhan:      { name: "Siobhan",           short: "Siobhan", height: 165, color: "#C2563E", lang: "en", sprites: { base: "chara/npc/siobhan.png" },   calib: { base: { top: 0.0352, chin: 0.33 } } },
   lottie:       { name: "Lottie",            short: "Lottie", height: 168, color: "#E07A9A", lang: "en", sprites: { base: "chara/npc/lottie.png" },     calib: { base: { top: 0.0338, chin: 0.32 } } },
   mum:          { name: "妈妈",              short: "妈妈",   height: 160, color: "#B8A77A", lang: "zh", sprites: { base: "chara/npc/mum.png" },        calib: { base: { top: 0.0249, chin: 0.27 } } },

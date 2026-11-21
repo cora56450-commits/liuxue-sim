@@ -61,6 +61,7 @@ DATA.spriteBoxes = {
   "chara/npc/hannah.png": [0.0301, 0.9039, 0.75],
   "chara/npc/yu_xiao.png": [0.1007, 0.9734, 0.75],
   "chara/npc/pa_nok.png": [0.1556, 0.9153, 0.75],
+  "chara/npc/rosa.png": [0.0672, 0.884, 0.75],
   "chara/npc/siobhan.png": [0.012, 0.9125, 0.75],
   "chara/npc/lottie.png": [0.0562, 0.9512, 0.75],
   "chara/npc/mum.png": [0.1381, 0.9079, 0.75],

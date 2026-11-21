@@ -1,4 +1,4 @@
-// 回忆图鉴的事件表（tools/build_gallery.js 生成，2026-11-20）。cat：love 攻略对象／friend 朋友／npc NPC与路人／main 主线／shura 修罗场；stage：0 相识 1 熟人 2 暧昧 3 交往 4 结局
+// 回忆图鉴的事件表（tools/build_gallery.js 生成，2026-11-21）。cat：love 攻略对象／friend 朋友／npc NPC与路人／main 主线／shura 修罗场；stage：0 相识 1 熟人 2 暧昧 3 交往 4 结局
 window.DATA = window.DATA || {};
 DATA.gallery = {
   prologue_depart: {"cat":"main","who":"","stage":0,"title":"出发前","bg":"home_china","order":18},
@@ -178,6 +178,8 @@ DATA.gallery = {
   ollie_night_market: {"cat":"love","who":"local","stage":2,"title":"“那你家那边是不是也……”","bg":"brunch","order":244},
   ollie_meet_mum: {"cat":"love","who":"local","stage":0,"title":"阿姨好","bg":"dorm_room","order":245},
   confess_local: {"cat":"love","who":"local","stage":3,"title":"剧本_攻略线与友情线.md 告白（11/19 版","bg":"campus","order":247},
+  confess_local_ask: {"cat":"love","who":"local","stage":3,"title":"※ 两个选项都进交往中。问题留给大三的“我们算什","bg":"","order":251},
+  confess_local_noask: {"cat":"love","who":"local","stage":3,"title":"confess_local_noask","bg":"","order":252},
   be_local_xmas: {"cat":"love","who":"local","stage":2,"title":"大三圣诞：他回萨里过圣诞，走之前","bg":"","order":253},
   be_local_lottie: {"cat":"love","who":"local","stage":2,"title":"毕业前一周：Lottie 来城里，单独约你喝咖啡","bg":"brunch","order":254},
   be_local_lastchance: {"cat":"love","who":"local","stage":2,"title":"最后机会（Cora 11/19 定：给）：tri","bg":"","order":255},
@@ -196,6 +198,7 @@ DATA.gallery = {
   senior_bicester_date: {"cat":"love","who":"senior","stage":2,"title":"这次不接单","bg":"bicester","order":277},
   confess_senior: {"cat":"love","who":"senior","stage":3,"title":"倒计时期间他继续说原来“等他说完”的第一句；没点","bg":"campus","order":278},
   be_senior_stay_hint: {"cat":"love","who":"senior","stage":2,"title":"BE 暗示（剧本_BE暗示.md 第二节 1）：","bg":"","order":282},
+  confess_senior_yes: {"cat":"love","who":"senior","stage":3,"title":"confess_senior_yes","bg":"","order":283},
   ploy_jiaren: {"cat":"love","who":"groupmate","stage":2,"title":"家人们谁懂啊","bg":"","order":285},
   ploy_no_sorry: {"cat":"love","who":"groupmate","stage":2,"title":"别说 sorry","bg":"indoor_market","order":286},
   ploy_mum_check: {"cat":"love","who":"groupmate","stage":2,"title":"她妈妈的周日抽查","bg":"brunch","order":287},
@@ -820,7 +823,7 @@ DATA.gallery = {
   senior_tension_4: {"cat":"love","who":"senior","stage":2,"title":"senior_tension_4","bg":"park_night","order":99999},
   senior_tension_5: {"cat":"love","who":"senior","stage":2,"title":"senior_tension_5","bg":"senior_room","order":99999},
   sick_shared_senior: {"cat":"love","who":"senior","stage":2,"title":"sick_shared_senior","bg":"chinese_market","order":99999},
-  sick_shared_otaku: {"cat":"love","who":"otaku","stage":2,"title":"sick_shared_otaku","bg":"","order":99999},
+  sick_shared_otaku: {"cat":"love","who":"otaku","stage":2,"title":"sick_shared_otaku","bg":"dorm_night","order":99999},
   sick_shared_local: {"cat":"love","who":"local","stage":2,"title":"sick_shared_local","bg":"campus_rain","order":99999},
   sick_shared_groupmate: {"cat":"love","who":"groupmate","stage":2,"title":"sick_shared_groupmate","bg":"ploy_flat","order":99999},
   care_senior_1: {"cat":"love","who":"senior","stage":2,"title":"care_senior_1","bg":"stockroom","order":99999},
@@ -841,6 +844,8 @@ DATA.gallery = {
   news_sick_neck_senior_dating: {"cat":"love","who":"senior","stage":3,"title":"news_sick_neck_senior_dating","bg":"dorm_room","order":99999},
   news_sick_voice_local_dating: {"cat":"love","who":"local","stage":3,"title":"news_sick_voice_local_dating","bg":"dorm_room","order":99999},
   news_sick_voice_groupmate_flirt: {"cat":"love","who":"groupmate","stage":2,"title":"news_sick_voice_groupmate_flirt","bg":"","order":99999},
+  news_sick_back_otaku_dating: {"cat":"love","who":"otaku","stage":3,"title":"news_sick_back_otaku_dating","bg":"dorm_room","order":99999},
   news_sick_neck_otaku_dating: {"cat":"love","who":"otaku","stage":3,"title":"news_sick_neck_otaku_dating","bg":"dorm_room","order":99999},
   news_sick_voice_otaku_flirt: {"cat":"love","who":"otaku","stage":2,"title":"news_sick_voice_otaku_flirt","bg":"","order":99999},
+  local_darkroom: {"cat":"love","who":"local","stage":2,"title":"local_darkroom","bg":"campus","order":99999},
 };
