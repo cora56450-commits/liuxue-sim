@@ -24,3 +24,12 @@
 })();
 // 11/21：校园标签太靠上，头像被顶部状态栏挡住 → 往下挪
 (function () { const c = (DATA.mapCity || []).find((l) => l.id === "campus"); if (c) c.y = 235; })();
+// 11/21 实测：Kieran 的英文台词里夹着中文游戏名 → 英文台词用英文改名（翻译和旁白里照旧中文）。词条表已加。
+(function () {
+  const EN = { "拳霸97": "King of Fighterz '97", "怪物猎手": "Monster Hunterz", "胡闹客厅": "Overcookd", "双人成袜": "It Takes Toe" };
+  const isEn = (n) => DATA.characters[n] && DATA.characters[n].lang === "en";
+  const walk = (L) => { for (const s of L || []) { if (!s || typeof s !== "object") continue;
+    if (typeof s.say === "string" && isEn(s.name)) for (const [zh, en] of Object.entries(EN)) s.say = s.say.split(zh).join(en);
+    for (const k of ["then", "else", "steps"]) walk(s[k]); if (s.choice) for (const c of s.choice) walk(c.then); if (s.timed) { walk(s.timed.then); walk(s.timed.timeout); } } };
+  for (const L of Object.values(DATA.events)) if (Array.isArray(L)) walk(L);
+})();
