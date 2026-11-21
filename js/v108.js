@@ -23,6 +23,7 @@
     walk(steps, 0); return r;
   };
   const nm = (c) => { try { return c && DATA.characters[c] ? charName(c) : c; } catch (e) { return c; } };
+  window.V108 = { PLACE, firstOf };
   let lastKey = "", lastT = 0;
   function card(id) {
     if (!S || S.replay || typeof id !== "string" || !DATA.events[id]) return null;
@@ -59,7 +60,8 @@
     if (!c || (window.V107 && V107.reason(id))) return _run.apply(this, arguments);
     const args = arguments, self = this;
     // 场景卡排在剧情锁里：前一段演完才亮
-    const p = Story.q.then(() => show(c)).then(() => _run.apply(self, args));
+    const pre = window.V109 && V109.prefetch ? V109.prefetch(id, c) : null;   // AI 衔接（js/v109.js）：和场景卡同时开始请求
+    const p = Story.q.then(() => show(c)).then(() => (pre ? V109.play(pre) : null)).then(() => _run.apply(self, args));
     return p;
   };
   // 记下周末去的是哪儿（场景卡用）
