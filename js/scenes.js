@@ -870,8 +870,7 @@ const Scenes = {
     if (def !== null) opts.push({ text: def || "随便待着", k: "def" });
     for (const it of items) opts.push({ text: it.name, k: "act", it });
     if (ta) opts.push({ text: "点外卖", k: "ta" });
-    sayStatic(`${loc.name}：做什么？`);
-    const o = opts[await choose(opts.map((x) => ({ text: x.text })))];
+    const o = opts[await choosePaged(`${loc.name}：做什么？`, opts.map((x) => ({ text: x.text })))];
     hideDialog();
     if (o.k === "def") return false;
     if (o.k === "ta") return Acts6.takeaway();

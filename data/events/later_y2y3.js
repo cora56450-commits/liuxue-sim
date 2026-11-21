@@ -225,7 +225,7 @@ Object.assign(DATA.events, {
       { text: "“算了，不找了。”", if: "家境 == '富裕'", fx: { loneliness: 2 }, then: [
         { say: "你关掉了网站，下午去 Waitrise 买了一盒草莓。" },
       ] },
-      { text: "中餐馆，现金结算，老板是温州人", fx: { flag_job_restaurant: 1, unlock_work: 1 }, then: [
+      { text: "中餐馆“新金龙”，现金结算，老板是温州人", fx: { flag_job_restaurant: 1, unlock_work: 1 }, then: [
         { bg: "cn_restaurant" },
         { say: "老板娘看了你一眼：“会不会用英文点单？会就来，周五周六晚上，一小时九镑。”" },
         { say: "你算了一下，比最低工资还少。" },
@@ -234,7 +234,7 @@ Object.assign(DATA.events, {
           { say: "你后来才知道，这家店的老板是陈建国的老乡。陈建国说：“他家给的少，你跟他说是我介绍的，他会多给一镑。”真的多给了一镑。" },
         ] },
       ] },
-      { text: "超市收银，正规合同", fx: { flag_job_supermarket: 1, unlock_work: 1 }, then: [
+      { text: "Tesko 市中心店收银，正规合同", fx: { flag_job_supermarket: 1, unlock_work: 1 }, then: [
         { say: "面试的经理问你：“How would you deal with a difficult customer?「你会怎么处理难缠的顾客？」”" },
         { if: "英语 >= 60", then: [
           { say: "你说得很流利。她当场说你明天可以来培训。" },
@@ -248,12 +248,19 @@ Object.assign(DATA.events, {
           { hide: true },
         ] },
       ] },
-      { text: "学校的学生大使：带开放日的家长参观校园", fx: { flag_job_ambassador: 1, unlock_work: 1 }, then: [
+      { text: "格雷霍姆大学的学生大使：带开放日的家长参观校园", fx: { flag_job_ambassador: 1, unlock_work: 1 }, then: [
         { if: "性格 == 'E'", then: [
           { say: "面试官说你是她今天见过最有感染力的人。", fx: { belonging: 2 } },
         ], else: [
           { say: "面试的时候你的声音一直在抖。面试官说：“You'll be fine. Parents just want to know where the toilets are.「你会没事的。家长只想知道厕所在哪。」”" },
         ] },
+      ] },
+      { text: "brunch 店 Sunny Side：Sophie 说周末早班缺人", if: "knows('sophie') || 标记('met_sophie')", fx: { flag_job_cafe: 1, unlock_work: 1 }, then: [
+        { bg: "brunch" }, { show: "sophie" },
+        { say: "Oh my god, yes! You know where the oat milk is already, you're basically trained.", name: "sophie", tr: "天哪，太好了！你都知道燕麦奶放哪了，基本等于培训过了。" },
+        { say: "她给了你一条围裙，上面绣着店名，旁边一个荷包蛋。" },
+        { say: "Fair warning: Saturday 9am is a war zone.", name: "sophie", tr: "提前说一声：周六早上九点是战场。" },
+        { hide: true },
       ] },
       { text: "不打工，好好学习", fx: { study: 1 }, then: [
         { say: "你关掉了兼职网站。" },

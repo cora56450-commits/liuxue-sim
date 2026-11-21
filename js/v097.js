@@ -99,3 +99,15 @@
     return r;
   };
 })();
+
+// 选项太多时分页（Cora 11/21）：超过 4 个就每页 3 个，第 4 个是“下一页 ▸”（最后一页是“◂ 回到第一页”）。返回原列表里的下标。
+async function choosePaged(title, opts) {
+  if (opts.length <= 4) { sayStatic(title); return await choose(opts); }
+  const pages = Math.ceil(opts.length / 3);
+  for (let pg = 0; ; pg = (pg + 1) % pages) {
+    const part = opts.slice(pg * 3, pg * 3 + 3);
+    sayStatic(`${title}${pages > 1 ? `（${pg + 1}/${pages}）` : ""}`);
+    const i = await choose([...part, { text: pg + 1 < pages ? "下一页 ▸" : "◂ 回到第一页", sub: pg + 1 < pages ? `还有 ${opts.length - (pg + 1) * 3} 个` : "" }]);
+    if (i < part.length) return pg * 3 + i;
+  }
+}

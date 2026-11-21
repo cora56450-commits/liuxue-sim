@@ -240,8 +240,7 @@ const Acts6 = {
   async choose(item) {
     if (item.acts.length === 1) return item.acts[0];
     if (item.group === "solo_town") return item.acts[Math.floor(Math.random() * item.acts.length)];
-    sayStatic(`${item.name}：哪家？`);
-    const i = await choose(item.acts.map((a) => ({ text: a.name.replace(/^.*·/, "") })));
+    const i = await choosePaged(`${item.name}：哪家？`, item.acts.map((a) => ({ text: a.name.replace(/^.*·/, "") })));
     hideDialog();
     return item.acts[i];
   },
@@ -287,8 +286,7 @@ const Acts6 = {
   async shop(baseMoney) {
     const shops = DATA.shops.filter(Acts6.ok);
     if (!shops.length) return false;
-    sayStatic("去哪家超市？");
-    const i = await choose(shops.map((s) => ({ text: s.name, sub: s.sub })));
+    const i = await choosePaged("去哪家超市？", shops.map((s) => ({ text: s.name, sub: s.sub })));
     hideDialog();
     const s = shops[i];
     S.lastShop = s.id;
