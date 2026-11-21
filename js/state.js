@@ -676,8 +676,8 @@ const Rules = {
         if (ps && st.card) st = { ...st, card: st.card + "\n" + ps.text };
         stamps.push(st); love[c] = "he";
       }
-      else if (be[c] || (dating && trial === -1)) { stamps.push(E.love[c].be); love[c] = "be"; }
-      else if (dating) love[c] = "ing";
+      else if (be[c]) { stamps.push(E.love[c].be); love[c] = "be"; }   // 11/21 Cora：BE 只留给真走坏了的（Ploy 替写、Kieran 不公开、学长好感掉下去、Ollie 没问以后）
+      else if (dating) love[c] = "ing";   // 考验没过但还在交往＝NE
     }
     for (const c of DATA.loveIds) if (love[c] === "ing") stamps.push((c === "senior" && f.stay_uk && E.love.senior.ingStay) || E.love[c].ing || E.stamps.love_ing);   // 11/21：恋爱ing 一人一个名字（data/v096_ending_names.js）
     return { main, stamps, love, degree, band: first ? "First" : Rules.band(degree) };
