@@ -1,5 +1,5 @@
 {
- "_说明": "下巴位置（占图片高度的比例），2026-11-17 Claude Code 在带刻度的放大截图上人工量（没装 OpenCV 时 tools/auto_calib.py 用它）。同一套表情图取景一样（不透明区域重合 99% 以上），共用 expr_1 量的值。 2026-11-18 第五批：Kieran、Ollie 换成加长版 base（画到大腿），下巴重新量：otaku 0.272、local 0.273。",
+ "_说明": "下巴位置（占图片高度的比例），2026-11-17 Claude Code 在带刻度的放大截图上人工量（没装 OpenCV 时 tools/auto_calib.py 用它）。同一套表情图取景一样（不透明区域重合 99% 以上），共用 expr_1 量的值。 2026-11-18 第五批：Kieran、Ollie 换成加长版 base（画到大腿），下巴重新量：otaku 0.272、local 0.273。 2026-11-21 夜：Ollie expr_1/5/6/7、Kieran expr_1/2/5/6 已换成加长版（和 base 同画布），下巴改成 base 的值。",
  "me": {
   "autumn": 0.35,
   "winter": 0.283,
@@ -13,13 +13,13 @@
   "base": 0.273,
   "summer": 0.308,
   "coffee": 0.296,
-  "expr_normal": 0.31,
+  "expr_normal": 0.273,
   "expr_smile": 0.31,
   "expr_annoyed": 0.31,
   "expr_shy": 0.31,
-  "expr_surprised": 0.31,
-  "expr_speechless": 0.31,
-  "expr_stunned": 0.31
+  "expr_surprised": 0.273,
+  "expr_speechless": 0.273,
+  "expr_stunned": 0.273
  },
  "groupmate": {
   "base": 0.338,
@@ -31,12 +31,12 @@
   "summer": 0.34,
   "club": 0.308,
   "figure": 0.318,
-  "expr_normal": 0.359,
-  "expr_smile": 0.359,
+  "expr_normal": 0.272,
+  "expr_smile": 0.272,
   "expr_annoyed": 0.359,
   "expr_shy": 0.359,
-  "expr_surprised": 0.359,
-  "expr_speechless": 0.359,
+  "expr_surprised": 0.272,
+  "expr_speechless": 0.272,
   "expr_sparkle": 0.359
  },
  "nikos": {

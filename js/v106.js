@@ -9,7 +9,7 @@
   const _visit = Scenes.visit;
   Scenes.visit = function (loc) {
     V.menuDone = false;
-    V.solo = !!(loc && !loc.travel) && (loc.id === "dorm_room" || Math.random() < 0.5);   // 住处：默认一个人
+    V.solo = !!(loc && !loc.travel) && (V.forceSolo || loc.id === "dorm_room" || Math.random() < (V.p || 0.5));   // 11/21 夜：V.p 外出一个人的概率（js/v107.js 设 0.65）；V.forceSolo 这个周末已经碰到过人   // 住处：默认一个人
     return _visit.apply(this, arguments);
   };
   const _wk = Scenes.weekend;

@@ -42,7 +42,7 @@ DATA.characters = {
     expr: { normal: "chara/local/expr_1.png", smile: "chara/local/n_smile.png", annoyed: "chara/local/n_annoyed.png", shy: "chara/local/n_shy.png",
             surprised: "chara/local/expr_5.png", speechless: "chara/local/expr_6.png", stunned: "chara/local/expr_7.png", sad: "chara/local/n_sad.png" },   // 第十批：笑／害羞／伤心／不满换成新图（透明底）   // 第七批：害羞换新图（旧的 expr_4 还在），伤心新加
     exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", stunned: "愣住", sad: "伤心" },
-    calib: { pajama: { top: 0.0186, chin: 0.2506 }, base: { top: 0.0039, chin: 0.273 }, summer: { top: 0.0234, chin: 0.308 }, coffee: { top: 0.0165, chin: 0.296 }, expr_normal: { top: 0.0035, chin: 0.31 }, expr_smile: { top: 0.0407, chin: 0.225 }, expr_annoyed: { top: 0.0214, chin: 0.23 }, expr_shy: { top: 0.0325, chin: 0.215 }, expr_surprised: { top: 0.0028, chin: 0.31 }, expr_speechless: { top: 0.0035, chin: 0.31 }, expr_stunned: { top: 0.0028, chin: 0.31 }, expr_sad: { top: 0.0483, chin: 0.225 } } },
+    calib: { pajama: { top: 0.0186, chin: 0.2506 }, base: { top: 0.0039, chin: 0.273 }, summer: { top: 0.0234, chin: 0.308 }, coffee: { top: 0.0165, chin: 0.296 }, expr_normal: { top: 0.0039, chin: 0.273 }, expr_smile: { top: 0.0407, chin: 0.225 }, expr_annoyed: { top: 0.0214, chin: 0.23 }, expr_shy: { top: 0.0325, chin: 0.215 }, expr_surprised: { top: 0.0039, chin: 0.273 }, expr_speechless: { top: 0.0039, chin: 0.273 }, expr_stunned: { top: 0.0039, chin: 0.273 }, expr_sad: { top: 0.0483, chin: 0.225 } } },
 
   groupmate: { name: "Ploy", short: "Ploy", height: 168, color: "#FF7A45", lang: "en", love: true,
     persona: "国际生女生，家里有钱、长得好看，魅力大，小组作业经常划水但presentation当天光彩照人。会拉你进她的圈子。用英文聊天。",
@@ -60,7 +60,7 @@ DATA.characters = {
     expr: { normal: "chara/otaku/expr_1.png", smile: "chara/otaku/expr_2.png", annoyed: "chara/otaku/n_annoyed.png", shy: "chara/otaku/n_shy.png",
             surprised: "chara/otaku/expr_5.png", speechless: "chara/otaku/expr_6.png", sparkle: "chara/otaku/n_sparkle.png", sad: "chara/otaku/n_sad.png" },   // 第十批：害羞／伤心／不满／眼睛发亮换新图
     exprNames: { normal: "常态", smile: "笑", annoyed: "不满", shy: "害羞", surprised: "惊讶", speechless: "无语", sparkle: "聊到番时眼睛发亮", sad: "伤心" },
-    calib: { pajama: { top: 0.0304, chin: 0.2494 }, base: { top: 0.0048, chin: 0.272 }, summer: { top: 0.0304, chin: 0.34 }, club: { top: 0.0321, chin: 0.308 }, figure: { top: 0.0373, chin: 0.318 }, expr_normal: { top: 0.0055, chin: 0.359 }, expr_smile: { top: 0.0076, chin: 0.359 }, expr_annoyed: { top: 0.029, chin: 0.25 }, expr_shy: { top: 0.0283, chin: 0.26 }, expr_surprised: { top: 0.0069, chin: 0.359 }, expr_speechless: { top: 0.0062, chin: 0.359 }, expr_sparkle: { top: 0.0249, chin: 0.285 }, expr_sad: { top: 0.0304, chin: 0.255 } } },
+    calib: { pajama: { top: 0.0304, chin: 0.2494 }, base: { top: 0.0048, chin: 0.272 }, summer: { top: 0.0304, chin: 0.34 }, club: { top: 0.0321, chin: 0.308 }, figure: { top: 0.0373, chin: 0.318 }, expr_normal: { top: 0.0048, chin: 0.272 }, expr_smile: { top: 0.0048, chin: 0.272 }, expr_annoyed: { top: 0.029, chin: 0.25 }, expr_shy: { top: 0.0283, chin: 0.26 }, expr_surprised: { top: 0.0048, chin: 0.272 }, expr_speechless: { top: 0.0048, chin: 0.272 }, expr_sparkle: { top: 0.0249, chin: 0.285 }, expr_sad: { top: 0.0304, chin: 0.255 } } },
 
   // ===== 固定 NPC =====
   nikos:        { name: "Dr. Nikos Lambert", short: "Nikos", height: 183, color: "#3A4766", lang: "en", sprites: { base: "chara/npc/nikos.png" },        calib: { base: { top: 0.0252, chin: 0.277 } } },
@@ -130,7 +130,7 @@ DATA.spriteRule = {
   faceHeight: 250,    // 所有人“头顶到下巴”在 1080 高的舞台上都是 250px（试玩报告 3：150 太小，立绘下边缘露在画面中间）
   pxPerCm: 10.87,     // 身高每 1cm 多少像素：头顶到下巴约真人 23cm → 250 ÷ 23
   maxBoost: 1.1,      // 下边缘够不到画面底的图，最多再放大 10%（头顶不动）补到底；还不够的下边淡出，检查脚本报出来
-  ground: 2073,       // 地面线（在画面外面）：头顶 y = ground − 身高(cm) × pxPerCm。最高的 Ollie 头顶约 y=40，最矮的吴桐约 y=388
+  ground: 2163,       // 地面线（在画面外面）：头顶 y = ground − 身高(cm) × pxPerCm。最高的 Ollie 头顶约 y=130（11/21 夜：原来 2073，Ollie 头顶 y=40 会被顶栏挡；整体下移 90，下半身也多露一点），最矮的吴桐约 y=478
   summerFromWeek: 24, // 大一第几周开始自动换夏装（脚本里写了 pose 的以脚本为准）
   winterWeeks: [7, 20],
   homeBgs: ["dorm_room", "dorm_night", "studio_night", "flat_kitchen", "shared_house", "home_china"],  // 这些背景算“居家场景”
