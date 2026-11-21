@@ -158,10 +158,10 @@
 // 后日谈 CG（四张订婚，图还没出：pending，出图后删掉 pending 就会显示）
 (function () {
   DATA.cgList.push(
-    { id: "senior_engaged", title: "后日谈 · 茶山脚下", pending: true },
-    { id: "local_engaged", title: "后日谈 · 照片背面", pending: true },
-    { id: "groupmate_engaged", title: "后日谈 · 一枚戒指", pending: true },
-    { id: "otaku_engaged", title: "后日谈 · 这次按下了快门", pending: true },
+    { id: "senior_engaged", title: "后日谈 · 茶山脚下" },
+    { id: "local_engaged", title: "后日谈 · 照片背面" },
+    { id: "groupmate_engaged", title: "后日谈 · 一枚戒指" },
+    { id: "otaku_engaged", title: "后日谈 · 这次按下了快门" },
   );
   const E = DATA.events;
   const put = (id, cg, start, endBefore) => {
