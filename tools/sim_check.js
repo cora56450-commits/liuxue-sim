@@ -149,7 +149,7 @@ const run = vm.runInContext(`(function (cfg) {
   if (cfg.stay) S.flags.stay_uk = 1;
   if (!cfg.noAsk) S.flags.local_asked = 1; S.flags.otaku_public = 1;   // 想走 HE 的玩家：Ollie 问出口、Kieran 公开
   const e = Rules.ending();
-  return { main: e.main.id, he: Object.entries(e.love).filter(([, v]) => v === "he").map(([c]) => c), be: Object.entries(e.love).filter(([, v]) => v === "be").map(([c]) => c),
+  return { main: e.main.id, he: Object.entries(e.love).filter(([, v]) => v === "he").map(([c]) => c), be: Object.entries(e.love).filter(([, v]) => v === "be").map(([c]) => c), ne: Object.entries(e.love).filter(([, v]) => v === "ing").map(([c]) => c), trialFail: targets.filter((c) => S.flags["trial_" + c] === -1).length, lowAff: targets.filter((c) => S.flags["confessed_" + c] && S.aff[c] < DATA.tuning.heAff).length,
     trial: e.stamps.some((s) => s.id === "love_trial"), pond: S.pond.count, degree: e.degree, aff: targets.map((c) => Math.round(S.aff[c])), dated: targets.filter((c) => S.flags["confessed_" + c]).length, ...sm, confAbs: targets.map((c) => S.confAbs[c]).filter((x) => x != null), confAt: targets.map((c) => S.confAt[c]).filter(Boolean),
     y1aff: y1 ? y1.maxAff : 0, y1min4: y1 ? y1.min4 : false, y1cnt: y1 ? y1.cnt : [] };
 })`, ctx);
@@ -192,10 +192,10 @@ for (const [name, cfg, goal] of process.env.ONLYMAIN ? [] : SC) {
   const sortedConf = rs.flatMap((r) => r.confAbs).sort((x, y) => x - y);
   const medAbs = sortedConf.length ? sortedConf[Math.floor(sortedConf.length / 2)] : null;
   const medLabel = medAbs == null ? "—" : (rs.find((r) => r.confAbs.includes(medAbs)) || {}).confAt?.[0] || String(medAbs);
-  const line = { name, goal, confessRate: pct(rs, (r) => r.dated > 0), confessMedian: medLabel, he: pct(rs, (r) => r.he.length > 0), be: pct(rs, (r) => r.be.length > 0), dated: pct(rs, (r) => r.dated > 0), trial: pct(rs, (r) => r.trial), pond1: pct(rs, (r) => r.pond >= 1),
+  const line = { name, goal, confessRate: pct(rs, (r) => r.dated > 0), confessMedian: medLabel, he: pct(rs, (r) => r.he.length > 0), be: pct(rs, (r) => r.be.length > 0), ne: pct(rs, (r) => r.ne.length > 0 && !r.he.length), neWhyAff: pct(rs, (r) => r.ne.length > 0 && r.lowAff > 0), noTrial: pct(rs, (r) => r.dated > 0 && !r.he.length && !r.be.length && !r.ne.length), dated: pct(rs, (r) => r.dated > 0), trial: pct(rs, (r) => r.trial), pond1: pct(rs, (r) => r.pond >= 1),
     aff: avg(rs, (r) => r.aff.reduce((a, b) => a + b, 0) / Math.max(1, r.aff.length)), small: avg(rs, (r) => r.small), smallAff: avg(rs, (r) => r.smallAff), degree: avg(rs, (r) => r.degree) };
   out.push(line);
-  console.log(`${name}（目标 ${goal}）：告白 ${line.confessRate}（中位 ${line.confessMedian}）　HE ${line.he}　BE ${line.be}　交往过 ${line.dated}　翻车≥1次 ${line.pond1}　恋爱裁判 ${line.trial}　毕业好感均值 ${line.aff}　小事件 ${line.small} 段／好感 +${line.smallAff}　学位 ${line.degree}`);
+  console.log(`${name}（目标 ${goal}）：告白 ${line.confessRate}（中位 ${line.confessMedian}）　HE ${line.he}　NE ${line.ne}（其中好感不够 ${line.neWhyAff}）　BE ${line.be}　交往过 ${line.dated}　翻车≥1次 ${line.pond1}　恋爱裁判 ${line.trial}　毕业好感均值 ${line.aff}　小事件 ${line.small} 段／好感 +${line.smallAff}　学位 ${line.degree}`);
   if (cfg.f7) { line.y1aff30 = pct(rs, (r) => r.y1aff >= 30); line.y1min4 = pct(rs, (r) => r.y1min4); line.y1affAvg = avg(rs, (r) => r.y1aff); line.y1cnt = rs[0] ? rs.map((r) => r.y1cnt).reduce((acc, xs) => xs.map((x, i) => (acc[i] || 0) + x / rs.length), []).map((x) => x.toFixed(1)).join("／") : ""; console.log(`  └ F7 验收：大一结束最高好感≥30 ${line.y1aff30}（均值 ${line.y1affAvg}）　每人≥4段 ${line.y1min4}（平均段数 ${line.y1cnt}）　三年交往过 ${line.dated}　翻车≥1次 ${line.pond1}`); }
 }
 // 非恋爱结局：小事件开／关对比（不追任何人，但周末照常去地点）

@@ -117,3 +117,6 @@
 #mk-tip b { display: block; font-size: 19px; }
 #mk-tip div { font-size: 16px; opacity: .85; margin-top: 2px; }
 #mk-tip em { display: block; font-style: normal; font-size: 15px; color: #b04a46; margin-top: 2px; }
+/* 小红书图标上的“新”（11/21） */
+.app { position: relative; }
+.app .app-new { position: absolute; top: -4px; right: 6px; background: #E8473B; color: #fff; font-style: normal; font-size: 13px; font-weight: 900; padding: 1px 6px; border-radius: 999px; box-shadow: 0 0 0 2px #fff; }

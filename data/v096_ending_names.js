@@ -10,9 +10,9 @@
   L.otaku.ing     = { id: "otaku_ing",     title: "天之弱",       stamp: "Kieran NE", card: "他跟朋友介绍我，说的是“my partner”。后面那半句，他还在练。" };
   const P = DATA.endingArt.postmarks;
   for (const c of ["senior", "local", "groupmate", "otaku"]) P[c + "_ing"] = P[c + "_ing"] || "love_ing";
-  // NE 的 CG（后日谈里播；图没到之前 pending，showCg 跳过）
+  // NE 的 CG（后日谈里播；11/21 图已入库）
   const ne = [["senior_ne", "NE · 稳稳的幸福"], ["local_ne", "NE · Trouble Maker"], ["groupmate_ne", "NE · Paper Rings"], ["otaku_ne", "NE · 天之弱"]];
-  for (const [id, title] of ne) if (!DATA.cgList.find((c) => c.id === id)) DATA.cgList.push({ id, title, pending: true });
+  for (const [id, title] of ne) if (!DATA.cgList.find((c) => c.id === id)) DATA.cgList.push({ id, title });
   const E = DATA.events, put = (ev, after, cg) => { const L = E[ev]; if (!L || L.some((x) => x && x.cg === cg)) return; const i = L.findIndex((x) => x && typeof x.say === "string" && x.say.includes(after)); L.splice(i < 0 ? L.length : i + 1, 0, { cg }, ); L.push({ cg: null }); };
   put("epi_ing_senior", "后日谈 · 他", "senior_ne");
   put("epi_ing_local", "Working on it", "local_ne");
