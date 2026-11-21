@@ -102,3 +102,18 @@
 #ph-banner .pb-txt b { font-size: 22px; color: #3A4766; }
 #ph-banner .pb-txt span { font-size: 20px; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #ph-banner em { font-style: normal; font-size: 16px; color: #F07A3A; flex: none; }
+/* 明信片背面：HE／恋爱ing／BE 的那句（11/21） */
+.pc-love p { margin: 4px 0 8px; font-size: 15px; line-height: 1.6; }
+.pc-love b { display: block; font-size: 13px; opacity: .75; letter-spacing: .05em; }
+/* 回忆·事件：剧情／短信 两栏（11/21） */
+.mem-sub { display: flex; gap: 8px; margin: 0 0 12px; }
+.mem-subtab { border: 1.5px solid #2A3150; background: transparent; color: #2A3150; border-radius: 999px; padding: 4px 14px; font: inherit; font-size: 14px; cursor: pointer; }
+.mem-subtab.on { background: #2A3150; color: #fff; }
+.mem-subtab em { font-style: normal; font-size: 12px; opacity: .7; margin-left: 6px; }
+/* 大地图悬停：字不再变成看不见的米色；下面弹出说明（11/21） */
+.marker:hover span { color: var(--navy); }
+.marker.train:hover span { color: var(--orange); }
+#mk-tip { position: absolute; z-index: 60; display: none; max-width: 420px; padding: 10px 14px; background: var(--paper); color: var(--navy); border: 3px solid var(--navy); border-radius: 10px; box-shadow: 4px 5px 0 rgba(42,49,80,.25); font-size: 18px; line-height: 1.5; pointer-events: none; }
+#mk-tip b { display: block; font-size: 19px; }
+#mk-tip div { font-size: 16px; opacity: .85; margin-top: 2px; }
+#mk-tip em { display: block; font-style: normal; font-size: 15px; color: #b04a46; margin-top: 2px; }

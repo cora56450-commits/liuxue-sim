@@ -679,7 +679,7 @@ const Rules = {
       else if (be[c] || (dating && trial === -1)) { stamps.push(E.love[c].be); love[c] = "be"; }
       else if (dating) love[c] = "ing";
     }
-    if (Object.values(love).includes("ing")) stamps.push(love.senior === "ing" && f.stay_uk && E.stamps.love_ing_senior_stay ? E.stamps.love_ing_senior_stay : E.stamps.love_ing);   // 学长交往中但留英：专门一句   // 恋爱ing：交往中、HE BE 都不满足（盖一个就够）
+    for (const c of DATA.loveIds) if (love[c] === "ing") stamps.push((c === "senior" && f.stay_uk && E.love.senior.ingStay) || E.love[c].ing || E.stamps.love_ing);   // 11/21：恋爱ing 一人一个名字（data/v096_ending_names.js）
     return { main, stamps, love, degree, band: first ? "First" : Rules.band(degree) };
   },
 };

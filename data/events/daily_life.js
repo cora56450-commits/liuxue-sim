@@ -57,7 +57,7 @@ Object.assign(DATA.events, {
 
   // 4. Waitrise（贵价超市）
   dl_waitrise_first: [
-    { bg: "supermarket_day" },
+    { bg: "supermarket_posh" },
     { say: "你推开门，听到了古典音乐。（……超市里放古典音乐？）" },
     { say: "一盒草莓 £4。一盒鸡蛋，上面印着养鸡场的名字和鸡的照片。" },
     { say: "你在里面逛了二十分钟，什么都没买，出来的时候觉得自己被净化了。", fx: { loneliness: -2, energy: 3 } },
@@ -77,7 +77,7 @@ Object.assign(DATA.events, {
 
   // 5. M&Z（玛姿）
   dl_mz_first: [
-    { bg: "supermarket_day" },
+    { bg: "supermarket_posh" },
     { say: "你发现这里的熟食区是一个奇迹：咖喱、烤鸡、意面，加热就能吃，比学校食堂好吃十倍。" },
     { say: "你买了一份\"Dine In\"「在家吃大餐」套餐：一个主菜、一个配菜、一个甜点、一瓶饮料，£12。（一个人吃了两顿。）", fx: { energy: 5 } },
   ],
@@ -145,7 +145,7 @@ Object.assign(DATA.events, {
 
   // 2. 嘻茶开业了（大一第 18 周以后，只一次；之后变成常驻选项）
   dl_heytea_first: [
-    { bg: "brunch" },
+    { bg: "bubble_tea" },
     { say: "小红书上刷到：\"城里终于开了嘻茶！！\"评论区一片\"终于\"\"排队多久\"\"在哪\"。" },
     { say: "你去了。队伍从店门口排到了街角，全是中国人，一半你在老乡群里见过头像。" },
     { choice: [
@@ -247,7 +247,7 @@ Object.assign(DATA.events, {
 
   // 6. 慈善商店淘货
   dl_charity_first: [
-    { bg: "indoor_market" },
+    { bg: "clothes_shop" },
     { say: "市中心有一排慈善商店，卖捐来的二手衣服、书、杯子。" },
     { say: "你花了 £3 买了一件羊毛衫，标签上写着一个你认识的牌子。", fx: { money: -3, loneliness: -2 } },
     { say: "（……正品。£3。这个国家的有钱人，捐东西是不看的吗？）" },
@@ -262,7 +262,7 @@ Object.assign(DATA.events, {
 
   // 7. 博物馆（免费）
   dl_museum_first: [
-    { bg: "library" },   // 美术馆没有背景，先用 library
+    { bg: "museum" },
     { say: "英国大部分博物馆免费。" },
     { say: "你走进城里的美术馆，里面很安静，只有你和一个在画画的老人。你在一幅画前面站了很久，画上是一百年前这座城市的火车站。和现在一模一样。", fx: { loneliness: -3, energy: 3 } },
     { if: "专业 == '设计'", then: [

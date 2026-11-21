@@ -74,9 +74,9 @@ Object.assign(DATA.actLines, {
   ],
   ploy_shopping: [
     { text: "她试了十一件，买了一件。买的那件是她第一件试的。" },   // 1
-    { text: "她在 Zara 门口接到妈妈的视频，立刻把购物袋藏到身后，假装在图书馆。" },   // 2
+    { text: "她在 Zora 门口接到妈妈的视频，立刻把购物袋藏到身后，假装在图书馆。" },   // 2
     { text: "她给你挑了一件外套，你说太贵了。她说“I'm not buying it for you, I'm just making you try it”「我又没说给你买，我就是让你试试」。你试了，确实好看。你没买。下周它出现在你门口。" },   // 3
-    { text: "你们在 Boots 里试了四十分钟口红，最后谁也没买，手背上全是颜色。" },   // 4
+    { text: "你们在 Boats 里试了四十分钟口红，最后谁也没买，手背上全是颜色。" },   // 4
     { text: "她教你分辨真正的打折和“假打折”（原价先涨再降）。她说这是从妈妈那学的，“jewellery people know these tricks”「做珠宝的人都懂这些招」。" },   // 5
     { text: "逛到一半她饿了，你们放弃了逛街，在美食广场吃了一个小时。" },   // 6
     { text: "她买了一对一样的发夹，一个给你，一个自己戴。她说“don't make it weird”，然后发了 Ins。", if: "交往中('groupmate')" },   // 7 【交往中】
@@ -223,7 +223,7 @@ Object.assign(DATA.items = DATA.items || {}, {
   dark_choc:     { name: "一盒黑巧克力", desc: "70% 可可。说是健康，其实就是想吃。", from: "超市", gift: true },
   tea_box:       { name: "一盒英式红茶", desc: "80 个茶包。英国人家里永远有一盒拆开的。", from: "超市", gift: true },
   film_roll:     { name: "一卷胶卷", desc: "36 张。比十年前贵了三倍。", from: "市中心", gift: true },
-  lipstick:      { name: "一支口红", desc: "Boots 里试了四十分钟才选好的颜色。", from: "市中心", gift: true },
+  lipstick:      { name: "一支口红", desc: "Boats 里试了四十分钟才选好的颜色。", from: "市中心", gift: true },
   notebook:      { name: "一本精装笔记本", desc: "硬皮，点阵内页，舍不得写。", from: "市中心", gift: true },
   blind_box:     { name: "一个盲盒挂件", desc: "不知道里面是哪个。拆开之前，每一个都是想要的那个。", from: "室内市场", gift: true },
   jam:           { name: "一罐手写标签的果酱", desc: "黑加仑的，标签是 Maggie 手写的。", from: "室内市场", gift: true },

@@ -129,7 +129,7 @@ Object.assign(DATA.events, {
 
   end_job_3: [   // 「面试」
     { bg: "pub_street" },   // 剧本：city（写字楼大堂；没图用 pub_street）
-    { say: "第一次线下面试。你穿着在 Primark 买的西装，鞋子磨脚。" },
+    { say: "第一次线下面试。你穿着在 Primart 买的西装，鞋子磨脚。" },
     { say: "面试官问：“Where do you see yourself in five years?”", tr: "你五年后想在哪里？" },
     { choice: [
       { text: "“Here. In this city.”", tr: "这里。在这座城市。", fx: { flag_stay_leaning: 1 }, then: [ { say: "面试官抬起头，看了你一眼，在本子上写了一行字。" } ] },

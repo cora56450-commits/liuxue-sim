@@ -619,6 +619,7 @@ const Scenes = {
       const can = slotOpen(loc, slot);
       const el = document.createElement("div");
       el.className = "marker" + (can ? "" : " locked");
+      el.dataset.loc = loc.id;
       el.style.left = loc.x + "px"; el.style.top = loc.y + "px";
       el.style.animationDelay = i * 50 + "ms";
       const date = dates.find((a) => a.place === loc.id || (loc.travel && a.place === "travel"));
@@ -639,7 +640,7 @@ const Scenes = {
       if (can) el.onclick = () => { if (layer._go || receipt.locked) return; layer._go = 1; FX.tear(() => Scenes.visitHome(a, slot)); };
       layer.appendChild(el);
     });
-    setTimeout(() => Guide.seq([["map", p.querySelector(".wk-board")], ["map_people", p.querySelector(".marker:not(.locked)")]]), 1100);
+    setTimeout(() => Guide.seq([["map", p.querySelector(".wk-board")], ["map_people", p.querySelector(".marker:not(.locked)")], ["map_names", p.querySelector('.marker[data-loc="chinese_market"]') || p.querySelector(".marker")]]), 1100);
     const nb = p.querySelector(".next-btn");
     // 第十三批 A8：周末宅家的时段也回精力（和工作日宅家一样 +15），结算单写出来
     nb.appendChild(receipt(slot % 3 === 2 ? "回家睡觉" : "待在家，等到" + DATA.todName[DATA.weekendSlots[slot + 1].tod], 3, () => { if (layer._go) return; layer._go = 1; const ch = applyFx({ energy: Rules.homeEnergy ? Rules.homeEnergy(15) : 15 }); showFx(ch); toast(`待在家：${fxText(ch)}`, 1600); FX.tear(() => Scenes.weekend(slot + 1)); }));
@@ -1230,6 +1231,7 @@ const Scenes = {
       <div class="pc-body">${e.main.desc}<br>${e.degree ? `学位成绩 ${e.degree}（${e.band}）` : e.main.type}<br>学业 ${Math.round(S.stats.study)}　孤独感 ${Math.round(S.stats.loneliness)}　融入度 ${Math.round(S.stats.belonging)}</div>
       <div class="pc-stamps">${stamps}</div><div class="pc-flip-hint">点明信片翻到背面</div></div>
       <div class="pc-back"><div class="pc-title">朋友们</div><div class="pc-friends">${friends.length ? friends.map((n) => `<span>${n}</span>`).join("") : "<em>（这三年没有交到“朋友”档的人）</em>"}</div>
+      ${e.stamps.filter((x) => x.card).length ? `<div class="pc-title small">他们</div><div class="pc-love">${e.stamps.filter((x) => x.card).map((x) => `<p><b>‘${Gloss.escape(x.title)}’</b>${Gloss.escape(fillText(x.card)).replace(/\n/g, "<br>")}</p>`).join("")}</div>` : ""}
       ${(S.takeHome || []).length ? `<div class="pc-title small">带回国的东西</div><div class="pc-friends">${S.takeHome.filter((id) => DATA.items[id]).map((id) => `<span>${Gloss.escape(fillText(DATA.items[id].name))}</span>`).join("")}</div>` : ""}</div></div>
       <div class="next-btn"></div>`, "full");
     p.querySelector(".postcard").onclick = () => p.querySelector(".postcard").classList.toggle("flipped");

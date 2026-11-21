@@ -173,8 +173,8 @@ const Sys = {
       : `<div class="cg-cell locked"><i>?</i></div>`).join("");
     // 结局：主线／特殊结局（邮票）＋盖章（邮戳），和 CG 放在同一页
     const E = DATA.endings, art = DATA.endingArt || { stamps: {}, postmarks: {} }, gotE = Gallery.endings();
-    const ends = [...Object.values(E.main), E.special.ghost, E.special.brain, E.stamps.first, E.stamps.love_trial, E.stamps.love_ing,
-      ...DATA.loveIds.flatMap((c) => [E.love[c].he, E.love[c].be])].filter(Boolean);
+    const ends = [...Object.values(E.main), E.special.ghost, E.special.brain, E.stamps.first, E.stamps.love_trial,
+      ...DATA.loveIds.flatMap((c) => [E.love[c].he, E.love[c].ing, E.love[c].be])].filter(Boolean);
     const endCells = ends.map((x) => {
       const img = art.stamps[x.id] ? `stamps/${art.stamps[x.id]}` : art.postmarks[x.id] ? `postmarks/${art.postmarks[x.id]}` : "";
       return gotE[x.id]

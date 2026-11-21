@@ -49,14 +49,23 @@ const MEM_CATS = [
 ];
 const MEM_STAGES = ["相识", "熟人", "暧昧", "交往", "结局"];
 
-Sys.gallery = function (tab = "end", cat = "senior") {
+// 11/21 Cora：回忆里的事件分“剧情”和“短信”两栏（整段都在手机里演的算短信）
+const isSmsEv = (id) => {   // 一半以上的台词在手机里演 → 短信
+  const cnt = (L, inP, r) => { for (const x of L || []) { if (!x || typeof x !== "object") continue;
+    if (x.say !== undefined) r[inP ? 0 : 1]++;
+    if (x.phone) cnt(x.steps, true, r); if (x.then) cnt(x.then, inP, r); if (x.else) cnt(x.else, inP, r);
+    if (x.choice) for (const c of x.choice) cnt(c.then, inP, r); if (x.timed) { cnt(x.timed.then, inP, r); cnt(x.timed.timeout, inP, r); } } return r; };
+  const [a, b] = cnt((DATA.events || {})[id], false, [0, 0]);
+  return a > 0 && a >= b;
+};
+Sys.gallery = function (tab = "end", cat = "senior", sub = "story") {
   const canReplay = !Sys.inGame();
   const tabs = [["end", "结局", "Postcards"], ["cg", "CG", "Illustrations"], ["ev", "事件", "Stories"]];
   let body = "";
   if (tab === "end") {
     const E = DATA.endings, art = DATA.endingArt || { stamps: {}, postmarks: {} }, gotE = Gallery.endings();
-    const ends = [...Object.values(E.main), E.special.ghost, E.special.brain, E.stamps.first, E.stamps.love_trial, E.stamps.love_ing,
-      ...DATA.loveIds.flatMap((c) => [E.love[c].he, E.love[c].be])].filter(Boolean);
+    const ends = [...Object.values(E.main), E.special.ghost, E.special.brain, E.stamps.first, E.stamps.love_trial,
+      ...DATA.loveIds.flatMap((c) => [E.love[c].he, E.love[c].ing, E.love[c].be])].filter(Boolean);
     const cells = ends.map((x) => {
       const img = art.stamps[x.id] ? `stamps/${art.stamps[x.id]}` : art.postmarks[x.id] ? `postmarks/${art.postmarks[x.id]}` : "";
       return gotE[x.id] ? `<div class="end-cell"><div class="pic">${img ? `<img src="assets/ui/${img}.png?v=2" alt="">` : `<b>${x.title}</b>`}</div><span>${x.title}</span></div>`
@@ -76,7 +85,11 @@ Sys.gallery = function (tab = "end", cat = "senior") {
   } else {
     const seen = GalleryEv.all(), G = DATA.gallery || {};
     const inCat = (id) => { const e = G[id]; return DATA.loveIds.includes(cat) ? e.cat === "love" && e.who === cat : e.cat === cat; };
-    const ids = Object.keys(G).filter(inCat);
+    const idsAll = Object.keys(G).filter(inCat);
+    const nSms = idsAll.filter(isSmsEv).length;
+    if (!nSms) sub = "story";
+    const ids = idsAll.filter((id) => (sub === "sms") === isSmsEv(id));
+    const subBar = nSms ? `<div class="mem-sub">${[["story", "剧情"], ["sms", "短信"]].map(([k, z]) => { const l = idsAll.filter((id) => (k === "sms") === isSmsEv(id)); return `<button class="mem-subtab ${k === sub ? "on" : ""}" data-sub="${k}">${z}<em>${l.filter((id) => seen[id]).length} / ${l.length}</em></button>`; }).join("")}</div>` : "";
     const side = MEM_CATS.map(([k, name]) => {
       const all = Object.keys(G).filter((id) => (DATA.loveIds.includes(k) ? G[id].cat === "love" && G[id].who === k : G[id].cat === k));
       return `<div class="mem-cat ${k === cat ? "on" : ""}" data-cat="${k}"><b>${name}</b><small>${all.filter((id) => seen[id]).length} / ${all.length}</small></div>`;
@@ -93,17 +106,18 @@ Sys.gallery = function (tab = "end", cat = "senior") {
     } else if (DATA.loveIds.includes(cat)) {
       for (let st = 0; st < 5; st++) { const l = ids.filter((id) => (G[id].stage || 0) === st); if (l.length) list += `<h4>${MEM_STAGES[st]}<em>${l.filter((id) => seen[id]).length} / ${l.length}</em></h4><div class="mem-evs">${l.map(cell).join("")}</div>`; }
     } else list = `<div class="mem-evs">${ids.map(cell).join("")}</div>`;
-    body = `<div class="mem-ev-wrap"><div class="mem-cats">${side}</div><div class="mem-ev-list">${list || "<p class='mem-none'>还没有</p>"}${canReplay ? "" : "<p class='mem-none'>游戏中只能看，回到标题画面才能重看。</p>"}</div></div>`;
+    body = `<div class="mem-ev-wrap"><div class="mem-cats">${side}</div><div class="mem-ev-list">${subBar}${list || "<p class='mem-none'>还没有</p>"}${canReplay ? "" : "<p class='mem-none'>游戏中只能看，回到标题画面才能重看。</p>"}</div></div>`;
   }
   const o = overlay(`<div class="panel-title"><span>回忆</span></div><div class="mem-tabs">${tabs.map(([k, z, en]) => `<button class="mem-tab ${k === tab ? "on" : ""}" data-tab="${k}">${z}<small>${en}</small></button>`).join("")}</div><div class="mem-body">${body}</div>`, "ov-gallery mem10");
   Sys.closeBtn(o);
   o.querySelectorAll("[data-tab]").forEach((b) => b.onclick = () => Sys.gallery(b.dataset.tab, cat));
   o.querySelectorAll("[data-cat]").forEach((b) => b.onclick = () => Sys.gallery("ev", b.dataset.cat));
+  o.querySelectorAll("[data-sub]").forEach((b) => b.onclick = () => Sys.gallery("ev", cat, b.dataset.sub));
   o.querySelectorAll("[data-cg]").forEach((el) => el.onclick = () => {
     const v = document.createElement("div"); v.className = "cg-view"; v.innerHTML = `<img src="assets/cg/${el.dataset.cg}.jpg" alt="">`; v.onclick = () => v.remove(); o.appendChild(v);
   });
   if (canReplay) o.querySelectorAll("[data-ev]").forEach((el) => el.onclick = () => {
     if (!confirm(`重看「${DATA.gallery[el.dataset.ev].title}」？\n（只是回看，不会改变任何存档）`)) return;
-    GalleryEv.replay(el.dataset.ev, () => { Scenes.title(); Sys.gallery("ev", cat); });
+    GalleryEv.replay(el.dataset.ev, () => { Scenes.title(); Sys.gallery("ev", cat, sub); });
   });
 };

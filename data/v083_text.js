@@ -70,7 +70,7 @@
     // 档次小细节（一句话，周中插播）
     ploy_rich_1: [{ phone: G, steps: [{ say: "Ploy 发了一条 story：一束花。" }, { say: "the weekly flowers came and they're YELLOW. who approved yellow.", name: G, tr: "每周的花送来了，是黄色的。谁批准黄色的。" }] }],
     ploy_rich_2: [{ phone: "group:小组群", steps: [{ say: "can someone explain what a 'meal deal' is. hannah keeps saying it like it's a personality.", name: G, tr: "谁能解释一下什么叫 meal deal。Hannah 一直把它挂在嘴上，像是一种人格。" }] }],
-    ploy_rich_3: [{ say: "你和 Ploy 一起去 Tesco。两百米。她叫了一辆 Uber。" }],
+    ploy_rich_3: [{ say: "你和 Ploy 一起去 Tesko。两百米。她叫了一辆 Uber。" }],
     ploy_rich_4: [{ phone: G, steps: [{ say: "my dry cleaning guy retired. I'm actually grieving.", name: G, tr: "我常去的干洗店老板退休了。我真的在难过。" }] }],
     ploy_rich_5: [{ say: "你在 Ploy 家写作业，她妈妈打来视频。外面在下雨，镜头扫过去，背景里有人在给她妈妈撑伞。Ploy 没注意到，你注意到了。" }],
     ploy_rich_6: [{ phone: G, steps: [{ say: "Ploy 发来一张照片：她的打印机。" }, { say: "it came with someone who sets it up. I didn't know printers came with people.", name: G, tr: "打印机是有人上门装的。我不知道打印机还带人。" }] }],
@@ -243,7 +243,7 @@
     { id: "ploy_rosa_3", who: G, day: "thu", time: "上午", line: "周四早上，门锁响了", prio: 2, cond: `标记('met_rosa') && (标记('slept_over_groupmate') || 标记('intimate_groupmate')) && !标记('cohab_groupmate') && ${NO_DATE}` },
     { id: "ploy_rich_1", who: G, day: "fri", time: "晚上", line: "Ploy 发了 story", prio: 4, cond: "标记('met_rosa')" },
     { id: "ploy_rich_2", who: G, day: "tue", time: "晚上", line: "小组群", prio: 4, cond: "学年 == 1 && 周数 >= 3 && 周数 <= 6 && knows('groupmate')" },
-    { id: "ploy_rich_3", who: G, day: "wed", time: "下午", line: "和 Ploy 去 Tesco", prio: 4, cond: "学年 == 1 && 好感('groupmate') >= 15" },
+    { id: "ploy_rich_3", who: G, day: "wed", time: "下午", line: "和 Ploy 去 Tesko", prio: 4, cond: "学年 == 1 && 好感('groupmate') >= 15" },
     { id: "ploy_rich_4", who: G, day: "mon", time: "晚上", line: "Ploy：（消息）", prio: 4, cond: "学年 >= 2 && knows('groupmate')" },
     { id: "ploy_rich_5", who: G, day: "wed", time: "晚上", line: "在 Ploy 家写作业", prio: 4, cond: "好感('groupmate') >= 35" },
     { id: "ploy_rich_6", who: G, day: "thu", time: "晚上", line: "Ploy 发来一张照片", prio: 4, cond: "学年 == 1 && 周数 == 8 && knows('groupmate')" },

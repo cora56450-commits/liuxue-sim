@@ -108,7 +108,7 @@ DATA.gallery = {
   stage_local_20: {"cat":"love","who":"local","stage":1,"title":"熟人事件「你们管这个叫什么」（好感≥20）——","bg":"pub_street","order":172},
   stage_local_60: {"cat":"love","who":"local","stage":1,"title":"暧昧事件「备注」（好感≥60）——","bg":"brunch","order":173},
   stage_local_date: {"cat":"love","who":"local","stage":1,"title":"交往后第一次约会「英式早餐」——","bg":"flat_kitchen","order":174},
-  stage_groupmate_20: {"cat":"love","who":"groupmate","stage":1,"title":"熟人事件「Boots」（好感≥20）——","bg":"indoor_market","order":175},
+  stage_groupmate_20: {"cat":"love","who":"groupmate","stage":1,"title":"熟人事件「Boats」（好感≥20）——","bg":"indoor_market","order":175},
   stage_groupmate_60: {"cat":"love","who":"groupmate","stage":1,"title":"暧昧事件「凌晨两点的电话」（好感≥60）——","bg":"dorm_night","order":176},
   stage_groupmate_date: {"cat":"love","who":"groupmate","stage":1,"title":"交往后第一次约会「外婆」——","bg":"dorm_room","order":177},
   stage_otaku_20: {"cat":"love","who":"otaku","stage":1,"title":"熟人事件「Discord」（好感≥20）——","bg":"dorm_room","order":178},

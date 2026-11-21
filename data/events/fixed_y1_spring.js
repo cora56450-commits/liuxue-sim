@@ -386,10 +386,10 @@ Object.assign(DATA.events, {
       { say: "Giulia蹲在那桶花前面挑。" },
       { say: "Don't look at me like that. They're for me. From me.", name: "giulia", tr: "别这么看我。是送给我的。我送的。" },
       { say: "Take one. Two is cheaper.", name: "giulia", tr: "拿一束吧。两束更便宜。" },
-      { if: "性格 == 'E'", then: [{ say: "你们俩一人抱着一束玫瑰，在 Tesco 门口聊了四十分钟，聊到店员出来锁门。" }] },
+      { if: "性格 == 'E'", then: [{ say: "你们俩一人抱着一束玫瑰，在 Tesko 门口聊了四十分钟，聊到店员出来锁门。" }] },
       { if: "性格 == 'I'", then: [{ say: "你说了声谢谢，拿了一束，然后发现你们住同一个方向，又一起走了十分钟。谁都没说话，但不尴尬。" }] },
       { if: "住宿 != '学校宿舍'", then: [{ say: "（我们不认识。但她说得对，两束是更便宜。）" }] },
-      { free: "情人节晚上，Tesco 门口打折玫瑰，Giulia（还不太熟）说“拿一束吧，两束更便宜”。陌生人搭话，轻松好笑", freeWho: "giulia", choice: [
+      { free: "情人节晚上，Tesko 门口打折玫瑰，Giulia（还不太熟）说“拿一束吧，两束更便宜”。陌生人搭话，轻松好笑", freeWho: "giulia", choice: [
         { text: "买一束", fx: { money: -1.5, loneliness: -4 }, then: [
           { say: "回到房间你找不到花瓶，最后插进了一个洗干净的老干妈瓶子里。" },
           { say: "（挺好看的。）" },

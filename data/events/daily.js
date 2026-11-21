@@ -22,7 +22,7 @@ DATA.foreshadow = [
   { week: 13, kind: "mail", from: "Dr. Marcia Campbell", title: "Week 2 meeting", tr: "第二周见面", body: "下周二下午两点，办公室见。" },
   { week: 14, kind: "say",  text: "中超门口挂出了红灯笼，货架上多了春联和汤圆。" },
   { week: 14, kind: "msg",  from: "相亲相爱一家人", text: "今年春节你怎么过？" },
-  { week: 15, kind: "say",  text: "Tesco 一夜之间变成了粉红色。" },
+  { week: 15, kind: "say",  text: "Tesko 一夜之间变成了粉红色。" },
   { week: 16, kind: "say",  text: "Hannah 在群里发了更新版的甘特图，第十一页。" },
   { week: 17, kind: "msg",  from: "天气 App", text: "下周三，小雪。" },
   { week: 17, kind: "say",  text: "英国同学在群里发了五个感叹号。" },

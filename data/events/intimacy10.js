@@ -270,7 +270,7 @@ DATA.events = DATA.events || {};
           { say: "他想了很久，回了一句：“可以。8%。”然后把手机扔在沙发上，捂着脸：“……我不想知道他问这个是要干嘛。”" },
         ] },
         { text: "“告诉他你只做正经生意。”", fx: { aff_senior: 2 }, then: [
-          { say: "他回了：“这个不接。”过了一会儿又补了一句：“……你可以自己去 Boots 买。”" },
+          { say: "他回了：“这个不接。”过了一会儿又补了一句：“……你可以自己去 Boats 买。”" },
         ] },
       ] },
       { hide: true }, { fx: { flag_wk_intimate_c_senior: 1 } },
@@ -298,14 +298,14 @@ DATA.events = DATA.events || {};
       { say: "周日下午。他从卧室出来，表情很严肃。" },
       { say: "We're out. Of — you know. Both things.", name: "local", tr: "没了。那个——你知道的。两样都没了。" },
       { say: "他伸出拳头。" },
-      { say: "Rock paper scissors. Loser goes to Boots. Best of three.", name: "local", tr: "石头剪刀布。输的去 Boots。三局两胜。" },
+      { say: "Rock paper scissors. Loser goes to Boats. Best of three.", name: "local", tr: "石头剪刀布。输的去 Boats。三局两胜。" },
       { choice: [
         { text: "出布", fx: { aff_local: 2 }, then: [
           { say: "他出的石头。他输了。他又要求五局三胜。又输了。他戴上帽子和墨镜出门了，像去抢银行。" },
           { say: "The cashier was my seminar tutor's wife. I'm moving to Scotland.", name: "local", tr: "收银员是我研讨课老师的老婆。我要搬去苏格兰。" },
         ] },
         { text: "出石头", fx: { aff_local: 2 }, then: [
-          { say: "他出的布。你输了。你去了 Boots。自助结账机说“unexpected item in bagging area「装袋区有意外物品」”，叫来了一个店员。" },
+          { say: "他出的布。你输了。你去了 Boats。自助结账机说“unexpected item in bagging area「装袋区有意外物品」”，叫来了一个店员。" },
           { say: "你回家以后跟他说你要搬去苏格兰。他笑到从沙发上滑下去。" },
         ] },
       ] },

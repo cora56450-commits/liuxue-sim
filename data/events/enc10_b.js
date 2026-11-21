@@ -12,7 +12,7 @@ Object.assign(DATA.events, {
 
   // 市中心-学长-相识 · 奢侈品店门口
   enc10_city_centre_senior_meet: [
-    { bg: "pub_street" },
+    { bg: "city_centre" },
     { say: "学长站在一家奢侈品店门口排队，手里拿着一张清单，在跟国内的人视频。" },
     { show: "senior" },
     { say: "这个色没了，换那个？……好，我拍给您看。", name: "senior" },
@@ -34,7 +34,7 @@ Object.assign(DATA.events, {
 
   // 市中心-学长-暧昧 · 圣诞集市（剧本背景：pub_street（圣诞灯））
   enc10_city_centre_senior_flirt: [
-    { bg: "pub_street" },
+    { bg: "xmas_market" },
     { say: "圣诞集市，木头小屋一排一排。学长在热红酒摊前面，难得没在打电话。" },
     { show: "senior" },
     { say: "今天不干活。今天是……休息。", name: "senior" },
@@ -52,7 +52,7 @@ Object.assign(DATA.events, {
 
   // 市中心-学长-交往 · 他的公司（交往中；大二以后）
   enc10_city_centre_senior_dating: [
-    { bg: "pub_street" },
+    { bg: "city_centre" },
     { say: "学长带你走到一栋写字楼下面，指着三楼一扇窗户。" },
     { show: "senior" },
     { say: "那个。我和两个人合租的办公室。七个工位，我们用三个。", name: "senior" },
@@ -62,6 +62,7 @@ Object.assign(DATA.events, {
         { say: "小公司。留学咨询加物流。还没赚钱。但是……是我的。", name: "senior" },
       ] },
       { text: "“带我上去看看。”", fx: { aff_senior: 3 }, then: [
+        { bg: "senior_office" },
         { say: "办公室很小，白板上写满了数字。角落有张折叠床。" },
         { say: "（……他有时候睡在这。）" },
       ] },
@@ -71,7 +72,7 @@ Object.assign(DATA.events, {
 
   // 市中心-Ollie-相识 · 街头艺人
   enc10_city_centre_local_meet: [
-    { bg: "pub_street" },
+    { bg: "city_centre" },
     { say: "步行街上有人在弹吉他，Ollie 站在人群最前面，跟着唱，跑调了。" },
     { show: "local" },
     { say: "— oh, hi! You know this one? Everyone knows this one!", name: "local", tr: "——哦，嗨！你会这首吗？这首人人都会！" },
@@ -87,7 +88,7 @@ Object.assign(DATA.events, {
 
   // 市中心-Ollie-暧昧 · 下雨（剧本背景：pub_street（雨））
   enc10_city_centre_local_flirt: [
-    { bg: "pub_street" },
+    { bg: "city_centre_rain" },
     { say: "突然下大雨，你们一起躲在一家店的雨棚下面。Ollie 没带伞——英国人都不带伞。" },
     { show: "local" },
     { say: "It'll stop in ten minutes. It always does. Trust me, I'm a local.", name: "local", tr: "十分钟就停。总是这样。相信我，我是本地人。" },
@@ -106,7 +107,7 @@ Object.assign(DATA.events, {
 
   // 市中心-Ollie-交往 · 他第一周的公交站
   enc10_city_centre_local_dating: [
-    { bg: "pub_street" },
+    { bg: "bus_stop_night" },
     { say: "Ollie 指着一个公交站。" },
     { show: "local" },
     { say: "First week here, I sat at this stop for an hour. Didn't know anyone. Called my mum, called Lottie. I was so sure I'd drop out and go back to Guildford by Christmas.", name: "local", tr: "刚来第一周，我在这个站坐了一个小时。谁都不认识。给我妈打电话，给 Lottie 打电话。我当时特别确定我圣诞节前就会退学回吉尔福德。" },
@@ -124,8 +125,8 @@ Object.assign(DATA.events, {
 
   // 市中心-Ploy-相识 · 试衣间
   enc10_city_centre_groupmate_meet: [
-    { bg: "pub_street" },
-    { say: "Zara 试衣间门口，Ploy 抱着一堆衣服，在等前面的人。" },
+    { bg: "clothes_shop" },
+    { say: "Zora 试衣间门口，Ploy 抱着一堆衣服，在等前面的人。" },
     { show: "groupmate" },
     { say: "Hold this? I need a second opinion and my friends all said \"it's fine\" which means nothing.", name: "groupmate", tr: "帮我拿一下？我需要第二个意见，我朋友都说‘挺好的’，这等于没说。" },
     { free: "Ploy 在试衣间门口要你给第二个意见。", freeWho: "groupmate", choice: [
@@ -141,7 +142,7 @@ Object.assign(DATA.events, {
 
   // 市中心-Ploy-暧昧 · 奶茶店
   enc10_city_centre_groupmate_flirt: [
-    { bg: "pub_street" },
+    { bg: "bubble_tea" },
     { say: "市中心新开了一家奶茶店，Ploy 排在你前面。" },
     { show: "groupmate" },
     { say: "£5.80. For bubble tea. In Bangkok this is like… 60 baht.", name: "groupmate", tr: "5.8 镑。一杯奶茶。在曼谷大概就……60 铢。" },
@@ -160,7 +161,7 @@ Object.assign(DATA.events, {
 
   // 市中心-Ploy-交往 · 她的作品
   enc10_city_centre_groupmate_dating: [
-    { bg: "pub_street" },
+    { bg: "clothes_shop" },
     { say: "一家小画廊的橱窗里，挂着一件衣服。旁边的卡片上写着：Designer: Ploy" },
     { show: "groupmate" },
     { say: "Student showcase. They picked three. One of them is mine. I didn't tell anyone because if nobody comes, then nobody saw nobody come.", name: "groupmate", tr: "学生作品展。选了三件，其中一件是我的。我没告诉任何人，因为如果没人来，那就没人看到没人来。" },
@@ -175,7 +176,7 @@ Object.assign(DATA.events, {
 
   // 市中心-Kieran-相识 · 游戏店
   enc10_city_centre_otaku_meet: [
-    { bg: "pub_street" },
+    { bg: "game_shop" },
     { say: "一家二手游戏店，Kieran 站在复古游戏区，手里拿着一盒旧卡带，看价签看了很久。" },
     { show: "otaku" },
     { say: "他看到你，第一反应是把卡带藏到身后。第二反应是想起你也是社团的。" },
@@ -193,7 +194,7 @@ Object.assign(DATA.events, {
 
   // 市中心-Kieran-暧昧 · 人太多（剧本背景：pub_street（周六下午，人很多））
   enc10_city_centre_otaku_flirt: [
-    { bg: "pub_street" },
+    { bg: "city_centre" },
     { say: "步行街人挤人。Kieran 走在你旁边，越走越慢，最后停下来，靠在墙上。" },
     { show: "otaku" },
     { say: "Sorry. Just — too many people. Give me a minute.", name: "otaku", tr: "抱歉。就是——人太多了。给我一分钟。" },
@@ -210,7 +211,7 @@ Object.assign(DATA.events, {
 
   // 市中心-Kieran-交往 · 他牵你的手
   enc10_city_centre_otaku_dating: [
-    { bg: "pub_street" },
+    { bg: "city_centre" },
     { say: "还是那条人挤人的步行街。Kieran 走着走着，伸手牵住了你。" },
     { show: "otaku" },
     { say: "It's — it helps. With the crowds. That's the only reason.", name: "otaku", tr: "这——有帮助。人多的时候。这是唯一的原因。" },
