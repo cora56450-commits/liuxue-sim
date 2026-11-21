@@ -865,7 +865,7 @@ const Scenes = {
     const items = Acts6.menu(loc.id);
     const ta = loc.id === "dorm_room" && DATA.takeaway.some(Acts6.ok);
     if (!items.length && !ta) return false;
-    const def = { dorm_room: "躺平", brunch: "吃个早午餐", city_centre: null }[loc.id];
+    const def = { dorm_room: "躺平", brunch: "吃个早午餐", city_centre: null, residential: null }[loc.id];
     const opts = [];
     if (def !== null) opts.push({ text: def || "随便待着", k: "def" });
     for (const it of items) opts.push({ text: it.name, k: "act", it });

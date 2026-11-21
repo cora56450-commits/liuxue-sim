@@ -1,5 +1,6 @@
 # 11/21 傍晚：NE 后日谈 CG 4 张、咖啡店背景、朋友动态九宫格 5 张（F-1～F-5）入库。
 # 原图从项目最外层挪到 03_美术素材/ 对应文件夹（已挪的就跳过），再导出到 game/assets。
+# 一次性脚本，11/21 已跑过；之后 03_美术素材/cg 里的原图改成了“人名 场景名.png”（对照见那个文件夹里的 文件名对照.md），不要再跑。
 import os, shutil
 from PIL import Image
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
