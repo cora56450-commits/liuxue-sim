@@ -52,7 +52,7 @@
     const datedOther = S.weekendDates.filter((c) => close.includes(c));
     const travel = S.pondTravel && close.includes(S.pondTravel) ? S.pondTravel : null;
     let hit = datedOther.length > 0 || !!travel;
-    if (!hit) { const p = (t.pondChance * close.length + 0.02 * (S.pond.value || 0)) * (S.tags.includes("lovebrain") ? 2 : 1) * (S.flags.fishpond_honest ? 0.5 : 1); hit = Math.random() < p; }
+    // 11/21：只有“交往中又单独约了另一个人／约他一起旅行”才翻车，不再按概率随机翻（偶遇、工作日活动、小剧情都不算）
     S.pondTravel = null;
     if (!hit) return null;
     const who = [...d, ...(travel ? [travel] : datedOther.length ? datedOther : close)].filter((c, i, a) => a.indexOf(c) === i).sort((a, b) => S.aff[b] - S.aff[a]);

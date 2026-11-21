@@ -61,6 +61,7 @@
     const m = V.target();
     if (!m) return out;
     if (v > 0) {
+      v *= DATA.tuning.modHwMul || 1;   // 三门同时做：每次推进得多一点，总量和旧的一份接一份差不多（11/21 数值模拟校准）
       if (S.tags.includes("timemgmt")) v *= 1.3;
       if (S.tags.includes("phone")) v *= 0.8;
       v *= m.coef || 1;
@@ -149,4 +150,10 @@
     });
     return r;
   };
+})();
+// 排日程里“做作业”的说明：按模块时写清楚推进的是选中的那一门
+(function () {
+  const a = (DATA.activities || []).find((x) => x.id === "homework"); if (!a) return;
+  const d0 = a.desc;
+  Object.defineProperty(a, "desc", { get: () => (typeof S !== "undefined" && S && DATA["modulesY" + S.year] ? "选中的那门作业进度+30，有点孤独" : d0), set: () => {}, configurable: true });
 })();

@@ -30,6 +30,7 @@
     ],
   };
   DATA.moduleTermStart = { autumn: 2, spring: 13 };
+  DATA.tuning.modHwMul = 1.5;   // 做作业一次：选中那门 +30（原来 +20 给一份作业）。js/v086.js 用
   // 学期开头的 brief 邮件（第 2 周、第 13 周）
   const brief = (term) => {
     const steps = [];

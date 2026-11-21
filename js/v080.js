@@ -437,6 +437,7 @@
     S.lowInv = S.lowInv || {};
     for (const c of DATA.loveIds.sort(() => Math.random() - 0.5)) {
       const L = DATA.lowInvites[c]; if (!L || !hasContact(c) || (S.aff[c] || 0) < 10 || S.flags["confessed_" + c] || S.flags["broke_up_" + c] || S.flags["confess_refused_" + c]) continue;
+      if (DATA.loveIds.some((x) => x !== c && S.flags["confessed_" + x] && !S.flags["broke_up_" + x])) continue;   // 11/21：你在和别人交往，其他人不再主动约你
       const ch = DATA.characters[c]; if (ch.hidden && !S.tags.includes(ch.hidden)) continue;
       if (absWeek() - (S.lowInv[c] || -9) < (S.year === 1 ? 3 : 4) + (Math.random() < 0.5 ? 1 : 0)) continue;
       const l = L.filter((x) => !x.if || evalCond(x.if))[Math.floor(Math.random() * L.length)]; if (!l) continue;

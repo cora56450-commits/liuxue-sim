@@ -17,6 +17,9 @@ for (const f of [...html.matchAll(/<script src="(data\/[^"?]+)/g)].map((m) => m[
 vm.runInContext(`var Story = { running: null }; function playSfx() {} function toast() {} function renderPhoneDot() {} var Settings = { v: {} }; var Flow = { hash: (s) => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) | 0; return h; } }; var AI = { lang: () => "zh", hasKey: () => false };`, ctx);
 vm.runInContext(`var V083 = { weeksDating: () => -1, rivalRecent: () => false }; var V084 = { days: (a) => (S.schedule || []).filter((x) => x === a).length, rush: () => !!S.rushWeek, pubRecent: () => false, hoarse: () => false, called: () => false, careOk: () => true };`, ctx);
 for (const f of ["js/state.js", "js/story5.js", "js/social5.js"]) vm.runInContext(fs.readFileSync(path.join(root, f), "utf8"), ctx, { filename: f });
+// 11/21：三年作业都按模块（js/v086.js）。界面函数打桩，规则部分照原样包一层。
+vm.runInContext(`var Scenes = { settle() {}, report() {}, week() {} }; var Phone = { calendar() {} }; function sayStatic() {} function hideDialog() {}`, ctx);
+if (!process.env.NOMOD) vm.runInContext(fs.readFileSync(path.join(root, "js/v086.js"), "utf8"), ctx, { filename: "js/v086.js" });   // NOMOD=1：旧的一份接一份，对比用
 
 const run = vm.runInContext(`(function (cfg) {
   // ---- 每个事件最多能给某人多少好感（每个选项组取最大的）----
@@ -79,9 +82,9 @@ const run = vm.runInContext(`(function (cfg) {
       // 周末去地点：一半机会碰到
       if (cfg.outing && !busy && !cal.vacation && Math.random() < (cfg.outingP || 0.5)) met[c] = true;
       // 工作日活动（帮学长打包／和 Ollie 语言交换／陪 Ploy 逛街／和 Kieran 联机）：解锁以后每周排 1 格（dailyN 格），每格好感 +1
-      if (cfg.dailyAct && !cal.vacation && a >= ({ senior: 25, local: 20, groupmate: 30, otaku: 20 })[c]) { normalGive(c, cfg.dailyN || 1); S.lastMet[c] = absWeek(); }
+      if (cfg.dailyAct && !cal.vacation && a >= ({ senior: 25, local: 20, groupmate: 30, otaku: 20 })[c]) { normalGive(c, cfg.dailyN || 1); }   // 工作日活动碰面不算“单独来往”（游戏里也不更新 lastMet）
       // F5 低门槛邀约（好感 ≥ 10，大一每 4 周最多一次，没 Key 也有）
-      if (cfg.lowInv && !cal.vacation && (S.year === 1 || cfg.lowInvAll) && a >= 10 && (absWeek() + c.length) % 4 === 0) { normalGive(c, Invites_T.goneLove); S.lastMet[c] = absWeek(); met[c] = true; cnt[c] = (cnt[c] || 0) + 1; }
+      if (cfg.lowInv && !cal.vacation && (S.year === 1 || cfg.lowInvAll) && a >= 10 && !S.flags["confessed_" + c] && !targets.some((x) => x !== c && S.flags["confessed_" + x]) && (absWeek() + c.length) % 4 === 0) { normalGive(c, Invites_T.goneLove); S.lastMet[c] = absWeek(); met[c] = true; cnt[c] = (cnt[c] || 0) + 1; }
       S.metWk = S.metWk || {}; if (met[c]) S.metWk[c] = absWeek();
       // 小事件：周末碰到时演一段、周中一次机会（相识、没资格吃醋、温情暧昧、交往后、地点偶遇……条件满足、没演过的随机一段）
       if (!cal.vacation && cfg.small !== false) {
@@ -182,7 +185,7 @@ const SC = [
 const median = (xs) => { if (!xs.length) return null; const a = [...xs].sort((x, y) => x - y); return a[Math.floor(a.length / 2)]; };
 console.log(`每种跑 ${N} 次\n`);
 const out = [];
-for (const [name, cfg, goal] of SC) {
+for (const [name, cfg, goal] of process.env.ONLYMAIN ? [] : SC) {
   const c2 = { ...cfg };
   const rs = []; for (let i = 0; i < N; i++) rs.push(run(c2));
   const allConf = rs.flatMap((r) => r.confAt); const cnt = {}; for (const x of allConf) cnt[x] = (cnt[x] || 0) + 1;
@@ -204,6 +207,7 @@ for (const [pn, plan, wk] of [["均衡", P.balanced, ["home", "social"]], ["卷�
     const dist = {}; for (const r of rs) dist[r.main] = (dist[r.main] || 0) + 1;
     mains[pn + (small ? "·开" : "·关")] = dist;
     console.log(`${pn}${small ? "（加小事件）" : "（不加）"}：` + Object.entries(dist).map(([k, v]) => `${k} ${Math.round((v / N) * 100)}%`).join("　"));
+    if (small) { const cls = (d) => d >= 70 ? "一等" : d >= 60 ? "二等一" : d >= 50 ? "二等二" : d >= 40 ? "三等" : "没毕业"; const dd = {}; for (const r of rs) dd[cls(r.degree)] = (dd[cls(r.degree)] || 0) + 1; console.log(`  └ 学位（模块制）：均分 ${avg(rs, (r) => r.degree)}　` + ["一等", "二等一", "二等二", "三等", "没毕业"].filter((k) => dd[k]).map((k) => `${k} ${Math.round((dd[k] / N) * 100)}%`).join("　")); }
   }
 }
 fs.writeFileSync(path.join(__dirname, "sim_result.json"), JSON.stringify({ n: N, love: out, mains }, null, 1));

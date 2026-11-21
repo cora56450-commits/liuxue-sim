@@ -508,12 +508,13 @@ const Rules = {
   pondCheck() {
     const T = DATA.tuning;
     if (!DATA.loveIds.some((c) => S.flags["confessed_" + c] && !S.flags["broke_up_" + c])) return null;   // 11/21 Cora：没交往，同时暧昧几个人不算鱼塘（游戏里的完整规则在 js/v091.js）
-    const pond = DATA.loveIds.filter((c) => S.aff[c] >= T.pondLevel);
+    const pond = DATA.loveIds.filter((c) => S.aff[c] >= T.pondLevel && (S.flags["confessed_" + c] || (S.lastMet[c] || 0) >= absWeek() - 1));   // 和 js/v091.js 一致：最近一周没单独来往的不算
     const dated = S.weekendDates.filter((c) => S.aff[c] >= T.pondLevel);
     if (pond.length < 2) return null;
     const p = (T.pondChance * (pond.length - 1) + 0.02 * (S.pond.value || 0)) * (S.tags.includes("lovebrain") ? 2 : 1);   // 鱼塘值每点 +2%
     const pHonest = S.flags.fishpond_honest ? 0.5 : 1;   // 修罗场-5 坦白过：翻车概率减半
-    if (!(dated.length >= 2 || Math.random() < p * pHonest)) return null;
+    const datedOther = S.weekendDates.filter((c) => !S.flags["confessed_" + c] && S.aff[c] >= T.pondLevel);
+    if (!(dated.length >= 2 || datedOther.length)) return null;   // 和 js/v091.js 一致：交往中单独约了别人才翻（p、pHonest 不再用）
     const who = dated.length >= 2 ? dated : pond;
     for (const c of who) { const b = S.aff[c]; S.aff[c] = Math.max(0, S.aff[c] + T.pondPenalty); S.affWeek[c] = (S.affWeek[c] || 0) + S.aff[c] - b; }
     S.pond.count++; S.pond.maxPeople = Math.max(S.pond.maxPeople, who.length);
@@ -658,7 +659,7 @@ const Rules = {
     const be = {
       senior: S.everHigh.senior && S.aff.senior < 60,
       local: S.everHigh.local && !f.local_asked && !f.local_asked_late,
-      groupmate: ghost >= 2,
+      groupmate: ghost >= 2 && !!(S.everHigh.groupmate || f.confessed_groupmate),   // 11/21 三年试玩：和 Ploy 不熟（好感 19）也盖了 BE，补条件
       otaku: !!f.otaku_private,
     };
     const love = {};

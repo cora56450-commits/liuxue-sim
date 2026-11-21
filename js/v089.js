@@ -16,6 +16,9 @@
     const he = Object.entries(e.love || {}).find(([, v]) => v === "he");
     const id = he && DATA.events["epi_" + he[0]] ? "epi_" + he[0] : DATA.events["epi_" + e.main.id] ? "epi_" + e.main.id : "epi_disco";
     await runEvent(id);
+    // 11/21：恋爱ing／BE 的人补一小段（最多两段；HE 的人已经在上面演过）
+    const rest = Object.entries(e.love || {}).filter(([c, v]) => (v === "ing" || v === "be") && DATA.events["epi_" + v + "_" + c]).slice(0, 2);
+    for (const [c, v] of rest) { setBg(v === "ing" ? "city_centre" : "station_night"); await runEvent("epi_" + v + "_" + c); }
     const fr = (typeof friendsNow === "function" ? friendsNow() : []).filter((c) => (DATA.epiFriends || {})[c]);
     if (fr.length) {
       setBg("station_night");

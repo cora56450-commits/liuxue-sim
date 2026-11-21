@@ -1120,7 +1120,7 @@ Object.assign(DATA.events, {
     { if: "!(" + DATING + ")", then: [
       { phone: "group:flat", steps: [   // 大一的 flat 群
         { say: "（所有的群都在发圣诞快乐。你一个一个回。回到最后一个，是大一的 flat 群，三年没人说话了。）" },
-        { say: "[图片]", name: "{A}" },
+        { say: "[图片]", name: "室友 A" },
         { say: "（有人发了一张照片：大一第一周凌晨三点火警时，你们站在楼下的合影。）" },
         { choice: [
           { text: "回：“Merry Christmas everyone!”", then: [
