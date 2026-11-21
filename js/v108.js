@@ -19,7 +19,7 @@
     const r = { bg: null, who: null, phone: null };
     const walk = (a, d) => { for (const s of a || []) { if (r.bg && (r.who || r.phone)) return; if (s.bg && !r.bg) r.bg = s.bg;
       if (s.phone && !r.phone && !r.who) r.phone = s.phone; if (s.show && !r.who) r.who = s.show.split(":")[0]; if (s.msg && !r.phone && !r.who) r.phone = s.msg.from;
-      if (d < 1 && s.if && s.then) walk(s.then, d + 1); if (s.say && !r.bg && !r.who && !r.phone) return; } };
+      if (d < 2 && s.if) { let ok = false; try { ok = evalCond(s.if); } catch (e) {} walk(ok ? s.then : s.else, d + 1); } if (s.say && !r.bg && !r.who && !r.phone) return; } };
     walk(steps, 0); return r;
   };
   const nm = (c) => { try { return c && DATA.characters[c] ? charName(c) : c; } catch (e) { return c; } };
@@ -154,4 +154,30 @@
       return e || _pm.apply(this, arguments);
     };
   }
+})();
+
+// ===== 名字前后一致（Cora 截图：名牌写“底料货架前的女生”，同一屏浮字写“吴桐友情+1”）=====
+//   还没自我介绍的人，名牌、浮字、场景卡、手机里一律用描述（“跑步机上的男生”）；认识满两周、或者友情到 20 就算知道名字了。
+(function () {
+  const UN = ["local", "otaku", "sophie", "giulia", "jake", "mei", "chen_siqi", "zhou_kexin", "wu_tong", "zhao_zihao"];
+  const _cn = charName;
+  charName = function (id) {
+    try {
+      if (S && UN.includes(id) && !S.flags["name_" + id]) {
+        if (id in (S.fr || {}) || S.flags["met_" + id]) { S.knownSince = S.knownSince || {}; if (S.knownSince[id] == null) S.knownSince[id] = absWeek(); else if (absWeek() - S.knownSince[id] >= 2) S.flags["name_" + id] = 1; }
+        if (!S.flags["name_" + id]) { const n = speakerName(id); if (n && n !== id) return n; }
+      }
+    } catch (e) {}
+    return _cn.apply(this, arguments);
+  };
+})();
+
+// ===== 大二大三第一次去某家超市／咖啡店，不再演大一那种“第一次来英国超市找不到大米”的首次文本 =====
+(function () {
+  if (typeof Acts6 === "undefined") return;
+  const _play = Acts6.play;
+  Acts6.play = function (a) {
+    try { S.actsDone = S.actsDone || {}; if (a && a.first && S.year > 1 && !S.actsDone[a.id]) S.actsDone[a.id] = 1; } catch (e) {}
+    return _play.apply(this, arguments);
+  };
 })();

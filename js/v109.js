@@ -11,7 +11,7 @@
   // 最近演过的几句（给 AI 看“刚才”）
   const _say = say;
   say = function (t, n, o) {
-    try { if (typeof t === "string" && !V.playing) { V.recent.push({ ev: Story.running || "", bg: currentBg || "", who: n || "", t: (fillText ? fillText(t) : t).slice(0, 80) }); if (V.recent.length > 8) V.recent.shift(); } } catch (e) {}
+    try { if (typeof t === "string" && !V.playing) { V.recent.push({ ev: Story.running || "", bg: currentBg || "", who: n || "", wk: absWeek(), when: S.midNow || (S.slotNow != null ? DATA.weekendSlots[S.slotNow].name : "这周开头"), t: (fillText ? fillText(t) : t).slice(0, 80) }); if (V.recent.length > 8) V.recent.shift(); } } catch (e) {}
     return _say.apply(this, arguments);
   };
   const SKIP_ID = /^(dl_|solo_|weekend_date|weekend_meet|breakup_fx_|pb_|mid_w|work_|news_|sick_shared|date_noshow)/;
@@ -22,51 +22,61 @@
     return true;
   }
   const lines = (steps, n) => { const out = []; const walk = (a) => { for (const s of a || []) { if (out.length >= n) return; if (s.phone) { out.push(`（手机）${s.phone.startsWith("group:") ? "群聊" : charName(s.phone)}发来消息`); walk(s.steps); continue; }
-    if (s.say) out.push((s.name && s.name !== "me" && DATA.characters[s.name] ? charName(s.name) + "：" : s.name === "me" ? "我：" : "") + fillText(s.say).slice(0, 70)); if (s.choice) return; if (s.if && s.then) { walk(s.then); return; } } }; walk(steps); return out; };
+    if (s.say) out.push((s.name && s.name !== "me" && DATA.characters[s.name] ? charName(s.name) + "：" : s.name === "me" ? "我：" : "") + fillText(s.say).slice(0, 70)); if (s.choice) return; if (s.if) { let ok = false; try { ok = evalCond(s.if); } catch (e) {} walk(ok ? s.then : s.else); if (out.length >= n) return; } } }; walk(steps); return out; };
   const knownNames = () => Object.keys(DATA.characters).filter((c) => c !== "me" && (typeof knows === "function" ? knows(c) : S.flags["met_" + c])).map((c) => charName(c));
   function brief() {
     const rel = DATA.loveIds.map((c) => (S.flags["confessed_" + c] && !S.flags["broke_up_" + c] ? `正在和${charName(c)}交往` : S.flags["broke_up_" + c] ? `和${charName(c)}分手了` : "")).filter(Boolean).join("；");
     return `主角：${S.name}，中国女留学生，英国北方小城读本科。${rel || "目前没有交往对象"}。认识的人：${knownNames().join("、") || "还没认识谁"}。`;
   }
+  const HOME = /^(dorm_room|dorm_night|shared_house|flat_kitchen|studio_night)$/;
+  const MARK = /(周[一二三四五六日末]|早上|上午|中午|下午|傍晚|晚上|半夜|凌晨|深夜|第二天|那天|这天|当晚|今天|昨天|下课|课上|小组|群里|手机|邮件|邮箱|通知|消息|\d+\s*点|[一二三四五六七八九十]+点|第.周|开学|期末|考试|圣诞|春节|假期|醒来)/;
+  const allNames = () => { const s = new Set(); for (const c of Object.keys(DATA.characters)) { if (c === "me") continue; const ch = DATA.characters[c]; for (const n of [ch.name, ch.short, charName(c)]) if (n && n.length >= 2) s.add(n); } return [...s]; };
+  // 11/21 夜真 Key 实测：第一版让 AI 交代“为什么碰到这个人”，它会编（“一转头看见 Leo 也在同一趟航班上”），还用“我”。
+  //   改成只写转场：时间、你自己的移动和状态；不点名任何人、不编具体事实；下一段第一句已经交代了时间地点就 SKIP。
+  V.SYS = "你给一部留学生活视觉小说写“转场旁白”。游戏会从上一段直接跳到下一段，你写 1 句（最多 2 句）旁白，只负责把时间和地点接上，让玩家知道“过了多久、你现在在哪、在干什么的时候发生了下一段”。\n硬规则：\n1. 用第二人称“你”叙述（游戏里旁白都是“你……”），不要用“我”。\n2. 只写时间流逝和你自己的移动、状态（比如“周三晚上，你刚从图书馆回来”“过了两天”“散会以后你一个人往中超走”）。不写任何别人的动作、台词、心理，不点名任何人（人物由下一段自己出场）。\n3. 不编造任何具体事实：不写天气、航班、物品、谁在哪，除非“上一段最后几句”里已经出现过。不剧透下一段。\n4. 如果下一段第一句已经交代了时间或地点（比如“凌晨三点”“第二天”“小组第一次开会”），或者两段本来就连着，只输出 SKIP。\n5. 不能写任何“事件”：搬家、生病、买东西、帮忙、收到消息、遇见谁，都不能写——那是下一段的事。只写时间过去了多久、你从哪到了哪。\n6. 不超过 30 个汉字。语气平实，可以有一点点吐槽，不要文艺腔、不要煽情。";
   V.prefetch = function (id, card) {
     try {
-      if (!eligible(id)) return null;
+      if (!eligible(id) || S.week === 0 || /^(prologue|first_night|freshers|summer_)/.test(id)) return null;
+      { const cal = Rules.cal(); if (!cal || cal.vacation || (S.summer && S.summer.active)) return null; }   // 暑假、假期周不接（实测：AI 把暑假在国内的几段接成“开学前你回了趟家，又坐高铁回到这边”）
       const ev = DATA.events[id]; if (!ev) return null;
-      const f = window.V108 ? V108.firstOf(ev) : {};
-      const next = lines(ev, 4);
-      if (!next.length) return null;
-      const prev = V.recent.slice(-4).map((r) => r.t);
-      const people = [f.who, f.phone].filter((x) => x && DATA.characters[x]).map(charName);
-      const sys = "你是一部留学生活视觉小说的旁白衔接写手。上一段剧情和下一段剧情之间常常是突然跳过去的，你要写 1 到 2 句中文旁白把它们自然接上：交代时间、地点、主角怎么到了这里、为什么会碰到这个人。"
-        + "\n规则：1. 只写旁白（主角视角的叙述），不写任何人说的话，不加对白引号。2. 最多 2 句，总共不超过 70 个汉字。3. 只能提到“认识的人”和下一段里出场的人，不能编造新的人、新的事件、新的关系，不能提没发生过的事。"
-        + "4. 不能剧透或提前说出下一段的内容和结果，不要重复下一段第一句。5. 如果上一段和下一段本来就是同一时间同一地点、自然连着的，只输出 SKIP。6. 语气日常、有一点点吐槽，像主角心里的旁白，不要煽情、不要文艺腔。";
-      const user = `${brief()}\n现在：${card ? [card.term, card.when, card.place].filter(Boolean).join(" ") : ""}\n上一段最后几句：\n${prev.length ? prev.map((x) => "· " + x).join("\n") : "（这是今天的第一段）"}\n下一段的地点：${card && card.place || "未知"}；出场的人：${people.join("、") || "无"}\n下一段的开头：\n${next.map((x) => "· " + x).join("\n")}\n\n只输出衔接旁白本身（或 SKIP）。`;
+      const next = lines(ev, 3); if (!next.length) return null;
+      const prev = V.recent.slice(-3).map((r) => r.t); if (!prev.length) return null;
+      // 只在真的“跳”了的时候才接：下一段开头自己交代了时间／地点／是手机消息，或者和上一段在同一个地方，就不接
+      let bg = null, first = null; (function walk(a) { for (const x of a || []) { if (x.if) { let ok = false; try { ok = evalCond(x.if); } catch (e) {} walk(ok ? x.then : x.else); } if (x.bg && !bg) bg = x.bg; if (!first && (x.say || x.phone)) first = x.phone ? "（手机）" : fillText(x.say); if (bg && first) return; } })(ev);
+      const last = V.recent[V.recent.length - 1] || {}, pbg = last.bg || currentBg;
+      if (first && MARK.test(first.slice(0, 30))) { V.log.push([id, "开头自带时间地点"]); return null; }
+      if (bg && pbg && (bg === pbg || (HOME.test(bg) && HOME.test(pbg)))) { V.log.push([id, "同一个地方"]); return null; }
+      V._first = first || "";
+      const gap = last.wk != null ? absWeek() - last.wk : 0;
+      const prevWhen = gap <= 0 ? `同一周（${last.when || ""}）` : gap === 1 ? "上周" : `${gap} 周以前`;
+      const user = `上一段发生在：${prevWhen}，地点：${(window.V108 && V108.PLACE[pbg]) || "未知"}\n下一段发生在：${card ? [card.term, card.when, card.place].filter(Boolean).join(" ") : ""}\n（时间只能按这两行写，不许自己编“三周后”“几天后”之类对不上的时间）\n上一段最后几句：\n${prev.map((x) => "· " + x).join("\n")}\n下一段的开头：\n${next.map((x) => "· " + x).join("\n")}\n\n只输出转场旁白本身（或 SKIP）。`;
       const t0 = Date.now();
-      const req = AI.request([{ role: "system", content: sys }, { role: "user", content: user }], 0.7).then((r) => ({ r, ms: Date.now() - t0 })).catch(() => null);
-      return { id, req, t0, people };
+      const req = AI.request([{ role: "system", content: V.SYS }, { role: "user", content: user }], 0.3).then((r) => ({ r, ms: Date.now() - t0 })).catch(() => null);
+      return { id, req, t0, prev, next };
     } catch (e) { return null; }
   };
-  function check(text, pre) {
+  V.check = function (text) {
     if (!text || typeof text !== "string") return "空";
-    let t = text.trim().replace(/^["“「]|["”」]$/g, "");
+    const t = text.trim().replace(/^["“「]|["”」]$/g, "");
     if (/^SKIP/i.test(t)) return "SKIP";
-    if (/[“"「][^”"」]{2,}[”"」]/.test(t) && /[：:]/.test(t)) return "像台词";
-    if ([...t].length > 90) return "太长";
-    const allowed = new Set([...knownNames(), ...(pre.people || []), S.name]);
-    for (const c of Object.keys(DATA.characters)) { if (c === "me") continue; const ch = DATA.characters[c]; for (const n of [ch.name, ch.short].filter((x) => x && x.length >= 2)) if (t.includes(n) && !allowed.has(charName(c)) && !allowed.has(n)) return "提到没认识的人：" + n; }
+    if (/[“"「]/.test(t)) return "有引号";
+    if ([...t].length > 50) return "太长";
+    if (/我/.test(t.replace(/（[^）]*）/g, ""))) return "用了“我”";
+    for (const n of allNames()) if (t.includes(n)) return "点名：" + n;
+    const f = V._first || ""; for (let i = 0; i + 6 <= t.length; i++) if (f.includes(t.slice(i, i + 6))) return "和下一段重复";
     return null;
-  }
+  };
   V.play = async function (pre) {
     if (!pre || !pre.req) return;
     const left = Math.max(0, 4600 - (Date.now() - pre.t0));   // 场景卡亮了 1.6 秒，再最多等 3 秒
     const res = await Promise.race([pre.req, new Promise((r) => setTimeout(() => r(null), left))]);
     if (!res || !res.r || res.r.error) { V.log.push([pre.id, "没回来／出错", res && res.r && res.r.error]); return; }
-    const why = check(res.r, pre);
-    V.log.push([pre.id, why || "用了", res.r, res.ms + "ms"]); if (V.log.length > 40) V.log.shift();
+    const why = V.check(res.r);
+    V.log.push([pre.id, why || "用了", res.r, res.ms + "ms", (pre.prev || []).slice(-1)[0], (pre.next || [])[0]]); if (V.log.length > 40) V.log.shift();
     if (why) return;
     const t = res.r.trim().replace(/^["“「]|["”」]$/g, "");
     V.playing = true;
-    try { for (const s of t.match(/[^。！？…]+[。！？…」）)]*/g) || [t]) if (s.trim()) await say(s.trim()); }
+    try { await say(t); }
     finally { V.playing = false; }
     V.recent.push({ ev: pre.id, t: t.slice(0, 80) });
   };

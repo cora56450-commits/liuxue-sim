@@ -12,6 +12,8 @@ window.DATA = window.DATA || {};
         { say: "Hey — sorry — have we met? I feel like we've met. You're — wait, don't tell me — {离谱念法}?", name: "local", tr: "嘿——抱歉——我们是不是见过？我感觉见过。你是——等等，别告诉我——{离谱念法}？" },
       ] }; }
   }
+  // end_scholar_2：剧本里的备注“（或你的论文导师）”漏进了正文
+  if (E.end_scholar_2) for (const st of E.end_scholar_2) if (st.say && st.say.includes("Marcia（或你的论文导师）")) st.say = st.say.replace("Marcia（或你的论文导师）", "Marcia ");
   // 爽约：同一个人不再每次同一句；第二次、第三次语气不一样（Cora：不要一直说同样的话）
   DATA.noshowMore = {
     senior: [
