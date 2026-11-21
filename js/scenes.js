@@ -950,7 +950,7 @@ const Scenes = {
     hideAll(); hideHud(); Stage.hide(true);
     S.resume = null;
     const cal = Rules.cal();
-    if (S.year === 1) await Invites.weekendEnd();   // 答应了周末约会又没去 → 爽约
+    await Invites.weekendEnd();   // 答应了周末约会又没去 → 爽约（11/21：三年都算）
     const results = Rules.weekEnd(cal);
     for (const r of results) {
       if (r.type === "note") { toast(`${r.text}　${fxText(r.changes)}`, 2400); continue; }

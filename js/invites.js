@@ -42,7 +42,7 @@ const Invites = {
     day = Invites.normDay(day);
     if (b.days && b.days.includes(day)) return true;
     if (b.weekendUntilFlag && day === "WEEKEND" && !S.flags[b.weekendUntilFlag]) return true;
-    if (b.examDdl && S.year === 1 && (Rules.deadlineThisWeek() || (Rules.cal() || {}).exam)) return true;
+    if (b.examDdl && (Rules.deadlineThisWeek() || (Rules.cal() || {}).exam)) return true;
     if (b.onlyPlaces && place && !b.onlyPlaces.includes(place)) return true;
     return false;
   },
@@ -80,7 +80,7 @@ const Invites = {
         const r = b.dataset.r;
         if (r === "accept") playSfx("ticket_punch");
         if (r === "move") {   // 改时间：列出这周还空着的时间
-          const free = [...(S.year === 1 && !S.scheduleLocked ? DAY_KEYS : []), "WEEKEND"].filter((d) => !Invites.on(d) && d !== day && !Invites.busy(c, d, inv.place));
+          const free = [...(!S.scheduleLocked ? DAY_KEYS : []), "WEEKEND"].filter((d) => !Invites.on(d) && d !== day && !Invites.busy(c, d, inv.place));
           el.querySelector(".iv-btns").innerHTML = free.length ? free.map((d) => `<button data-d="${d}">${DAY_CN[d]}</button>`).join("") + `<button data-d="">算了</button>` : `<span>这周没有空的时间了</span><button data-d="">算了</button>`;
           el.querySelectorAll("[data-d]").forEach((x) => x.onclick = () => { el.remove(); resolve(x.dataset.d ? "reschedule:" + x.dataset.d : "decline"); });
           return;
@@ -129,9 +129,10 @@ const Invites = {
 
   // ===== 每周一：NPC 主动约你（概率 = 好感或友情 ÷ 200，最多 40%；一周最多 2 个） =====
   async weekly() {
-    if (S.year !== 1 || !DATA.inviteLines) return;
+    if (!DATA.inviteLines) return;   // 11/21：大二大三也是一周一周过，邀约三年都开
     const T = Invites.T, cands = [];
-    for (const c of DATA.loveIds) if (S.flags["met_" + c] && S.aff[c] >= T.npcMinLove && (!DATA.characters[c].hidden || S.tags.includes(DATA.characters[c].hidden))) cands.push(c);
+    const datingOther = (c) => DATA.loveIds.some((x) => x !== c && S.flags["confessed_" + x] && !S.flags["broke_up_" + x]);   // 你在和别人交往：其他攻略对象不再主动约你
+    for (const c of DATA.loveIds) if (S.flags["met_" + c] && S.aff[c] >= T.npcMinLove && !datingOther(c) && (!DATA.characters[c].hidden || S.tags.includes(DATA.characters[c].hidden))) cands.push(c);
     for (const c of Object.keys(S.fr)) if (S.fr[c] >= T.npcMinFriend && DATA.inviteLines[c] && (DATA.inviteLines[c].invite || []).length) cands.push(c);
     let n = 0;
     for (const c of cands.sort(() => Math.random() - 0.5)) {

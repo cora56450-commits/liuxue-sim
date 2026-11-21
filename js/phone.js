@@ -187,7 +187,7 @@ const Phone = {
   },
 
   // ===== 约人（邀约系统.md）：选时间＋地点，对方按门槛回“答应／婉拒／没空” =====
-  canAsk(c) { return S.year === 1 && !["sophie", "khan", "essay_senior"].includes(c) && Invites.rel(c) >= Invites.T.askMin; },
+  canAsk(c) { return !["sophie", "khan", "essay_senior"].includes(c) && Invites.rel(c) >= Invites.T.askMin; },
   askFlow(c) {
     const days = [...(S.resume && S.resume.scene === "schedule" ? DAY_KEYS : []), "WEEKEND"].filter((d) => d === "WEEKEND" || !Invites.on(d));
     const places = DATA.mapCity.filter((l) => !l.travel && l.id !== "dorm_room" && (!l.needTag || S.tags.includes(l.needTag))).map((l) => l.id).flatMap((id) => (id === "residential" ? ["park", "house_party"] : [id])).concat(["travel"])

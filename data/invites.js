@@ -11,7 +11,7 @@ DATA.inviteLines = {
       { text: "周末中超到货，你要的那个辣酱我给你留了两瓶，顺便一起吃个饭？", place: "chinese_market", day: "WEEKEND" },
       { text: "我周三下午在图书馆改简历，你要是也去，帮我看看英文有没有问题。", place: "library", day: "WED", slot: "afternoon" },
       { text: "室内市场有家煎饼摊，老板是山东的，正宗。周日去不去？", place: "indoor_market", day: "SUN" },
-      { text: "这周末帮我去车站接个新生，完了请你吃饭。不是白干的。", place: "station", day: "SAT", slot: "afternoon" },
+      { text: "这周末帮我去车站接个新生，完了请你吃饭。不是白干的。", place: "station", day: "SAT", slot: "afternoon", cond: "周数 <= 4" },   // 11/21：邀约开到三年，接新生只在开学那几周
       { text: "周六晚上有空吗。不是代购，不是接机。就吃饭。", place: "brunch", day: "SAT", cond: "好感('senior') >= 60" },
     ],
     accept: [ { text: "行。几点？我提前到。" }, { text: "可以，正好那天我在附近。" } ],
