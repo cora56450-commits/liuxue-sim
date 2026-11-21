@@ -23,6 +23,11 @@
         { text: "“第二套。离茶山近。”", then: [{ say: "他点头，在第二套上画了一个圈，又在旁边写了一行小字。你凑过去看：“定了。不还价。”" }, { say: "（他这辈子第一次说“不还价”。）" }] },
         { text: "“你先说你喜欢哪套。”", then: [{ say: "他想了很久。“……我算了五年，算不出来。你定。”" }, { say: "你定了。他没再算。" }] },
       ] },
+      { say: "走到茶山脚下，他没急着上车。他从外套内袋里拿出一个小红盒子，打开，是一枚很素的戒指。" },
+      { say: "这个我算了很久。比房子算得还久。", name: "senior" },
+      { say: "……算不出来值多少。所以不算了。", name: "senior" },
+      { say: "那天傍晚，在茶山脚下，你们订婚了。他快三十了，说这个岁数订婚“刚刚好，不早不晚，划算”。" },
+      { say: "（后来你偷看了他账本的最后一页。上面只有一行字：“{学长叫我}。一辈子。不算。”）" },
       { hide: true },
     ],
     epi_local: [
@@ -39,6 +44,12 @@
       { say: "{名字}.", name: "local", tr: "{名字}。" },
       { say: "一遍就对了。" },
       { say: "（他说他早就会念了。只是以前每次念错，你都会笑。）" },
+      { say: "然后他从照片墙上取下那张正面的照片，翻过来。背面写着一行中文，字歪歪扭扭的：" },
+      { say: "“你愿意嫁给我吗？”" },
+      { say: "他念了一遍。四个声调，全对。" },
+      { say: "I practised that one for a year. Please say yes before I get the tones wrong again.", name: "local", tr: "这句我练了一年。趁我声调还没念错，快说好。" },
+      { say: "你说好。他把照片钉回墙正中间，旁边多了一张新的：你的手，和一枚戒指。" },
+      { say: "（Helen 说要明年办订婚派对，Lottie 说她负责化妆，Richard 问你想不想在萨里的院子里种一棵树。）" },
       { hide: true },
     ],
     epi_groupmate: [
@@ -52,6 +63,10 @@
       { say: "she said, Peilin, why is your Chinese getting better. and I said because I have someone to speak it with now.", name: "groupmate", tr: "她说，“佩琳，你的中文怎么变好了。”然后我说，因为我现在有人可以说了。" },
       { say: "（五年前在一间拉上窗帘的房间里，她说她没有人可以说中文。）" },
       { say: "她把头靠在你肩膀上，像那年在飞机上一样。这次她没捏着登机牌，她捏着你的手。" },
+      { say: "她手上那枚戒指是她自己设计的，全世界就这一枚。你们订婚三个月了，她还是每天要举起来对着光看一遍。" },
+      { say: "戒指内圈刻着两个名字。她的那个，刻的是“佩琳”。" },
+      { say: "mum called again. she wants to know if we're doing the wedding in bangkok or london. I said: both. obviously.", name: "groupmate", tr: "我妈又打电话了。问我们婚礼在曼谷办还是伦敦办。我说：两边都办。那当然。" },
+      { say: "订婚那年，Pa Nok 寄来的芒果箱子里多了一张卡片，是她请人写的两个中文字：恭喜。那张卡片现在夹在 Ploy 的护照里，走到哪带到哪。" },
       { hide: true },
     ],
     epi_otaku: [
@@ -61,11 +76,13 @@
       { say: "健身房那帮人现在每周四跟他一起看番。Jake 是哭得最大声的那个。" },
       { say: "你们还住在格雷霍姆，离 Siobhan 家二十分钟。她下夜班会顺路过来，在冰箱上贴一张便利贴，然后走。" },
       { say: "冰箱上的便利贴已经贴不下了。最早那张还在：“Eat breakfast. Both of you. — Mum”。下面是他的：“Always two.”" },
+      { say: "冰箱最中间贴着一张照片：镰仓的道口，电车正开过去，你低头看着他手里那个打开的小盒子。那次他按下了快门。" },
+      { say: "Siobhan 在照片旁边贴了一张便利贴：“Finally. — Mum”" },
       { say: "Maureen 外婆九十岁生日那天，当着全家人的面问他：“Kieran, is this the girl?「Kieran，就是这个姑娘吗？」”" },
       { say: "他没捂脸。他说：" },
-      { say: "Yeah, Nan. This is the girl.", name: "otaku", tr: "嗯，外婆。就是她。" },
+      { say: "Yeah, Nan. This is the girl. We're engaged.", name: "otaku", tr: "嗯，外婆。就是她。我们订婚了。" },
       { say: "（五年前他连在健身房朋友面前承认看番都不敢。）" },
-      { say: "回家的路上他说，下个月再去一次镰仓。“This time I'll take the photo. With you in it.「这次我拍。你也在里面。」”" },
+      { say: "外婆点点头，往你盘子里夹了一大块牧羊人派：“Eat. You're family now.「吃吧。你现在是一家人了。」”" },
       { hide: true },
     ],
     // ===================== 主线结局 =====================
@@ -136,4 +153,26 @@
     chen_jianguo: "陈叔的女儿考上了格雷霍姆大学。陈叔在中超门口贴了一张红纸，写着：“全场饺子九折，庆祝小女入学。”",
     sophie: "Sophie 的店开起来了。你去的那天，她在杯子上写你的名字——一个字母都没错。",
   };
+})();
+
+// 后日谈 CG（四张订婚，图还没出：pending，出图后删掉 pending 就会显示）
+(function () {
+  DATA.cgList.push(
+    { id: "senior_engaged", title: "后日谈 · 茶山脚下", pending: true },
+    { id: "local_engaged", title: "后日谈 · 照片背面", pending: true },
+    { id: "groupmate_engaged", title: "后日谈 · 一枚戒指", pending: true },
+    { id: "otaku_engaged", title: "后日谈 · 这次按下了快门", pending: true },
+  );
+  const E = DATA.events;
+  const put = (id, cg, start, endBefore) => {
+    const l = E[id]; const i = l.findIndex((st) => st.say && st.say.startsWith(start)); if (i < 0) return console.warn("后日谈 CG 没接上", id);
+    l.splice(i, 0, { cg });
+    let j = endBefore ? l.findIndex((st, k) => k > i && st.say && st.say.startsWith(endBefore)) : -1;
+    if (j < 0) j = l.findIndex((st, k) => k > i && st.hide);
+    l.splice(j < 0 ? l.length : j, 0, { cg: null });
+  };
+  put("epi_senior", "senior_engaged", "走到茶山脚下，他没急着上车");
+  put("epi_local", "local_engaged", "然后他从照片墙上取下");
+  put("epi_groupmate", "groupmate_engaged", "她手上那枚戒指是她自己设计的");
+  put("epi_otaku", "otaku_engaged", "冰箱最中间贴着一张照片", "Maureen 外婆九十岁生日");
 })();
