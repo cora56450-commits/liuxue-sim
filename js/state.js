@@ -507,6 +507,7 @@ const Rules = {
   // 大一每周判定一次；大二大三只在关键周判定（Scenes.period 调用，除了 y2_summer 和 y3_after，共 13 次）
   pondCheck() {
     const T = DATA.tuning;
+    if (!DATA.loveIds.some((c) => S.flags["confessed_" + c] && !S.flags["broke_up_" + c])) return null;   // 11/21 Cora：没交往，同时暧昧几个人不算鱼塘（游戏里的完整规则在 js/v091.js）
     const pond = DATA.loveIds.filter((c) => S.aff[c] >= T.pondLevel);
     const dated = S.weekendDates.filter((c) => S.aff[c] >= T.pondLevel);
     if (pond.length < 2) return null;

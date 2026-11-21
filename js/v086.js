@@ -1,10 +1,10 @@
 // 第十三批 C：大一作业按模块。三门同时存在，各自进度（不会归零）、各自截止、各自出分；做作业先选做哪一门。
 // 大二大三不变（旧的一份接一份）。数据在 data/v086_modules.js。
 (function () {
-  const on = () => typeof S !== "undefined" && S && S.year === 1 && DATA.modulesY1;
-  const mods = () => DATA.modulesY1[(S.bg && S.bg.major) || "design"] || DATA.modulesY1.design;
+  const on = () => typeof S !== "undefined" && S && !!DATA["modulesY" + S.year];   // 大一、大二、大三都按模块（11/21）
+  const mods = () => { const T = DATA["modulesY" + S.year]; return T[(S.bg && S.bg.major) || "design"] || T.design; };
   const byId = (id) => mods().find((m) => m.id === id || m.alias === id);
-  const release = (m) => DATA.moduleTermStart[m.term] || 2;
+  const release = (m) => ((DATA.moduleTermStartY || {})[S.year] || DATA.moduleTermStart || {})[m.term] || 1;
   const prog = (m) => (S.modProg || {})[m.id] || 0;
   const done = (m) => !!(S.modDone || {})[m.id];
   const dueWk = (m) => {
@@ -89,8 +89,8 @@
         try { mark = Math.round(Rules.assignmentMark() * 10) / 10; } finally { Rules.deadlineThisWeek = keepDtw; S.homework = keep; }
       }
       const ghost = m.kind !== "exam" && !!(S.ghostWeek || S.ghostPending);
-      const name = m.pike ? `${m.zh}——Pike 那门，第一节课上“去年给了一个人 39.2”的那个教授` : m.zh;
-      S.marks.push({ year: 1, id: m.alias || m.id, module: m.id, name: m.zh, mark, ghost });
+      const name = m.pike && S.year === 1 ? `${m.zh}——Pike 那门，第一节课上“去年给了一个人 39.2”的那个教授` : m.zh;
+      S.marks.push({ year: S.year, id: m.alias || m.id, module: m.id, name: m.zh, mark, ghost });
       if (mark < 40 && !ghost) extra.push(Rules.failMail(m.zh));
       extra.push({ type: "mark", name, mark, band: Rules.band(mark), rushed: S.rushWeek && m.kind !== "exam", ghost });
       if (ghost) S.ghostPending = 0;

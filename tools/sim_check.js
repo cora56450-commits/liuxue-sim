@@ -78,6 +78,8 @@ const run = vm.runInContext(`(function (cfg) {
       if (cfg.date && !busy && a >= 20 && absWeek() % 3 === 0 && !cal.vacation) { normalGive(c, Invites_T.goneLove); S.lastMet[c] = absWeek(); S.weekendDates.push(c); met[c] = true; }
       // 周末去地点：一半机会碰到
       if (cfg.outing && !busy && !cal.vacation && Math.random() < (cfg.outingP || 0.5)) met[c] = true;
+      // 工作日活动（帮学长打包／和 Ollie 语言交换／陪 Ploy 逛街／和 Kieran 联机）：解锁以后每周排 1 格（dailyN 格），每格好感 +1
+      if (cfg.dailyAct && !cal.vacation && a >= ({ senior: 25, local: 20, groupmate: 30, otaku: 20 })[c]) { normalGive(c, cfg.dailyN || 1); S.lastMet[c] = absWeek(); }
       // F5 低门槛邀约（好感 ≥ 10，大一每 4 周最多一次，没 Key 也有）
       if (cfg.lowInv && !cal.vacation && (S.year === 1 || cfg.lowInvAll) && a >= 10 && (absWeek() + c.length) % 4 === 0) { normalGive(c, Invites_T.goneLove); S.lastMet[c] = absWeek(); met[c] = true; cnt[c] = (cnt[c] || 0) + 1; }
       S.metWk = S.metWk || {}; if (met[c]) S.metWk[c] = absWeek();
@@ -172,6 +174,9 @@ const SC = [
   // 第十三批 F7：普通玩——不聊天、不约会，周末按喜好随便去（不刻意找人；地图提示＋第一次 100%／之后 60%，折算每人每周 25% 碰到），有低门槛邀约和相识补演
   ["普通玩（不聊天、周末随便去，学长＋Ollie＋Ploy）", { targets: ["senior", "local", "groupmate"], chat: false, date: false, outing: true, outingP: 0.25, lowInv: true, lowInvAll: true, makeup: true, y1: P.balanced, weekend: ["home", "social"], f7: true }, "大一结束至少一人好感≥30、每人≥4段；三年交往过≥25%"],
   ["普通玩，只追一个人（Ollie）", { targets: ["local"], chat: false, date: false, outing: true, outingP: 0.25, lowInv: true, lowInvAll: true, makeup: true, y1: P.balanced, weekend: ["home", "social"], f7: true }, "同上"],
+  ["普通玩＋工作日活动每周 1 格（三人）", { targets: ["senior", "local", "groupmate"], chat: false, date: false, outing: true, outingP: 0.25, lowInv: true, lowInvAll: true, makeup: true, dailyAct: true, dailyN: 1, y1: P.balanced, weekend: ["home", "social"], f7: true }, "同上"],
+  ["普通玩＋工作日活动每周 1 格（只追 Ollie）", { targets: ["local"], chat: false, date: false, outing: true, outingP: 0.25, lowInv: true, lowInvAll: true, makeup: true, dailyAct: true, dailyN: 1, y1: P.balanced, weekend: ["home", "social"], f7: true }, "同上"],
+  ["普通玩＋工作日活动每周 2 格（只追 Ollie）", { targets: ["local"], chat: false, date: false, outing: true, outingP: 0.25, lowInv: true, lowInvAll: true, makeup: true, dailyAct: true, dailyN: 2, y1: P.balanced, weekend: ["home", "social"], f7: true }, "同上"],
   ["普通玩（二次元，四个人都认识）", { targets: ["senior", "local", "groupmate", "otaku"], chat: false, date: false, outing: true, outingP: 0.25, lowInv: true, lowInvAll: true, makeup: true, y1: P.balanced, weekend: ["home", "social"], f7: true }, "同上"],
 ];
 const median = (xs) => { if (!xs.length) return null; const a = [...xs].sort((x, y) => x - y); return a[Math.floor(a.length / 2)]; };

@@ -89,3 +89,16 @@
 @keyframes rainfall { from { background-position: 0 0; } to { background-position: -60px 240px; } }
 .rain-mk { color: #3F6FB0 !important; margin-left: 6px; }
 .rain-tag { font-size: 22px; color: #3F6FB0; font-weight: bold; margin-bottom: 6px; }
+/* v0.8.3 手机更显眼 */
+#btn-phone, #sys-phone { background: #F07A3A !important; color: #fff !important; border-color: #C85A22 !important; font-weight: bold; }
+#btn-phone.dot, #sys-phone.dot { animation: phonebob 1.4s ease-in-out infinite; }
+#btn-phone.dot::after, #sys-phone.dot::after { content: attr(data-n); position: absolute; top: -12px; right: -12px; min-width: 30px; height: 30px; padding: 0 6px; border-radius: 15px; background: #E0352B; color: #fff; font-size: 18px; line-height: 30px; text-align: center; box-shadow: 0 0 0 3px #fff; }
+#btn-phone, #sys-phone { position: relative; }
+@keyframes phonebob { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-4px) } }
+#ph-banner { position: absolute; top: 118px; right: -560px; z-index: 70; width: 500px; display: flex; align-items: center; gap: 16px; padding: 14px 20px; background: #fffaf2; border: 3px solid #3A4766; border-radius: 18px; box-shadow: 6px 6px 0 #F07A3A; cursor: pointer; transition: right .35s ease; }
+#ph-banner.show { right: 24px; }
+#ph-banner .pb-ava { width: 56px; height: 56px; border-radius: 50%; color: #fff; font-size: 26px; display: flex; align-items: center; justify-content: center; flex: none; }
+#ph-banner .pb-txt { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+#ph-banner .pb-txt b { font-size: 22px; color: #3A4766; }
+#ph-banner .pb-txt span { font-size: 20px; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#ph-banner em { font-style: normal; font-size: 16px; color: #F07A3A; flex: none; }
