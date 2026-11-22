@@ -1,7 +1,7 @@
 // 11/22 Cora：“用 API 增强代入感是最大卖点之一（前提是逻辑通顺，或者加上思维链）”“玩家可以自由发挥的部分太少”“大部分事件几句话就结束了”
 // 多待一会儿：有 Key 时，一段和某个人当面发生的剧情演完，多一个选项“多待一会儿”。进去以后 AI 接着这个场景演 3–6 轮：
 //   · 每轮 AI 先在 think 里想清楚（你们现在什么关系、刚才发生了什么、你现在什么情绪、这一轮想做什么、哪些话不能说），玩家看不到；
-//     再给一句旁白（可选）、这个人说的话、玩家接下来可以说／做的 3 个选项；玩家也可以“✎ 自己说”，或者“先走了”。
+//     再给一句旁白（可选）、这个人说的话、玩家接下来可以说／做的 2 个选项；玩家也可以“✎ 自己说”，或者“先走了”。
 //   · 只是相处，不推进大事件（不告白、不分手、不接吻、不吵翻）；不替玩家说话；不编没发生的事、没出现的人；英文角色只说英文＋「中文」。
 //   · 程序再查：人名白名单、语言、承诺词（AI.guard）；旁白里也查人名。不过就带着提醒重试一次，再不过就收尾。
 //   · 好感／友情：每轮 −1～+2，整段最多 ±3。结束时 AI 写一句“这次发生了什么”，存进这个人的记忆，之后手机聊天、AI 衔接都知道。
@@ -63,7 +63,7 @@
       `{"think": "（玩家看不到）先想清楚：1 你和玩家现在是什么关系、熟到什么程度；2 刚才这段剧情发生了什么，你现在什么情绪；3 这一轮你想做什么、说什么；4 哪些话不能说：不越级（没交往不说情话）、不编没发生的事和没出现过的人、不做具体的未来约定。",`
       + `"narration": "可选。一句第二人称旁白（“你……”／写他或她的动作、环境），不写玩家说的话、不替玩家做决定；不需要就留空",`
       + `"line": "你这一轮说的话，1 到 3 句",`
-      + `"options": ["玩家接下来可以说或者做的 3 个选项，玩家的口吻，每个不超过 16 个字，三个的态度要不一样"],`
+      + `"options": ["玩家接下来可以说或者做的 2 个选项，玩家的口吻，每个不超过 16 个字，两个的态度要不一样"],`
       + `"aff": "整数 -1 到 2：玩家上一句话让你更喜欢还是更反感（第一轮填 0）",`
       + `"end": "true 或 false：话题自然结束、玩家说要走、或者已经到第 ${MAX_TURNS} 轮就 true；true 时 line 是告别、options 留空",`
       + `"summary": "end 为 true 时，用一句话（第二人称，玩家视角）写这次多待的一会儿发生了什么，例如“你们在河边多坐了半小时，他讲了他外婆的事。”"}`,
@@ -73,7 +73,7 @@
   function parse(r) {
     const j = AI.parseJson(r);
     if (!j || typeof j !== "object" || Array.isArray(j)) return null;
-    return { think: String(j.think || ""), narration: String(j.narration || "").trim(), line: String(j.line || "").trim(), options: Array.isArray(j.options) ? j.options.map(String).filter(Boolean).slice(0, 3) : [],
+    return { think: String(j.think || ""), narration: String(j.narration || "").trim(), line: String(j.line || "").trim(), options: Array.isArray(j.options) ? j.options.map(String).filter(Boolean).slice(0, 2) : [],   // 两个＋“✎ 自己说”＋“先走了”＝四张票，一页放得下（三个会被分页，“先走了”跑到第二页）
       aff: Math.max(-1, Math.min(2, parseInt(j.aff, 10) || 0)), end: j.end === true || j.end === "true", summary: String(j.summary || "").trim() };
   }
   function bad(c, j, raw) {
@@ -121,7 +121,7 @@
       if (turn > 1) total += j.aff;
       await show(c, j);
       if (j.end || turn > MAX_TURNS) { summary = j.summary; break; }
-      const opts = j.options.length ? j.options : ["嗯。", "然后呢？", "我得走了"];
+      const opts = j.options.length ? j.options : ["嗯。", "然后呢？"];
       const list = [...opts.map((t) => ({ text: t })), { text: FreeInput.LABEL }, { text: "先走了" }];
       let said = null;
       for (;;) {
