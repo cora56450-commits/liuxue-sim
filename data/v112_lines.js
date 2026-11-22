@@ -222,4 +222,63 @@
   sub("jl10_otaku_local", "“这是 Ollie，我的同学。”", "“这是 Ollie，我的语言搭子。”");
   sub("jl10_senior_local", "“这是 Ollie，我的同学。”", "“这是 Ollie，我的语言搭子。”");
   sub("jl10_local_senior", "“这是学长，我的学长。”", "“这是林子航，我的学长。”");
+  // ===================== 固定剧情 · 大一 =====================
+  function each(id, fn) {   // 走遍一段剧情的每一步（含选项），fn(step, 所在数组, 下标)
+    const walk = (st) => { if (!Array.isArray(st)) return; for (let i = 0; i < st.length; i++) { const s = st[i]; if (!s) continue; fn(s, st, i); walk(s.then); walk(s.else); walk(s.steps); if (s.choice) s.choice.forEach((o) => { fn(o, null, -1); walk(o.then); }); } };
+    if (!E[id]) return warn(id); walk(E[id]);
+  }
+  // 篝火节：学长那两个选项的后续是别人的模板（“妈妈在视频里笑了”“对方说英文”）
+  sub("bonfire_night", "妈妈在视频里笑了：“那明年呢？”你说明年再说。烟花在你身后炸开，你把手机转过去让她看。", "他愣了一下，笑了：“……嗯。今年有人。”烟花在你们头顶炸开，他没再看手机。");
+  sub("bonfire_night", "对方愣了一下：“Yeah. Probably. I should call them.「嗯。可能吧。我该给他们打个电话。」”他走到一边去打电话了。", "他愣了一下：“……嗯。可能吧。我等下给他们打个电话。”他走到一边去打电话了，回来的时候眼睛有点红。");
+  sub("bonfire_night", "她发了Instagram。", "她发了Instagran。");
+  // 四点天黑：回四个人的消息，后续却都是“妈妈回”
+  const dark = [
+    ["你讲了下午四点天黑、出门要戴围巾、图书馆的灯很亮。他回：“第一年都这样。取暖器要不要？给你留一台，不加价。”", "他回：“嗯。早点回去。”"],
+    ["你讲了下午四点天黑、出门要戴围巾、图书馆的灯很亮。他回了三个哭脸，又发：“So… pub? 🍺”", "他回了一个月亮。"],
+    ["你讲了下午四点天黑、出门要戴围巾、图书馆的灯很亮。她回了一张裹得更紧的自拍：“we survive this together babe”「我们一起活过去宝」", "她回了一个“🥲”。"],
+    ["你讲了下午四点天黑、出门要戴围巾、图书馆的灯很亮。他隔了很久才回：“…it gets better in march. promise”「……三月就好了。保证」", "他回了一个“ok”。"],
+  ];
+  dark.forEach(([a, b]) => {
+    rep("dark_at_four", "你讲了下午四点天黑、出门要戴围巾、图书馆的灯很亮。妈妈回了一条语音，说她今天也早早开了灯。", (s) => ({ ...s, say: a }));
+    rep("dark_at_four", "妈妈回：“那么早天黑？开灯，别伤眼睛。”", (s) => ({ ...s, say: b }));
+  });
+  sub("group_project", "上台那天我让我们马翻全场？", "上台那天我让我们惊艳全场？");
+  rep("prologue", "他好像看出来了：“二手的。接机、代购，没车干不了。英国驾照考了三次。”", (s) => ({ say: s.say }));   // 旁白，不是学长的台词
+  // Pike 出分：不到 70 一律 39.2 不合理，中间加一档
+  each("results_day", (s) => {
+    if (s.if === "数值('学业') >= 70 || (标签('学霸底子') && 数值('学业') >= 65)" && s.else && !JSON.stringify(s.else).includes("pike_58")) {
+      s.else = [{ if: "数值('学业') < 50", then: s.else, else: [
+        { say: "Pike那门：58。", fx: { flag_pike_58: 1 } },
+        { say: "不高不低。课程群里一大半人是五十几。" },
+        { say: "（评语只有一行：“Competent, but derivative.”「合格，但没有自己的东西。」）" },
+      ] }];
+    }
+    if (s.if === "!标记('pike_71')") s.if = "!标记('pike_71') && !标记('pike_58')";
+  });
+  sub("results_day", "你第一次觉得 58 分不是一个判决", "你第一次觉得分数不是一个判决");
+  sub("results_day", "开学第一节小组课，Ploy坐下来第一句话就问", "开学第一周，Ploy 拉着你和 Ollie 去喝咖啡，坐下来第一句话就问");
+  each("spring_festival", (s) => { if (s.text === "和Kieran一起过" && s.then && s.then[0] && s.then[0].bg === "dorm_room") s.then[0].bg = "kieran_room"; });
+  sub("spring_festival", "他住的地方很整齐，书架上的手办都放在柜子里，柜门关着。", "他的房间很整齐，书架上的手办都放在柜子里，柜门关着。Siobhan 上夜班去了。");
+  each("term3_start", (s) => { if (s.if === "住宿 == '学校宿舍' && !标记('rice_cooker')") s.if += " && !标记('no_rice_cooker')"; });
+  sub("term_end", "背景音是曼谷的热带雨和很多人的笑声。", "背景音是曼谷的车流和很多人的笑声。");
+  each("term_end", (s) => { if (s.text === "认真回" && s.fx && s.fx.flag_xmas_reply_groupmate && !s.then) s.then = [{ say: "你拍了一张窗外的雨发过去：“这边四度。分你一半。”她回了一串哭笑的表情：“deal. send it by post”「成交。寄过来」" }]; });
+  sub("tutor_checkin", "This is Tuesday chicken.", "This is Thursday chicken.");
+  sub("tutor_checkin", "这是周二的鸡。", "这是周四的鸡。");
+  each("tutor_checkin", (s) => { if (s.bg === "campus") s.bg = "tutor_office"; });
+  rep("valentines", "（打印机前面让位置给我的那个建筑系女生。）", (s) => [{ say: "Giulia蹲在那桶花前面挑。" }, s]);
+  sub("valentines", "你去Tesco买", "你去Tesko买");
+  sub("easter_break", "第一顿还是{家乡食物}，你还是吃了三碗。", "第一顿是{家乡食物}，你吃了三碗。");
+  sub("easter_3", "（这是我最后一个复活节假期。我在图书馆过的。和第一个一样。）", "（这是我最后一个复活节假期。在图书馆过的。）");
+  each("gala_ball_ask", (s) => {
+    if (s.msg && s.msg.from === "groupmate") s.msg = { ...s.msg, text: "Ball. You. Me. I've already picked your dress colour 💅", tr: "舞会。你。我。你裙子的颜色我已经挑好了💅" };
+    if (s.msg && s.msg.from === "otaku") s.msg = { ...s.msg, text: "there's a ball. you don't have to. but. would you", tr: "有个舞会。你不用去。但是。你愿意吗" };
+  });
+  rep("first_sick", "你戴着口罩收拾了二十分钟，回到床上的时候烧得更厉害了。（我在发烧的时候清理了别人的垃圾。）", (s) => ({ if: "标记('been_sick')", then: [s], else: [{ ...s, say: "你戴着口罩收拾了二十分钟。（整栋楼都在咳嗽，只有我在打扫。）" }] }));
+  sub("group_presentation", "那个组员愣了一下", "Hannah 愣了一下");
+  // 嗓子哑：原来插在开头（前一晚／上台前），挪到你上台讲的那一段
+  rep("group_presentation", "你嗓子还没好全，讲到一半破音了。Hannah 在下面默默把水递给了你。", () => []);
+  rep("group_presentation", "轮到你上台。", (s) => [s, { if: "V084.hoarse()", then: [{ say: "你嗓子还没好全，讲到一半破音了。Hannah 在下面默默把水递给了你。" }] }]);
+  rep("first_presentation", "你嗓子还没好全，讲到一半破音了。Hannah 在下面默默把水递给了你。", () => []);
+  rep("first_presentation", "最后是Ploy。", (s) => [{ if: "V084.hoarse()", then: [{ say: "你嗓子还没好全，讲到一半破音了。Hannah 在下面默默把水递给了你。" }] }, s]);
+  sub("first_presentation", "Ben的马卡奇朵", "Ben的馥芮白");
 })();
