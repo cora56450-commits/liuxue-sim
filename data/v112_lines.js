@@ -319,4 +319,46 @@
   sub("y3_print_queue", "她拿着一张打印清单，按打印机型号排好了顺序。", "Hannah 拿着一张打印清单，按打印机型号排好了顺序。");
   sub("y3_supervisor_1", "三天后，她/他约你见面。", "三天后，导师约你见面。");
   rep("y3_proposal", "I'm BACK. Did Giulia throw out my mug?", (s) => ({ if: "住宿 == '学校宿舍' && 标记('house_student')", then: [s], else: [{ ...s, say: "I'm BACK. Miss me?", tr: "我回来了。想我没？" }] }));
+  // ===================== 朋友 · Jake、Giulia、Mei、Hannah =====================
+  rep("bd_jake", "一张手写卡片，字很丑，写着：“You're the best flatmate. Don't tell Giulia. Happy birthday.”", (s) => ({ if: "住宿 == '学校宿舍'", then: [s], else: [{ ...s, say: "一张手写卡片，字很丑，写着：“Happy birthday. Five-a-side Saturday, you're in goal.”", tr: "生日快乐。周六五人足球，你守门。" }] }));
+  rep("bd_jake", "（他每次都说别告诉 Giulia。）", (s) => ({ if: "住宿 == '学校宿舍'", then: [s] }));
+  sub("fmid_jake_b", "Exchange. Australia. Next spring.", "Exchange. Australia. Next term.");
+  sub("fmid_jake_b", "交换。澳洲。明年春天。", "交换。澳洲。下学期。");
+  sub("friend_jake", "Next day she drove up with a whole box of this stuff. Two hundred miles.", "Next day she drove up with a whole box of this stuff. Two hours each way.");
+  sub("friend_jake", "第二天就开车送了一整箱这些东西过来。两百英里。", "第二天就开车送了一整箱这些东西过来。单程两个小时。");
+  cond("fs_y2_jake_bike", "住宿 == '学校宿舍'");   // 群里是 Giulia、Mei，大一同住的那个 flat
+  rep("fs_y2_jake_socks", "晚上十一点，Jake 坐在厨房地板上，那个巨大的运动包摊开在面前，里面是十二双袜子和一个橄榄球。", (s) => ({ if: "标记('house_student') && 住宿 == '学校宿舍'", then: [s], else: [{ ...s, say: "更衣室门口的长椅上，Jake 把那个巨大的运动包摊开在面前，里面是十二双袜子和一个橄榄球。" }] }));
+  cond("place_indoor_market_4", "住宿 == '学校宿舍'");   // “这是我室友”
+  rep("place_station_2", "（她只见过我一次。）", (s) => ({ if: "演过('place_indoor_market_4')", then: [s], else: [{ ...s, say: "（她根本没见过我。）" }] }));
+  sub("place_brunch_6", "表情跟上次喝 house red 一样。", "表情像喝了一口 pub 的 house red。");
+  sub("place_chinese_market_5", "第二天，她在 flat 群里发了一张照片", "第二天，她给你发了一张照片");
+  sub("place_indoor_market_1", "那天晚上她做的番茄酱，整个 flat 都闻到了。", "那天晚上她发来一张番茄酱的照片：“The whole building can smell it. You're welcome.”「整栋楼都闻到了。不客气。」");
+  sub("place_station_6", "Do you go home? For Christmas?", "Do you go home? For the holidays?");
+  sub("place_station_6", "你回家吗？圣诞？", "你回家吗？放假的时候？");
+  cond("place_station_6", "!演过('fstage_giulia_80')");   // 奶奶走了以后不再说“奶奶在做千层面”
+  opt("place_indoor_market_7", "“你带回 flat，Giulia 会杀了你。”", "住宿 == '学校宿舍'");
+  sub("fmid_hannah_a", "If I drop below 65, I lose it.", "If I drop below sixty, I lose it.");
+  sub("fmid_hannah_a", "低于 65 就没了。", "均分掉到六十以下就没了。");
+  sub("work_npc_hannah", "I did this tour four years ago.", "I did this tour a few years ago.");
+  sub("work_npc_hannah", "四年前我来参加过这个开放日。", "几年前我来参加过这个开放日。");
+  // ===================== 朋友 · 其余 =====================
+  sub("place_supermarket_5", "她把辣椒粉放回去了，买了一瓶番茄酱。“给 Giulia 的，她饺子要用。”", "她把辣椒粉放回去了，什么都没买。");
+  // 吴桐的电饭煲长毛：大一第 24 周的固定剧情和这段好感剧情是同一件事，只演一次
+  each("term3_start", (s) => { if (s.if === "住宿 == '学生公寓ensuite'" && JSON.stringify(s.then || []).includes("吴桐站在灶台前")) s.if += " && !演过('fmid_wu_tong_a')"; });
+  cond("fmid_wu_tong_a", "!演过('term3_start')");
+  (DATA.midweek || []).forEach((e) => { if (e.id === "fmid_wu_tong_b") e.cond = e.cond.replace("演过('fmid_wu_tong_a')", "(演过('fmid_wu_tong_a') || 演过('term3_start'))"); });
+  // 周可欣：两段分手只演一段；高中在一起到大二是五年
+  cond("fstage_zhou_kexin_80", "!标记('kexin_breakup')");
+  cond("fstage_zhou_kexin_30", "!标记('kexin_breakup')");
+  sub("fstage_zhou_kexin_80", "分了。七年。", "分了。五年。");
+  sub("fstage_zhou_kexin_80", "谈了七年的男朋友", "谈了五年的男朋友");
+  rep("fstage_zhou_kexin_80", "她来的时候没带箱子，眼睛是肿的。", (s) => ({ ...s, fx: { ...(s.fx || {}), flag_kexin_breakup: 1 } }));
+  // 陈建国：女儿考上的标记前后名字不一样
+  each("place_chinese_market_8", (s) => { if (s.if === "标记('chen_daughter_admitted')") s.if = "标记('chen_daughter_admitted') || 标记('chen_daughter_came')"; });
+  sub("place_chinese_market_8", "两年了。你们这些学生", "这么久了。你们这些学生");
+  rep("place_campus_1", "Second years. You're safe. For now.", (s) => ({ if: "学年 == 2", then: [{ ...s, say: "First years. You're safe. For now.", tr: "大一的。你安全。暂时。" }], else: [s] }));
+  sub("place_campus_5", "手里牵着一个七八岁的小女孩", "手里牵着一个五岁左右的小女孩");
+  sub("enc_yu_xiao", "她中文不好。我们在家也说英语了。", "她中文不好。在家我逼她说，一出门就全是英语。");
+  sub("place_station_5", "晚上发了一张照片在 flat 群里，配文", "晚上她们给你发了一张照片，配文");
+  cond("fmid_khan_b", "!标记('y3_new_house') && !标记('y3_studio') && !标记('y3_ollie_house')");   // 大三搬走了就不是 Khan 来退房
 })();
