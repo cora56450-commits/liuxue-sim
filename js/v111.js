@@ -8,6 +8,8 @@
     let s = _ft.apply(this, arguments);
     try {
       if (typeof s !== "string" || !S || !/[一-鿿]/.test(s)) return s;
+      // 大一住学校宿舍的人大二起就搬出去了：“走到你宿舍楼下”“回宿舍”这类写死的说法换掉（ensuite 公寓大二还住，不换）
+      if (S.year > 1 && S.bg && S.bg.accommodation !== "ensuite" && /宿舍/.test(s)) s = s.replace(/走回宿舍/g, "走回去").replace(/回宿舍/g, "回去").replace(/宿舍楼下/g, "楼下").replace(/宿舍门口/g, "门口");
       for (const c of UN) {
         const real = DATA.characters[c] && DATA.characters[c].name; if (!real || s.indexOf(real) < 0) continue;
         const shown = charName(c); if (!shown || shown === real) continue;
