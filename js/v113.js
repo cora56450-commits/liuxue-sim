@@ -45,3 +45,16 @@
     try { return _attend.apply(this, arguments); } finally { T.goneLove = keep; }
   };
 })();
+
+// 11/22：学长 L1 段“{L1那件事}”三选一，原来读的 online_scam／coat_return／gp_registered 从来没有地方设，永远是宿舍押金那句
+// 现在：剁手狂魔 → 网购大衣退款；生过病或弱不禁风 → 约不上 GP；其余 → 宿舍押金（studio／大二起的房子换成“房东”）
+(function () {
+  if (!window.V084) return;
+  window.V084.l1Text = () => {
+    if (S.tags.includes("shopaholic")) return "你网购的大衣退回去两周了，钱一直没退。你跟客服打了四十分钟电话，被转接了五次，最后一次直接挂了。";
+    if (S.flags.been_sick || S.tags.includes("weak")) return "你一直约不上 GP。每天早上八点打电话，自动语音让你“明早八点再打”。今天你打了四十分钟，被转接了五次，最后一次直接挂了。";
+    const hall = S.year === 1 && S.bg.accommodation !== "studio";
+    return hall ? "宿舍发邮件说你房间墙上有污渍，要从押金里扣 £150。你跟住宿办打了四十分钟电话，被转接了五次，最后一次直接挂了。"
+      : "房东发邮件说你房间墙上有污渍，要从押金里扣 £150。你跟中介打了四十分钟电话，被转接了五次，最后一次直接挂了。";
+  };
+})();

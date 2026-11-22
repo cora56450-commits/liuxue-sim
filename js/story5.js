@@ -79,7 +79,8 @@ const Story5 = {
   // Sophie 在杯子上写错名字（brunch-1）：每次换一种错法，大三有一次终于写对
   nameTypo() {
     if (!S) return "";
-    if (S.year === 3 && !S.flags.sophie_name_right && absWeek() % 2 === 0) return "终于写对了";
+    // 11/22：写对的那一周记下来（sophie_name_right 给毕业典礼那杯咖啡用），之后照常写错
+    if (S.year === 3 && (S.sophieRightWk === absWeek() || (!S.flags.sophie_name_right && absWeek() % 2 === 0))) { S.flags.sophie_name_right = 1; S.sophieRightWk = absWeek(); return "终于写对了"; }
     const L = ["少写了一个字母", "多写了一个字母", "拼音写成了一个英文单词", "写成了一个差不多的英文名", "姓和名反过来了", "写成了室友的名字", "只画了一个笑脸"];
     return L[(S.visits.brunch || 0) % L.length];
   },

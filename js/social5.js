@@ -128,13 +128,23 @@ const Birthday = {
     }
     if (loveIn.length && !away) {
       for (const c of loveIn) if (DATA.events[B.love[c].invite]) await runEvent(B.love[c].invite);
-      let pick = loveIn[0];
+      let pick = loveIn[0], both = null;
       if (loveIn.length > 1) {
         sayStatic("生日那天晚上，和谁过？");
-        pick = loveIn[await choose(loveIn.map((c) => ({ text: charName(c) })))];
+        // 11/22：“都答应”＝修罗场-5（cross_scene_5，两个人同时到门口 → 当场鱼塘判定）。好感高的先到
+        const opts = loveIn.map((c) => ({ text: charName(c) }));
+        if (DATA.events.cross_scene_5) opts.push({ text: "都答应（一个八点，一个九点半，应该错得开）" });
+        const k = await choose(opts);
         hideDialog();
+        if (k === loveIn.length) both = [...loveIn].sort((x, y) => (S.aff[y] || 0) - (S.aff[x] || 0)).slice(0, 2);
+        else pick = loveIn[k];
       }
-      for (const c of loveIn) {
+      if (both) {
+        S.bdDouble = both; S.flags.bd_double_booked = 1; S.pick = { A: both[0], B: both[1] };
+        try { await runEvent("cross_scene_5"); } finally { S.pick = null; S.flags.bd_double_booked = 0; }
+        for (const c of loveIn) if (!both.includes(c) && DATA.events[B.love[c].missed]) await runEvent(B.love[c].missed);
+      }
+      for (const c of (both ? [] : loveIn)) {
         const L = B.love[c];
         if (c !== pick) { if (DATA.events[L.missed]) await runEvent(L.missed); continue; }
         const dating = S.flags["confessed_" + c] && DATA.events[L.dating];
