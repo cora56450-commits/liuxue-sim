@@ -10,6 +10,11 @@
       if (typeof s !== "string" || !S || !/[一-鿿]/.test(s)) return s;
       // 大一住学校宿舍的人大二起就搬出去了：“走到你宿舍楼下”“回宿舍”这类写死的说法换掉（ensuite 公寓大二还住，不换）
       if (S.year > 1 && S.bg && S.bg.accommodation !== "ensuite" && /宿舍/.test(s)) s = s.replace(/走回宿舍/g, "走回去").replace(/回宿舍/g, "回去").replace(/宿舍楼下/g, "楼下").replace(/宿舍门口/g, "门口").replace(/宿舍门缝/g, "门缝").replace(/我整个宿舍/g, "我住的地方").replace(/你宿舍厨房/g, "你的厨房").replace(/一个人在宿舍/g, "一个人在房间里").replace(/你宿舍/g, "你那儿");
+      // “他／她”：剧本里没写死是谁的（周中插播、结局），按这一段挑中的人（S.pick.A）或者正在交往的人换成“他”或“她”
+      if (s.indexOf("他／她") >= 0) {
+        const who = (S.pick && S.pick.A) || (DATA.loveIds || []).find((c) => S.flags && S.flags["confessed_" + c] && !S.flags["broke_up_" + c]);
+        if (who) s = s.split("他／她").join(who === "groupmate" ? "她" : "他");
+      }
       for (const c of UN) {
         const real = DATA.characters[c] && DATA.characters[c].name; if (!real || s.indexOf(real) < 0) continue;
         const shown = charName(c); if (!shown || shown === real) continue;

@@ -210,4 +210,16 @@
   sub("trip_africa_otaku", "连跟 Tom 都不说。", "连跟健身房的 Tom 都不说。");
   rep("breakup_otaku", "…Was it the Jake thing? Me not telling them about you?", (s) => ({ ...s, say: "…Was it me? Not telling the lads about you?", tr: "……是因为我吗？我一直没跟那帮兄弟说你的事？" }));
   rep("tbd_otaku", "Nan. No. Eat your cake.", (s) => ({ if: "交往中('otaku')", then: [{ ...s, say: "…Yeah, Nan. She is. Eat your cake.", tr: "……是的，外婆。她是。吃你的蛋糕。" }], else: [s] }));
+  // ===================== 攻略对象 · 多人（修罗场与鱼塘）=====================
+  sub("cross_7_fashion_anime", "时尚社和动漫社搞联名活动，你是唯一同时认识两边的人。两个人都想跟你一组。", "时尚社和动漫社搞联名活动，要两两分组拍照。Ollie 和 Ploy 都想跟你一组。");
+  sub("cross_7_fashion_anime", "两个人在 Ins 上", "两个人在 Instagran 上");
+  sub("cross_scene_3", "他替他保密了两年。", "他替他保密了好几年。");
+  sub("cross_senior_otaku", "国内买便宜一半。他买了两年了。", "国内买便宜一半。他买了好几年了。");
+  sub("cross_senior_otaku", "He gave me ten percent off. Two years. Two years and you get it on day one?", "Ten percent off? It took me years to get that. You get it on day one?");
+  sub("cross_senior_otaku", "他给我打九折？我买了两年，你第一天就有？", "九折？我买了好几年才有，你第一天就有？");
+  sub("dual_pretty_2", "一个是我组员，一个是我室友。", "一个是我组员，一个是我朋友。");
+  sub("jl10_local_otaku", "“这是 Kieran，我的同学。”", "“这是 Kieran，动漫社的朋友。”");
+  sub("jl10_otaku_local", "“这是 Ollie，我的同学。”", "“这是 Ollie，我的语言搭子。”");
+  sub("jl10_senior_local", "“这是 Ollie，我的同学。”", "“这是 Ollie，我的语言搭子。”");
+  sub("jl10_local_senior", "“这是学长，我的学长。”", "“这是林子航，我的学长。”");
 })();
