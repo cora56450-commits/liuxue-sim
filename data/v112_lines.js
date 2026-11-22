@@ -361,4 +361,48 @@
   sub("enc_yu_xiao", "她中文不好。我们在家也说英语了。", "她中文不好。在家我逼她说，一出门就全是英语。");
   sub("place_station_5", "晚上发了一张照片在 flat 群里，配文", "晚上她们给你发了一张照片，配文");
   cond("fmid_khan_b", "!标记('y3_new_house') && !标记('y3_studio') && !标记('y3_ollie_house')");   // 大三搬走了就不是 Khan 来退房
+  // ===================== 结局与后日谈 =====================
+  sub("end_scholar_1", "成绩出来了：72。", "成绩出来了：七十多分。");
+  sub("end_scholar_1", "英国的 70 分，是“一等”。", "英国的 70 分以上，是“一等”。");
+  sub("end_scholar_1", "妈妈回：“72？满分多少？”", "妈妈回：“七十多？满分多少？”");
+  // 大三第 5 周已经有固定的“帮新生拖箱子”（y3_freshers_again），这段挪到大二开学
+  (DATA.loveEvents || []).forEach((e) => { if (e.id === "end_belong_4") e.cond = e.cond.replace("学年 == 3", "学年 == 2"); });
+  sub("end_belong_4", "（三年前，我也是这样站在这里的。）", "（一年前，我也是这样站在这里的。）");
+  cond("end_job_1", "标记('job_supermarket')");   // 店长、超市背景
+  sub("end_job_4", "你把 offer 截图发给了妈妈，然后礼貌地回了拒绝信。写完那封信，你在房间里坐了很久。", "你把签证页面关掉了。订回国机票的时候，你在房间里坐了很久。");
+  rep("end_lonely_3", "（这张就是孤独患者结局的那张明信片。）", () => []);   // 开发备注
+  rep("ghost_grad_line", "（那张毕业证上，有两份作业不是我写的。只有我知道。）", (s) => ({ if: "(S.ghostCount || 0) <= 1", then: [{ ...s, say: "（那张毕业证上，有一份作业不是我写的。只有我知道。）" }], else: [{ ...s, say: "（那张毕业证上，有几份作业不是我写的。只有我知道。）" }] }));
+  // ===================== 日常 =====================
+  sub("mid_w01", "楼下站着一个穿着睡衣发抖的大一新生，手里抱着护照。", "楼下站着一个穿着睡衣发抖的人，手里抱着护照。看样子是今年刚来的。");
+  sub("mid_w05", "冰箱上那张“谁吃了我的饺子”的纸没有人回。", "冰箱里的饺子再也没少过。");
+  sub("bd_family", "（我二十岁了。）", "（我已经成年了。）");
+  // 室友生日惊喜：大二起室友都散了，三个人的那一段只在大一
+  each("bd_roommate_open", (s, arr, i) => {
+    if (arr && (s.if === "住宿 == '学生公寓ensuite'" || s.if === "住宿 == '学校宿舍'") && JSON.stringify(s).includes("站在桌子后面")) {
+      arr[i] = { if: "学年 == 1", then: [s], else: [{ say: "厨房的桌子上摆着一个蛋糕，围了一圈人——这一年的室友，还有几个你叫得出名字的朋友。有人起了个头，大家唱起了生日歌，调起得太高，唱到一半就破了。" }] };
+    }
+  });
+  rep("bd_roommate_i", "用的。你上次帮我洗了电饭煲。", (s) => ({ if: "学年 == 1", then: [{ ...s, say: "用的。你平时也没少帮我们。" }] }));
+  each("bd_roommate_i", (s) => { if (s.if === "住宿 == '学校宿舍'" && JSON.stringify(s.then || []).includes("We know")) s.if += " && 学年 == 1"; });
+  sub("sick_fall", "下雨天，学校门口那段石板路像抹了油。", "刚下过雨，学校门口那段石板路像抹了油。");
+  rep("place_campus_8", "去伦敦。……他在那儿。", (s) => ({ if: "标记('kexin_breakup')", then: [{ ...s, say: "去伦敦。……这次是为了我自己。" }], else: [s] }));
+  rep("place_dorm_room_8", "他今天没回我消息。可能在忙吧。", (s) => ({ if: "标记('kexin_breakup')", then: [{ ...s, say: "我今天差点又买了去伦敦的票。习惯了。" }], else: [s] }));
+  rep("place_dorm_room_8", "My nonna's in hospital. It's fine. It's probably fine.", (s) => ({ if: "演过('fstage_giulia_80')", then: [{ ...s, say: "I made nonna's ragù tonight. It wasn't right. It's never going to be right.", tr: "我今晚做了奶奶的肉酱。味道不对。再也不会对了。" }], else: [s] }));
+  sub("place_station_8", "后面跟了一张照片：你们大一时在 flat 厨房的合照。", "后面跟了一张照片：你们俩大一时的一张合照。");
+  rep("place_supermarket_7", "You've got to show it who's boss.", (s) => ({ if: "DATA.characters['{A}'] && DATA.characters['{A}'].lang == 'zh'", then: [{ say: "它就欠拍。", name: s.name }], else: [s] }));
+  sub("dl_heytea_first", "{A}帮你排了，你请了她一杯。", "{A}帮你排了，你请{A}喝了一杯。");
+  sub("dl_vegan_cafe", "那个牛油果吐司比你想的好吃", "那块抹茶蛋糕比你想的好吃");
+  sub("dl_vegan_cafe", "在 Instagram 上", "在 Instagran 上");
+  sub("pb_03", "（三年前我在这座城市迷路，现在有人问我路。）", "（刚来的时候我在这座城市迷路，现在有人问我路。）");
+  cond("pb_04", "季节 == '秋'");   // “MERRY CHRISTMAS！现在是十月。”
+  sub("pb_09", "下一首换成了另一首中文歌", "下一首换成了一首中文歌");
+  cond("pb_20", "学年 >= 2");
+  sub("pb_20", "（一年前，我也站在这里。）", "（刚来的时候，我也站在这里。）");
+  sub("pb_34", "只有我在上班。", "只有我还在交作业。");
+  sub("pb_24", "“2026 年，第一次来英国。”", "“今年，又有一个人第一次来英国。”");
+  sub("trip_money_talk", "在 Ins 上发了一张你的背影", "在 Instagran 上发了一张你的背影");
+  sub("trip_money_talk", "I saved for eight weeks.", "I've been saving for months.");
+  sub("trip_money_talk", "我存了八个礼拜。", "我存了好几个月。");
+  sub("trip_west_g1", "{同伴}说：“这就是巴黎。”", "{同伴}说：“欧洲的地铁，就是这样。”");
+  ["west", "south", "north", "east", "africa", "aus", "america", "sea"].forEach((r) => [1, 2].forEach((g) => sub(`trip_${r}_g${g}`, "我在中超站了四十个小时，换这一趟。", "我打了四十个小时的工，换这一趟。")));
 })();
