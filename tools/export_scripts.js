@@ -84,8 +84,14 @@ function steps(st, d, out) {
     if (s.show) out.push(`${pad}〔${NM(String(s.show).split(":")[0])} 登场〕`);
     if (s.hide) out.push(`${pad}〔退场〕`);
     if (s.time) out.push(`${pad}〔${s.time}〕`);
+    if (s.pov) { out.push(`${pad}〔${NM(s.pov)}的视角〕`); steps(s.steps, d + 1, out); }
+    if (s.why) { out.push(`${pad}〔“为什么是你”（按玩家情况挑 ${s.why.n || ""} 条）〕`); for (const r of s.why.rows || []) out.push(`${pad}　- ${r.text}${r.if ? "（条件：" + r.if + "）" : ""}`); if (s.why.def) out.push(`${pad}　- 都不符合时：${s.why.def}`); }
     if (s.phone) { out.push(`${pad}〔手机：${String(s.phone).startsWith("group:") ? "群聊 " + s.phone.slice(6) : NM(s.phone)}〕`); steps(s.steps, d + 1, out); }
     if (s.moment) out.push(`${pad}〔朋友圈 · ${NM(s.moment.who)}〕${s.moment.text || ""}${(s.moment.comments || []).map((c) => `\n${pad}　评论 ${NM(c.who)}：${c.text}`).join("")}`);
+    if (s.mail) out.push(`${pad}〔邮件 · ${s.mail.from || ""}〕${s.mail.title || ""}${s.mail.tr ? "「" + s.mail.tr + "」" : ""}${s.mail.body ? "：" + s.mail.body : ""}${s.mail.bodyTr ? "「" + s.mail.bodyTr + "」" : ""}`);
+    if (s.invite) out.push(`${pad}〔邀约卡〕${typeof s.invite === "string" ? s.invite : JSON.stringify(s.invite)}`);
+    if (s.game) out.push(`${pad}〔小游戏：${s.game}〕`); if (s.win) { out.push(`${pad}〔赢了〕`); steps(s.win, d + 1, out); } if (s.lose) { out.push(`${pad}〔输了〕`); steps(s.lose, d + 1, out); }
+    if (s.timed) { out.push(`${pad}〔限时选择〕`); }
     if (s.msg) out.push(`${pad}〔消息〕${typeof s.msg === "string" ? s.msg : JSON.stringify(s.msg)}`);
     if (s.say !== undefined && s.say !== "") out.push(`${pad}${s.name ? "**" + NM(s.name) + "**：" : ""}${s.say}${s.tr ? "「" + s.tr + "」" : ""}${s.fx ? "　〔" + fxs(s.fx) + "〕" : ""}`);
     if (s.run) out.push(`${pad}〔接着演：${s.run}〕`);
