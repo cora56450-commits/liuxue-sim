@@ -185,4 +185,29 @@
   sub("epi_ing_groupmate", "那家面料公司她接了一半", "家里的珠宝生意她接了一半");
   sub("epi_ing_groupmate", "她的 Instagram", "她的 Instagran");
   sub("place_library_5", "电脑屏幕是 Instagram", "电脑屏幕是 Instagran");
+  // ===================== 攻略对象 · Kieran =====================
+  function ifc(id, oldIf, newIf) {
+    let hit = false;
+    const walk = (st) => (st || []).forEach((s) => { if (!s) return; if (s.if === oldIf && !hit) { hit = true; s.if = newIf; } walk(s.then); walk(s.else); walk(s.steps); if (s.choice) s.choice.forEach((o) => walk(o.then)); });
+    walk(E[id]); if (!hit) warn(id, oldIf);
+  }
+  rep("acq_otaku_1", "…Kieran. Engineering. Second year. I just run the projector.", (s) => ({ if: "学年 == 1", then: [s], else: [{ if: "学年 == 2", then: [{ ...s, say: s.say.replace("Second", "Third"), tr: s.tr.replace("大二", "大三") }], else: [{ ...s, say: s.say.replace("Second", "Fourth"), tr: s.tr.replace("大二", "大四") }] }] }));
+  sub("enc10_pub_street_otaku_meet", "动漫社学期末聚会在 pub。", "动漫社聚会在 pub。");
+  rep("kieran_socks", "（这句\"也许\"，到大三的圣诞会有答案。）", (s) => ({ if: "学年 < 3", then: [s] }));
+  rep("otaku_heart", "（这个季节没有花粉。）", (s) => ({ if: "季节 == '春' || 季节 == '夏'", then: [{ ...s, say: "（他平时根本不过敏。）" }], else: [s] }));
+  sub("small_otaku_4", "他的 Instagram", "他的 Instagran");
+  sub("enc_cafe_otaku", "Next one's in March.", "Next one's in a couple of months.");
+  sub("enc_cafe_otaku", "下一场在三月。", "下一场在过两个月。");
+  ifc("enc_dorm_room_otaku_dating", "住宿 == '学校宿舍'", "住宿 == '学校宿舍' && 学年 == 1");
+  ifc("enc_dorm_room_otaku_dating", "住宿 == '学生公寓ensuite'", "住宿 == '学生公寓ensuite' && 学年 == 1");
+  rep("confess_eve_otaku", "last screening next week", (s) => ({ if: "学年 == 3", then: [{ ...s, say: "first screening of term next week", tr: "下周新学期第一场放映会" }], else: [s] }));
+  sub("care_otaku_1", "被 Jake 发到了 story 上", "被健身房的朋友发到了 story 上");
+  sub("news_late_first_otaku", "I found out from Hannah.", "I found out from the group chat.");
+  sub("news_late_first_otaku", "我是从 Hannah 那知道的。", "我是从群里知道的。");
+  sub("intimate_c_otaku_2", "直到 Jake 来做客的那天", "直到那帮兄弟来做客的那天");
+  sub("trip_east_otaku", "we could've been talking about this for two years.", "we could've been talking about this the whole time.");
+  sub("trip_east_otaku", "我们本来可以聊两年的。", "我们本来可以一直聊这个的。");
+  sub("trip_africa_otaku", "连跟 Tom 都不说。", "连跟健身房的 Tom 都不说。");
+  rep("breakup_otaku", "…Was it the Jake thing? Me not telling them about you?", (s) => ({ ...s, say: "…Was it me? Not telling the lads about you?", tr: "……是因为我吗？我一直没跟那帮兄弟说你的事？" }));
+  rep("tbd_otaku", "Nan. No. Eat your cake.", (s) => ({ if: "交往中('otaku')", then: [{ ...s, say: "…Yeah, Nan. She is. Eat your cake.", tr: "……是的，外婆。她是。吃你的蛋糕。" }], else: [s] }));
 })();
