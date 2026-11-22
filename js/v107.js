@@ -72,7 +72,7 @@
   // ---------- 门口：runEvent ----------
   const _run = runEvent;
   runEvent = function (id) {
-    const why = reason(id);
+    const why = V.reason(id);   // 11/22：用 V.reason（v108、v113 加的规则包在 V107.reason 上，原来门口用的是本地 reason，那些规则没生效）
     if (why) { V.log.push([absWeek(), id, why]); if (V.log.length > 60) V.log.shift(); console.info("[v107] 不演", id, "：", why); return Promise.resolve(false); }
     if (S && typeof id === "string") { S.played = S.played || {}; S.played[id] = (S.played[id] || 0) + 1; if (chance(id)) countChance(); }
     return _run.apply(this, arguments);
@@ -103,7 +103,7 @@
         if (e.solo) return e;
         if ((e.people || []).length && capped()) continue;
         if (!e.love && !e.enc && !e.repeat && S.placeSeen && S.placeSeen[e.id]) continue;   // 去年演过的（variants）也不再演
-        if (!reason(id) && !(e.people || []).some(avoiding)) return e;
+        if (!V.reason(id) && !(e.people || []).some(avoiding)) return e;
       }
       return null;
     };

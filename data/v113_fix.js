@@ -25,7 +25,7 @@
   // 2. 第三周 crit 带老干妈：原来就记成 identity_laoganma，Ollie 中超那段改读这个
   subCond("ollie_market_order", "标记('crit_laoganma')", "标记('identity_laoganma')");
 
-  // 3. Ben 失联（小组展示 a3 截止第 17 周之前）：第 14 周消失、第 16 周回来；失联期间小组作业进度 ×0.75（js/v086.js 读 ben_missing）
+  // 3. Ben 失联（小组展示 a3 截止第 17 周之前）：第 14 周消失、展示当天才出现、第 18 周在群里道歉；失联期间小组作业进度 ×0.75（js/v086.js 读 ben_missing）
   Object.assign(E, {
     ben_missing_start: [
       { phone: "group:group", time: "晚上", steps: [
@@ -53,12 +53,13 @@
         ] },
       ] },
     ],
+    // 第 17 周展示当天 Ben 才出现（group_presentation：“Sorry guys, been mad busy. What am I presenting?”），所以“回来”放在展示之后
     ben_missing_back: [
       { phone: "group:group", time: "晚上", steps: [
-        { say: "sorry everyone. I've been working a lot of shifts. I know that's not an excuse. slides are done, I uploaded them to the drive.", name: "ben", tr: "抱歉大家。我最近排了很多班。我知道这不是借口。幻灯片做完了，传到网盘了。" },
-        { say: "Hannah 过了五分钟回：“Thank you. They're actually good.”（谢谢。其实做得挺好的。）" },
+        { say: "sorry everyone. I've been working a lot of shifts. I know that's not an excuse. thanks for carrying me.", name: "ben", tr: "抱歉大家。我最近排了很多班。我知道这不是借口。谢谢你们带我。" },
+        { say: "Hannah 过了五分钟回：“Noted.”然后又补了一句：“Hope you're okay though.”（希望你没事。）" },
         { if: "标记('ben_covered')", then: [
-          { say: "Ben 单独给你发了一张截图：他把你替他补的那几页，在贡献表里写回了你的名字。" },
+          { say: "Ben 单独给你发了一张截图：他在贡献表里，把你替他补的那几页写回了你的名字。" },
         ] },
         { fx: { flag_ben_missing: 0 } },
       ] },
@@ -66,6 +67,6 @@
   });
   DATA.midweek.push(
     { id: "ben_missing_start", year: 1, week: 14, day: "thu", time: "晚上", prio: 1, line: "小组群：Ben 失联了", cond: "('ben' in S.fr)" },
-    { id: "ben_missing_back", year: 1, week: 16, day: "tue", time: "晚上", prio: 1, line: "小组群：Ben 回来了", cond: "标记('ben_missing')" },
+    { id: "ben_missing_back", year: 1, week: 18, day: "tue", time: "晚上", prio: 1, line: "小组群：Ben 回来了", cond: "标记('ben_missing')" },
   );
 })();

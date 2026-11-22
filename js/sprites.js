@@ -51,7 +51,9 @@ const Sprites = {
     const r = DATA.spriteRule;
     const cal = calibOverride || Sprites.calib(c, picked.key);
     let height = r.faceHeight / Math.max(0.02, cal.chin - cal.top);
-    const headY = Sprites.headY(c);
+    let headY = Sprites.headY(c);
+    // 11/22 Cora：Mei、吴桐按身高摆太矮了 → fitBottom 的人不按身高，图片下边缘正好贴画面底（1080），能多高就多高
+    if (c.fitBottom) headY = 1080 - (1 - cal.top) * height;
     const bottom = headY + (1 - cal.top) * height;
     if (bottom < 1080) height *= Math.min(r.maxBoost || 1, (1080 - headY) / (bottom - headY));   // 补到画面底，最多放大 maxBoost
     return { height, top: headY - cal.top * height, headY, chinY: headY + (cal.chin - cal.top) * height };
