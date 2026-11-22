@@ -14,7 +14,7 @@
     try { if (typeof t === "string" && !V.playing) { V.recent.push({ ev: Story.running || "", bg: currentBg || "", who: n || "", wk: absWeek(), when: S.midNow || (S.slotNow != null ? DATA.weekendSlots[S.slotNow].name : "这周开头"), t: (fillText ? fillText(t) : t).slice(0, 80) }); if (V.recent.length > 8) V.recent.shift(); } } catch (e) {}
     return _say.apply(this, arguments);
   };
-  const SKIP_ID = /^(dl_|solo_|weekend_date|weekend_meet|breakup_fx_|pb_|mid_w|work_|news_|sick_shared|date_noshow)/;
+  const SKIP_ID = /^(dl_|solo_|weekend_date|weekend_meet|breakup_fx_|pb_|mid_w|work_|news_|sick_shared|date_noshow|epi_|ghost_|y3_after|resit_)/;   // 11/22 实测：结局后日谈前被接了一句“五年后，你坐在国内学校的答辩教室里”，把后日谈提前说了 → 后日谈、代写被查、补考不接
   const reg = () => { if (V.reg) return V.reg; const r = {}; for (const e of DATA.placePool || []) r[e.id] = (e.people || []).length > 0; for (const e of DATA.loveEncounters || []) r[e.id] = true; for (const e of DATA.actEncounters || []) r[e.id] = true; for (const e of DATA.loveEvents || []) r[e.id] = true; return (V.reg = r); };
   function eligible(id) {
     if (!S || S.replay || !AI.hasKey() || (Settings.v && Settings.v.aiBridge === false) || SKIP_ID.test(id)) return false;
