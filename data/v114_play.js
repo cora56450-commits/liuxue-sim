@@ -167,4 +167,27 @@
   //     没交往的学长“还在帮新生找房子”，可他的打算是毕业生签证两年后回国开店
   if (DATA.epiFriends && DATA.epiFriends.mei) DATA.epiFriends.mei = "Mei 在新加坡上班，每个月给你发一条很长的语音，三种语言混着说，最后一句永远是“你几时来玩lah”。";
   if (DATA.epiLove && DATA.epiLove.senior) DATA.epiLove.senior.far = "林子航——你后来在老乡群里还看到过他几次。听说他回了泉州，开了家茶叶店，群公告里还挂着他那本《新生落地指南》。他的头像一直没换。";
+
+  // 26. 大三接新生：原来第 4 周老乡群排班、第 5 周去车站，新生早就到了 → 挪到大三第 1 周（排班消息并进车站那段开头，“这周六”）
+  { const cal = DATA.calendarY3 || [], w1 = cal.find((x) => x.week === 1), w5 = cal.find((x) => x.week === 5);
+    if (w5 && w5.fixed) w5.fixed = w5.fixed.filter((f) => f !== "y3_freshers_again");
+    if (w1) { w1.fixed = w1.fixed || []; if (!w1.fixed.includes("y3_freshers_again")) w1.fixed.unshift("y3_freshers_again"); } else warn("calendarY3", "week 1");
+    const m = (DATA.midweek || []).findIndex((x) => x.id === "fs_y3_freshers_shift");
+    if (m >= 0) DATA.midweek.splice(m, 1);
+    if (E.y3_freshers_again) E.y3_freshers_again = [
+      { if: "标记('hometown_group')", then: [
+        { phone: "group:hometown", steps: [
+          { say: "@所有人 这周六接新生，老生排个班，一人两小时，管午饭", name: "senior" },
+          { say: "@{名字} 你去年不是说今年要来帮忙吗", name: "senior" },
+          { say: "（……我说过吗。）" },
+        ] },
+      ] },
+      ...E.y3_freshers_again,
+    ];
+  }
+  // 27. 国内秋招 offer（第 12 周 y3_offer）和英国 offer（求职-4 end_job_4）原来同一周来 → 英国那封挪到第 17 周（js/scenes.js）；
+  //     已经拿了国内 offer 的档，英国 offer 那段要知道手里还有一份
+  rep("end_job_4", "邮件标题：“Offer of Employment”。你看了三遍，确认不是拒信的另一种写法。", (s) => [s, { if: "标记('cn_offer')", then: [
+    { say: "（国内那份 offer，三月底之前要给答复。现在手里有两份了。）" },
+  ] }]);
 })();

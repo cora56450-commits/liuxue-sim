@@ -311,7 +311,7 @@ const Scenes = {
     await runEvent(ev.id);
   },
   async afterFixed(id, cal) {
-    if (id === "y3_offer" && DATA.events.end_job_4 && S.flags.job_persist && !S.flags.seen_end_job_4) { S.flags.seen_end_job_4 = 1; await runEvent("end_job_4"); }   // 第十二批：求职-4 接在 y3_offer 后面
+    if (id === "y3_midpoint" && DATA.events.end_job_4 && S.flags.job_persist && !S.flags.seen_end_job_4) { S.flags.seen_end_job_4 = 1; await runEvent("end_job_4"); }   // 11/22：求职-4（英国 offer）从 y3_offer（第 12 周，国内秋招 offer）后面挪到 y3_midpoint（第 17 周）后面，两个 offer 不在同一周；原：第十二批：求职-4 接在 y3_offer 后面
     if (id === "first_sick") await Love6.news("sick");   // 第十二批：第一次生病也算
     if (cal.spring && S.year > 1 && S.tags.includes("strict") && DATA.loveIds.some((c) => S.flags["confessed_" + c]) && !S.flags.strict_video_done) {
       S.flags.strict_video_done = 1;   // 家教森严：交往中，大二春节固定“视频里被发现”
