@@ -87,7 +87,7 @@ function steps(st, d, out) {
     if (s.pov) { out.push(`${pad}〔${NM(s.pov)}的视角〕`); steps(s.steps, d + 1, out); }
     if (s.why) { out.push(`${pad}〔“为什么是你”（按玩家情况挑 ${s.why.n || ""} 条）〕`); for (const r of s.why.rows || []) out.push(`${pad}　- ${r.text}${r.if ? "（条件：" + r.if + "）" : ""}`); if (s.why.def) out.push(`${pad}　- 都不符合时：${s.why.def}`); }
     if (s.phone) { out.push(`${pad}〔手机：${String(s.phone).startsWith("group:") ? "群聊 " + s.phone.slice(6) : NM(s.phone)}〕`); steps(s.steps, d + 1, out); }
-    if (s.moment) out.push(`${pad}〔朋友圈 · ${NM(s.moment.who)}〕${s.moment.text || ""}${(s.moment.comments || []).map((c) => `\n${pad}　评论 ${NM(c.who)}：${c.text}`).join("")}`);
+    if (s.moment) out.push(`${pad}〔朋友圈 · ${NM(s.moment.who)}〕${s.moment.text || (s.moment.img ? "〔图片：" + s.moment.img + "〕" : "")}${(s.moment.comments || []).map((c) => `\n${pad}　评论 ${NM(c.who)}：${c.text}`).join("")}`);
     if (s.mail) out.push(`${pad}〔邮件 · ${s.mail.from || ""}〕${s.mail.title || ""}${s.mail.tr ? "「" + s.mail.tr + "」" : ""}${s.mail.body ? "：" + s.mail.body : ""}${s.mail.bodyTr ? "「" + s.mail.bodyTr + "」" : ""}`);
     if (s.invite) out.push(`${pad}〔邀约卡〕${typeof s.invite === "string" ? s.invite : JSON.stringify(s.invite)}`);
     if (s.game) out.push(`${pad}〔小游戏：${s.game}〕`); if (s.win) { out.push(`${pad}〔赢了〕`); steps(s.win, d + 1, out); } if (s.lose) { out.push(`${pad}〔输了〕`); steps(s.lose, d + 1, out); }
@@ -140,7 +140,7 @@ function pool(v, d, out, label) {
   if (typeof v === "string") { if (/[一-鿿]|[a-z]{3}/i.test(v)) out.push(`${pad}- ${label ? label + "：" : ""}${v}`); return; }
   if (Array.isArray(v)) { if (label) out.push(`${pad}- **${label}**`); v.forEach((x) => pool(x, d + (label ? 1 : 0), out, "")); return; }
   if (v && typeof v === "object") {
-    if (typeof v.text === "string" || typeof v.say === "string") { out.push(`${pad}- ${label ? label + "：" : ""}${v.text || v.say}${v.tr ? "「" + v.tr + "」" : ""}${v.if ? "（条件：" + v.if + "）" : v.cond ? "（条件：" + v.cond + "）" : ""}`); return; }
+    if (typeof v.text === "string" || typeof v.say === "string") { out.push(`${pad}- ${label ? label + "：" : ""}${v.text || v.say || (v.img ? "〔图片：" + v.img + "〕" : "")}${v.tr ? "「" + v.tr + "」" : ""}${v.if ? "（条件：" + v.if + "）" : v.cond ? "（条件：" + v.cond + "）" : ""}`); return; }
     if (label) out.push(`${pad}- **${label}**`);
     for (const [k, x] of Object.entries(v)) pool(x, d + (label ? 1 : 0), out, CH[k] ? NM(k) : k);
   }

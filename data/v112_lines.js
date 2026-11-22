@@ -405,4 +405,38 @@
   sub("trip_money_talk", "我存了八个礼拜。", "我存了好几个月。");
   sub("trip_west_g1", "{同伴}说：“这就是巴黎。”", "{同伴}说：“欧洲的地铁，就是这样。”");
   ["west", "south", "north", "east", "africa", "aus", "america", "sea"].forEach((r) => [1, 2].forEach((g) => sub(`trip_${r}_g${g}`, "我在中超站了四十个小时，换这一趟。", "我打了四十个小时的工，换这一趟。")));
+  // ===================== 文本池 =====================
+  function poolSub(key, from, to) {
+    if (!DATA[key]) return warn("文本池", key);
+    const j = JSON.stringify(DATA[key]), f = JSON.stringify(from).slice(1, -1), t = JSON.stringify(to).slice(1, -1);
+    if (!j.includes(f)) return warn("文本池", key, from.slice(0, 16));
+    DATA[key] = JSON.parse(j.split(f).join(t));
+  }
+  if (DATA.epiFriends) DATA.epiFriends.giulia = DATA.epiFriends.giulia.replace("她寄来一盒奶奶做的意面", "她寄来一盒按奶奶的方子做的意面");
+  poolSub("epiEx", "有一次 Mei 说他去了冰岛拍极光", "有一次 Ploy 说他去了冰岛拍极光");
+  poolSub("inviteLines", "周末brunch？我请你，上次你帮我听那个苏格兰老师讲课嘛。", "周末brunch？我请你，上次你请我奶茶嘛。");
+  try { const it = DATA.inviteLines.senior.invite.find((x) => x.text && x.text.startsWith("这周末帮我去车站接个新生")); if (it) it.cond = "学年 >= 2 && 周数 <= 4"; } catch (e) {}   // 大一前四周自己就是新生
+  try { DATA.hintLines.otaku.station = [{ text: "Train to Manchester {时段EN}. There's a con. Don't tell anyone.", tr: "{时段}坐火车去曼彻斯特。有个漫展。别告诉别人。" }]; } catch (e) {}
+  // 文本池里的句子加条件：对象就并上 if；纯字符串就换成 { text, if }
+  function poolIf(key, start, c) {
+    let hit = false;
+    const walk = (v) => {
+      if (Array.isArray(v)) { v.forEach((x, i) => { if (typeof x === "string" && x.startsWith(start)) { v[i] = { text: x, if: c }; hit = true; } else walk(x); }); return; }
+      if (v && typeof v === "object") { const t = typeof v.text === "string" ? v.text : v.say; if (typeof t === "string" && t.startsWith(start)) { v.if = v.if ? `(${v.if}) && ${c}` : c; hit = true; return; } Object.values(v).forEach(walk); }
+    };
+    walk(DATA[key]); if (!hit) warn("文本池", key, start);
+  }
+  poolIf("dailyLines", "你在超市碰到了大一时的室友", "住宿 != 'studio'");
+  poolIf("dailyLines", "楼上在开派对。凌晨两点", "学年 == 1");   // 大二起学校宿舍的人都搬走了
+  poolIf("dailyLines", "宿舍的烟雾报警器又响了", "学年 == 1");
+  poolIf("dailyLines", "有人在 flat 厨房煮螺蛳粉", "学年 == 1");
+  poolIf("dailyLines", "Dave 帮你收了一个快递", "学年 == 1");
+  poolIf("dailyLines", "你看到大一的新生在楼道里开派对", "false");   // 大三不住宿舍了
+  poolSub("dailyLines", "你第一次在英国过生日以外的节日：Pancake Day。", "你在英国过了一个新节日：Pancake Day。");
+  poolIf("placeActs", "你买了一盒眼罩，蒸汽的", "季节 == '夏'");
+  poolIf("placeActs", "你在一栋房子门口看到了 TO LET", "学年 == 1");
+  poolIf("foreshadow", "去年你没回来。今年呢？", "!标记('spring_home_y1')");   // 大一春节翻课回过国的不这么问
+  poolSub("endings", "但是今天，他／她就在旁边。", "但是今天，我们站在一起。");
+  poolSub("endings", "Instagram", "Instagran");
+  poolSub("endings", "签证还剩九个月。", "毕业生签证的倒计时已经开始了。");
 })();
