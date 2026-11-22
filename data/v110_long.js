@@ -4,10 +4,11 @@
 window.DATA = window.DATA || {};
 (function () {
   const E = DATA.events;
-  const ins = (id, steps) => { const ev = E[id]; if (!ev) return; const i = ev.findIndex((s) => s.free || s.choice); if (i >= 0) ev.splice(i, 0, ...steps); };
+  // 插在“他刚听完、还没回应”的那一句后面（anchor），不是插在最后的选项前面（不然学长已经说了“你走吧”才问为什么）
+  const ins = (id, anchor, steps) => { const ev = E[id]; if (!ev) return; let i = ev.findIndex((s) => s.say && s.say.includes(anchor)); if (i < 0) i = ev.findIndex((s) => s.free || s.choice) - 1; ev.splice(i + 1, 0, ...steps); };
 
   // ==================== 分手对话：中间加“为什么” ====================
-  ins("breakup_senior", [
+  ins("breakup_senior", "那一栏还是没有总数", [
     { say: "他把账本合上，又打开，又合上。" },
     { say: "……是我哪里没做好？你说，我改。我这人别的不行，改东西快。", name: "senior" },
     { choice: [
@@ -30,14 +31,13 @@ window.DATA = window.DATA || {};
       ] },
     ] },
   ]);
-  ins("breakup_local", [
+  ins("breakup_local", "I always know a bit before", [
     { say: "他把相机的镜头盖拧上，又拧开。" },
     { say: "Was it the summer? I was away a lot. I know I was away a lot.", name: "local", tr: "是因为夏天吗？我那时候老不在。我知道我老不在。" },
     { choice: [
-      { text: "“不是夏天。是我一直站在你的照片外面。”", fx: { flag_ex_reason_local: 1 }, then: [
-        { say: "…Yeah.", name: "local", tr: "……嗯。" },
-        { say: "他翻相机里的照片给你看。几百张。全是你的背影、你的手、你的影子。没有一张是你看着镜头的。" },
-        { say: "I thought if I didn't look straight at it, it couldn't go wrong.", name: "local", tr: "我以为只要不正面看着，就不会出错。" },
+      { text: "“不是夏天。是我们想去的地方不一样。”", fx: { flag_ex_reason_local: 1 }, then: [
+        { say: "…Right. You'd go anywhere. I'd go anywhere as long as it's on a film roll.", name: "local", tr: "……对。你哪儿都愿意去。我只要是胶卷里的地方哪儿都愿意去。" },
+        { say: "他想笑，没笑出来。" },
       ] },
       { text: "“我们都太年轻了，想要的东西还会变。”", fx: { flag_ex_reason_local: 2 }, then: [
         { say: "That's such a grown-up thing to say. I hate it. You're right.", name: "local", tr: "这话说得好成熟。我讨厌它。你说得对。" },
@@ -49,8 +49,8 @@ window.DATA = window.DATA || {};
       ] },
     ] },
   ]);
-  ins("breakup_groupmate", [
-    { say: "她把水瓶放下，拧紧，又拧开。" },
+  ins("breakup_groupmate", "I've practised this", [
+    { say: "她深吸了一口气，手指一直在拧手上的戒指。" },
     { say: "Tell me it's not because of the essay thing. Please tell me it's not that.", name: "groupmate", tr: "告诉我不是因为作业那件事。求你告诉我不是那个。" },
     { choice: [
       { text: "“不全是。但你总是需要我替你兜底。”", fx: { flag_ex_reason_groupmate: 1 }, then: [
@@ -67,7 +67,7 @@ window.DATA = window.DATA || {};
       ] },
     ] },
   ]);
-  ins("breakup_otaku", [
+  ins("breakup_otaku", "…Okay.", [
     { say: "他盯着关了机的显示器，屏幕里映出你们两个人。" },
     { say: "…Was it the Jake thing? Me not telling them about you?", name: "otaku", tr: "……是因为 Jake 那件事吗？我没跟他们说你的事？" },
     { choice: [
