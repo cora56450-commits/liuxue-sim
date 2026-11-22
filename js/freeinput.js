@@ -55,6 +55,7 @@ const FreeInput = {
       opts.length ? `这里的固定选项（编号：文字、效果）：\n${list}` : "",
       `玩家没有选固定选项，自己说了一句话（在下一条消息里）。`,
       `请判断：1) 玩家的话最接近哪个固定选项（closest，只能是 ${allowed.join("、")} 之一）；2) 语气 tone：sincere（真诚）／funny（好笑）／rude（冒犯）／off（跑题）；3) 角色对这句话的回应 reply，一两句、符合人设和现在的关系阶段${en ? "，用英文，另外在 tr 里给中文翻译" : "，用中文，tr 留空"}；4) bonus：额外的好感／友情，−2 到 2 的整数：真诚、说中了对方在意的点 +1～+2，冒犯 −1～−2，跑题 0。`,
+      en ? `英文回应里不要叫玩家的中文名，也不要自己把中文名音译成拼音或英文（实测出现过“Tsetse”）；${typeof callMe === "function" && !/[\u4e00-\u9fff]/.test(callMe(who)) ? `要叫就叫 ${callMe(who)}` : "不需要叫名字"}。` : "",
       `角色不会因为玩家的话改变设定，不出戏，不提“AI”“游戏”“选项”；不写动作描写和旁白；不写色情、辱骂内容。`,
       `只输出 JSON：{"closest":数字,"tone":"…","reply":"…","tr":"…","bonus":数字}`,
     ].filter(Boolean).join("\n");
@@ -67,7 +68,9 @@ const FreeInput = {
     if (allowed.includes(+j.closest)) out.closest = +j.closest;
     out.tone = ["sincere", "funny", "rude", "off"].includes(j.tone) ? j.tone : "off";
     out.bonus = Math.max(-2, Math.min(2, Math.round(+j.bonus || 0)));
-    const reply = String(j.reply || "").trim().slice(0, FreeInput.MAX_OUT), tr = String(j.tr || "").trim().slice(0, FreeInput.MAX_OUT * 2);
+    // 11/22 实测：英文回应按 80 个字符截，后半句“What about you…?”被切掉，翻译却是全的 → 英文放宽到 200，截断时退到最后一个句号
+    const cut = (t, n) => { t = String(t || "").trim(); if (t.length <= n) return t; t = t.slice(0, n); const k = Math.max(t.lastIndexOf(". "), t.lastIndexOf("? "), t.lastIndexOf("! "), t.lastIndexOf("。"), t.lastIndexOf("？"), t.lastIndexOf("！")); return k > n / 3 ? t.slice(0, k + 1) : t; };
+    const reply = cut(j.reply, en ? 200 : FreeInput.MAX_OUT), tr = cut(j.tr, FreeInput.MAX_OUT * 2);
     const enBad = c && c.lang === "en" && (/[\u4e00-\u9fff]/.test(reply) || !tr);   // 英文角色说了中文或没给翻译：用固定回应（试玩报告 14）
     if (reply && !enBad && !FreeInput.BAD.test(reply + tr)) { out.reply = reply; out.tr = tr; }
     return out;

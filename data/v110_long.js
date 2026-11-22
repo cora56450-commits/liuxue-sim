@@ -126,7 +126,7 @@ window.DATA = window.DATA || {};
         { if: "交往中('senior')", then: [{ show: "senior" }, { say: "子航穿着西装，手里拿着一束花，花上还贴着价签。他看见你，把价签撕了，揣进兜里。" }, { say: "……别笑。打了八折也是花。", name: "senior" }] },
         { if: "交往中('local')", then: [{ show: "local" }, { say: "Ollie 举着他的胶片相机，这次镜头对着你的脸，正面。" }, { say: "Look at me. Just this once. Properly.", name: "local", tr: "看着我。就这一次。好好地。" }] },
         { if: "交往中('groupmate')", then: [{ show: "groupmate" }, { say: "Ploy 穿着学位服还踩着八厘米的高跟鞋，在草坪上陷进去了。她不管，张开手臂朝你喊：" }, { say: "PHOTO. NOW. I did my makeup for THIS.", name: "groupmate", tr: "拍照。现在。我化妆就是为了这一刻。" }] },
-        { if: "交往中('otaku')", then: [{ show: "otaku" }, { say: "Kieran 站在离人群最远的那棵树下，手里拿着两个人的帽子——他的和他替你保管的那个。" }, { say: "…Jake wants a photo. Of us. I said yes.", name: "otaku", tr: "……Jake 想给我们拍张照。我说好。" }] },
+        { if: "交往中('otaku')", then: [{ show: "otaku" }, { say: "Kieran 站在离人群最远的那棵树下，手里攥着一束包得很丑的花，包装纸是超市的。" }, { say: "…Mum said I had to bring flowers. So. Flowers. Photo?", name: "otaku", tr: "……我妈说一定要带花。所以。花。拍张照？" }] },
         { choice: [
           { text: "拍一张正经的合照", fx: { loneliness: -4 }, then: [{ say: "拍了十二张。第十二张你们都在笑，因为前面十一张都有人眨眼。" }] },
           { text: "把帽子扔上天", fx: { loneliness: -3 }, then: [{ say: "帽子落下来砸到了旁边一个家长。你们一起鞠躬道歉，笑得站不直。" }] },
@@ -140,13 +140,13 @@ window.DATA = window.DATA || {};
           { say: "你请一个路过的家长帮你拍了一张。他拍了三张，每一张都把你的头切掉了一半。" },
           { say: "（也挺好。三年就是这样，总有一半没拍进去。）" },
         ] },
-        { if: "DATA.loveIds.some((c) => 标记('ex_friend_' + c))", then: [
-          { say: "人群那头，有一个你曾经很熟悉的背影。他／她回头看见你，隔着很多人，举起手比了一个“恭喜”。你也比了回去。" },
-        ] },
+        // 11/22：原来写的“他／她”，按是谁直接写名字
+        ...[["senior", "林子航", "他"], ["local", "Ollie", "他"], ["groupmate", "Ploy", "她"], ["otaku", "Kieran", "他"]].map(([c, n, p]) => (
+          { if: `标记('ex_friend_${c}')`, then: [{ say: `人群那头，${n}也在。${p}回头看见你，隔着很多人，举起手比了一个“恭喜”。你也比了回去。` }] })),
       ] },
       { bg: "pub_street" },
       { say: "傍晚，学位服还回去了。袖子上的折痕多了一道，是你的。" },
-      { say: "你一个人在回去的路上走了一段。这条街你走了三年：第一年迷过两次路，第二年会给游客指路，第三年连哪个路灯不亮都知道。" },
+      { if: "有交往对象", then: [{ say: "你们在回去的路上走了一段，谁都没说话。这条街你走了三年：第一年迷过两次路，第二年会给游客指路，第三年连哪个路灯不亮都知道。" }], else: [{ say: "你一个人在回去的路上走了一段。这条街你走了三年：第一年迷过两次路，第二年会给游客指路，第三年连哪个路灯不亮都知道。" }] },
       { choice: [
         { text: "去陈记买一包大白兔", fx: { loneliness: -2 }, then: [{ say: "陈叔看见你，没收钱：“毕业了？拿着。以后回来看看。”" }] },
         { text: "在长椅上坐到天黑", then: [{ say: "天黑得很晚。英国的夏天，晚上九点还亮着。你坐到路灯一盏一盏亮起来。" }] },

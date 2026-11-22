@@ -191,7 +191,7 @@ const Travel6 = (() => {
   function mates(r, kind) {
     const t = T(), out = [];
     for (const c of DATA.loveIds || []) {
-      const ok = dating(c) || (c === "groupmate" && (S.aff[c] || 0) >= (t.ployMinAff || 40));
+      const ok = !S.flags["broke_up_" + c] && (dating(c) || (c === "groupmate" && (S.aff[c] || 0) >= (t.ployMinAff || 40)));   // 11/22：分手以后 Ploy 好感还可能 ≥40，不能再约前任去旅行
       if (ok) out.push({ id: c, love: true, why: scheduleWhy(c, r, kind), own: ev(`trip_${r.id}_${c}`) && !S.flags[`trip_done_${r.id}_${c}`] });
     }
     for (const c of Object.keys(S.fr || {})) {

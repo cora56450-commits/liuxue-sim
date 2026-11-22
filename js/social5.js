@@ -96,8 +96,14 @@ const Birthday = {
     setBg("dorm_room");
     if (DATA.events[B.family]) await runEvent(B.family);
     // 攻略对象：好感≥40 且知道生日 → 邀约（只能接一个）；20–39 → 一条消息
-    const loveIn = DATA.loveIds.filter((c) => knows(c) && (S.aff[c] || 0) >= 40 && Birthday.known(c) && B.love[c]);
-    for (const c of DATA.loveIds.filter((x) => knows(x) && Birthday.known(x) && (S.aff[x] || 0) >= 20 && (S.aff[x] || 0) < 40 && B.loveMsg[x])) {
+    // 11/22：分手以后的人不再约你过生日、不发长消息（实测前任好感 40–59 还会被问“生日那天晚上，和谁过？”）→ 只发一句“生日快乐”
+    const exOf = (c) => !!S.flags["broke_up_" + c];
+    for (const c of DATA.loveIds.filter((x) => exOf(x) && knows(x) && Birthday.known(x) && !S.flags["ex_stranger_" + x])) {
+      const t = (DATA.epiExBd || {})[c] || { senior: { text: "生日快乐。" }, local: { text: "Happy birthday.", tr: "生日快乐。" }, groupmate: { text: "happy birthday x", tr: "生日快乐" }, otaku: { text: "Happy birthday. Hope it's a good one.", tr: "生日快乐。希望今天不错。" } }[c];
+      if (t) { S.chats[c] = S.chats[c] || []; S.chats[c].push({ role: "assistant", content: t.text, tr: t.tr || "", scripted: true, week: absWeek() }); toast(`${charName(c)} 发来一条消息`, 1800); }
+    }
+    const loveIn = DATA.loveIds.filter((c) => !exOf(c) && knows(c) && (S.aff[c] || 0) >= 40 && Birthday.known(c) && B.love[c]);
+    for (const c of DATA.loveIds.filter((x) => !exOf(x) && knows(x) && Birthday.known(x) && (S.aff[x] || 0) >= 20 && (S.aff[x] || 0) < 40 && B.loveMsg[x])) {
       S.chats[c] = S.chats[c] || []; S.chats[c].push({ role: "assistant", content: B.loveMsg[c].text, tr: B.loveMsg[c].tr || "", scripted: true, week: absWeek() });
       const n = S.year === 3 && ((B.laterYears || {}).y3NextYearLine || {})[c];
       if (n) S.chats[c].push({ role: "assistant", content: n.text, tr: n.tr || "", scripted: true, week: absWeek() });

@@ -10,7 +10,8 @@
   if (typeof AI === "undefined") return;
   const V = (window.V110 = { log: [], tracking: false, cast: null, lines: [], count: {} });
   const MAX_TURNS = 5, WEEK_CAP = 2;
-  const SKIP = /^(breakup_|be_|epi_|end_|sick_|news_|weekend_meet|weekend_date|date_noshow|pb_|solo_|dl_|mod_brief|ghost_|fishpond|y3_graduation|y3_after|prologue|first_night)/;
+  const SKIP = /^(breakup_(?!close_)|be_|epi_|end_|sick_|news_|weekend_meet|weekend_date|date_noshow|pb_|solo_|dl_|mod_brief|ghost_|fishpond|y3_graduation|y3_after|prologue|first_night)/;
+  // 11/22：分手几个月后的那次重逢（breakup_close_）如果走到了“做朋友”，可以多待一会儿；没走到朋友的 mainChar 会拦下
   // 记录这段剧情里出场的人和最后几句
   const _show = Stage.show;
   Stage.show = function (id) { if (V.tracking && DATA.characters[id] && id !== "me") V.cast.add(id); return _show.apply(this, arguments); };
@@ -32,14 +33,11 @@
   function mainChar() {
     const cnt = {};
     for (const l of V.lines) if (l.n && l.n !== "me" && DATA.characters[l.n]) cnt[l.n] = (cnt[l.n] || 0) + 1;
-    const cast = [...V.cast];
-    const c = cast.length === 1 ? cast[0] : cast.filter((x) => (cnt[x] || 0) >= 1).sort((a, b) => (cnt[b] || 0) - (cnt[a] || 0))[0];   // 只有一个人在场：没台词也算（实测 Ollie 那段他一句话没说，但整段都在）
-    if (!c) return null;
-    const love = DATA.loveIds.includes(c);
-    if (love && ex(c) && !S.flags["ex_friend_" + c]) return null;
-    if (!love && !(c in (S.fr || {}))) return null;
-    if (!DATA.characters[c].persona && !love) return null;
-    return c;
+    // 11/22 实测：Kieran 家的周日午饭，外婆台词最多 → 选中外婆 → 外婆不是攻略对象也不是朋友 → 整段不出“多待一会儿”。先筛能多待的人，再按台词数挑
+    const ok = (c) => { const love = DATA.loveIds.includes(c); if (love) return !(ex(c) && !S.flags["ex_friend_" + c]); return c in (S.fr || {}) && !!DATA.characters[c].persona; };
+    const cast = [...V.cast].filter(ok);
+    if (cast.length === 1) return cast[0];   // 只有一个能多待的人在场：没台词也算（实测 Ollie 那段他一句话没说，但整段都在）
+    return cast.filter((x) => (cnt[x] || 0) >= 1).sort((a, b) => (cnt[b] || 0) - (cnt[a] || 0) || DATA.loveIds.includes(b) - DATA.loveIds.includes(a))[0] || null;
   }
   function eligible(id) {
     if (!S || S.replay || !AI.hasKey() || (Settings.v && Settings.v.aiExtend === false) || SKIP.test(id)) return false;
@@ -56,7 +54,7 @@
       `人设：${ch.persona || "按名字和下面的事实卡自然地演"}`,
       DATA.profiles && DATA.profiles[c] ? `专业、年级和认识的人：${DATA.profiles[c]}` : "",
       AI.factCard(c), AI.playerBrief(c), rel.line, AI.coldLine(c), AI.langRule(c),
-      AI.lang(c) === "en" ? `你叫玩家 ${callMe(c)}。` : "",
+      AI.lang(c) === "en" ? (/[\u4e00-\u9fff]/.test(callMe(c)) ? "英文台词里不叫玩家的名字，也不要把中文名音译成拼音或英文。" : `你叫玩家 ${callMe(c)}。`) : "",
       mem ? `你们之前多待过的几次（已经发生过）：\n${mem}` : "",
       `现在：${cal.term || ""} ${cal.label || ""}，${S.midNow || (S.slotNow != null ? DATA.weekendSlots[S.slotNow].name : "")}，地点：${placeName()}。`,
       "只输出一个 JSON 对象，不要任何别的文字：",
@@ -67,7 +65,7 @@
       + `"aff": "整数 -1 到 2：玩家上一句话让你更喜欢还是更反感（第一轮填 0）",`
       + `"end": "true 或 false：话题自然结束、玩家说要走、或者已经到第 ${MAX_TURNS} 轮就 true；true 时 line 是告别、options 留空",`
       + `"summary": "end 为 true 时，用一句话（第二人称，玩家视角）写这次多待的一会儿发生了什么，例如“你们在河边多坐了半小时，他讲了他外婆的事。”"}`,
-      "规则：接着刚才的剧情往下演，不要重复剧情里已经说过的话；这只是相处，不推进大事件（不告白、不分手、不接吻、不吵翻、不搬家）；不要替玩家说话；像真人，吐槽喜剧基调，不油腻、不煽情、不写“融入骨血”之类的套话；不写色情和暴力。",
+      "规则：接着刚才的剧情往下演，不要重复剧情里已经说过的话；这只是相处，不推进大事件（不告白、不分手、不接吻、不吵翻、不搬家）；不要替玩家说话；像真人，吐槽喜剧基调，不油腻、不煽情、不写“融入骨血”之类的套话；告别不要用“到家给我发消息”“Text me when you get home”这类每个人都会说的话，接着刚才聊的事说一句（实测 Ploy 和 Kieran 的告别都是这句）；不写色情和暴力。",
     ].filter(Boolean).join("\n");
   }
   function parse(r) {
@@ -103,6 +101,12 @@
   async function maybeExtend(id) {
     if (!eligible(id)) return;
     const c = mainChar(); if (!c) return;
+    // 11/22 实测：圣诞市集里 Ollie 早就下场了，后面是和室友溜冰、“回去的路上”，结尾还冒出“（Ollie还没走。）”
+    // → 他已经下场、最后几句也没他 → 不接；最后一句是“后来／回去的路上／第二天”这种已经跳走的 → 不接
+    const onStage = Stage.cast.some((m) => m.id === c), recent = V.lines.slice(-4).some((l) => l.n === c);
+    if (!onStage && !recent) { V.log.push(["不接", id, c, "已经下场"]); return; }
+    const last = (V.lines[V.lines.length - 1] || {}).t || "";
+    if (/^(后来|之后|那以后|第二天|回去的路上|回到(家|住处|宿舍|公寓)|你们各自|各自回)|后来你|回去的路上/.test(last)) { V.log.push(["不接", id, c, "已经跳走：" + last.slice(0, 20)]); return; }
     S.extDone[id] = 1;
     if (!Stage.cast.some((m) => m.id === c)) Stage.show(c);
     sayStatic(`（${charName(c)}还没走。）`);
