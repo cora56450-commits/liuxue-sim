@@ -35,7 +35,7 @@
     ["trip_sea_local", "local_bangkok", "曼谷，唐人街。", "那天晚上他学会了一句中文：“不要辣。”他说了一整晚，每次都说成“不要拉”。"],
     ["trip_north_groupmate", "groupmate_snow", "冰岛。Ploy 从曼谷长大", "她在雪地里给你们俩拍了一张合照，两个人的鼻子都是红的。后来那张照片成了她的手机屏保。"],
     ["trip_south_groupmate", "groupmate_sunset", "圣托里尼。日落之前", "太阳完全落下去以后，周围的人开始鼓掌。她没鼓掌，只是把你的手拉过去，握着。"],
-    ["trip_sea_groupmate", "groupmate_home", "曼谷。暑假，Ploy 先回家两周", "她拉着你穿过院子，每走一步都在介绍：这棵树是外婆种的，那个秋千是她五岁坐坏的。（她这么开心，像是终于有人来她家玩了。）"],
+    ["trip_sea_groupmate", "groupmate_home", "曼谷。一放假 Ploy 就先回了家", "她拉着你穿过院子，每走一步都在介绍：这棵树是外婆种的，那个秋千是她五岁坐坏的。（她这么开心，像是终于有人来她家玩了。）"],
     ["trip_south_otaku", "otaku_sagrada", "巴塞罗那。圣家堂。", "出来的时候天已经黑了。他说：“…Sorry. I talked the whole time.「……抱歉。我一直在说。」”你说你喜欢听。他的耳朵红了，一直红到地铁站。"],
     ["trip_africa_otaku", "otaku_desert", "撒哈拉边上，一个沙漠营地", "火堆那边有人在弹吉他。你们没回去，躺在沙丘上数星星，一直数到数不清。"],
     ["trip_japan_2", "otaku_crossing", "镰仓。一个海边的铁路道口。", "他把手机放回口袋：“…I wanted to look at it. Not through a screen.「……我想亲眼看。不隔着屏幕。」”"],

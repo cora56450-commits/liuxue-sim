@@ -275,10 +275,16 @@ const Travel6 = (() => {
         for (const n of [1, 2, 3]) if (ev("trip_japan_" + n)) await runEvent("trip_japan_" + n);
         S.flags["trip_done_" + r.id + "_otaku"] = 1;
       } else {
-        const g = `trip_${r.id}_g${(S.tripVisits[r.id] % 2) + 1}`;   // 第一次 g1，第二次 g2，轮着来
-        if (ev(g)) await runEvent(g);
+        // 11/22：有些旅行文本写死了季节（澳洲“12 月三十五度”、里斯本三十二度、北欧夏天不落的太阳／零下十二度等极光），
+        // 但同一个地方好几个假期都能去 → 季节对不上的不演（攻略对象的那段留到对的假期；通用段换另一段）
+        const SEASON = { trip_aus_g1: ["xmas"], trip_aus_local: ["xmas"], trip_aus_senior: ["summer"], trip_north_g2: ["summer"],
+          trip_north_groupmate: ["reading", "xmas", "easter"], trip_north_senior: ["reading", "xmas"], trip_east_senior: ["reading", "xmas"], trip_south_local: ["summer"] };
+        const fits = (id) => !SEASON[id] || SEASON[id].includes(kind);
+        let g = `trip_${r.id}_g${(S.tripVisits[r.id] % 2) + 1}`;   // 第一次 g1，第二次 g2，轮着来
+        if (!fits(g)) g = `trip_${r.id}_g${((S.tripVisits[r.id] + 1) % 2) + 1}`;
+        if (ev(g) && fits(g)) await runEvent(g);
         const own = `trip_${r.id}_${mate}`;
-        if (mate && (DATA.loveIds || []).includes(mate) && ev(own) && !S.flags[`trip_done_${r.id}_${mate}`]) {
+        if (mate && (DATA.loveIds || []).includes(mate) && ev(own) && fits(own) && !S.flags[`trip_done_${r.id}_${mate}`]) {
           S.flags[`trip_done_${r.id}_${mate}`] = 1;
           await runEvent(own);
         }
