@@ -110,7 +110,7 @@ DATA.gallery = {
   stage_local_date: {"cat":"love","who":"local","stage":1,"title":"交往后第一次约会「英式早餐」——","bg":"flat_kitchen","order":174},
   stage_groupmate_20: {"cat":"love","who":"groupmate","stage":1,"title":"熟人事件「Boats」（好感≥20）——","bg":"indoor_market","order":175},
   stage_groupmate_60: {"cat":"love","who":"groupmate","stage":1,"title":"暧昧事件「凌晨两点的电话」（好感≥60）——","bg":"dorm_night","order":176},
-  stage_groupmate_date: {"cat":"love","who":"groupmate","stage":1,"title":"交往后第一次约会「外婆」——","bg":"dorm_room","order":177},
+  stage_groupmate_date: {"cat":"love","who":"groupmate","stage":1,"title":"交往后第一次约会「Pa Nok」","bg":"dorm_room","order":177},
   stage_otaku_20: {"cat":"love","who":"otaku","stage":1,"title":"熟人事件「Discord」（好感≥20）——","bg":"dorm_room","order":178},
   stage_otaku_60: {"cat":"love","who":"otaku","stage":1,"title":"暧昧事件「两本本子」（好感≥60）——","bg":"club_room","order":179},
   stage_otaku_date: {"cat":"love","who":"otaku","stage":1,"title":"交往后第一次约会「妈妈先知道」——","bg":"walsh_home","order":180},

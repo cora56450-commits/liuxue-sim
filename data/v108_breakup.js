@@ -125,9 +125,9 @@ window.DATA = window.DATA || {};
       { say: "陈记超市，冷柜前面。你伸手拿饺子皮的时候，另一只手也伸过来了。是他。" },
       { if: "标记('ex_warm_senior') || 标记('ex_soft_senior')", then: [
         { say: "他把手收回去，指了一下旁边打折的那包：“这个划算。”停了一下：" },
-        { say: "……最近吃饭了没？", name: "senior" },
+        { say: "……现在都自己包饺子了？", name: "senior" },   // 11/22 反馈：原来是“最近吃饭了没”，人总要吃饭，问“最近”不成立
         { choice: [
-          { text: "“吃了。你呢？”", fx: { flag_ex_friend_senior: 1, loneliness: -2 }, then: [{ say: "饿着呢。忙完这单再说。", name: "senior" }, { say: "（他说的还是“这单”。可是这次你笑了。）" }] },
+          { text: "“偶尔。你呢？”", fx: { flag_ex_friend_senior: 1, loneliness: -2 }, then: [{ say: "外卖。忙完这单再说。", name: "senior" }, { say: "（他说的还是“这单”。可是这次你笑了。）" }] },
           { text: "“嗯。”拿了饺子皮就走", fx: { flag_ex_stranger_senior: 1 }, then: [{ say: "你走到收银台的时候回头看了一眼。他还站在冷柜前面，手里什么都没拿。" }] },
         ] },
       ], else: [

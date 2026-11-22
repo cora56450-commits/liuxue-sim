@@ -1174,7 +1174,7 @@ Object.assign(DATA.events, {
     { say: "又在鸡蛋前面碰到 Ploy。这次她没在发呆，她拿着手机，在搜什么。" },
     { show: "groupmate" },
     { say: "屏幕上是：“how to boil an egg”「怎么煮鸡蛋」。" },
-    { say: "Don't. Pa Nok's going back to Bangkok next month. I need to — survive.", name: "groupmate", tr: "别笑。Pa Nok 下个月回曼谷了。我得——活下去。" },
+    { say: "Don't. Pa Nok's going back to Bangkok after the summer. I need to — survive.", name: "groupmate", tr: "别笑。Pa Nok 暑假以后就回曼谷了。我得——活下去。" },
     { free: "Ploy 在超市里搜“怎么煮鸡蛋”。", freeWho: "groupmate", choice: [
       { text: "“周末来我这里，我教你。”", fx: { aff_groupmate: 3, flag_ploy_cook_lesson: 1 }, then: [
         { say: "她抬起头，摘下墨镜。" },
@@ -1331,7 +1331,7 @@ DATA.loveEncounters.push(
   { id: "enc_supermarket_local_flirt",        who: "local",     place: "supermarket", stage: "flirt" },
   { id: "enc_supermarket_local_dating",       who: "local",     place: "supermarket", stage: "dating" },
   { id: "enc_supermarket_groupmate_acquaint", who: "groupmate", place: "supermarket", stage: "acquaint" },
-  { id: "enc_supermarket_groupmate_flirt",    who: "groupmate", place: "supermarket", stage: "flirt", cond: "演过('acq_groupmate_4')" },   // 看过 Ploy-识4（超市看鸡蛋），id 待定
+  { id: "enc_supermarket_groupmate_flirt",    who: "groupmate", place: "supermarket", stage: "flirt", cond: "演过('acq_groupmate_4') && 学年 == 1" },   // 11/22：台词“Pa Nok 暑假以后回曼谷”→ 只在大一（原来是“下个月”，大一任何时候都可能抽到，改成暑假以后）   // 看过 Ploy-识4（超市看鸡蛋），id 待定
   { id: "enc_supermarket_groupmate_dating",   who: "groupmate", place: "supermarket", stage: "dating" },
   { id: "enc_supermarket_otaku_acquaint",     who: "otaku",     place: "supermarket", stage: "acquaint" },
   { id: "enc_supermarket_otaku_flirt",        who: "otaku",     place: "supermarket", stage: "flirt" },

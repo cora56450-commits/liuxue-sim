@@ -146,7 +146,9 @@
   // 手机聊天也知道“多待一会儿”里发生过的事
   const _fc = AI.factCard;
   AI.factCard = function (c) {
-    const t = _fc.apply(this, arguments), mem = ((S && S.memo) || {})[c];
+    let t = _fc.apply(this, arguments); const mem = ((S && S.memo) || {})[c];
+    // 11/22：Pa Nok 大一在伦敦、大二起在曼谷，事实卡只写了时间线，AI 不知道“现在”是哪年 → 直接告诉它
+    if (c === "groupmate" && S) t += S.year === 1 ? "\n现在是大一：Pa Nok 还住在你伦敦公寓的第二间卧室，天天给你做饭。" : "\n现在 Pa Nok 已经回曼谷了，你一个人住；想她的时候视频。";
     return mem && mem.length ? t + "\n你们最近当面相处过（已经发生，可以自然提起，不要改写）：\n- " + mem.slice(-4).map((m) => m.text).join("\n- ") : t;
   };
 })();

@@ -256,14 +256,22 @@ Object.assign(DATA.events, {
   ],
   // —— Ploy·交往后第一次约会「外婆」——
   stage_groupmate_date: [
-    { bg: "dorm_room" },
-    { show: "groupmate" },
-    { say: "她视频打给曼谷的 Pa Nok，把手机转向你，用粤语说了一句什么。" },
-    { say: "外婆凑近屏幕看了你半天，用粤语问你吃饭了没有。" },
+    // 11/22 反馈：原来写成“视频打给曼谷的 Pa Nok”+“外婆凑近屏幕”。外婆已经去世；Pa Nok 大一住在 Ploy 伦敦的公寓，大二才回曼谷 → 按学年分两版，都是 Pa Nok
+    { if: "学年 == 1", then: [
+      { bg: "ploy_flat" },
+      { show: "groupmate" },
+      { say: "Pa Nok 从厨房探出头来。Ploy 拉着你的手腕把你推到她面前，用粤语说了一句什么。" },
+      { say: "Pa Nok 擦了擦手，凑近看了你半天，用粤语问你：“食咗饭未呀？”" },
+    ], else: [
+      { bg: "dorm_room" },
+      { show: "groupmate" },
+      { say: "她视频打给曼谷的 Pa Nok，把手机转向你，用粤语说了一句什么。" },
+      { say: "Pa Nok 凑近屏幕看了你半天，用粤语问你：“食咗饭未呀？”" },
+    ] },
     { say: "（小声，用中文）我跟她说你是我朋友。", name: "groupmate" },
     { say: "她停了一下。" },
     { say: "…for now.", name: "groupmate", tr: "……暂时。", fx: { aff_groupmate: 5 } },
-    { if: "String(家乡).includes('广东')", then: [{ say: "你用粤语回了外婆。外婆笑得假牙都露出来了。", fx: { aff_groupmate: 2 } }] },
+    { if: "String(家乡).includes('广东')", then: [{ say: "你用粤语回了 Pa Nok。她笑得眼睛眯成一条缝，回头冲 Ploy 说了一长串泰语。", fx: { aff_groupmate: 2 } }] },
     { hide: true },
   ],
 
