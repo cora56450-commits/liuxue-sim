@@ -85,6 +85,11 @@ const run = vm.runInContext(`(function (cfg) {
       if (cfg.dailyAct && !cal.vacation && a >= ({ senior: 25, local: 20, groupmate: 30, otaku: 20 })[c]) { normalGive(c, cfg.dailyN || 1); }   // 工作日活动碰面不算“单独来往”（游戏里也不更新 lastMet）
       // F5 低门槛邀约（好感 ≥ 10，大一每 4 周最多一次，没 Key 也有）
       if (cfg.lowInv && !cal.vacation && (S.year === 1 || cfg.lowInvAll) && a >= 10 && !S.flags["confessed_" + c] && !targets.some((x) => x !== c && S.flags["confessed_" + x]) && (absWeek() + c.length) % 4 === 0) { normalGive(c, Invites_T.goneLove); S.lastMet[c] = absWeek(); met[c] = true; cnt[c] = (cnt[c] || 0) + 1; }
+      // v0.9.1 告白前“最后一推”（js/v113.js）：告白前一周窗口里，心动过、好感 60–79、没交往，对方主动约一次（每人每学年一次）；会出门的玩法会去
+      if ((cfg.outing || cfg.date) && cfg.push !== false && !cal.vacation && inEve() && S.flags["heart_" + c] && !S.flags["confessed_" + c] && S.aff[c] >= 60 && S.aff[c] < 80
+        && !targets.some((x) => S.flags["confessed_" + x]) && !(S.pushY || {})[c + S.year] && !(S.pushWk === absWeek())) {
+        S.pushY = S.pushY || {}; S.pushY[c + S.year] = 1; S.pushWk = absWeek(); S.aff[c] = Math.max(S.aff[c] + 5, 80); S.lastMet[c] = absWeek(); met[c] = true;
+      }
       S.metWk = S.metWk || {}; if (met[c]) S.metWk[c] = absWeek();
       // 小事件：周末碰到时演一段、周中一次机会（相识、没资格吃醋、温情暧昧、交往后、地点偶遇……条件满足、没演过的随机一段）
       if (!cal.vacation && cfg.small !== false) {

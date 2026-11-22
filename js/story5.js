@@ -105,6 +105,12 @@ const Story5 = {
     const when = `${timeLabel().join(" ")} ${st.time || S.midNow || "晚上"}`;   // 周中插播：带上是周几
     const meta = { scripted: true, week: absWeek(), time: st.time || "晚上" };
     const push = (e) => store.push({ ...meta, ...e });
+    // v0.9.1：剧本替玩家发的话标“按你选的意思发出”，整局第一次出现时加一句说明（Cora：容易被当成 bug）
+    const autoHint = () => {
+      if (S.flags.v113_autohint) return;
+      S.flags.v113_autohint = 1;
+      narr.push({ at: store.length, text: "（提示：手机里带“按你选的意思发出”的那条，是选完选项后游戏替你发的话。想自己打字，有 API Key 时可以点「✎ 自己说」。）" });
+    };
     push(isGroup ? { who: "divider", text: `—— ${when} ——`, kind: "divider" } : { role: "divider", content: `—— ${when} ——`, kind: "divider" });
     hideDialog(); playSfx("phone_msg");
     const startAt = Math.max(0, store.length - 6);   // 往上带几条旧消息当上下文
@@ -144,8 +150,9 @@ const Story5 = {
           if (s.name) {
             const me = s.name === "me";
             if (!me) { render(true); await FX.wait(Flow.skip ? 50 : 450); playSfx("phone_msg"); lastThem = { id: s.name, text: fillText(s.say) }; }
-            push(isGroup ? { who: me ? "me" : speakerName(s.name), text: fillText(s.say), tr: s.tr ? fillText(s.tr) : "", kind: s.kind || "text" }
-              : { role: me ? "user" : "assistant", content: fillText(s.say), tr: s.tr ? fillText(s.tr) : "", kind: s.kind || "text" });
+            push(isGroup ? { who: me ? "me" : speakerName(s.name), text: fillText(s.say), tr: s.tr ? fillText(s.tr) : "", kind: s.kind || "text", ...(me ? { auto: 1 } : {}) }
+              : { role: me ? "user" : "assistant", content: fillText(s.say), tr: s.tr ? fillText(s.tr) : "", kind: s.kind || "text", ...(me ? { auto: 1 } : {}) });
+            if (me) autoHint();
             Flow.push(speakerName(s.name) + "（手机）", fillText(s.say), s.tr ? fillText(s.tr) : "");
           }
           render();
@@ -187,7 +194,10 @@ const Story5 = {
           const c = opts[i];
           const said = c.store || Story5.spoken(fillText(c.text));
           const sys = !!c.store || !/^[“"「]/.test(fillText(c.text).trim());
-          if (c.store !== "") push(isGroup ? { who: "me", text: said, kind: sys ? "voice" : "text" } : { role: "user", content: said, kind: sys ? "voice" : "text" });
+          // 发出去的话和按钮上引号里的话不一样（store 改写过）才算“代发”
+          const q5 = fillText(c.text).match(/[“"「]([^”"」]+)[”"」]/);
+          const auto5 = c.store && (!q5 || q5[1] !== c.store) ? 1 : 0;
+          if (c.store !== "") { push(isGroup ? { who: "me", text: said, kind: sys ? "voice" : "text", ...(auto5 ? { auto: 1 } : {}) } : { role: "user", content: said, kind: sys ? "voice" : "text", ...(auto5 ? { auto: 1 } : {}) }); if (auto5) autoHint(); }
           Flow.push("", "▶ " + fillText(c.text));
           render(); playSfx("phone_send");
           showFx(applyFx(c.fx));
@@ -231,7 +241,7 @@ const Story5 = {
     const me = isGroup ? m.who === "me" : m.role === "user";
     const text = isGroup ? m.text : m.content, tr = m.tr && Settings.v.showTr ? `<em class="msg-tr">${Gloss.mark(fillText(m.tr))}</em>` : "";
     const who = isGroup && !me ? `<div class="msg-who">${Gloss.escape(m.who)}</div>` : "";
-    return `${who}<div class="msg ${me ? "me" : "them"} ${kind !== "text" ? "sysline" : ""}">${Gloss.mark(fillText(text))}${tr}</div>${m.read ? `<div class="msg-read">已读</div>` : ""}`;
+    return `${who}<div class="msg ${me ? "me" : "them"} ${kind !== "text" ? "sysline" : ""}">${Gloss.mark(fillText(text))}${tr}</div>${me && m.auto ? `<div class="msg-auto">按你选的意思发出</div>` : ""}${m.read ? `<div class="msg-read">已读</div>` : ""}`;
   },
 
   // ===== 告白的限时选项（决定记录第十节）：唯一选项“先说出口”，倒计时 8 秒；期间对方的台词继续往下走 =====

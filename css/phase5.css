@@ -4,6 +4,7 @@
 .msg-divider { align-self: center; font-size: 18px; color: #8A8FA3; padding: 4px 10px; background: rgba(191,230,214,.45); border-radius: 10px; }
 .msg-narr { align-self: center; max-width: 92%; font-size: 20px; color: #6B7090; text-align: center; font-style: italic; padding: 4px 8px; }
 .msg.sysline { opacity: .75; font-style: italic; }
+.msg-auto { align-self: flex-end; font-size: 15px; color: #8A8FA3; margin-top: -4px; margin-bottom: 2px; }
 .msg-read { align-self: flex-end; font-size: 17px; color: #8A8FA3; margin-top: -6px; }
 .phone-replies { display: flex; flex-direction: column; gap: 8px; padding: 10px 0 4px; min-height: 64px; }
 .phone-replies button { font-family: var(--font); font-size: 19px; line-height: 1.35; padding: 12px 16px; border: 2px solid var(--navy); border-radius: 16px;
