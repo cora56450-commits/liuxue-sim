@@ -93,14 +93,14 @@ DATA.characters = {
   mum:          { name: "妈妈",              short: "妈妈",   height: 160, color: "#B8A77A", lang: "zh", sprites: { base: "chara/npc/mum.png" },        calib: { base: { top: 0.0249, chin: 0.27 } } },
   dad:          { name: "爸爸",              short: "爸爸",   height: 172, color: "#3A4766", lang: "zh", sprites: { base: "chara/npc/dad.png" },        calib: { base: { top: 0.0345, chin: 0.255 } } },
   linda:        { name: "Linda",             short: "Linda", height: 162, color: "#B79AD0", lang: "en", sprites: { base: "chara/npc/linda.png" },        calib: { base: { top: 0.0243, chin: 0.331 } } },
-  mei:          { name: "Mei",               short: "Mei",   fitBottom: true, height: 160, color: "#2A3150", lang: "en", sprites: { base: "chara/npc/mei.png" },          friend: { from: "intl", roommate: "hall", event: true }, contact: true, persona: "马来西亚华人室友，吉隆坡长大，家里说粤语。中文、英文、粤语混着说，是flat里唯一能听懂你打电话骂人的人。想去新加坡工作。",
+  mei:          { name: "Mei",               short: "Mei",   height: 168, color: "#2A3150", lang: "en", sprites: { base: "chara/npc/mei.png" },          friend: { from: "intl", roommate: "hall", event: true }, contact: true, persona: "马来西亚华人室友，吉隆坡长大，家里说粤语。中文、英文、粤语混着说，是flat里唯一能听懂你打电话骂人的人。想去新加坡工作。",
                 calib: { base: { top: 0.0295, chin: 0.306 } } },
   essay_senior: { name: "Essay学姐",         short: "Essay学姐", height: 160, color: "#8A8FA3", lang: "zh", sprites: {},                                  contact: true, persona: "代写中介，只在微信出现，头像是卡通人物，开口就是“亲～”。热情、话术熟练，三句话不离“包过”“原创”“加急”。只推进代写，不聊别的。说中文。",
                 calib: {} },  // 没有立绘，显示名牌
   sophie:       { name: "Sophie",            short: "Sophie", height: 158, color: "#B79AD0", lang: "en", sprites: { base: "chara/npc/sophie.png" },      friend: { from: "uk" }, contact: true, persona: "brunch店店员，艺术生，攒钱想开自己的店。每次把你的名字写错，错法每次不同；记得你常点的东西。用英文，语气很轻快。",
                 calib: { base: { top: 0.026, chin: 0.347 } } },
   marcia:       { name: "Dr. Marcia Campbell", short: "Marcia", height: 163, color: "#8A6A45", lang: "en", sprites: { base: "chara/npc/marcia.png" }, calib: { base: { top: 0.0359, chin: 0.327 } } },  // personal tutor，社会学讲师；没有联系方式（只发邮件）
-  wu_tong:      { name: "吴桐",              short: "吴桐",  fitBottom: true, height: 155, color: "#4E7A5A", lang: "zh", sprites: { base: "chara/npc/wu_tong.png" },      friend: { from: "cn", roommate: "ensuite", event: true }, contact: true, persona: "四川人，ensuite室友，家里在成都开火锅店。情绪稳定得离谱，只有她那口电饭煲（外婆送的）被人偷用、饭放到长毛的时候会破防。说中文，带四川话。",
+  wu_tong:      { name: "吴桐",              short: "吴桐",  height: 163, color: "#4E7A5A", lang: "zh", sprites: { base: "chara/npc/wu_tong.png" },      friend: { from: "cn", roommate: "ensuite", event: true }, contact: true, persona: "四川人，ensuite室友，家里在成都开火锅店。情绪稳定得离谱，只有她那口电饭煲（外婆送的）被人偷用、饭放到长毛的时候会破防。说中文，带四川话。",
                 calib: { base: { top: 0.0339, chin: 0.306 } } },
 };
 
